@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 
 /**
  * 全局错误边界（App Router 约定：error.tsx 必须是 Client Component）。
@@ -17,7 +18,6 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // eslint-disable-next-line no-console
     console.error("[app-error-boundary]", {
       message: error.message,
       digest: error.digest,
@@ -44,12 +44,12 @@ export default function Error({
           >
             重试
           </button>
-          <a
+          <Link
             href="/"
             className="rounded-full border border-zinc-300 px-5 py-2 text-sm transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
           >
             回首页
-          </a>
+          </Link>
         </div>
       </div>
     </div>

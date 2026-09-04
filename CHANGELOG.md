@@ -3,6 +3,36 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.4.2] - 2026-09-04 · Phase 4 里程碑 3：设计 tokens + 基础 UI 组件库 + API 客户端层 + Proxy 中间件
+
+- 原因：里程碑 2 打通了"能跑能测"的后端骨架，但总控 Phase 4 交付清单里的「基础 UI」仍是空白；同时所有 API Route 需要的横切关注点（request-id 追踪、入参校验、统一 fetch、访问日志、安全头）尚未沉淀。本里程碑把这些一次性补齐，让 Phase 5 的 35 个页面可以"照抄即用"，避免每个页面各写一套样式/校验/错误处理（宪法第 4/5 条：先铺可复用地基；第 12 条：重复 >3 次的人工作业考虑自动化/标准化）。
+- 内容：
+  - **设计 tokens** `src/app/globals.css`：新增颜色（primary 产业蓝 / success / warning / danger / info / muted / border / ring + 各自 foreground）、圆角（sm/md/lg/xl）、阴影（sm/md/lg）三组 CSS 变量，亮/暗双模式（`prefers-color-scheme`）；经 Tailwind v4 `@theme inline` 暴露为工具类（`bg-primary` / `text-muted-foreground` / `rounded-lg` / `shadow-md` 等）。全局 `:focus-visible` 焦点环走 `--ring` 变量，键盘可达性优先。所有组件颜色一律走 token，零硬编码色值。
+  - **className 工具** `src/lib/cn.ts`：零依赖版 `cn()`（不引 clsx + tailwind-merge，减 ~15KB gzip 与版本同步负担），支持 string / number / 数组嵌套 / 对象 truthy / falsy 过滤。
+  - **基础 UI 组件库** `src/components/ui/`（11 个组件 + barrel `index.ts`，全部 Server Component 安全）：
+    - `Button.tsx` — 5 变体（primary/secondary/ghost/danger/link）× 4 尺寸（sm/md/lg/icon）+ loading 态 + disabled；极简 polymorphic（传 `href` 渲染 `<a>`，否则 `<button>`），不引 Radix Slot。danger 变体满足宪法第 21 条"破坏性操作须视觉区分"。
+    - `Card.tsx` — Card / CardHeader / CardTitle / CardDescription / CardContent / CardFooter，支持 `interactive`（悬停阴影 + 边框高亮）。
+    - `Badge.tsx` — 7 变体（neutral/primary/success/warning/danger/info/outline）+ compact 模式，语义对齐业务（证据等级、审核状态、许可证风险、行业标签）。
+    - `Input.tsx` — Input / Textarea / Label / FieldError / Field（表单字段容器，约定 `${htmlFor}-error` / `-help` 的 aria id）；invalid 态走 `aria-invalid` + 红框。
+    - `Alert.tsx` — 4 变体（info/success/warning/danger）+ `role="alert"|"status"` 可及性；warning 变体承载宪法第 21 条"需要专业人工确认"高风险提示。
+    - `Skeleton.tsx` — Skeleton（rect/circle/text 三变体，纯 CSS animate-pulse）+ Spinner（role="status" + aria-label，纯 CSS 旋转无 SVG 依赖）。
+    - `Container.tsx` — Container（sm/md/lg/xl/full 五档最大宽度，lg 与 layout 导航 max-w-6xl 对齐）+ Separator（水平/垂直，装饰性时 aria-hidden）。
+  - **API 客户端层** `src/lib/api-client.ts`：`ApiClient` 类统一 fetch（禁止业务裸 fetch）。baseUrl + path + query 自动拼接（跳过 null/undefined）；JSON body 自动序列化 + content-type；自动注入/透传 `x-request-id`；超时走 `AbortSignal.timeout`（默认 10s）；非 2xx 按状态码/上游 code 还原成对应 AppError 子类（400→Validation … 429→RateLimited，5xx→Upstream）；网络层错误（超时/DNS/连接重置）包成 UpstreamError 保留 cause；幂等方法（GET/HEAD/OPTIONS）可选指数退避重试（±20% 抖动防重试风暴，默认关闭，POST 永不重试）；get/post/put/patch/delete 快捷方法；导出浏览器内调本站 API 的默认单例 `apiClient`。
+  - **校验 schema 集** `src/lib/validation.ts`（Zod v4）：ID 类（CuidSchema / UuidSchema / SlugSchema）；PaginationSchema（page 从 1、pageSize 默认 20 上限 100 防拉爆库、自动算 offset/limit、coerce 字符串查询参数）；makeSortSchema（字段白名单 + 自动生成 orderBy，防 SQL 注入/全字段排序）；SearchQuerySchema（trim + 去控制字符 + 1–100 限长）；**11 个业务枚举与 `prisma/schema.prisma` 一一对应**（Industry 7 / CaseStage 5 漏斗 / EvidenceType 事实假设推断预测 / Maturity 4 / LicenseType 11 / LicenseReviewStatus 4 / SolutionStatus 3 态 / Currency / BuyerType / OrderStatus / ChangeAction 含 ROLLBACK）；paginatedResponseSchema 泛型包装 + HealthResponseSchema（与 /api/health 同步）。
+  - **request-id 工具** `src/lib/request-id.ts`：`generateRequestId`（node:crypto UUID v4）/ `isValidRequestId`（字符集 `[A-Za-z0-9-]` 长度 8–64，拒绝 CRLF 防日志注入）/ `extractOrGenerateRequestId`（客户端合法 id 才采纳）/ `sanitizeForLog`（去控制字符双保险）/ `REQUEST_ID_HEADER` 常量。
+  - **Proxy 中间件** `src/proxy.ts`（Next.js 16：middleware 重命名为 proxy，导出函数名 `proxy`）：① 每个入站请求分配/透传 `x-request-id`，**同时注入下游请求头**（`NextResponse.next({ request: { headers } })`，让 Route Handler 即使客户端没传也能读到）+ 写回响应头；② 结构化访问日志（JSON 一行：requestId/fromClient/method/path/query/durationMs/ua 截断 200/ip/timestamp）；③ 基础安全头（X-Content-Type-Options nosniff / X-Frame-Options DENY / Referrer-Policy strict-origin-when-cross-origin；CSP 留 Phase 14 配 nonce 时再加）；④ matcher 排除静态资源 + 跳过 `/_next`、图片、字体等噪音。Edge 安全：request-id 生成优先用 Edge 原生 Web Crypto `randomUUID()`（与 node 版 UUID 格式一致），不依赖 node:crypto。
+  - **/api/health 升级**：GET 接收 `NextRequest`，从请求头读回 request-id 放进 JSON body（`requestId` 字段），与响应头一致，方便前端/监控双向关联；logger 派生 `child({ requestId })`。
+  - **/ui 演示页** `src/app/ui/page.tsx`：一页渲染全部组件（Button 全变体/尺寸/态、Badge 7 变体、Alert 4 变体、Card 静态+交互、表单 Field/Input/Textarea/错误态/禁用态、Spinner/Skeleton、设计 tokens 色板），build 后 HTTP 冒烟即可确认组件库无运行时错误；给零基础创始人一个"看得见"的设计系统参考（总控第 41 节）；robots noindex。layout 导航加 `ui` 入口。
+  - **测试新增** `tests/unit/`：`cn.test.ts`（9 cases）、`request-id.test.ts`（12 cases：UUID 格式/万次唯一性/字符集校验/CRLF 拒绝/提取或生成/净化）、`validation.test.ts`（33 cases：ID/分页默认值与上限/排序白名单防注入/搜索净化/11 枚举成员数与值断言/响应包装/Health schema）、`api-client.test.ts`（27 cases：URL 构造/query 跳过空值/绝对路径/request-id 注入与透传与非法忽略/JSON 序列化/头合并/响应解析 JSON-text-204/6 种状态码→AppError 子类/5xx→Upstream/上游 code 还原/非 JSON 错误体/网络错误包装/幂等重试与非幂等不重试与重试耗尽与 429 与 404 不重试/AbortSignal 超时）。
+- 验证（宪法第 5/18/20 条）：
+  - `tsc --noEmit`：**0 错误**（修复 AlertProps 与 div `title` 冲突 → Omit、RequestOptions 重新声明 `body`、测试 `err` unknown → `captureError` 助手）。
+  - `vitest run tests/unit`：**125/125 全绿**（原 44 + 新增 81），432ms。
+  - `node --env-file=.env vitest run tests/integration`：**5/5 全绿**，8.86s（真连 Neon us-east-2，无回归）。
+  - `next build`（Turbopack）：**编译成功**，1333ms 编译 + 3.6s TS + 静态生成；产出 **4 条路由 + Proxy(Middleware)**：`ƒ /` / `○ /_not-found` / `ƒ /api/health` / `○ /ui`（预渲染静态）。
+  - **HTTP 端到端冒烟**（`next start -p 3114`）：DB 预热 1 次成功（lat 3706ms 冷启动）；`/api/health` 无客户端 id → **200** 服务端生成 UUID 且 **header 与 body.requestId 一致（match=true，证明 request-id 已透传到 Route Handler）**；带合法 client id → **echo=true**；带非法 id（过短 "abc"）→ **rejected=true regenerated=true**；安全头三件齐全；`/ui` → **200** 44631 字节，Button/Badge/Alert/Spinner 全部渲染；`/` → **200** 22371 字节含"数据库实时状态"；`/definitely-not-here` → **404** 带 request-id。
+  - 冒烟中发现并修复 2 个真问题：① proxy 原来只写响应头不注入下游请求头 → Route Handler 读不到（auto-rid 时 body.requestId 为 undefined）；② `edgeGenerateRequestId` 原产出带下划线的 `req_x_y` 过不了自己的 `isValidRequestId`（字符集不含下划线）→ 改用 Web Crypto UUID + 连字符兜底。另记录：CRLF 头注入在 undici 客户端层即被拒（`Headers.append invalid`），服务端净化为纵深防御。
+- 效果：**Phase 4 里程碑 3 达成**——总控 Phase 4 交付清单（Web 骨架 / 数据库连接 / 基础 UI / 环境变量 / 日志 / 错误处理 / 测试框架）**全部完成**。设计系统 + API 客户端 + 校验 + 追踪 + 安全头地基就绪，Phase 5（35 公共/用户/后台页面）可直接复用。测试基线扩到 130（125 单元 + 5 集成）。ROADMAP 阻塞剩余 #3 github.com CLI（API 绕行中）、#4 模型 API Key、#5 部署/支付、#6 对象存储。
+
 ## [0.4.1] - 2026-09-04 · Phase 4 里程碑 2：项目骨架 + 测试基线全绿
 
 - 原因：DB 上线后立刻铺 V1-A 骨架，把 Next.js 16 约定、Prisma Client 单例、结构化日志、错误层级、env 校验、健康检查 API、Vitest 测试基线一次性打通（宪法第 4 条：先跑通再优化；总控 Phase 4 交付清单）。

@@ -1,0 +1,254 @@
+import { z } from "zod";
+
+/**
+ * 通用校验 schema 集（Zod v4）。
+ *
+ * 设计目标（宪法第 7 条 数据质量 / 总控第 12 节数据模型）：
+ *   - 所有 API Route 入参必须先过 schema，禁止裸 trust req.body；
+ *   - 分页/排序/ID 等横切关注点集中定义，避免每个路由各写一套；
+ *   - 错误消息中文化（面向最终用户的提示直接可用）。
+ *
+ * 用法：
+ *   const q = PaginationSchema.parse(Object.fromEntries(req.nextUrl.searchParams));
+ *   const id = CuidSchema.parse(params.id);
+ */
+
+/* ─────────────────────────── ID / 标识符 ─────────────────────────── */
+
+/** Prisma cuid() 生成的 ID：c 开头 + 小写字母数字，长度通常 25。放宽到 20–32 兼容历史数据。 */
+export const CuidSchema = z
+  .string()
+  .regex(/^c[a-z0-9]{19,31}$/, "ID 格式不正确");
+
+/** UUID v4（用于 request-id、外部系统对接）。 */
+export const UuidSchema = z
+  .string()
+  .regex(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    "UUID 格式不正确",
+  );
+
+/** 通用 slug（URL 友好标识）：小写字母数字连字符，1–128 字符。 */
+export const SlugSchema = z
+  .string()
+  .min(1, "slug 不能为空")
+  .max(128, "slug 过长")
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug 只能包含小写字母、数字和连字符");
+
+/* ─────────────────────────── 分页 / 排序 ─────────────────────────── */
+
+/**
+ * 分页参数 schema（从 query string 解析）。
+ *
+ * 约定：
+ *   page  从 1 开始（用户友好），默认 1
+ *   pageSize 默认 20，上限 100（防止一次拉爆数据库 / Serverless 内存）
+ *
+ * 输出额外计算 offset，便于 Prisma skip。
+ */
+export const PaginationSchema = z
+  .object({
+    page: z.coerce.number().int().min(1, "page 最小为 1").max(10_000).default(1),
+    pageSize: z.coerce
+      .number()
+      .int()
+      .min(1, "pageSize 最小为 1")
+      .max(100, "pageSize 最大为 100")
+      .default(20),
+  })
+  .transform((v) => ({
+    page: v.page,
+    pageSize: v.pageSize,
+    offset: (v.page - 1) * v.pageSize,
+    limit: v.pageSize,
+  }));
+
+export type Pagination = z.infer<typeof PaginationSchema>;
+export type PaginationInput = z.input<typeof PaginationSchema>;
+
+/** 排序方向。 */
+export const SortOrderSchema = z.enum(["asc", "desc"]);
+export type SortOrder = z.infer<typeof SortOrderSchema>;
+
+/**
+ * 构造排序 schema：限定可排序字段白名单（防止 SQL 注入 / 全字段排序拖垮索引）。
+ *
+ * 用法：
+ *   const SortSchema = makeSortSchema(["createdAt", "score", "title"] as const);
+ *   const s = SortSchema.parse({ sortBy: "score", sortOrder: "desc" });
+ */
+export function makeSortSchema<TFields extends readonly string[]>(
+  fields: TFields,
+  defaultField: TFields[number] = fields[0],
+) {
+  return z
+    .object({
+      sortBy: z.enum(fields as unknown as [string, ...string[]]).default(defaultField),
+      sortOrder: SortOrderSchema.default("desc"),
+    })
+    .transform((v) => ({
+      sortBy: v.sortBy as TFields[number],
+      sortOrder: v.sortOrder,
+      orderBy: { [v.sortBy]: v.sortOrder } as Record<TFields[number], SortOrder>,
+    }));
+}
+
+/* ─────────────────────────── 搜索 ─────────────────────────── */
+
+/**
+ * 搜索关键词 schema（总控第 18 节搜索系统）。
+ *
+ * V1 用 ILIKE 模糊匹配即可，不引入全文索引/向量（宪法第 22 条 V1 不做）。
+ * 限制：1–100 字符，去除首尾空白，过滤控制字符防日志注入。
+ */
+export const SearchQuerySchema = z
+  .string()
+  .trim()
+  .min(1, "搜索关键词不能为空")
+  .max(100, "搜索关键词过长")
+  .transform((v) => v.replace(/[\u0000-\u001f\u007f]/g, "").trim())
+  .pipe(z.string().min(1, "搜索关键词不能全是控制字符"));
+
+/* ─────────────────────────── 业务枚举（与 prisma/schema.prisma 一一对应） ─────────────────────────── */
+
+/**
+ * ⚠️ 以下枚举值必须与 prisma/schema.prisma 中的 enum 保持同步。
+ * 修改 schema 后须同步更新此处；Phase 5 计划引入生成脚本（prisma → zod）自动同步，
+ * 在此之前靠单元测试 tests/unit/validation.test.ts 断言枚举成员数量与值来兜底。
+ */
+
+/** 六大行业 + OTHER（总控第 6 节首页体验「六大行业」）。 */
+export const IndustrySchema = z.enum([
+  "NEW_ENERGY",
+  "INDUSTRIAL_MANUFACTURING",
+  "TRANSPORTATION",
+  "AGRICULTURE_FORESTRY_FISHERY",
+  "EDUCATION_TRAINING",
+  "REAL_ESTATE_CONSTRUCTION",
+  "OTHER",
+]);
+export type Industry = z.infer<typeof IndustrySchema>;
+
+/** 案例漏斗阶段：候选(60) → 重点研究(20) → 深度案例(10) → 重点方案(3) → 精品方案(1)（总控第 9 节）。 */
+export const CaseStageSchema = z.enum([
+  "CANDIDATE",
+  "KEY_RESEARCH",
+  "DEEP_CASE",
+  "KEY_SOLUTION",
+  "PREMIUM_SOLUTION",
+]);
+export type CaseStage = z.infer<typeof CaseStageSchema>;
+
+/** 证据类型：严格区分 事实/假设/推断/预测（宪法第 7 条）。 */
+export const EvidenceTypeSchema = z.enum([
+  "FACT",
+  "ASSUMPTION",
+  "INFERENCE",
+  "PREDICTION",
+]);
+export type EvidenceType = z.infer<typeof EvidenceTypeSchema>;
+
+/** 技术成熟度。 */
+export const MaturitySchema = z.enum([
+  "EMERGING",
+  "DEVELOPING",
+  "MATURE",
+  "UNKNOWN",
+]);
+export type Maturity = z.infer<typeof MaturitySchema>;
+
+/** 开源许可证类型（宪法第 11 条：UNKNOWN/GPL/AGPL/PROPRIETARY 默认转人工复核）。 */
+export const LicenseTypeSchema = z.enum([
+  "MIT",
+  "APACHE_2_0",
+  "BSD_2_CLAUSE",
+  "BSD_3_CLAUSE",
+  "MPL_2_0",
+  "LGPL",
+  "GPL",
+  "AGPL",
+  "PROPRIETARY",
+  "UNKNOWN",
+  "OTHER",
+]);
+export type LicenseType = z.infer<typeof LicenseTypeSchema>;
+
+/** 许可证复核状态。 */
+export const LicenseReviewStatusSchema = z.enum([
+  "NOT_REVIEWED",
+  "APPROVED",
+  "NEEDS_HUMAN_REVIEW",
+  "REJECTED",
+]);
+export type LicenseReviewStatus = z.infer<typeof LicenseReviewStatusSchema>;
+
+/** 方案状态（V1 只做 草稿/人工审核中/已发布 三态，Bull-Bear-Judge-QA 是过程不是落库态）。 */
+export const SolutionStatusSchema = z.enum([
+  "DRAFT",
+  "UNDER_HUMAN_REVIEW",
+  "PUBLISHED",
+]);
+export type SolutionStatus = z.infer<typeof SolutionStatusSchema>;
+
+/** 币种（V1 默认 CNY，USD 预留）。 */
+export const CurrencySchema = z.enum(["CNY", "USD"]);
+export type Currency = z.infer<typeof CurrencySchema>;
+
+/** 买家类型。 */
+export const BuyerTypeSchema = z.enum(["INDIVIDUAL", "ENTERPRISE"]);
+export type BuyerType = z.infer<typeof BuyerTypeSchema>;
+
+/** 订单状态。 */
+export const OrderStatusSchema = z.enum([
+  "PENDING",
+  "PAID",
+  "REFUNDED",
+  "CANCELED",
+]);
+export type OrderStatus = z.infer<typeof OrderStatusSchema>;
+
+/** ChangeLog 操作类型（宪法第 13 条版本化）。 */
+export const ChangeActionSchema = z.enum([
+  "CREATE",
+  "UPDATE",
+  "DELETE",
+  "ROLLBACK",
+]);
+export type ChangeAction = z.infer<typeof ChangeActionSchema>;
+
+/* ─────────────────────────── 通用响应包装 ─────────────────────────── */
+
+/**
+ * 分页响应包装 schema（服务端构造 / 客户端校验都用得上）。
+ *
+ * 用法：
+ *   const PaginatedCases = paginatedResponseSchema(CaseDtoSchema);
+ */
+export function paginatedResponseSchema<TItem extends z.ZodTypeAny>(itemSchema: TItem) {
+  return z.object({
+    data: z.array(itemSchema),
+    pagination: z.object({
+      page: z.number().int().min(1),
+      pageSize: z.number().int().min(1),
+      total: z.number().int().min(0),
+      totalPages: z.number().int().min(0),
+    }),
+  });
+}
+
+/** 健康检查响应 schema（与 /api/health 路由保持同步）。 */
+export const HealthResponseSchema = z.object({
+  ok: z.boolean(),
+  service: z.string(),
+  version: z.string(),
+  node: z.string(),
+  uptime_sec: z.number(),
+  db: z.object({
+    ok: z.boolean(),
+    latency_ms: z.number().nullable(),
+    error: z.string().optional(),
+  }),
+  timestamp: z.string(),
+  requestId: z.string().optional(),
+});
+export type HealthResponse = z.infer<typeof HealthResponseSchema>;

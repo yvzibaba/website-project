@@ -16,7 +16,6 @@ const HAS_DB = Boolean(process.env.DATABASE_URL);
 const describeDb = HAS_DB ? describe : describe.skip;
 
 if (!HAS_DB) {
-  // eslint-disable-next-line no-console
   console.warn(
     "[db-smoke] DATABASE_URL not set — integration tests will be skipped. " +
       `Run with: npm run test:integration`,

@@ -53,6 +53,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 关于
               </Link>
               <Link
+                href="/ui"
+                className="font-mono text-xs text-zinc-500 hover:underline"
+                title="UI 组件库演示"
+              >
+                ui
+              </Link>
+              <Link
                 href="/api/health"
                 className="font-mono text-xs text-zinc-500 hover:underline"
                 title="健康检查 API"

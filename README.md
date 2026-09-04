@@ -35,6 +35,8 @@ Next.js 16（App Router）+ React 19 + TypeScript · Tailwind CSS v4（+ 计划�
 - [x] 依赖安装 + `prisma validate` 通过 + 首迁移 `0_init/migration.sql` 离线生成（改用 npmmirror 源 + Prisma 引擎镜像，解除此前的下载卡顿阻塞）
 - [x] **Phase 4 里程碑 1：数据库上线**——`DATABASE_URL`（Neon `us-east-2`）写入 `.env`（gitignored），`prisma migrate deploy` 成功建 17 张业务表 + 11 个枚举，`_prisma_migrations` 记录已落库（finished_at `2026-09-04T15:22:16.915Z`）
 - [x] **Phase 4 里程碑 2：项目骨架 + 测试基线全绿**——`src/lib/{env,logger,errors,prisma}.ts` 核心库；`src/app/{layout,page,error,not-found}.tsx` + `api/health/route.ts` shell；`tests/unit/*` 44 cases + `tests/integration/db-smoke.test.ts` 5 cases（真连 Neon）全部通过；`tsc --noEmit` 0 错误；`next build` (Turbopack) 成功产出 3 路由；`next start` + HTTP 冒烟：`/api/health` 200 & `db.ok:true`，`/` 200 22129 字节含实时表计数，`/definitely-not-here` 404
+- [x] **Phase 4 里程碑 3：设计 tokens + 基础 UI 组件库 + API 客户端层 + Proxy 中间件**——`globals.css` 颜色/圆角/阴影 tokens（亮暗双模式）；`src/components/ui/*` 11 个组件（Button/Card/Badge/Input+Field/Alert/Skeleton+Spinner/Container+Separator）+ `/ui` 演示页；`src/lib/{cn,api-client,validation,request-id}.ts`（统一 fetch + AppError 映射 + 重试、Zod 校验集含 11 个与 prisma 同步的业务枚举、request-id 追踪）；`src/proxy.ts`（Next.js 16 Proxy：request-id 注入下游 + 结构化访问日志 + 安全头）。`tests/unit/*` 扩到 **125 cases** + 集成 5 cases 全绿；`tsc --noEmit` 0 错误；`next build` 产出 **4 路由 + Proxy**；HTTP 冒烟：request-id 服务端生成/客户端透传/非法拒绝重生成全通过，`/ui` 200 全组件渲染
+- [x] **Phase 4 完成**——总控 Phase 4 交付清单（Web 骨架 / 数据库连接 / 基础 UI / 环境变量 / 日志 / 错误处理 / 测试框架）全部达成
 - [ ] Phase 5+：公共页面、用户系统、案例系统、方案系统…（按 ROADMAP 推进）
 
 ## 本地运行（待依赖与数据库就绪后）

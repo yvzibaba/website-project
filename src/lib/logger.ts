@@ -64,7 +64,7 @@ function redact(value: unknown, seen = new WeakSet<object>()): unknown {
   const t = typeof value;
   if (t === "string" || t === "number" || t === "boolean") return value;
   if (t === "bigint") return String(value);
-  if (t === "function") return `[Function: ${(value as Function).name || "anonymous"}]`;
+  if (t === "function") return `[Function: ${(value as { name?: string }).name || "anonymous"}]`;
   if (t === "symbol") return String(value);
   if (value instanceof Date) return value.toISOString();
   if (value instanceof Error) {

@@ -6,6 +6,7 @@ import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { listPublishedSolutions, SOLUTION_SORT_FIELDS, type SolutionSortField } from "@/server/solutions";
 import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@/lib/validation";
 import { cn } from "@/lib/cn";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /solutions — 方案列表页（V1-A，PRODUCT_SPEC §5）。
@@ -20,6 +21,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "产业解决方案",
   description: "可购买、可实施、可定制的产业解决方案：含成本模型、ROI、回收期、风险与关键未知变量。",
+  ...seoMetadata({
+    title: "产业解决方案",
+    description: "可购买、可实施、可定制的产业解决方案：含成本模型、ROI、回收期、风险与关键未知变量。",
+    path: "/solutions",
+  }),
 };
 
 interface PageProps {

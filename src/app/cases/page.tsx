@@ -6,6 +6,7 @@ import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { listPublicCases, CASE_SORT_FIELDS, type CaseSortField } from "@/server/cases";
 import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@/lib/validation";
 import { cn } from "@/lib/cn";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /cases — 案例列表页（V1-A，PRODUCT_SPEC §5）。
@@ -22,6 +23,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "案例",
   description: "浏览全球产业案例：按行业、时间、机会评分筛选，查看 AI 拆解的深度案例。",
+  ...seoMetadata({
+    title: "案例",
+    description: "浏览全球产业案例：按行业、时间、机会评分筛选，查看 AI 拆解的深度案例。",
+    path: "/cases",
+  }),
 };
 
 interface PageProps {

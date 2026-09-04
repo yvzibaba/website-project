@@ -8,6 +8,7 @@ import { getPublishedSolutionById } from "@/server/solutions";
 import { getCurrentUser } from "@/server/authz";
 import { hasPaidEntitlement } from "@/server/orders";
 import type { ParsedSolutionBody } from "@/server/solution-body";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /solutions/[id] — 方案详情页（V1-A，PRODUCT_SPEC §5，含购买入口）。
@@ -33,9 +34,17 @@ function first(v: string | string[] | undefined): string | undefined {
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const sp = await searchParams;
-  const res = await getPublishedSolutionById(id, first(sp.demo) === "1");
-  if (res.status !== "found") return { title: "方案未找到" };
-  return { title: res.data.title, description: res.data.summary?.slice(0, 120) ?? "产业解决方案详情" };
+  const includeDemo = first(sp.demo) === "1";
+  const res = await getPublishedSolutionById(id, includeDemo);
+  if (res.status !== "found") return { title: "方案未找到", robots: { index: false, follow: false } };
+  const description = res.data.summary?.slice(0, 120) ?? "产业解决方案详情";
+  return {
+    title: res.data.title,
+    description,
+    ...seoMetadata({ title: res.data.title, description, path: `/solutions/${id}`, type: "article" }),
+    // DEMO 视图（?demo=1）非真实产出 → 永不收录（宪法第 20 条）。
+    ...(includeDemo ? { robots: { index: false, follow: false } } : {}),
+  };
 }
 
 export default async function SolutionDetailPage({ params, searchParams }: PageProps) {

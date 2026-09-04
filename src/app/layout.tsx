@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { SITE_DESCRIPTION, SITE_URL, isIndexable } from "@/lib/site";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "产业案例与解决方案引擎",
     template: "%s · 产业案例引擎",
   },
-  description:
-    "AI 驱动的产业案例研究与解决方案生成引擎。V1-A 目标：跑通「免费案例 → 标准方案 → 购买」的最小闭环。",
-  robots: {
-    // V1-A 开发阶段禁止爬取，Phase 14 打开 SEO 时再改。
-    index: false,
-    follow: false,
-  },
+  description: SITE_DESCRIPTION,
+  robots: isIndexable()
+    ? { index: true, follow: true }
+    : {
+        // 开发 / 预览 / 未配置正式域名时禁止收录（Phase 14 M1 环境门控，见 site.ts）。
+        // 部署到正式域名并设 NEXT_PUBLIC_SITE_URL 后自动放开；私有页面各自再叠 noindex。
+        index: false,
+        follow: false,
+      },
 };
 
 /**

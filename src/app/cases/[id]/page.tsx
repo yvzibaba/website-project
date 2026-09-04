@@ -5,6 +5,7 @@ import { Container, Badge, Alert, Card, CardContent, CardHeader, CardTitle } fro
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { getPublicCaseById } from "@/server/cases";
 import type { CaseScores } from "@/server/scoring";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /cases/[id] — 案例详情页（V1-A，PRODUCT_SPEC §5）。
@@ -48,10 +49,14 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const sp = await searchParams;
   const includeDemo = first(sp.demo) === "1";
   const res = await getPublicCaseById(id, includeDemo);
-  if (res.status !== "found") return { title: "案例未找到" };
+  if (res.status !== "found") return { title: "案例未找到", robots: { index: false, follow: false } };
+  const description = res.data.summary?.slice(0, 120) ?? "产业案例详情";
   return {
     title: res.data.title.replace(/^【DEMO】/, ""),
-    description: res.data.summary?.slice(0, 120) ?? "产业案例详情",
+    description,
+    ...seoMetadata({ title: res.data.title.replace(/^【DEMO】/, ""), description, path: `/cases/${id}`, type: "article" }),
+    // DEMO 视图（?demo=1）不是真实研究产出 → 永不收录（宪法第 20 条）。
+    ...(includeDemo ? { robots: { index: false, follow: false } } : {}),
   };
 }
 

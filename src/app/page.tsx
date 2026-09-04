@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/page";
 import { INDUSTRIES } from "@/server/industries";
 import { listPublicCases } from "@/server/cases";
 import { listPublishedSolutions } from "@/server/solutions";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * 首页 `/`（V1-A，总控第 6 节 / PRODUCT_SPEC §6）。
@@ -30,6 +31,12 @@ export const metadata: Metadata = {
   },
   description:
     "发现全球产业机会，把成功案例重新变成你的解决方案：AI 拆解全球产业案例、匹配开源技术、中国本土化重构，形成可购买、可实施的产业解决方案。",
+  ...seoMetadata({
+    title: "产业案例与解决方案引擎 · 发现全球产业机会",
+    description:
+      "发现全球产业机会，把成功案例重新变成你的解决方案：AI 拆解全球产业案例、匹配开源技术、中国本土化重构，形成可购买、可实施的产业解决方案。",
+    path: "/",
+  }),
 };
 
 /** 六步工作流（总控第 6 节第五部分 / about 页一致口径）。 */

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container, Badge } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { INDUSTRIES, getIndustryCaseCounts } from "@/server/industries";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /industries — 行业列表页（V1-A，PRODUCT_SPEC §5）。
@@ -21,6 +22,12 @@ export const metadata: Metadata = {
   title: "行业",
   description:
     "按行业浏览全球产业案例与解决方案：新能源、工业制造、交通运输、农林牧渔、教育培训、房地产建筑。",
+  ...seoMetadata({
+    title: "行业",
+    description:
+      "按行业浏览全球产业案例与解决方案：新能源、工业制造、交通运输、农林牧渔、教育培训、房地产建筑。",
+    path: "/industries",
+  }),
 };
 
 export default async function IndustriesPage() {

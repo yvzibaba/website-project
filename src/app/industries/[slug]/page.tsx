@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Container, Badge } from "@/components/ui";
 import { PageHeader, Breadcrumb, EmptyState } from "@/components/page";
 import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /industries/[slug] — 行业详情页（V1-A，PRODUCT_SPEC §5）。
@@ -37,11 +38,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const industry = getIndustryBySlug(slug);
   if (!industry) {
-    return { title: "行业未找到" };
+    return { title: "行业未找到", robots: { index: false, follow: false } };
   }
+  const description = `${industry.name}（${industry.nameEn}）产业案例与解决方案：${industry.tagline}`;
   return {
     title: `${industry.name} · 行业`,
-    description: `${industry.name}（${industry.nameEn}）产业案例与解决方案：${industry.tagline}`,
+    description,
+    ...seoMetadata({ title: `${industry.name} · 行业`, description, path: `/industries/${slug}` }),
   };
 }
 

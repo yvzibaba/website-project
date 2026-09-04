@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { INDUSTRIES } from "@/server/industries";
+import { seoMetadata } from "@/lib/site";
 
 /**
  * /about — 关于我们（V1-A，PRODUCT_SPEC §5/§6）。
@@ -18,6 +19,12 @@ export const metadata: Metadata = {
   title: "关于我们",
   description:
     "我们每天从全球发现高价值产业案例，用 AI 拆解商业模式与技术路线，匹配开源能力并进行中国本土化重构，形成可购买、可实施的产业解决方案。",
+  ...seoMetadata({
+    title: "关于我们",
+    description:
+      "我们每天从全球发现高价值产业案例，用 AI 拆解商业模式与技术路线，匹配开源能力并进行中国本土化重构，形成可购买、可实施的产业解决方案。",
+    path: "/about",
+  }),
 };
 
 const WORKFLOW_STEPS = [

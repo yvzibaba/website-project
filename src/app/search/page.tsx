@@ -25,6 +25,8 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "搜索",
   description: "按关键词与行业搜索全球产业案例与可购买的产业解决方案。",
+  // 搜索结果页带查询串，收录会产生大量重复/低价值页面 → 不收录但允许顺链接抓取（robots.txt 亦禁抓 /search）。
+  robots: { index: false, follow: true },
 };
 
 interface PageProps {

@@ -10,7 +10,7 @@
 | 1 | 需求与信息架构 | PRODUCT_SPEC（用户/页面 IA/MVP） | 0 | ✅ 本次完成 |
 | 2 | 技术架构 | ARCHITECTURE（选型/分层/Model Router） | 1 | ✅ 本次完成 |
 | 3 | 数据库设计 | DATABASE（ER）+ prisma V1 核心 schema | 2 | 🟡 V1 核心已建；全量表分层待逐 Phase 补 |
-| 4 | 项目骨架 | 目录结构、DB 连接、基础 UI、env、日志、错误处理、测试框架 | 3 + **Postgres/依赖** | ⬜ 阻塞 |
+| 4 | 项目骨架 | 目录结构、DB 连接、基础 UI、env、日志、错误处理、测试框架 | 3 + Postgres/依赖 | 🟡 里程碑1达成：DB 上线（Neon，17 表 + 11 枚举已建、migrate deploy 成功） |
 | 5 | 公共页面 | 首页/行业/案例列表/方案列表/搜索/关于/隐私/协议 | 4 | ⬜ |
 | 6 | 用户系统 | 注册/登录/会话/最小权限（下单身份） | 4 | ⬜ |
 | 7 | 案例系统 | 案例 CRUD、证据、评分、行业关联、案例详情页 | 5,6 | ⬜ |
@@ -36,7 +36,7 @@
 
 进入 Phase 4 前必须由创始人提供/决策，否则无法真实"可运行/可测试"：
 
-1. **数据库**：本机无 PostgreSQL、无 Docker。需要一个可连接的 Postgres（本地安装 / 托管如 Neon、Supabase、Vercel Postgres）。→ 属"用户资料/凭证缺失"。
+1. ~~**数据库**：本机无 PostgreSQL、无 Docker。~~ **已解除**：创始人提供 Neon 免费托管 Postgres `DATABASE_URL`（region `us-east-2`），已写入本地 `.env`（gitignored），`prisma migrate deploy` 成功建 17 表 + 11 枚举。
 2. ~~**依赖安装网络**：npm 可达但重型依赖（Prisma 引擎等）下载 stall。~~ **已解除**：改用 npmmirror 源 + `PRISMA_ENGINES_MIRROR`，`npm install`（393 包）与 `prisma validate` 均跑通，首迁移已离线生成。
 3. **代码推送**：命令行无法访问 `github.com`（仅 `api.github.com`）。目前经 API 提交；若要走正常 `git push`/CI，需要系统级/TUN 代理。
 4. **模型密钥**：Model Router 需要 Qwen3.8-Max 等模型的 API Key（走环境变量，禁止入 Git）。→ 属"需要付费资源授权"。

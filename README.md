@@ -33,7 +33,8 @@ Next.js 16（App Router）+ React 19 + TypeScript · Tailwind CSS v4（+ 计划�
 - [x] 产业能力数据库 V1 核心 schema（[`prisma/schema.prisma`](./prisma/schema.prisma)，12 实体 + ChangeLog）
 - [x] Phase 0–3 基础文档集
 - [x] 依赖安装 + `prisma validate` 通过 + 首迁移 `0_init/migration.sql` 离线生成（改用 npmmirror 源 + Prisma 引擎镜像，解除此前的下载卡顿阻塞）
-- [ ] Phase 4+ 编码（**仅剩数据库阻塞**：本机无 Postgres/Docker，`prisma migrate deploy` 与连库测试需托管库 `DATABASE_URL`；详见 [`ROADMAP.md`](./ROADMAP.md) 的"阻塞与所需资源"）
+- [x] **Phase 4 里程碑 1：数据库上线**——`DATABASE_URL`（Neon `us-east-2`）写入 `.env`（gitignored），`prisma migrate deploy` 成功建 17 张业务表 + 11 个枚举，`_prisma_migrations` 记录已落库（finished_at `2026-09-04T15:22:16.915Z`）
+- [ ] Phase 4 剩余：目录结构、Prisma Client 单例、日志、错误处理、Vitest 测试框架、基础 UI shell（进行中）
 
 ## 本地运行（待依赖与数据库就绪后）
 

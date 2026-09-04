@@ -3,6 +3,19 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.4.0] - 2026-09-04 · Phase 4 里程碑 1：数据库上线
+
+- 原因：创始人提供了 Neon 免费托管 Postgres 的 `DATABASE_URL`，Phase 4 唯一硬阻塞解除。
+- 内容：
+  - 写入 `website-project/.env`（已被 `.gitignore` 的 `.env*` 规则排除，验证：`git check-ignore -v .env` → `.gitignore:38:.env*`）。文件仅存本机，**永不入 Git**。
+  - `prisma migrate status`：连接成功，识别 1 条待应用迁移 `0_init`。
+  - `prisma migrate deploy`：将 `prisma/migrations/0_init/migration.sql`（17 张 CREATE TABLE、391 行）应用到 Neon 数据库 `neondb`（region `us-east-2`）。输出："All migrations have been successfully applied."
+  - 验证查询（`PrismaClient.$queryRawUnsafe` 读 `information_schema` 与 `pg_enum`）：
+    - **表总数 18**：17 张业务表（BusinessModel / CapabilityProject / Case / CaseCapability / ChangeLog / Evidence / Localization / LocalizationSupplier / Market / OpenSourceProject / Order / Region / Solution / SolutionFinancial / Supplier / TechCapability / UnknownVariable）+ 1 张 `_prisma_migrations`。
+    - **`_prisma_migrations` 记录**：`0_init`，applied_steps_count=1，finished_at=`2026-09-04T15:22:16.915Z`，rolled_back_at=NULL。
+    - **11 个枚举全部就位**（值与 schema.prisma 一致）：Industry(7) / CaseStage(5) / EvidenceType(4) / Maturity(4) / LicenseType(11) / LicenseReviewStatus(4) / SolutionStatus(3) / Currency(2) / BuyerType(2) / OrderStatus(4) / ChangeAction(4)。
+- 效果：**Phase 4 里程碑 1 达成**——V1 核心闭环数据结构在真实 Postgres 上跑通、可读写。ROADMAP 阻塞清单 #1（数据库）已消除。剩余 Phase 4 工作：目录结构、Prisma Client 单例、日志、错误处理、Vitest 测试框架 + 首个冒烟测试、基础 UI shell。
+
 ## [0.3.2] - 2026-09-04
 
 - 原因：Phase 4 唯一硬阻塞是"没有可连接的 Postgres"；创始人零编码背景，需要一份可自助照做的托管数据库注册指引，避免注册过程中反复问答（宪法第2条 MVP 优先）。

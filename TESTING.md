@@ -36,6 +36,7 @@
 
 ## 6. 现状（诚实记录）
 
-- 测试框架**尚未安装**（脚手架未含 Vitest/Playwright；`npm install` 受网络阻塞）。
-- Phase 4  will 引入测试框架与首个冒烟测试；在此之前本仓库尚无可运行测试。
-- 已完成的"验证"仅限：远端文件存在性/提交历史（经 api.github.com 核对）、schema 人工结构复核。`prisma validate` 未跑通（引擎下载 stall）。
+- **测试框架尚未引入**：脚手架未含 Vitest/Playwright，本仓库当前仍无可运行测试；Phase 4 将引入测试框架与首个冒烟测试。
+- **依赖与 schema 校验已跑通**：`npm install` 成功（npmmirror 源 + Prisma 引擎镜像，393 包）；`prisma validate` 通过（`The schema at prisma\schema.prisma is valid`）；`prisma migrate diff --from-empty` 已离线生成首迁移 `0_init/migration.sql`。
+- 其余已完成的"验证"：远端文件存在性/提交历史（经 api.github.com 核对）、schema 人工结构复核。
+- **仍阻塞**：`prisma migrate deploy` 与任何连库集成测试需要可连接的 PostgreSQL（本机无 Postgres/Docker），待托管库 `DATABASE_URL` 就绪。

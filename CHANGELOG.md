@@ -3,6 +3,17 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.3.1] - 2026-09-04
+
+- 原因：解除 Phase 4 的"依赖下载卡顿"阻塞（创始人批准使用国内镜像源）。
+- 内容：
+  - npm 源切至 npmmirror，并设 `PRISMA_ENGINES_MIRROR` 指向 npmmirror 的 Prisma 二进制镜像。
+  - `npm install` 成功：1 分钟装完 393 个包；`postinstall` 的 `prisma generate` 成功生成 Prisma Client v6.19.3。
+  - **`prisma validate` 通过**：`The schema at prisma\schema.prisma is valid`（此前 0.2.0/0.3.0 记录的"未跑通"已解除）。
+  - 用 `prisma migrate diff --from-empty` 离线生成初始迁移 `prisma/migrations/0_init/migration.sql`（17 张表、391 行，无报错）+ `migration_lock.toml`；提交 `package-lock.json` 锁定依赖版本。
+  - 保持 Prisma 6.19.3 stable，不升级到 8.0.0-rc（宪法：稳定优先、不追新）。
+- 效果：schema 已通过官方校验且能生成合法 Postgres DDL；依赖链就绪。**仍待**：一个可连接的 Postgres 以执行 `prisma migrate deploy`（本机无 DB，创始人将提供免费托管连接串）。
+
 ## [0.3.0] - 2026-09-04
 
 - 原因：接收《全自动开发总控 Prompt V1.0》，执行其第一阶段（Phase 0–3：环境检查 + 基础文档），暂不写业务代码（总控第37–39节）。

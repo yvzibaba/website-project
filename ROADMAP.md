@@ -37,7 +37,7 @@
 进入 Phase 4 前必须由创始人提供/决策，否则无法真实"可运行/可测试"：
 
 1. **数据库**：本机无 PostgreSQL、无 Docker。需要一个可连接的 Postgres（本地安装 / 托管如 Neon、Supabase、Vercel Postgres）。→ 属"用户资料/凭证缺失"。
-2. **依赖安装网络**：npm 可达但重型依赖（Prisma 引擎等）下载 stall，`prisma validate`/`npm install` 本机跑不完。→ 需要更稳定网络或镜像源（如 npmmirror）。
+2. ~~**依赖安装网络**：npm 可达但重型依赖（Prisma 引擎等）下载 stall。~~ **已解除**：改用 npmmirror 源 + `PRISMA_ENGINES_MIRROR`，`npm install`（393 包）与 `prisma validate` 均跑通，首迁移已离线生成。
 3. **代码推送**：命令行无法访问 `github.com`（仅 `api.github.com`）。目前经 API 提交；若要走正常 `git push`/CI，需要系统级/TUN 代理。
 4. **模型密钥**：Model Router 需要 Qwen3.8-Max 等模型的 API Key（走环境变量，禁止入 Git）。→ 属"需要付费资源授权"。
 5. **部署与支付**：Serverless 部署目标、域名、以及支付渠道（V1 可先"支付说明+后台确认"，但需确定收款方式）。→ 属"付费资源/业务决策"。

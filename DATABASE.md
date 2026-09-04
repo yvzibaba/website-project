@@ -116,13 +116,15 @@ ChangeLog / AuditLog：多态记录(entityType, entityId, before, after, action,
 3. `SolutionVersion` / `Prompt(+Version)` / `AiTask(+Run)` / `Agent(+Run)` / `QualityReview` / `Payment` / `User` / `SystemSetting` / `AuditLog` 的列级设计——按 Phase 逐步补入 prisma，不在本轮一次建满。
 4. 多态 `ChangeLog` 是否够用，或每个核心实体各建 `*_versions` 表（倾向：内容实体用 `*_versions` 存全量快照，`ChangeLog` 存轻量审计）。
 
-## 5. 迁移与运行（尚未执行，环境阻塞）
+## 5. 迁移与运行（依赖已装、schema 校验通过；迁移待连库执行）
 
 ```bash
-npm install                                   # 需网络（当前重型依赖下载会 stall）
+npm install                                   # 已成功：npmmirror 源 + Prisma 引擎镜像，393 包，postinstall 生成 Prisma Client v6.19.3
 export DATABASE_URL="postgresql://user:pass@host:5432/industry_db?schema=public"
-npx prisma validate                           # 语法/关系校验（本机因引擎下载受阻未跑通）
-npm run db:migrate                            # 生成并应用迁移
+npx prisma validate                           # 已通过：The schema at prisma\schema.prisma is valid
+npx prisma migrate diff --from-empty \
+  --to-schema-datamodel prisma/schema.prisma --script   # 已生成 prisma/migrations/0_init/migration.sql（17 CREATE TABLE）
+npm run db:migrate                            # 生成并应用迁移（需可连接的 PostgreSQL）
 ```
 
-> 诚实状态（宪法第20条）：截至本次提交，`prisma validate` **未在本机跑通**（Prisma 引擎下载 stall），已完成人工结构复核；`db:migrate` 需要可用的 PostgreSQL（本机未安装）。这两项在进入 Phase 4 前必须解决。
+> 诚实状态（宪法第20条）：截至本次提交，`npm install` 与 `prisma validate` **已在本机跑通**（改用 npmmirror 源 + `PRISMA_ENGINES_MIRROR` 解除引擎下载卡顿）；`prisma migrate diff --from-empty` 已离线生成首迁移 `0_init/migration.sql`（17 张表，含核心实体与连接表）与 `migration_lock.toml`。**唯一剩余阻塞**：`prisma migrate deploy` 需要一个可连接的 PostgreSQL（本机无 Postgres/Docker），待创始人提供托管库 `DATABASE_URL` 后执行。此前 0.2.0/0.3.0 记录的"validate 未跑通/依赖阻塞"已解除。

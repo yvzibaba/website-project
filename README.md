@@ -32,7 +32,8 @@ Next.js 16（App Router）+ React 19 + TypeScript · Tailwind CSS v4（+ 计划�
 - [x] 项目宪法 + 总控 Prompt 版本化入库
 - [x] 产业能力数据库 V1 核心 schema（[`prisma/schema.prisma`](./prisma/schema.prisma)，12 实体 + ChangeLog）
 - [x] Phase 0–3 基础文档集
-- [ ] Phase 4+ 编码（**被环境阻塞**：本机无 Postgres/Docker、npm 重型依赖下载 stall、`github.com` 命令行不通；详见 [`ROADMAP.md`](./ROADMAP.md) 的"阻塞与所需资源"）
+- [x] 依赖安装 + `prisma validate` 通过 + 首迁移 `0_init/migration.sql` 离线生成（改用 npmmirror 源 + Prisma 引擎镜像，解除此前的下载卡顿阻塞）
+- [ ] Phase 4+ 编码（**仅剩数据库阻塞**：本机无 Postgres/Docker，`prisma migrate deploy` 与连库测试需托管库 `DATABASE_URL`；详见 [`ROADMAP.md`](./ROADMAP.md) 的"阻塞与所需资源"）
 
 ## 本地运行（待依赖与数据库就绪后）
 

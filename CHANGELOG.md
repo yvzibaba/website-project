@@ -3,6 +3,33 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.5.0] - 2026-09-04 · Phase 5 里程碑 1：公共页面地基（内容页 + 行业页 + 可复用页面骨架）
+
+- 原因：Phase 4 交付清单（Web 骨架 / DB / 基础 UI / env / 日志 / 错误 / 测试）已全部完成，进入总控 Phase 5「公共页面」。按 PRODUCT_SPEC §5 的信息架构，先把 V1-A 里"不依赖案例/方案数据就能立起来"的页面地基做扎实：可复用页面级布局组件、行业列表/详情、关于/隐私/条款内容页、导航页脚与 Suspense 态。案例列表/详情、方案列表/详情依赖真实数据，拆到里程碑 2（配合 DEMO 标注的种子数据），搜索与首页组装拆到里程碑 3（宪法第 4 条 MVP、第 2 条不为"看起来像大平台"而铺空页）。
+- 内容：
+  - **页面级布局组件** `src/components/page/`（构建在 UI kit 之上，barrel `index.ts`）：
+    - `PageHeader.tsx` — 统一页头（title / description / breadcrumb / 右侧 action 区，`as` 可选 h1|h2），所有公共页共用，避免各页各写标题样式。
+    - `Breadcrumb.tsx` — `<nav aria-label="面包屑">` + `<ol>`，末项 `aria-current="page"` 不可点，"/" 分隔；SEO 与可及性双收（总控第 19 节）。
+    - `EmptyState.tsx` — 诚实空态（icon / title / description / action，虚线边框 + `bg-muted/30`）。数据库尚无内容时用它，而非白屏或假数据（宪法第 20 条禁止虚构）。
+  - **行业数据层** `src/server/industries.ts`（server-only）：把 prisma `Industry` 枚举集中映射成 URL slug（kebab-case）+ 中英文名 + 一句话简介 + 图标，`INDUSTRIES` 7 条（六大行业 + OTHER 兜底）与 `prisma/schema.prisma`、PRODUCT_SPEC §2 一一对应；`getIndustryBySlug/ByEnum/getIndustrySlug/isValidIndustrySlug` 双向映射助手；`PUBLIC_CASE_STAGES = {DEEP_CASE, KEY_SOLUTION, PREMIUM_SOLUTION}`（业务规则：漏斗 CANDIDATE/KEY_RESEARCH 是内部中间态不对外，**标注为推断待创始人确认**，集中一处便于修改）；`getIndustryCaseCounts()` 用 `prisma.case.groupBy` 一次查回各行业公开案例数（避免 N+1），DB 不可达时降级为全 0 + `error`，页面据此展示提示条而非崩溃。
+  - **行业列表页** `/industries`（force-dynamic）：PageHeader + Breadcrumb + 总计数 Badge，7 张行业卡片（图标 / 名称 / 英文名 / 简介 / 实时案例数 Badge）链到详情页；计数查询失败时展示 warning 提示条，行业仍可浏览。当前库空，计数显示 0 —— 诚实状态，案例由 Phase 9–10 每日流水线填充，不预置假数据。
+  - **行业详情页** `/industries/[slug]`：路由策略经实测决策 —— 用 `generateStaticParams` 预渲染 7 个合法 slug + `dynamicParams = false`，非法 slug 由**路由器直接返回真 404**。放弃了 force-dynamic + `notFound()` 方案：根 `loading.tsx` 的 Suspense 会先 flush 200 shell，流式渲染下页面内 `notFound()` 无法把状态码回退成 404（冒烟实测 status=200），会导致无效页被 SEO 误收录。静态化同时让行业页更快、更利于 SEO；实时案例计数保留在 force-dynamic 的列表页。页面展示行业定位 + generateMetadata 独立 title/description（总控第 19 节每行业独立 URL）+ 诚实空态。
+  - **内容页**：
+    - `/about`（静态）— 产品事实性描述（来源 PRODUCT_SPEC §1/§6）：我们在做什么、六步工作流（全球案例发现 → AI 拆解 → 开源匹配 → 中国本土化重构 → 产业解决方案 → 验证与项目）、六大行业入口、当前 V1-A 阶段诚实说明（数据库内容逐步填充、不夸大已上线/已验证）。
+    - `/privacy`、`/terms`（静态，noindex）— **结构化占位大纲，非生效法律文件**。宪法第 21 条：法律文件须由具备资质的法务/律师起草审定，AI 不得自行生成"看起来完整"的隐私政策/条款冒充法律文件。两页顶部均有 warning Alert 明示"待法务审定 · 尚未生效"，正文为上线前必须覆盖的条款清单；`/terms` 额外高亮"AI 生成内容免责声明"拟定要点（内容为 AI 研究产出、区分事实/假设/推断/预测、高风险领域需专业人工确认、不构成投资/法律/工程等专业意见）并标注最终表述待法务确认。
+  - **根 Suspense 态** `src/app/loading.tsx`：导航到 force-dynamic 页面（如 /industries 实时查 Neon 计数）或数据流式返回时先展示骨架（Spinner role="status" + Skeleton 网格）而非白屏；对 Neon 免费库冷启动首连 ~5s 的场景尤其有用。
+  - **导航/页脚更新** `src/app/layout.tsx`：导航移除死链 `/cases` `/solutions`（里程碑 2 才建），加入 `/industries`；页脚改为多链接导航（行业 / 关于 / 隐私 / 条款 / GitHub）+ 明示"隐私政策与服务条款为占位草稿，待法务审定后生效"。
+  - **测试新增**：`tests/unit/industries.test.ts`（15 cases：INDUSTRIES 数量与 IndustrySchema 对齐、枚举无重复无遗漏、slug 合法且唯一、中英文名/简介/图标非空、OTHER 兜底在最后、PUBLIC_CASE_STAGES 内容断言、getIndustryBySlug/ByEnum/getIndustrySlug/isValidIndustrySlug 正常与未知输入、slug↔enum 双向自洽）；`tests/integration/industries-count.test.ts`（2 cases，真连 Neon：getIndustryCaseCounts 返回 ok 且每个行业 slug 有非负整数计数、counts 键恰好等于 7 个 slug；含冷启动预热重试）。
+- 验证（宪法第 5/18/20 条）：
+  - `next typegen`：路由类型生成成功。
+  - `tsc --noEmit`：**0 错误**（修复 terms 页 `SECTIONS` 因 `as const` 导致的联合类型 `highlight` 属性缺失 → 显式 `ReadonlyArray<{…; highlight?: boolean}>` 标注）。
+  - `eslint .`：**0 问题**。
+  - `vitest run tests/unit`：**140/140 全绿**（原 125 + 新增 15），~0.6s。
+  - `node --env-file=.env vitest run tests/integration`：**7/7 全绿**（原 5 + 新增 2），9.1s，真连 Neon us-east-2 无回归。
+  - `next build`（Turbopack）：**编译成功**，产出 6 条新路由 —— `○ /about`、`○ /privacy`、`○ /terms`（静态）、`ƒ /industries`（动态计数）、`● /industries/[slug]`（SSG 预渲染 7 个 slug）、`ƒ /`、`ƒ /api/health`、`○ /ui`、`○ /_not-found` + Proxy。
+  - **HTTP 端到端冒烟**（`next start -p 3111`，9 项全过）：`/` `/industries` `/industries/new-energy` `/industries/agriculture-forestry-fishery` `/about` `/privacy` `/terms` `/api/health` 均 **200** 且带 `x-request-id` 与内容标记；`/industries/not-a-real-one` **404**（真状态码，验证 dynamicParams=false 生效）。冒烟首轮暴露并修复：force-dynamic + 根 loading.tsx 下 notFound() 返回 200 而非 404 → 改 SSG + dynamicParams=false 彻底解决。
+- 效果：**Phase 5 里程碑 1 达成**——公共页面地基（可复用页面骨架 + 行业列表/详情 + 关于/隐私/条款 + 导航页脚 + Suspense 态）就绪，全部经 build + 145 测试 + 9 项 HTTP 冒烟验证。测试基线扩到 147（140 单元 + 7 集成）。里程碑 2（DEMO 标注种子数据 + 案例列表/详情 + 方案列表/详情 + 分页）、里程碑 3（搜索 + 首页组装）待续。ROADMAP 阻塞剩余 #3 github.com CLI（API 绕行中）、#4 模型 API Key、#5 部署/支付、#6 对象存储。
+
 ## [0.4.2] - 2026-09-04 · Phase 4 里程碑 3：设计 tokens + 基础 UI 组件库 + API 客户端层 + Proxy 中间件
 
 - 原因：里程碑 2 打通了"能跑能测"的后端骨架，但总控 Phase 4 交付清单里的「基础 UI」仍是空白；同时所有 API Route 需要的横切关注点（request-id 追踪、入参校验、统一 fetch、访问日志、安全头）尚未沉淀。本里程碑把这些一次性补齐，让 Phase 5 的 35 个页面可以"照抄即用"，避免每个页面各写一套样式/校验/错误处理（宪法第 4/5 条：先铺可复用地基；第 12 条：重复 >3 次的人工作业考虑自动化/标准化）。

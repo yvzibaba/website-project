@@ -37,7 +37,7 @@
 ## 6. 现状（诚实记录，随 Phase 更新）
 
 - **测试框架已就位**：`vitest ^5.0.0` + `tsx ^4.23.13`（devDeps）；`vitest.config.ts` 定义 node env、`@/*` 路径别名、30s 超时（跨太平洋连 Neon）、forks pool（避免 Prisma Engine 在 worker_threads 里偶发段错误）。npm scripts：`test` / `test:watch` / `test:unit` / `test:integration` / `typecheck`。
-- **单元测试基线**（`tests/unit/`，**125 cases**，432ms）：
+- **单元测试基线**（`tests/unit/`，**140 cases**，~0.6s）：
   - `errors.test.ts`（19）— AppError 状态码映射 / 序列化 / cause 保留 / isAppError 跨 realm / toErrorResponse Prisma P2002 P2025 P#### 映射 / 生产屏蔽原始 message。
   - `logger.test.ts`（15）— JSON 单行 / level 阈值 / silent / stdout-stderr 分流 / 敏感字段脱敏（顶层 + 深层嵌套 + 数组）/ Error 序列化 / 循环引用 / child bindings / __redact 边界（Date / BigInt / Function）。
   - `env.test.ts`（10）— Zod 校验 DATABASE_URL / NODE_ENV / LOG_LEVEL / NEXT_PUBLIC_SITE_URL / 缓存单例 / 各失败分支 / 多字段错误汇总。用 `vi.stubEnv`（@types/node v22 把 NODE_ENV 声明为只读）。
@@ -45,8 +45,9 @@
   - `request-id.test.ts`（12）— UUID 格式 / 万次生成唯一性 / 字符集校验（8–64 `[A-Za-z0-9-]`）/ 过短过长拒绝 / null-undefined 拒绝 / CRLF 与控制字符拒绝（日志注入防护）/ 客户端合法 id 采纳 / 非法 id 重新生成 / sanitizeForLog 净化。
   - `validation.test.ts`（33）— Cuid/Uuid/Slug 校验 / Pagination 默认值与 pageSize 上限 100 与 offset 计算与 coerce / makeSortSchema 字段白名单（防 SQL 注入）与 orderBy 生成 / SearchQuery trim 与去控制字符与限长 / **11 个业务枚举成员数与值断言（与 prisma/schema.prisma 同步兜底）** / paginatedResponseSchema / HealthResponseSchema。
   - `api-client.test.ts`（27）— URL 构造（baseUrl + path + query 跳过空值 + 绝对路径）/ request-id 注入与透传与非法忽略 / JSON body 序列化 + content-type / defaultHeaders 与单次 headers 合并 / 响应解析（JSON / text / 204）/ 6 种状态码 → 对应 AppError 子类 / 5xx → UpstreamError / 上游 code 还原 + details 透传 / 非 JSON 错误体兜底 / 网络错误包装 / 幂等 GET 重试与非幂等 POST 不重试与重试耗尽与 429 重试与 404 不重试 / AbortSignal 超时传递。用 `vi.stubGlobal("fetch", ...)` mock。
-- **集成测试**（`tests/integration/db-smoke.test.ts`，5 cases，8.86s，真连 Neon）：SELECT 1 / Region 全 CRUD / 11 枚举存在性 / 17 表存在性 / `_prisma_migrations` 记录检查。afterAll 双兜底清理。DATABASE_URL 缺失时 `describe.skip` 而非 fail，允许 CI 无库跑单元测试。
-- **构建验证**：`tsc --noEmit` 0 错误；`next build`（Turbopack）成功，产出 `ƒ /` / `○ /_not-found` / `ƒ /api/health` / `○ /ui` 四路由 + `ƒ Proxy (Middleware)`。
-- **HTTP 端到端冒烟**：`next start -p 3114` 起服（DB 预热 1 次，冷启动 lat ~3.7s）后：`GET /api/health` → 200 且 `db.ok:true`，**无客户端 id 时服务端生成 UUID 且响应头与 body.requestId 一致（验证 request-id 经 Proxy 注入下游 Route Handler）**；带合法 client id → 原样透传（echo）；带非法 id（过短）→ 拒绝并重新生成；安全头 X-Content-Type-Options / X-Frame-Options / Referrer-Policy 齐全；`GET /ui` → 200，44631 字节，Button/Badge/Alert/Spinner 全部渲染；`GET /` → 200 含实时表计数；`GET /definitely-not-here` → 404 带 request-id。
+  - `industries.test.ts`（15）— 行业数据层纯函数与常量守护：INDUSTRIES 数量与 IndustrySchema 对齐 / 枚举无重复无遗漏 / slug 合法（SlugSchema）且唯一 / 中英文名·简介·图标非空 / OTHER 兜底在最后 / PUBLIC_CASE_STAGES 只含 DEEP_CASE 及以后 / getIndustryBySlug·ByEnum·getIndustrySlug·isValidIndustrySlug 正常与未知输入（含枚举名≠slug、未知枚举回落 other）/ slug↔enum 双向自洽。
+- **集成测试**（`tests/integration/`，**7 cases**，~9.1s，真连 Neon）：`db-smoke.test.ts`（5）— SELECT 1 / Region 全 CRUD / 11 枚举存在性 / 17 表存在性 / `_prisma_migrations` 记录检查，afterAll 双兜底清理；`industries-count.test.ts`（2）— `getIndustryCaseCounts()` 返回 ok 且每个行业 slug 有非负整数计数 / counts 键恰好等于 7 个 slug，含 Neon 冷启动预热重试。DATABASE_URL 缺失时 `describe.skip` 而非 fail，允许 CI 无库跑单元测试。
+- **构建验证**：`tsc --noEmit` 0 错误；`eslint .` 0 问题；`next build`（Turbopack）成功，产出 `ƒ /` / `○ /_not-found` / `○ /about` / `○ /privacy` / `○ /terms` / `○ /ui` / `ƒ /api/health` / `ƒ /industries` / `● /industries/[slug]`（SSG 预渲染 7 个 slug）+ `ƒ Proxy (Middleware)`。
+- **HTTP 端到端冒烟**：`next start -p 3111` 起服（DB 预热 1 次）后 9 项全过 —— `/` `/industries` `/industries/new-energy` `/industries/agriculture-forestry-fishery` `/about` `/privacy` `/terms` `/api/health` 均 200 且带 `x-request-id` 与内容标记；`/industries/not-a-real-one` → **404 真状态码**（验证 `dynamicParams=false`）。首轮曾暴露 force-dynamic + 根 `loading.tsx` 下 `notFound()` 返回 200（Suspense 先 flush 200 shell），改 SSG + `dynamicParams=false` 解决。
 - **已知环境行为（非 bug）**：① Neon 免费库闲置挂起后首次连接可能 5s 超时返 500（health 正确报 `db.ok:false` 并记录日志），第二次唤醒后恢复——冒烟脚本已加预热重试；② CRLF 头注入在 undici 客户端层即被拒（`Headers.append: invalid header value`），到不了服务端，Proxy 的 `sanitizeForLog` 为纵深防御。
 - **仍未引入**：Playwright（E2E）、@testing-library/react（组件测试）、msw（HTTP mock）、testcontainers（本机无 Docker）。Phase 5 引入公共页面后补 React 组件测试；Phase 15 补 E2E。

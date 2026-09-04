@@ -11,7 +11,7 @@
 | 2 | 技术架构 | ARCHITECTURE（选型/分层/Model Router） | 1 | ✅ 本次完成 |
 | 3 | 数据库设计 | DATABASE（ER）+ prisma V1 核心 schema | 2 | 🟡 V1 核心已建；全量表分层待逐 Phase 补 |
 | 4 | 项目骨架 | 目录结构、DB 连接、基础 UI、env、日志、错误处理、测试框架 | 3 + Postgres/依赖 | ✅ **Phase 4 全部完成**（里程碑 1+2+3）：DB 上线（17 表 + 11 枚举）、`src/lib/{env,logger,errors,prisma}` 核心库、Next.js shell（layout/page/error/not-found + `/api/health`）；里程碑 3 补设计 tokens（颜色/圆角/阴影亮暗双模式）、`src/components/ui/*` 11 组件 + `/ui` 演示页、`src/lib/{cn,api-client,validation,request-id}`（统一 fetch + AppError 映射 + 重试、Zod 校验含 11 个与 prisma 同步枚举、request-id 追踪）、`src/proxy.ts`（request-id 注入下游 + 访问日志 + 安全头）。Vitest 单元 **125** + 集成 5 全绿、`tsc` 0 错、`next build` Turbopack 产出 **4 路由 + Proxy**、HTTP 冒烟：request-id 服务端生成/客户端透传/非法拒绝全通过、`/ui` 200 全组件渲染 |
-| 5 | 公共页面 | 首页/行业/案例列表/方案列表/搜索/关于/隐私/协议 | 4 | ⬜ |
+| 5 | 公共页面 | 首页/行业/案例列表/方案列表/搜索/关于/隐私/协议 | 4 | 🟡 **里程碑 1 完成**：页面级布局组件（PageHeader/Breadcrumb/EmptyState）、行业数据层 `src/server/industries.ts`、`/industries` 列表（force-dynamic + 实时计数）、`/industries/[slug]` 详情（SSG + `dynamicParams=false` 保证真 404）、`/about` 关于、`/privacy`+`/terms` 结构化占位（明确标注待法务审定，宪法第 21 条）、根 `loading.tsx` Suspense 态、导航/页脚更新（移除死链）。测试基线 **140 单元 + 7 集成**全绿、`tsc`/`eslint` 0 错、`next build` 产出 6 新路由、HTTP 冒烟 9/9（含真 404）。**待续**：里程碑 2（DEMO 标注种子数据 + 案例列表/详情 + 方案列表/详情 + 分页）、里程碑 3（搜索 + 首页组装） |
 | 6 | 用户系统 | 注册/登录/会话/最小权限（下单身份） | 4 | ⬜ |
 | 7 | 案例系统 | 案例 CRUD、证据、评分、行业关联、案例详情页 | 5,6 | ⬜ |
 | 8 | 解决方案系统 | Solution.body 34 分节规范、方案详情、版本化、财务/未知变量 | 7 | ⬜ |

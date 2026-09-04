@@ -43,11 +43,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               产业案例引擎
             </Link>
             <div className="flex items-center gap-4 text-sm">
-              <Link href="/cases" className="hover:underline">
-                案例
-              </Link>
-              <Link href="/solutions" className="hover:underline">
-                方案
+              <Link href="/industries" className="hover:underline">
+                行业
               </Link>
               <Link href="/about" className="hover:underline">
                 关于
@@ -72,16 +69,34 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-500 dark:border-zinc-800">
-          © 2026 产业案例引擎 · V1-A 开发中 ·{" "}
-          <a
-            href="https://github.com/yvzibaba/website-project"
-            className="hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
+        <footer className="border-t border-zinc-200 py-6 dark:border-zinc-800">
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 text-xs text-zinc-500">
+            <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+              <Link href="/industries" className="hover:underline">
+                行业
+              </Link>
+              <Link href="/about" className="hover:underline">
+                关于我们
+              </Link>
+              <Link href="/privacy" className="hover:underline">
+                隐私政策
+              </Link>
+              <Link href="/terms" className="hover:underline">
+                服务条款
+              </Link>
+              <a
+                href="https://github.com/yvzibaba/website-project"
+                className="hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+            </nav>
+            <p className="text-center">
+              © 2026 产业案例引擎 · V1-A 开发中 · 隐私政策与服务条款为占位草稿，待法务审定后生效
+            </p>
+          </div>
         </footer>
       </body>
     </html>

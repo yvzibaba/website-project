@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.15.0] - 2026-09-05 · Phase 8 里程碑 1：方案数据层 CRUD（受校验写入 + 审计 + 发布守卫）
+
+- 原因：Phase 5 里程碑 2 刻意**不灌 DEMO 方案**（方案涉及定价/购买，宪法第 20 条：真数据必须走真实多角色流水线），因此方案表当前 0 行、"案例→方案→购买"闭环卡在**没有真实写入口**。Phase 7 M5 已把案例侧的 CRUD 数据层打样（`src/server/case-admin.ts`），Phase 6 M2 又备好鉴权原语——横向复制同样模式给方案，就能让 Phase 8 M2+ 的多角色 AI 流水线与 Phase 13 后台 UI 有真实落地路径。M1 只交付**数据层**（server-only，不开 HTTP 写端点），沿用 M5 一致的边界与错误策略避免"两处口径漂移"。
+- 内容：
+  - `src/server/solution-admin.ts`（新，server-only 注释）：`createSolution`（强制 DRAFT，走 publishGuard 才能升态）/`updateSolution`（version 自增、支持状态迁移、`publishedAt` 只在非 PUBLISHED→PUBLISHED 首次打时间戳）/`deleteSolution`（安全守卫：任一 Order 关联 → `blocked`，V1 无退款流程属 ROADMAP #5）/`addSolutionFinancial`/`removeSolutionFinancial`（Decimal 一律 string 输入避免 JS 浮点污染）/`addSolutionUnknown`/`removeSolutionUnknown`（自动同步 `Solution.unknownVariableCount` = 表内实时条数，规则 6/9：不确定性显式列出）。每个写操作 `$transaction` [写库 + 写 `ChangeLog`(entityType=Solution, CREATE/UPDATE/DELETE + before/after + actor + reason)]。
+  - **发布守卫 `publishGuard`**（宪法第 21 条）：升 PUBLISHED 时若 price 为 null 或"列了 riskDomains 却没勾 needsProfessionalReview" → 返 `blocked` 且**不改状态不落 publishedAt**；guard 的 fieldErrors 指名缺失字段。测试用例覆盖两种 blocked 分支 + 一次成功发布 + 二次更新不刷新 publishedAt。
+  - **不做**（诚实）：不自动计算 Solution 的 opportunityScore/evidenceConfidence——方案侧评分公式形态未定（可能引入"复用度""供应链复杂度"等新维度），属公式变更须走 SCORING §5 升版流程，M1 留 null 或人工填；`unknownVariableCount` 是唯一自动派生的标量（可计算事实）。
+  - 边界：本模块**不做鉴权**，`actor` 仅审计标注非已鉴权；对外 HTTP 写路由统一延后 Phase 13（M2 `requireRole` 原语已就绪，届时薄薄一层包起来即可）。Prisma 错误归一：P2002→`invalid`（多为 slug 撞）、P2003→`invalid.relation`（case FK）、P2025→`not_found`；判别联合返回，绝不抛裸异常。
+  - `tests/integration/solution-admin.test.ts`（新，9 例真连 Neon）：createSolution 成功建 DRAFT + 落 CREATE 审计（price Decimal `toFixed(2)` 比对，Prisma Decimal 默认去尾零）/ slug 冲突 P2002→invalid / case 不存在（合法 cuid 格式但库无行）→invalid+fieldErrors.caseId / version 1→2 + UPDATE 审计 + 空 patch 拒绝 + 不存在 id→not_found / 无价格升 PUBLISHED → blocked / 有 riskDomains 未勾 review → blocked（消息含"高风险领域"）/ 全条件通过升 PUBLISHED 且 publishedAt 落库 + 二次更新不刷新时间戳 / deleteSolution 有 Order → blocked→撤单后成功 + 级联删 financial+unknown + DELETE 审计 / removeSolutionFinancial + removeSolutionUnknown 归属回查 + unknownVariableCount 自动回写。afterAll 严格按外键序（order→solution→case→changeLog 兜底）+ runId 兜底清理。
+- 验证：`tsc`/`eslint` 0 错；unit **209/209** 无回归；integration **52/52**（43 + 新 9，真连 Neon）；`next build` 无回归，路由清单不变。无 schema/DB 变更（M1 纯服务层）。
+- 效果：**Phase 8 M1 达成**——方案聚合根（方案 + 财务 + 未知变量）具备受校验、可审计、可发布的写入能力，"案例→方案"数据入口打通。下一步：Phase 8 M2 方案详情页展示对齐 / M3 方案评分内核建模（含 SCORING §5 升版）/ M4 AI 多角色流水线灌真实方案；HTTP 写路由 + 后台 UI 延 Phase 13。
+
 ## [0.14.0] - 2026-09-05 · Phase 6 里程碑 2：RBAC 鉴权原语 + /admin 后台门禁（双层防御）
 
 - 原因：M1 只解决"是谁"（认证），总控 §13 明确要求"后台必须有权限控制 + 管理员操作记录 Audit Log"；且 Phase 7 M5 案例 CRUD 数据层当时刻意**不暴露** HTTP 写端点，正是缺这层可信门禁。M2 补上"能干什么"（授权），既是独立安全里程碑，也解锁后续后台写路由（Phase 13）与订单确认（Phase 12）。

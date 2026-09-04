@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.18.0] - 2026-09-05 · Phase 13 里程碑 2：最小后台管理 UI（案例「列表 + 新建」竖切，消费 M1 写端点）
+
+- 原因：Phase 13 M1 把后台写门禁收敛成 `/api/admin/**` 一批已鉴权、抗 CSRF 的 HTTP 端点，但**造了还没人用**——没有真实调用方既浪费、也无法端到端验证门禁在浏览器同源场景下真的成立（宪法第 20 条：不虚构"已完成"）。「方向一：把案例/方案 CRUD 包成后台 HTTP 写路由 + 最小后台 UI」还剩另一半：一个能录入并浏览案例的最小后台页面。刻意只切**「案例列表 + 新建」这一条闭环**（MVP / 简单优先，一次一个明确任务），详情页/证据增删/删除案例/方案管理全部留 M3。
+- 内容：
+  - `src/server/admin-cases.ts`（新，server 读层）：`listAdminCases()` 返回**全量**案例（含 CANDIDATE/KEY_RESEARCH 等内部阶段 + DEMO 夹具），按 `updatedAt` 倒序，`_count` 关联带出证据数/方案数，行业 enum→可读名/slug；V1 不分页但设硬上限 `ADMIN_CASE_LIST_LIMIT=500`、超出如实标 `truncated=true`（无界拉全表的兜底，非静默丢弃）。**本模块不做鉴权**——信任调用方是已过 `requireRole` 门禁的后台页面（页面仍双层防御自守）。之所以不复用公开 `listPublicCases`：那是给「用户查看→购买」的商店橱窗，刻意排除内部阶段与 DEMO；后台运营要看的是全量真相，否则刚录的候选案例会"消失"、误判没写进去。
+  - `src/components/admin/NewCaseForm.tsx`（新，client）：录入表单，`fetch` 到 `POST /api/admin/cases`（**刻意走 HTTP 端点而非另起 Server Action**——否则要把 M1 的 requireRole + CSRF + 结果翻译逻辑抄第二遍、必然漂移，违反第 16 条单一真源；且让端点获得真实调用方）。成功 `router.refresh()` 让服务端列表重取（无需手动拼列表）；端点回 400 `details.fields` → 逐字段回显（与数据层 Zod 同口径，UI 不另立校验）；401/403/500 → 顶部 Alert 如实报错，绝不假装成功。**注意**：把可序列化的行业/阶段选项从服务端 page 作 props 传入，client 组件不 import 任何 server 模块（避免把 prisma/authz 打进浏览器包）。
+  - `src/app/admin/cases/page.tsx`（新）：`force-dynamic` + noindex；**layout+page 双层防御**（沿用 Phase 6 M2 教训）——页首 `requireRole(STAFF_ROLES)`，越权 `return null`，绝不在无权限时调用 `listAdminCases` 以免敏感数据被序列化进 leaf RSC flight；渲染 `NewCaseForm` + 全量案例卡片（DEMO/阶段/行业徽章、版本·日期、证据/方案数、机会分·可信度）。
+  - `src/app/admin/page.tsx`：「内容入口」卡加 `案例管理（录入 / 浏览全量）→ /admin/cases` 链接。
+  - 无 schema 变更、无新写端点（复用 M1）、无删除文件。
+- 验证：`tsc`/`eslint` 0 错；新增集成测试 `tests/integration/admin-cases.test.ts` **4 例**（真连 Neon）：① 内部阶段 + DEMO 夹具均可见（后台读层区别于公开橱窗的立身之本）② `evidenceCount`/`solutionCount` 与真实建表数一致 + 评分透传 ③ `updatedAt` 倒序全局不变式 + `total/items/truncated` 自洽 ④ 行业映射为可读中文名而非枚举字面量。基线 **238 单元 + 56 集成（52+4）** 全绿、`next build` 新增 `ƒ /admin/cases` 动态路由无回归。**HTTP 渲染端到端冒烟 18/18**（`smoke-admin-ui.mjs`，`next start -p 3122`，自种 USER/ADMIN + 一条唯一标题案例走真实 Auth.js 登录）：未登录 GET `/admin/cases`→307 跳 `/login` / USER→200「无访问权限」且**不泄露**「新建案例」表单与真实案例标题（证 page 自守挡在数据前）/ ADMIN→200 见「案例管理」+「新建案例」表单 +「案例列表」，且**服务端 `listAdminCases` 的真实标题透传进 SSR HTML**（DB→Server 组件→HTML 端到端）/ `/admin` 仪表盘出现「案例管理」入口链接；finally 硬删临时数据、末尾 leftover=0。
+- 效果：**Phase 13 M2 达成**——后台从"只有 API"补上"能用的人面"，运营可真正登录后台录入并浏览全量案例，M1 的写门禁由此获得首个真实消费者、并在同源浏览器场景下端到端验证成立。仍是有意的最小竖切：详情页/证据增删/删除案例/方案管理留 M3（复用已就绪的 M1 端点即可，主要是 UI 工作量）。购买闭环仍阻塞 ROADMAP #5 支付。
+
 ## [0.17.0] - 2026-09-05 · Phase 13 里程碑 1：后台「写」HTTP 端点（requireRole + CSRF 统一门禁）
 
 - 原因：Phase 7 M5（案例 CRUD）、Phase 8 M1（方案 CRUD）两期数据层当时刻意都留了一句「**不做鉴权、HTTP 写路由延 Phase 13**」——没有可信门禁就上线公开写端点违反安全底线（宪法优先级：安全/数据质量 > 功能数量）。Phase 6 M2 的 `requireRole` 原语与 layout+page 双层防御经验已就绪，这一层把「谁在写」收敛到**一处**，让 `/api/admin/**` 写端点共用同一套 CSRF 同源 + 角色门禁 + 结果翻译，为 Phase 13 M2 后台 UI（以及 Phase 8 M4 AI 流水线的服务端写入）提供安全入口。**这一步是"方向一：把案例/方案 CRUD 数据层用 requireRole 包成后台 HTTP 写路由"的安全地基**；最小后台 UI 拆到 M2。

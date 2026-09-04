@@ -44,7 +44,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       ok: true,
       service: "website-project",
-      version: process.env.npm_package_version ?? "0.17.0",
+      version: process.env.npm_package_version ?? "0.18.0",
       node: process.version,
       uptime_sec: Math.floor(process.uptime()),
       db: { ok: true, latency_ms: dbLatencyMs },

@@ -34,9 +34,14 @@
 
 一个 Phase/功能"完成"当且仅当：代码改完 → 相关测试通过 → 检查日志无异常 → 核心流程手动/自动验证 → 修复问题 → 更新文档（含 CHANGELOG）。任一不满足不得宣布完成，须如实报告（宪法第20条 / 总控第44节）。
 
-## 6. 现状（诚实记录）
+## 6. 现状（诚实记录，随 Phase 更新）
 
-- **测试框架尚未引入**：脚手架未含 Vitest/Playwright，本仓库当前仍无可运行测试；Phase 4 将引入测试框架与首个冒烟测试。
-- **依赖与 schema 校验已跑通**：`npm install` 成功（npmmirror 源 + Prisma 引擎镜像，393 包）；`prisma validate` 通过（`The schema at prisma\schema.prisma is valid`）；`prisma migrate diff --from-empty` 已离线生成首迁移 `0_init/migration.sql`。
-- 其余已完成的"验证"：远端文件存在性/提交历史（经 api.github.com 核对）、schema 人工结构复核。
-- **仍阻塞**：`prisma migrate deploy` 与任何连库集成测试需要可连接的 PostgreSQL（本机无 Postgres/Docker），待托管库 `DATABASE_URL` 就绪。
+- **测试框架已就位**：`vitest ^5.0.0` + `tsx ^4.23.13`（devDeps）；`vitest.config.ts` 定义 node env、`@/*` 路径别名、30s 超时（跨太平洋连 Neon）、forks pool（避免 Prisma Engine 在 worker_threads 里偶发段错误）。npm scripts：`test` / `test:watch` / `test:unit` / `test:integration` / `typecheck`。
+- **单元测试基线**（`tests/unit/`，44 cases，416ms）：
+  - `errors.test.ts`（19）— AppError 状态码映射 / 序列化 / cause 保留 / isAppError 跨 realm / toErrorResponse Prisma P2002 P2025 P#### 映射 / 生产屏蔽原始 message。
+  - `logger.test.ts`（15）— JSON 单行 / level 阈值 / silent / stdout-stderr 分流 / 敏感字段脱敏（顶层 + 深层嵌套 + 数组）/ Error 序列化 / 循环引用 / child bindings / __redact 边界（Date / BigInt / Function）。
+  - `env.test.ts`（10）— Zod 校验 DATABASE_URL / NODE_ENV / LOG_LEVEL / NEXT_PUBLIC_SITE_URL / 缓存单例 / 各失败分支 / 多字段错误汇总。用 `vi.stubEnv`（@types/node v22 把 NODE_ENV 声明为只读）。
+- **集成测试**（`tests/integration/db-smoke.test.ts`，5 cases，8.24s，真连 Neon）：SELECT 1 / Region 全 CRUD / 11 枚举存在性 / 17 表存在性 / `_prisma_migrations` 记录检查。afterAll 双兜底清理。DATABASE_URL 缺失时 `describe.skip` 而非 fail，允许 CI 无库跑单元测试。
+- **构建验证**：`tsc --noEmit` 0 错误；`next build`（Turbopack）成功，产出 `ƒ /` / `○ /_not-found` / `ƒ /api/health` 三路由。
+- **HTTP 端到端冒烟**：`next start -p 3111` 起服后 `GET /api/health` → 200 且 `db.ok:true`（首查 3.6s 含 Neon 冷启动）；`GET /` → 200，22129 字节含实时表计数；`GET /definitely-not-here` → 404 含中文提示。
+- **仍未引入**：Playwright（E2E）、@testing-library/react（组件测试）、msw（HTTP mock）、testcontainers（本机无 Docker）。Phase 5 引入公共页面后补 React 组件测试；Phase 15 补 E2E。

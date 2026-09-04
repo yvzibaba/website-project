@@ -34,7 +34,8 @@ Next.js 16（App Router）+ React 19 + TypeScript · Tailwind CSS v4（+ 计划�
 - [x] Phase 0–3 基础文档集
 - [x] 依赖安装 + `prisma validate` 通过 + 首迁移 `0_init/migration.sql` 离线生成（改用 npmmirror 源 + Prisma 引擎镜像，解除此前的下载卡顿阻塞）
 - [x] **Phase 4 里程碑 1：数据库上线**——`DATABASE_URL`（Neon `us-east-2`）写入 `.env`（gitignored），`prisma migrate deploy` 成功建 17 张业务表 + 11 个枚举，`_prisma_migrations` 记录已落库（finished_at `2026-09-04T15:22:16.915Z`）
-- [ ] Phase 4 剩余：目录结构、Prisma Client 单例、日志、错误处理、Vitest 测试框架、基础 UI shell（进行中）
+- [x] **Phase 4 里程碑 2：项目骨架 + 测试基线全绿**——`src/lib/{env,logger,errors,prisma}.ts` 核心库；`src/app/{layout,page,error,not-found}.tsx` + `api/health/route.ts` shell；`tests/unit/*` 44 cases + `tests/integration/db-smoke.test.ts` 5 cases（真连 Neon）全部通过；`tsc --noEmit` 0 错误；`next build` (Turbopack) 成功产出 3 路由；`next start` + HTTP 冒烟：`/api/health` 200 & `db.ok:true`，`/` 200 22129 字节含实时表计数，`/definitely-not-here` 404
+- [ ] Phase 5+：公共页面、用户系统、案例系统、方案系统…（按 ROADMAP 推进）
 
 ## 本地运行（待依赖与数据库就绪后）
 

@@ -3,6 +3,41 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.4.1] - 2026-09-04 · Phase 4 里程碑 2：项目骨架 + 测试基线全绿
+
+- 原因：DB 上线后立刻铺 V1-A 骨架，把 Next.js 16 约定、Prisma Client 单例、结构化日志、错误层级、env 校验、健康检查 API、Vitest 测试基线一次性打通（宪法第 4 条：先跑通再优化；总控 Phase 4 交付清单）。
+- 内容：
+  - **依赖**：新增 `zod ^4.5.4`（env 校验）；devDeps 新增 `vitest ^5.0.0`、`tsx ^4.23.13`；`@types/node` 升 `^20` → `^22.20.1`（vitest 5 peer 要求，运行时 Node v24.17 更贴合）。npm scripts 新增 `test` / `test:watch` / `test:unit` / `test:integration` / `typecheck`；`package.json` version 从 0.1.0 → 0.4.0。
+  - **核心库** `src/lib/`：
+    - `env.ts` — Zod 校验 `DATABASE_URL` / `NODE_ENV` / `LOG_LEVEL` / `NEXT_PUBLIC_SITE_URL`，惰性求值 + 单例缓存，失败时列出所有出错字段并给出 `.env.example` 提示。
+    - `logger.ts` — 薄壳结构化 JSON 日志（不引 pino，减依赖面）；内置 21 个敏感字段脱敏（password / token / DATABASE_URL / api_key / cookie / credit_card 等），支持深层嵌套 + 数组 + Error cause + 循环引用 + BigInt / Date / Function 序列化；child(bindings) 派生子 logger；level 阈值 + silent 全静音；error/fatal 走 stderr。
+    - `errors.ts` — `AppError` 基类 + 8 个子类（Validation / Unauthorized / Forbidden / NotFound / Conflict / RateLimited / DB / Upstream），code→HTTP 状态映射表；`isAppError` 跨 realm 安全判定；`toErrorResponse` 统一 API 错误出口，自动识别 Prisma P2002 / P2025 / P#### 码，生产环境屏蔽原始 message 防泄漏。
+    - `prisma.ts` — Prisma Client 单例（globalThis 挂载避免 Next.js HMR 连接泄漏），按环境分级日志（dev: query+warn+error, test/prod: error only）。
+  - **Next.js shell** `src/app/`：
+    - `layout.tsx` — 更新 metadata（title template / description / metadataBase / robots noindex 开发期），添加中文导航（案例/方案/关于/health）+ 页脚。**去除 `next/font/google` Geist 依赖**（本机构建时 fonts.googleapis.com 不可达，build 会 fail），改为纯 CSS 系统字体栈。
+    - `globals.css` — 定义 `--font-sans`（含 PingFang SC / Microsoft YaHei / Noto Sans SC 中英混排回落）+ `--font-mono`；Tailwind v4 `@theme inline` 接入。
+    - `page.tsx` — 首页 Server Component，`force-dynamic`，查 `pg_stat_user_tables` 实时渲染 17 张业务表的行数卡片，DB 失败时显示红色错误面板。
+    - `error.tsx` — 全局错误边界（Client Component），显示 message + digest + 重试按钮 + 回首页链接。
+    - `not-found.tsx` — 404 页。
+    - `api/health/route.ts` — GET `/api/health`，`force-dynamic`，跑 `SELECT 1` 测 DB 往返延迟，返回 `{ ok, service, version, node, uptime_sec, db: {ok, latency_ms}, timestamp }`；错误时经 `toErrorResponse` 统一响应。
+  - **测试基线** `tests/`：
+    - `vitest.config.ts` — node env、`@/*` 别名、30s 超时（跨太平洋连 Neon us-east-2）、forks pool（避免 Prisma Engine 在 worker_threads 里偶发段错误）。
+    - `tests/unit/errors.test.ts` — 19 cases：状态码映射 / httpStatus 覆盖 / 未知 code 兜底 / toJSON 稳定性 / details 可选 / cause 保留 / isAppError 4 分支 / toErrorResponse Prisma P2002 P2025 P#### / prod 屏蔽 message / 非 Error 值处理。
+    - `tests/unit/logger.test.ts` — 15 cases：JSON 单行输出 / level 阈值 / silent / stdout-stderr 分流 / 顶层脱敏 / 深层嵌套脱敏 / DATABASE_URL 脱敏 / Error 序列化 / 循环引用 / child 派生 / withLevel / __redact 边界（Date / BigInt / Function / 原始值）。
+    - `tests/unit/env.test.ts` — 10 cases：postgresql:// / postgres:// / NODE_ENV / LOG_LEVEL / NEXT_PUBLIC_SITE_URL / 缓存单例 / DATABASE_URL 缺失 / 非 postgres 协议 / NODE_ENV 非法 / LOG_LEVEL 非法 / 多字段错误汇总 + Hint 提示。使用 `vi.stubEnv`（@types/node v22 把 NODE_ENV 声明为只读，直接赋值 TS 报错）。
+    - `tests/integration/db-smoke.test.ts` — 5 cases，真连 Neon：SELECT 1 / Region 全 CRUD / 11 枚举存在性 / 17 表存在性 / `_prisma_migrations` 记录 `0_init` 已应用未回滚。afterAll 双兜底清理（by id + by name prefix）。DATABASE_URL 缺失时自动 skip 而非 fail。
+  - **Next.js 16 类型**：跑 `next typegen` 生成 `.next/types/{routes,cache-life,root-params,validator}.d.ts`，让全局 `LayoutProps<'/'>` 助手在 tsc 中可见（.next/ 已被 gitignore）。
+- 验证（宪法第 5/18/20 条：可验证 + 每 Phase 必测 + 诚实汇报）：
+  - `tsc --noEmit`：0 错误。
+  - `vitest run tests/unit`：**44/44 全绿**，416ms。
+  - `node --env-file=.env vitest run tests/integration`：**5/5 全绿**，8.24s（真连 Neon us-east-2）。
+  - `next build`（Turbopack）：**编译成功**，671ms 编译 + 3.3s TS + 790ms 静态生成；产出 3 条路由：`ƒ /`（动态 Server Component）/ `○ /_not-found`（静态）/ `ƒ /api/health`（动态）。
+  - **HTTP 端到端冒烟**（`next start -p 3111` + node http.get）：
+    - `GET /api/health` → **200**，body `{"ok":true,"service":"website-project","version":"0.4.0","node":"v24.17.0","uptime_sec":4,"db":{"ok":true,"latency_ms":3660},"timestamp":"2026-09-04T15:36:39.858Z"}`（首查 3.6s 含 Neon 冷启动唤醒，热起来 ~200ms）。
+    - `GET /` → **200**，22129 字节 HTML，包含"数据库实时状态"、"Phase 4"、"Region" 卡片。
+    - `GET /definitely-not-here` → **404**，包含"404"、"页面不存在"。
+- 效果：**Phase 4 里程碑 2 达成**——项目骨架完整可运行可测试。ROADMAP 阻塞清单 #1 #2 均已解除，剩余 #3 github.com CLI（走 API 绕过中）、#4 模型 API Key、#5 部署/支付、#6 对象存储。可开工 Phase 5（公共页面）与 Phase 6（用户系统）。
+
 ## [0.4.0] - 2026-09-04 · Phase 4 里程碑 1：数据库上线
 
 - 原因：创始人提供了 Neon 免费托管 Postgres 的 `DATABASE_URL`，Phase 4 唯一硬阻塞解除。

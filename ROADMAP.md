@@ -10,7 +10,7 @@
 | 1 | 需求与信息架构 | PRODUCT_SPEC（用户/页面 IA/MVP） | 0 | ✅ 本次完成 |
 | 2 | 技术架构 | ARCHITECTURE（选型/分层/Model Router） | 1 | ✅ 本次完成 |
 | 3 | 数据库设计 | DATABASE（ER）+ prisma V1 核心 schema | 2 | 🟡 V1 核心已建；全量表分层待逐 Phase 补 |
-| 4 | 项目骨架 | 目录结构、DB 连接、基础 UI、env、日志、错误处理、测试框架 | 3 + Postgres/依赖 | 🟡 里程碑1达成：DB 上线（Neon，17 表 + 11 枚举已建、migrate deploy 成功） |
+| 4 | 项目骨架 | 目录结构、DB 连接、基础 UI、env、日志、错误处理、测试框架 | 3 + Postgres/依赖 | ✅ 里程碑1+2 完成：DB 上线（17 表 + 11 枚举）、`src/lib/{env,logger,errors,prisma}` 核心库、Next.js shell（layout/page/error/not-found + `/api/health`）、Vitest 单元 44 + 集成 5 全绿、`tsc` 0 错、`next build` Turbopack 成功、`next start` HTTP 冒烟三条路由 200/200/404 |
 | 5 | 公共页面 | 首页/行业/案例列表/方案列表/搜索/关于/隐私/协议 | 4 | ⬜ |
 | 6 | 用户系统 | 注册/登录/会话/最小权限（下单身份） | 4 | ⬜ |
 | 7 | 案例系统 | 案例 CRUD、证据、评分、行业关联、案例详情页 | 5,6 | ⬜ |

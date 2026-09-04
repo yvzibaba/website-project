@@ -1,15 +1,28 @@
 @import "tailwindcss";
 
+/**
+ * 全局样式 + 主题变量。
+ *
+ * 字体策略：使用系统字体栈（--font-sans / --font-mono），
+ * 不引入 next/font/google（本机构建时 fonts.googleapis.com 不可达会 fail build）。
+ * 中英文混排优先，中文回落到 PingFang / Microsoft YaHei / Noto Sans SC。
+ */
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +32,20 @@
   }
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
 }

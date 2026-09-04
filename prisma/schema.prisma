@@ -1,0 +1,424 @@
+// 产业能力数据库 V1 schema
+// 严格遵循 docs/PROJECT_RULES_V2.md（项目宪法 V2.0）。
+// 覆盖闭环：案例发现 -> 案例拆解 -> 技术能力拆解 -> 开源/GitHub 匹配 -> 中国本土化 -> 产业解决方案 -> 查看 -> 购买
+// 说明：
+//  - provider = postgresql（决策：Prisma + Postgres；String[]/Json 依赖 Postgres 原生支持）
+//  - 所有内容实体带 version/createdAt/updatedAt（规则 13：版本化、可回滚，配合 ChangeLog）
+//  - Evidence 区分 事实/假设/推断/预测（规则 6）
+//  - SolutionFinancial 带 assumptions + calcRef（规则 7：来源可追溯、公式可复算、程序计算 > 口算）
+//  - Solution 带 opportunityScore + evidenceConfidence + UnknownVariable（规则 9）+ needsProfessionalReview/riskDomains（规则 10）
+//  - OpenSourceProject 带 licenseType + licenseReviewStatus（规则 11：UNKNOWN/GPL/AGPL -> 人工复核）
+//  - V2+（企业适配/POC/项目机会与结果）暂不建表（规则 2/26：MVP、不提前复杂化）
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------- Enums -----------------------------
+
+enum Industry {
+  NEW_ENERGY               // 新能源
+  INDUSTRIAL_MANUFACTURING // 工业制造
+  TRANSPORTATION           // 交通运输
+  AGRICULTURE_FORESTRY_FISHERY // 农林牧渔
+  EDUCATION_TRAINING       // 教育培训
+  REAL_ESTATE_CONSTRUCTION // 房地产建筑
+  OTHER
+}
+
+// 漏斗：候选(60) -> 重点研究(20) -> 深度案例(10) -> 重点方案(3) -> 精品方案(1)（规则 22）
+enum CaseStage {
+  CANDIDATE
+  KEY_RESEARCH
+  DEEP_CASE
+  KEY_SOLUTION
+  PREMIUM_SOLUTION
+}
+
+// 规则 6：严格区分事实 / 假设 / 推断 / 预测
+enum EvidenceType {
+  FACT
+  ASSUMPTION
+  INFERENCE
+  PREDICTION
+}
+
+enum Maturity {
+  EMERGING
+  DEVELOPING
+  MATURE
+  UNKNOWN
+}
+
+// 规则 11：许可证类型；UNKNOWN / GPL / AGPL / PROPRIETARY 默认转人工复核
+enum LicenseType {
+  MIT
+  APACHE_2_0
+  BSD_2_CLAUSE
+  BSD_3_CLAUSE
+  MPL_2_0
+  LGPL
+  GPL
+  AGPL
+  PROPRIETARY
+  UNKNOWN
+  OTHER
+}
+
+enum LicenseReviewStatus {
+  NOT_REVIEWED
+  APPROVED
+  NEEDS_HUMAN_REVIEW
+  REJECTED
+}
+
+enum SolutionStatus {
+  DRAFT
+  UNDER_HUMAN_REVIEW
+  PUBLISHED
+}
+
+enum Currency {
+  CNY
+  USD
+}
+
+enum BuyerType {
+  INDIVIDUAL
+  ENTERPRISE
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  REFUNDED
+  CANCELED
+}
+
+enum ChangeAction {
+  CREATE
+  UPDATE
+  DELETE
+  ROLLBACK
+}
+
+// ----------------------------- Reference data -----------------------------
+
+model Region {
+  id        String   @id @default(cuid())
+  name      String
+  nameEn    String?
+  code      String?  @unique // 如 CN / CN-SX
+  country   String?  @default("CN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cases      Case[]
+  markets    Market[]
+  suppliers  Supplier[]
+}
+
+model Market {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  regionId    String?
+  region      Region?  @relation(fields: [regionId], references: [id])
+  sizeEstimate Decimal? // 市场规模（须配合 sourceUrl/confidence 使用，规则 7）
+  currency    Currency @default(CNY)
+  sourceUrl   String?
+  confidence  Int?     // 0-100，该规模估计的证据可信度
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ----------------------------- Core: Case & research -----------------------------
+
+model Case {
+  id          String     @id @default(cuid())
+  title       String
+  titleEn     String?
+  industry    Industry
+  regionId    String?
+  region      Region?    @relation(fields: [regionId], references: [id])
+  sourceUrl   String?
+  sourceType  String?    // 新闻/论文/年报/访谈/数据库...
+  summary     String?
+  summaryEn   String?
+  stage       CaseStage  @default(CANDIDATE)
+  discoveredAt DateTime  @default(now())
+
+  // 规则 9：评分与不确定性
+  opportunityScore    Int? // 0-100 机会价值
+  evidenceConfidence  Int? // 0-100 证据可信度
+
+  businessModelId String?
+  businessModel   BusinessModel? @relation(fields: [businessModelId], references: [id])
+
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  evidences     Evidence[]
+  capabilities  CaseCapability[]
+  localizations Localization[]
+  solutions     Solution[]
+}
+
+// 规则 6：每条重要结论的来源 + 证据 + 类型 + 置信度
+model Evidence {
+  id          String       @id @default(cuid())
+  caseId      String
+  case        Case         @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  type        EvidenceType
+  statement   String       // 结论陈述
+  sourceUrl   String?
+  sourceType  String?
+  confidence  Int?         // 0-100
+  extractedAt DateTime     @default(now())
+  version     Int          @default(1)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([caseId, type])
+}
+
+model BusinessModel {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  revenueStreams String[] // 收入来源
+  costStructure  String[] // 成本结构
+  version        Int      @default(1)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  cases Case[]
+}
+
+// ----------------------------- Tech capability & open source -----------------------------
+
+model TechCapability {
+  id          String   @id @default(cuid())
+  name        String
+  nameEn      String?
+  category    String?
+  description String?
+  maturity    Maturity @default(UNKNOWN)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cases        CaseCapability[]
+  projects     CapabilityProject[]
+  localizations Localization[]
+}
+
+// Case <-> TechCapability 多对多（技术能力拆解）
+model CaseCapability {
+  caseId       String
+  capabilityId String
+  case         Case           @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  capability   TechCapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
+  relevance    Int?           // 该能力对此案例的重要度 0-100
+  note         String?
+
+  @@id([caseId, capabilityId])
+}
+
+// 规则 11：开源/GitHub 项目，许可证与安全/依赖/实测检查可追溯
+model OpenSourceProject {
+  id                  String              @id @default(cuid())
+  name                String
+  repoUrl             String              @unique
+  owner               String?
+  stars               Int?
+  licenseType         LicenseType         @default(UNKNOWN)
+  licenseReviewStatus LicenseReviewStatus @default(NOT_REVIEWED)
+  licenseNote         String?
+  dependencyChecked   Boolean             @default(false)
+  securityChecked     Boolean             @default(false)
+  tested              Boolean             @default(false)
+  lastCheckedAt       DateTime?
+  version             Int                 @default(1)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  capabilities CapabilityProject[]
+
+  @@index([licenseReviewStatus])
+}
+
+// TechCapability <-> OpenSourceProject 多对多（能力 -> 可用开源项目）
+model CapabilityProject {
+  capabilityId String
+  projectId    String
+  capability   TechCapability    @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
+  project      OpenSourceProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fitScore     Int?              // 匹配度 0-100
+  note         String?
+
+  @@id([capabilityId, projectId])
+}
+
+// ----------------------------- Localization & suppliers -----------------------------
+
+// 中国本土化重构：把某案例的某技术能力落到中国语境
+model Localization {
+  id           String          @id @default(cuid())
+  caseId       String
+  case         Case            @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  capabilityId String?
+  capability   TechCapability? @relation(fields: [capabilityId], references: [id])
+  description  String?
+  adaptations  String[]        // 本土化适配点
+  constraints  String[]        // 约束（政策/供应链/标准等）
+  version      Int             @default(1)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  suppliers LocalizationSupplier[]
+}
+
+model Supplier {
+  id          String   @id @default(cuid())
+  name        String
+  regionId    String?
+  region      Region?  @relation(fields: [regionId], references: [id])
+  capabilities String[] // 可供能力（自由文本列表）
+  contactInfo String?
+  notes       String?
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  localizations LocalizationSupplier[]
+}
+
+model LocalizationSupplier {
+  localizationId String
+  supplierId     String
+  localization   Localization @relation(fields: [localizationId], references: [id], onDelete: Cascade)
+  supplier       Supplier     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@id([localizationId, supplierId])
+}
+
+// ----------------------------- Solution (sellable) -----------------------------
+
+model Solution {
+  id       String         @id @default(cuid())
+  title    String
+  titleEn  String?
+  slug     String         @unique
+  caseId   String
+  case     Case           @relation(fields: [caseId], references: [id])
+  status   SolutionStatus @default(DRAFT)
+  summary  String?
+  body     Json?          // 结构化正文（分节，规则 12：结构化保存而非纯文章）
+  price    Decimal?       @db.Decimal(12, 2)
+  currency Currency       @default(CNY)
+
+  publishedAt DateTime?
+
+  // 规则 9：机会评分 + 证据可信度 + 关键未知变量数量（展示用冗余）
+  opportunityScore     Int?
+  evidenceConfidence   Int?
+  unknownVariableCount Int?
+
+  // 规则 10：高风险领域标记
+  riskDomains             String[] @default([]) // 法律/投资/能源/医疗/政策...
+  needsProfessionalReview Boolean  @default(false) // “需要专业人工确认”
+
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  financials SolutionFinancial[]
+  unknowns   UnknownVariable[]
+  orders     Order[]
+
+  @@index([status, publishedAt])
+}
+
+// 规则 7：关键数字须来源可追溯、公式可复算、假设可改
+model SolutionFinancial {
+  id           String   @id @default(cuid())
+  solutionId   String
+  solution     Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  capex        Decimal? @db.Decimal(14, 2)
+  opexAnnual   Decimal? @db.Decimal(14, 2)
+  revenueAnnual Decimal? @db.Decimal(14, 2)
+  roiPct       Decimal? @db.Decimal(8, 4)
+  irrPct       Decimal? @db.Decimal(8, 4)
+  paybackYears Decimal? @db.Decimal(8, 2)
+  currency     Currency @default(CNY)
+  assumptions  Json?    // 假设列表（可修改，规则 7）
+  calcRef      String?  // 计算脚本/公式引用（程序计算 > 口算）
+  sourceUrl    String?
+  note         String?
+  version      Int      @default(1)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([solutionId])
+}
+
+// 规则 9：关键未知变量，禁止高评分掩盖高不确定性
+model UnknownVariable {
+  id          String   @id @default(cuid())
+  solutionId  String
+  solution    Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  name        String
+  impact      String?  // 若该变量变化会如何影响结论
+  howToResolve String? // 如何验证/消除该未知
+  severity    Int?     // 0-100
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([solutionId])
+}
+
+// ----------------------------- Purchase (收费闭环, 单份一次性购买) -----------------------------
+
+model Order {
+  id              String      @id @default(cuid())
+  solutionId      String
+  solution        Solution    @relation(fields: [solutionId], references: [id])
+  buyerType       BuyerType   @default(INDIVIDUAL)
+  buyerEmail      String?
+  buyerName       String?
+  amount          Decimal     @db.Decimal(12, 2)
+  currency        Currency    @default(CNY)
+  status          OrderStatus @default(PENDING)
+  paymentProvider String?     // stripe/alipay/wechat...（V1 先留字段）
+  paymentRef      String?
+  paidAt          DateTime?
+  version         Int         @default(1)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([solutionId, status])
+}
+
+// ----------------------------- Versioning / audit (规则 13) -----------------------------
+
+model ChangeLog {
+  id         String       @id @default(cuid())
+  entityType String       // 如 "Solution" / "Case"
+  entityId   String
+  action     ChangeAction
+  changedBy  String?      // "ai:<model>" / "human:<user>"
+  reason     String?      // 修改原因
+  before     Json?
+  after      Json?
+  createdAt  DateTime     @default(now())
+
+  @@index([entityType, entityId, createdAt])
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Input, Textarea, Field, Alert, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui";
 
@@ -116,9 +117,9 @@ export function NewSolutionForm({ cases, currencies }: NewSolutionFormProps) {
         {noCase ? (
           <Alert variant="warning" title="还没有可挂靠的案例">
             方案必须挂在一个真实案例下。请先到{" "}
-            <a href="/admin/cases" className="mx-1 underline">
+            <Link href="/admin/cases" className="mx-1 underline">
               「案例管理」
-            </a>{" "}
+            </Link>{" "}
             录入案例，再回来创建方案。
           </Alert>
         ) : null}

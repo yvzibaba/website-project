@@ -107,3 +107,142 @@ export async function listAdminCases(): Promise<AdminCaseListResult> {
     return { ok: false, items: [], total: 0, truncated: false, error: message };
   }
 }
+
+/* ───────────────────── 后台「案例内容编辑台」读层（Phase 13 M5） ───────────────────── */
+
+/** 单条证据（编辑台读视图）：字段照 Evidence 模型，Decimal 无、confidence 为 Int?。 */
+export interface AdminCaseEvidenceDetail {
+  id: string;
+  type: string;
+  grade: string | null;
+  statement: string;
+  sourceUrl: string | null;
+  sourceType: string | null;
+  confidence: number | null;
+}
+
+/** 案例详情（编辑台读视图）：全量可编辑面 + 关联计数 + 评分标量（只读，评分录入留 M5b）。 */
+export interface AdminCaseDetail {
+  id: string;
+  title: string;
+  titleEn: string | null;
+  summary: string | null;
+  summaryEn: string | null;
+  sourceUrl: string | null;
+  sourceType: string | null;
+  industry: Industry;
+  industryName: string;
+  industrySlug: string;
+  stage: string;
+  version: number;
+  isDemo: boolean;
+  opportunityScore: number | null;
+  evidenceConfidence: number | null;
+  hasScoreBreakdown: boolean;
+  evidenceCount: number;
+  solutionCount: number;
+  publishedSolutionCount: number;
+  evidences: AdminCaseEvidenceDetail[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AdminCaseDetailResult {
+  ok: boolean;
+  data: AdminCaseDetail | null;
+  /** id 形状不合法或库无此案例——页面据此 notFound()，与 getAdminSolutionDetail 同构。 */
+  notFound?: boolean;
+  error?: string;
+}
+
+/**
+ * 读单个案例的**后台全量**视图（含内部阶段 CANDIDATE/KEY_RESEARCH 与 DEMO 夹具——刻意区别于公开橱窗
+ * `getPublicCaseById` 的门控）。供 `/admin/cases/[id]` 编辑台取初值：meta + 证据逐条（createdAt 正序，
+ * 与公开详情一致）+ 关联计数 + 评分标量快照。**不做鉴权**——信任调用方是已过 `requireRole` 的后台页，
+ * 页面越权 `return null` 时根本不会调用到这里（否则 leaf RSC flight 会泄露未公开案例内容）。
+ */
+export async function getAdminCaseDetail(id: string): Promise<AdminCaseDetailResult> {
+  // 先挡明显非法 id（避免把怪异串丢进 findUnique）：cuid 大致 [a-z0-9]{10,}，不合规直接 when-not-found。
+  if (!id || !/^[a-z0-9]{10,}$/i.test(id)) return { ok: false, data: null, notFound: true };
+
+  try {
+    const c = await prisma.case.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        titleEn: true,
+        summary: true,
+        summaryEn: true,
+        sourceUrl: true,
+        sourceType: true,
+        industry: true,
+        stage: true,
+        version: true,
+        opportunityScore: true,
+        evidenceConfidence: true,
+        scoreBreakdown: true,
+        createdAt: true,
+        updatedAt: true,
+        evidences: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            id: true,
+            type: true,
+            grade: true,
+            statement: true,
+            sourceUrl: true,
+            sourceType: true,
+            confidence: true,
+          },
+        },
+        _count: { select: { solutions: true } },
+        solutions: { where: { status: "PUBLISHED" }, select: { id: true } },
+      },
+    });
+    if (!c) return { ok: false, data: null, notFound: true };
+
+    const meta = getIndustryByEnum(c.industry as Industry);
+    const evidences: AdminCaseEvidenceDetail[] = c.evidences.map((e) => ({
+      id: e.id,
+      type: e.type,
+      grade: e.grade,
+      statement: e.statement,
+      sourceUrl: e.sourceUrl,
+      sourceType: e.sourceType,
+      confidence: e.confidence,
+    }));
+
+    return {
+      ok: true,
+      data: {
+        id: c.id,
+        title: c.title,
+        titleEn: c.titleEn,
+        summary: c.summary,
+        summaryEn: c.summaryEn,
+        sourceUrl: c.sourceUrl,
+        sourceType: c.sourceType,
+        industry: c.industry as Industry,
+        industryName: meta?.name ?? "其他",
+        industrySlug: meta?.slug ?? "other",
+        stage: c.stage,
+        version: c.version,
+        isDemo: isDemoEntity(c),
+        opportunityScore: c.opportunityScore,
+        evidenceConfidence: c.evidenceConfidence,
+        hasScoreBreakdown: c.scoreBreakdown != null,
+        evidenceCount: evidences.length,
+        solutionCount: c._count.solutions,
+        publishedSolutionCount: c.solutions.length,
+        evidences,
+        createdAt: c.createdAt,
+        updatedAt: c.updatedAt,
+      },
+    };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    log.error("getAdminCaseDetail failed", { err, id });
+    return { ok: false, data: null, error: message };
+  }
+}

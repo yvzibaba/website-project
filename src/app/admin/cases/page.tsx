@@ -13,9 +13,9 @@ import { requireRole, STAFF_ROLES } from "@/server/authz";
  * 双层门禁（沿用 Phase 6 M2 教训）：layout 挡可见 UI，本页取任何数据前**再自鉴权**，
  * 越权直接 `return null`——否则 Next 会为 leaf page 段生成 RSC flight 泄露后台数据。
  *
- * 组成：① 全量案例列表（含候选态 / DEMO 夹具，`listAdminCases`，非公开橱窗）；
- *       ② `NewCaseForm` 客户端表单，POST 到 Phase 13 M1 的 `/api/admin/cases`（唯一写门禁）。
- *   刻意只做「列表 + 新建」这一条闭环；详情/证据/删除/方案编辑留 M3+（简单优先，一次一个明确任务）。
+ *   组成：① 全量案例列表（含候选态 / DEMO 夹具，`listAdminCases`，非公开橱窗）；
+ *       ② `NewCaseForm` 客户端表单，POST 到 Phase 13 M1 的 `/api/admin/cases`（唯一写门禁）；
+ *       ③ 每行「编辑内容」链向 `/admin/cases/[id]` 案例内容编辑台（Phase 13 M5：基本信息 / 证据增删 / 删除）。
  * force-dynamic（依赖会话 + 实时数据）+ noindex。
  */
 export const dynamic = "force-dynamic";
@@ -108,6 +108,12 @@ export default async function AdminCasesPage() {
                     <span>方案 {c.solutionCount}</span>
                     <span>机会分 {c.opportunityScore ?? "—"}</span>
                     <span>可信度 {c.evidenceConfidence ?? "—"}</span>
+                  </div>
+                  <div className="text-xs">
+                    <Link href={`/admin/cases/${c.id}`} className="font-medium underline">
+                      编辑内容
+                    </Link>
+                    <span className="text-muted-foreground"> · 基本信息 / 证据增删 / 删除（证据联动复算可信度）</span>
                   </div>
                 </CardContent>
               </Card>

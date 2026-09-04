@@ -184,8 +184,14 @@ model Case {
   discoveredAt DateTime  @default(now())
 
   // 规则 9：评分与不确定性
-  opportunityScore    Int? // 0-100 机会价值
-  evidenceConfidence  Int? // 0-100 证据可信度
+  opportunityScore    Int? // 0-100 机会价值（= scoreBreakdown.opportunityScore，由 recompute 写入，便于排序/索引）
+  evidenceConfidence  Int? // 0-100 证据可信度（同上，由 recompute 写入）
+
+  // 规则 7/13：评分可复算 + 版本化。scoreInput=10 维度原始录入分（人工/Agent 填，评分输入）；
+  // scoreBreakdown=computeCaseScores 输出（含 rubricVersion + 每维度贡献 + 证据可信度明细，审计/复算用）。
+  // 二者皆 Json?（jsonb），recomputeCaseScores() 读 scoreInput+evidences → 算 → 写 scoreBreakdown 与上面两个标量。
+  scoreInput     Json?
+  scoreBreakdown Json?
 
   businessModelId String?
   businessModel   BusinessModel? @relation(fields: [businessModelId], references: [id])

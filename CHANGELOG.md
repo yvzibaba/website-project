@@ -3,6 +3,17 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.10.0] - 2026-09-05 · Phase 7 里程碑 2：评分持久化 + 可复算（scoreInput / scoreBreakdown / 复算脚本）
+
+- 原因：M1 的评分是纯函数，但分数仍只是 Case 上手填的标量魔数。M2 把"输入"与"输出"都落库，使评分随时可从输入重算、可审计（宪法第 7/13 条）。
+- 内容：
+  - `prisma/schema.prisma`：Case 新增 `scoreInput Json?`（10 维度原始录入分=评分输入）与 `scoreBreakdown Json?`（computeCaseScores 完整输出，含 rubricVersion + 每维度贡献 + 证据明细）；`opportunityScore`/`evidenceConfidence` 改为由复算从 breakdown 同步写入（便于排序/索引）。迁移 `20260905100000_add_case_score_fields`（**纯加性**：两列可空 JSONB），已 `migrate deploy` 到 Neon（表数不变=18，无新枚举）。
+  - `src/server/case-scores.ts`（新增）：`recomputeCaseScores(caseId)` 读 scoreInput+evidences → computeCaseScores → `CaseScoresSchema` 入库前复核 → 写 scoreBreakdown + 两标量；判别联合 computed/skipped(无 scoreInput)/invalid(越界,不写库)/not_found/error。`recomputeAllCaseScores()` 顺序复算全库并汇总各状态计数（V1 库小够用，不提前并发优化）。**诚实铁律**：无 scoreInput 跳过、绝不反推编造；非法输入不写库、不静默截断。
+  - `scripts/recompute-scores.ts` + npm `db:recompute-scores`（新增）：批量复算 CLI，如实打印 total/computed/skipped/invalid/notFound/error 与逐条异常（≤50），有 error 则退出码 1。实跑验证：当前 6 个 DEMO 案例无 scoreInput → 全部 skipped、exit 0（不编造）。
+  - `tests/integration/case-scores.test.ts`（新增 6 cases，真连 Neon）：合法输入→computed 且 DB 读回 scoreBreakdown 通过 CaseScoresSchema、opportunityScore=88/evidenceConfidence=69/unknownVariableCount=2/breakdown 10 维贡献和=88；无 scoreInput→skipped 且标量与 breakdown 保持 null；非法 scoreInput→invalid+issues 指名 commercialValue 且不写库；不存在 id→not_found；复算幂等（连跑两次 breakdown 全等）；recomputeAllCaseScores 汇总自洽（各状态和=total）且三夹具分别落 computed/skipped/invalid、error=0。
+- 验证：`tsc --noEmit` 0 错；`eslint .` 0 问题；`vitest run tests/unit` **193/193**；`next build` 全路由无回归；`vitest run tests/integration` **29/29**（原 23 + case-scores 6），~42s 真连 Neon。
+- 效果：**Phase 7 M2 达成**——评分从"手填魔数"变成"输入+输出双落库、随时可复算、非法不入库、无输入不编造"。公式升级（rubricVersion）后只需 `npm run db:recompute-scores` 重跑即可校准全库（旧 breakdown 含其 rubricVersion，配合 Git/ChangeLog 可追溯回滚）。下一步 M3：案例详情页展示评分拆解（getPublicCaseById 返回 scoreBreakdown + UI），并给 DEMO 种子补 scoreInput 使 ?demo=1 可端到端演示；随后案例 CRUD、证据管理（含总控 §11 等级轴建模开放决策）。
+
 ## [0.9.0] - 2026-09-05 · Phase 7 里程碑 1：案例评分内核（可复算公式 + 黄金样本 + 版本化文档）
 
 - 原因：在此之前 `Case.opportunityScore` / `Case.evidenceConfidence` / `Solution.unknownVariableCount` 只是几个手填/种子写入的 `Int?` **魔数**——无法复算、无法审计、假设变了也不知道影响了谁，违反宪法第 7 条"关键数字须来源可追溯 + 公式可复算 + 假设可改，程序计算 > LLM 口算"。评分是下游一切（案例排序、方案优先级、后台审核、机会池）的地基，故 Phase 7 先立**评分内核**。按宪法第 2/4 条 MVP 优先，M1 只做"纯函数 + Zod 校验 + 黄金样本测试 + 版本化公式文档"，**不动数据库、不动页面**（持久化 `Case.scoreBreakdown` 与详情页拆解展示 = M2）；本内核无新增运行时依赖。选此任务因其**无阻塞、无需创始人决策、高价值**（Phase 12 购买仍被定价/支付决策 + 模型 Key 阻塞，Phase 8 方案依赖本评分）。

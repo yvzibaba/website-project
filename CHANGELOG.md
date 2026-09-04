@@ -3,7 +3,20 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
-## [0.18.0] - 2026-09-05 · Phase 13 里程碑 2：最小后台管理 UI（案例「列表 + 新建」竖切，消费 M1 写端点）
+## [0.19.0] - 2026-09-05 · Phase 12 里程碑 1：订单「数据层」——购买闭环的可信底座（不含 HTTP/UI）
+
+- 原因：商业闭环「用户查看 → **购买** → 企业适配 → 真实验证 → 项目机会」里，"购买"这一环至今只在详情页留了个 `disabled` 的「购买方案（即将开放）」占位（Phase 5 M2 埋的），链路是断的。创始人裁决 + 总控 §5/PRODUCT_SPEC 把 V1 购买流明确为**「下单 → 支付说明（站外、无网关）→ 后台人工确认 PAID → 解锁」**——刻意**不接支付网关**，用"后台把 PENDING 确认为 PAID"这一最简闭环先跑通商业链路。所以 ROADMAP #5（支付渠道）**不是本环的阻塞项**：阻塞的是自动对账/在线收款，人工确认可现在做。且 `Order` 表早在 Phase 4/5 随 schema 建好（状态机 + `amount Decimal` + `paymentProvider` 预留），**无需任何 schema 迁移**——这是当下价值最高、又不撞外部阻塞的一环，按「一次一个明确任务」先切**数据层竖切**（对齐 Phase 7 M5 / Phase 8 M1 的"数据层先行、HTTP+UI 后到"节奏），HTTP 端点留 M2、UI + 解锁门控留 M3。
+- 内容：
+  - `src/server/orders.ts`（新，server-only，判别联合返回、不抛裸异常、**不做鉴权**信任上层门禁）：
+    - `createOrder(input, actor?)`：**金额只从服务端读取的 `Solution.price` 快照进 `Order.amount`（`decimal.toFixed(2)`，两位小数字符串，绝不用 JS 浮点），客户端传入的 `amount/currency/status` 因不在 Zod 白名单内被剥离**——"钱"的路径来源唯一、程序可复算（宪法第 7/20 条；否则用户可把 1999 改成 0.01 下单）。只能对 `status=PUBLISHED` 且 price 非空的方案下单（DRAFT/审核中/无价→`blocked`，与公开详情门控同口径）；`solutionId` 不存在→`invalid.solutionId`。身份 `userId`（登录，由上层会话注入透传）或归一小写 `buyerEmail`（游客）至少其一，否则 `invalid`（错误挂 `path:["identity"]`）。**同一买家对同一方案重复下单幂等去重**：已有一张 PENDING 直接复用返回 `{orderId, deduped:true}` 不新建（避免误点堆一堆待支付单）、已有 PAID 返回 `blocked`（不重复收钱）。落库 `$transaction`[建单 + `ChangeLog`(entityType=Order, action=CREATE, actor/reason/after)]。
+    - `confirmOrderPaid(orderId, actor?)`：仅 `PENDING→PAID`，`paidAt` **只在首次落库**、再次确认幂等（`deduped:true`、不刷新时间戳），`version` 自增 + UPDATE 审计；非 PENDING 的 PAID/REFUNDED/CANCELED 终态不误伤（已 PAID 幂等、其它→`blocked`）。`cancelOrder`：仅 `PENDING→CANCELED`（V1 无退款流程，PAID 不可 cancel，属 #5）。
+    - `getOrderById`（坏 cuid→not_found）、`listOrdersForBuyer`（`OR userId/buyerEmail` 找回名下、createdAt 倒序）、`listOrdersForAdmin`（`$transaction`[findMany skip/take, count]，状态可选过滤、分页自洽）、`hasPaidEntitlement`（**解锁判定**：数该买家在此方案下是否存在 PAID 单；无身份 / DB 异常一律保守返回 `false`——宁可少放行也不错误赠送付费内容）。
+    - Prisma 写错误归一：P2003→`invalid(relation)`、P2025→`not_found`；`amountDisplay` 按币种加 ¥/$ 前缀。
+  - 无 schema 变更、无新 HTTP 端点（延 M2 走 `api-guard`，届时给 `MutationLike` 补 `orderId/deduped` 字段）、无 UI、无删除文件。
+- 验证：`tsc`/`eslint` 0 错；新增 `tests/integration/orders.test.ts` **10 例**（真连 Neon）——① 金额服务端快照（夹带 `amount:"0.01"/currency:"USD"/status:"PAID"` 全被剥离，订单实得 `1999.00 CNY ¥1999.00`、status 仍 PENDING、CREATE 审计=1）② 缺身份→`invalid.identity` ③ DRAFT 方案→`blocked` ④ 不存在方案→`invalid.solutionId` ⑤ 同买家重复下单幂等复用同一 orderId、DB 仅 1 张 ⑥ confirmPaid 首落 paidAt·version=2·UPDATE 审计=1、二次确认幂等 paidAt 不变 ⑦ 已 PAID 再下单→`blocked` ⑧ PAID 不可 cancel（blocked）、新 PENDING 可 cancel→CANCELED ⑨ `hasPaidEntitlement` 确认前 false / 确认后属主 email true / 陌生人 email false / 无身份 false ⑩ 买家列表按 email 找回且全属该方案 + 后台按 PAID 过滤 + pageSize=1 时 `hasNext ⟺ total>1` 自洽 + `getOrderById` found/not_found；新增 `tests/unit/orders-schema.test.ts` **7 例**（无 DB，`vi.mock` prisma）锁 schema 契约（白名单剥离 amount/status/currency/price、身份二选一、邮箱归一小写、buyerType 缺省 INDIVIDUAL 与枚举、solutionId cuid 形状）。基线 **245 单元（238+7）+ 66 集成（56+10）** 全绿、`next build` 无回归（数据层不新增路由）。**修测记录（不掩盖，宪法第 20 条）**：集成测试 ⑨ 首次把反例邮箱写成 `buyerEmail`，但该邮箱在 ⑥ 已真实确认过 PAID，故 `hasPaidEntitlement` 返回 `true` 是**代码正确、断言错**——改用从未下过单的 `stranger-${runId}` 作非属主反例后 10/10 绿。
+- 效果：**Phase 12 M1 达成**——购买闭环从"详情页一个禁用的假按钮"升级为一层守住钱与安全的数据底座：金额不可篡改、只对可售方案开放、重复下单幂等、状态机 + 审计 + 保守的解锁判定俱备。仍是有意的最小竖切：用户下单 HTTP 端点、后台确认/取消/列表端点（M2，复用已就绪 `api-guard`）、详情页真按钮 + 支付说明页 + 「我的订单」+ 方案正文按 PAID 权益解锁门控（M3）待接。**不依赖、也不解锁 ROADMAP #5 支付网关**——人工确认闭环本身即可端到端跑通"下单→确认→解锁"，支付自动化属后续增量。
+
+
 
 - 原因：Phase 13 M1 把后台写门禁收敛成 `/api/admin/**` 一批已鉴权、抗 CSRF 的 HTTP 端点，但**造了还没人用**——没有真实调用方既浪费、也无法端到端验证门禁在浏览器同源场景下真的成立（宪法第 20 条：不虚构"已完成"）。「方向一：把案例/方案 CRUD 包成后台 HTTP 写路由 + 最小后台 UI」还剩另一半：一个能录入并浏览案例的最小后台页面。刻意只切**「案例列表 + 新建」这一条闭环**（MVP / 简单优先，一次一个明确任务），详情页/证据增删/删除案例/方案管理全部留 M3。
 - 内容：

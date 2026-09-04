@@ -1,5 +1,6 @@
 import { PrismaClient, Industry, CaseStage, EvidenceType, Maturity } from "@prisma/client";
 import { DEMO_SOURCE_TYPE, DEMO_TITLE_PREFIX } from "../src/server/demo";
+import { computeCaseScores } from "../src/server/scoring";
 
 /**
  * DEMO 种子脚本（仅案例，不种子方案 —— 创始人 2026-09-05 裁决）。
@@ -29,6 +30,8 @@ interface SeedCase {
   businessModelId?: string;
   summary: string;
   sourceUrl?: string;
+  /** 10 维度录入分（评分输入，宪法第 7 条可复算）；机会评分/证据可信度由此 + 证据复算得出。 */
+  scoreInput: Record<string, number>;
   opportunityScore: number;
   evidenceConfidence: number;
   capabilities: Array<{ id: string; relevance: number; note: string }>;
@@ -68,7 +71,8 @@ const CASES: SeedCase[] = [
     businessModelId: `${DEMO_ID}bm_waste_fee`,
     summary: `【DEMO】示例：一个县域级畜禽粪污集中处理 + 沼气发电 + 有机肥还田的工程设想，用于演示案例详情页的证据分层与技术能力关联。${DEMO_NOTE}`,
     sourceUrl: "https://example.com/demo/biogas",
-    opportunityScore: 62,
+    scoreInput: { commercialValue: 12, marketDemand: 10, techMaturity: 12, localizationSpace: 7, costAdvantage: 6, replicability: 6, supplyChainMaturity: 3, competitionIntensity: 3, policyEnvironment: 4, implementationDifficulty: 3 },
+    opportunityScore: 62, // 复算刷新（scoreInput→64，见 db:recompute-scores / seed 内联计算）
     evidenceConfidence: 38,
     capabilities: [{ id: `${DEMO_ID}cap_biogas`, relevance: 90, note: "【DEMO】核心产气能力" }],
     evidences: [
@@ -86,7 +90,8 @@ const CASES: SeedCase[] = [
     businessModelId: `${DEMO_ID}bm_saas`,
     summary: `【DEMO】示例：一条机加工产线引入 AI 视觉质检替代人工目检的改造设想，演示技术能力拆解（视觉 + 预测性维护）。${DEMO_NOTE}`,
     sourceUrl: "https://example.com/demo/ai-vision",
-    opportunityScore: 71,
+    scoreInput: { commercialValue: 15, marketDemand: 12, techMaturity: 12, localizationSpace: 7, costAdvantage: 7, replicability: 8, supplyChainMaturity: 4, competitionIntensity: 3, policyEnvironment: 4, implementationDifficulty: 2 },
+    opportunityScore: 71, // 复算刷新（scoreInput→74）
     evidenceConfidence: 45,
     capabilities: [
       { id: `${DEMO_ID}cap_ai_vision`, relevance: 95, note: "【DEMO】主能力" },
@@ -106,7 +111,8 @@ const CASES: SeedCase[] = [
     businessModelId: `${DEMO_ID}bm_ppa`,
     summary: `【DEMO】示例：园区侧工商业储能通过峰谷价差 + 需量管理获利的设想，演示新能源行业案例与财务不确定性标注。${DEMO_NOTE}`,
     sourceUrl: "https://example.com/demo/bess",
-    opportunityScore: 66,
+    scoreInput: { commercialValue: 13, marketDemand: 11, techMaturity: 11, localizationSpace: 6, costAdvantage: 7, replicability: 7, supplyChainMaturity: 4, competitionIntensity: 4, policyEnvironment: 4, implementationDifficulty: 3 },
+    opportunityScore: 66, // 复算刷新（scoreInput→66）
     evidenceConfidence: 42,
     capabilities: [{ id: `${DEMO_ID}cap_bess`, relevance: 92, note: "【DEMO】储能系统" }],
     evidences: [
@@ -122,7 +128,8 @@ const CASES: SeedCase[] = [
     regionId: `${DEMO_ID}region_cn_shandong`,
     summary: `【DEMO】示例：生鲜农产品冷链温湿度监控 + 溯源数字化设想。${DEMO_NOTE}`,
     sourceUrl: "https://example.com/demo/cold-chain",
-    opportunityScore: 58,
+    scoreInput: { commercialValue: 11, marketDemand: 10, techMaturity: 12, localizationSpace: 6, costAdvantage: 5, replicability: 6, supplyChainMaturity: 3, competitionIntensity: 3, policyEnvironment: 3, implementationDifficulty: 2 },
+    opportunityScore: 58, // 复算刷新（scoreInput→61）
     evidenceConfidence: 36,
     capabilities: [{ id: `${DEMO_ID}cap_cold_chain`, relevance: 88, note: "【DEMO】冷链溯源" }],
     evidences: [
@@ -137,7 +144,8 @@ const CASES: SeedCase[] = [
     regionId: `${DEMO_ID}region_cn_shandong`,
     summary: `【DEMO】示例：装配式建筑结合能耗模拟优化围护结构的设想。${DEMO_NOTE}`,
     sourceUrl: "https://example.com/demo/prefab",
-    opportunityScore: 54,
+    scoreInput: { commercialValue: 10, marketDemand: 9, techMaturity: 9, localizationSpace: 6, costAdvantage: 6, replicability: 5, supplyChainMaturity: 3, competitionIntensity: 2, policyEnvironment: 3, implementationDifficulty: 3 },
+    opportunityScore: 54, // 复算刷新（scoreInput→56）
     evidenceConfidence: 30,
     capabilities: [{ id: `${DEMO_ID}cap_prefab_energy`, relevance: 85, note: "【DEMO】装配式 + 能耗模拟" }],
     evidences: [
@@ -152,7 +160,8 @@ const CASES: SeedCase[] = [
     regionId: `${DEMO_ID}region_cn_shanxi`,
     summary: `【DEMO】示例：职业技能实训引入个性化 AI 助教的设想。${DEMO_NOTE}`,
     sourceUrl: "https://example.com/demo/ai-tutor",
-    opportunityScore: 60,
+    scoreInput: { commercialValue: 12, marketDemand: 10, techMaturity: 9, localizationSpace: 7, costAdvantage: 6, replicability: 7, supplyChainMaturity: 3, competitionIntensity: 3, policyEnvironment: 4, implementationDifficulty: 2 },
+    opportunityScore: 60, // 复算刷新（scoreInput→63）
     evidenceConfidence: 34,
     capabilities: [{ id: `${DEMO_ID}cap_ai_tutor`, relevance: 90, note: "【DEMO】AI 助教" }],
     evidences: [
@@ -196,6 +205,9 @@ async function main() {
   let evTotal = 0;
   let capTotal = 0;
   for (const c of CASES) {
+    // 内联复算，保证 seed 产出的评分拆解与详情页展示一致（宪法第 7 条：可复算 > 手填魔数）。
+    const evidenceLike = c.evidences.map((ev) => ({ type: ev.type, confidence: ev.confidence, sourceUrl: c.sourceUrl }));
+    const scores = computeCaseScores({ opportunity: c.scoreInput, evidences: evidenceLike });
     await prisma.case.create({
       data: {
         id: c.id,
@@ -207,8 +219,10 @@ async function main() {
         sourceType: DEMO_SOURCE_TYPE,
         summary: c.summary,
         stage: CaseStage.DEEP_CASE,
-        opportunityScore: c.opportunityScore,
-        evidenceConfidence: c.evidenceConfidence,
+        scoreInput: c.scoreInput as unknown as object,
+        scoreBreakdown: scores as unknown as object,
+        opportunityScore: scores.opportunityScore ?? c.opportunityScore,
+        evidenceConfidence: scores.evidenceConfidence,
       },
     });
     for (const cap of c.capabilities) {

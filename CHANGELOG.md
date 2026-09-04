@@ -3,6 +3,17 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.11.0] - 2026-09-05 · Phase 7 里程碑 3：评分拆解上详情页（可审计展示 + DEMO 端到端）
+
+- 原因：M2 已把 `scoreInput`（输入）与 `scoreBreakdown`（可复算输出）落库，但用户界面尚未展示——评分仍是一个不可解释的标量。M3 把拆解搬到案例详情页，让"机会分从哪些维度来、证据有多强、有多少关键未知变量"对用户可见（宪法第 6/7/9 条），并给 DEMO 种子补输入使 `?demo=1` 能端到端演示。
+- 内容：
+  - `src/server/cases.ts`：`CaseDetail` 新增 `scoreBreakdown: CaseScores | null`；`getPublicCaseById` 用 `parseCaseScores`（`CaseScoresSchema.safeParse`）校验库中 JSON，缺失/非法一律返回 null（诚实：绝不把无效数据当有效评分展示）。
+  - `src/app/cases/[id]/page.tsx`：新增 `ScoreBreakdownCard`——机会评分总分 + 10 维度贡献条（inverse 维度标「越低越好」并显示录入值）+ 证据可信度/证据条数/关键未知变量数 + 证据构成角标 + 公式版本；无拆解时诚实显示"暂未录入/复算，不展示任何推算结果"；重申 `综合评分 ≠ 项目一定成功`（总控 §10 / 规则 9）。
+  - `prisma/seed.ts`：6 个 DEMO 案例各补 `scoreInput`（10 维整数），create 时**内联调用 `computeCaseScores`** 派生 `scoreBreakdown` 与两个标量（宪法第 7 条：可复算 > 手填魔数；DEMO 已明确标注，补输入不违宪）。
+  - `tests/integration/case-scores.test.ts`：新增 2 例——`getPublicCaseById` 对已复算公开案例透传 scoreBreakdown（opp 88 / conf 69 / 10 维 / 贡献和 88 / 标量一致）；对无输入公开案例诚实返回 null。
+- 验证：`tsc`/`eslint` 0 错；`vitest run tests/unit` **193/193**；`next build` 全路由无回归；`vitest run tests/integration` **31/31**（原 29 + 2），真连 Neon；`db:seed` 后 `db:recompute-scores` 显示 6 DEMO 案例全部由 skipped→**computed**；HTTP 冒烟 `GET /cases/demo_case_biogas?demo=1` 实测渲染机会 64 / 证据可信度 39 / 关键未知 3、10 维标签与「越低越好」提示齐全。
+- 效果：**Phase 7 M3 达成**——评分从"库里的数字"变成"用户可看懂、可审计、附带不确定性与免责说明的拆解"。下一步：案例 CRUD、证据管理（含总控 §11 证据等级 S/A/B/C/D 轴建模的开放决策——是否给 Evidence 加 grade 并入可信度公式），随后行业关联、Phase 8 方案系统。
+
 ## [0.10.0] - 2026-09-05 · Phase 7 里程碑 2：评分持久化 + 可复算（scoreInput / scoreBreakdown / 复算脚本）
 
 - 原因：M1 的评分是纯函数，但分数仍只是 Case 上手填的标量魔数。M2 把"输入"与"输出"都落库，使评分随时可从输入重算、可审计（宪法第 7/13 条）。

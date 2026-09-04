@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import type { Industry, Prisma } from "@prisma/client";
 import { PUBLIC_CASE_STAGES, getIndustryByEnum } from "@/server/industries";
 import { caseDemoVisibility, isDemoEntity } from "@/server/demo";
+import { CaseScoresSchema, type CaseScores } from "@/server/scoring";
 /**
  * 案例数据层（server-only，V1-A /cases 列表与详情）。
  *
@@ -173,6 +174,11 @@ export interface CaseDetail {
   discoveredAt: Date;
   opportunityScore: number | null;
   evidenceConfidence: number | null;
+  /**
+   * 评分拆解（Phase 7 M3）：由 Case.scoreBreakdown（复算写入的可审计结构）经 CaseScoresSchema 校验而得。
+   * 无拆解或结构非法 → null（诚实：宁可不显示，也不把非法/缺失数据当有效评分展示）。
+   */
+  scoreBreakdown: CaseScores | null;
   businessModel: { name: string; description: string | null; revenueStreams: string[]; costStructure: string[] } | null;
   evidences: CaseEvidenceItem[];
   capabilities: CaseCapabilityItem[];
@@ -184,6 +190,13 @@ export type CaseDetailResult =
   | { status: "found"; data: CaseDetail }
   | { status: "not_found" }
   | { status: "error"; error: string };
+
+/** 校验持久化的 scoreBreakdown（Json）→ CaseScores；缺失/非法一律 null，绝不展示无效评分。 */
+function parseCaseScores(raw: unknown): CaseScores | null {
+  if (raw == null) return null;
+  const parsed = CaseScoresSchema.safeParse(raw);
+  return parsed.success ? parsed.data : null;
+}
 
 export async function getPublicCaseById(id: string, includeDemo: boolean): Promise<CaseDetailResult> {
   try {
@@ -224,6 +237,7 @@ export async function getPublicCaseById(id: string, includeDemo: boolean): Promi
         discoveredAt: c.discoveredAt,
         opportunityScore: c.opportunityScore,
         evidenceConfidence: c.evidenceConfidence,
+        scoreBreakdown: parseCaseScores(c.scoreBreakdown),
         businessModel: c.businessModel
           ? {
               name: c.businessModel.name,

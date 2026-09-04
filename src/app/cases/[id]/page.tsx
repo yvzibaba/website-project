@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Container, Badge, Alert, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { getPublicCaseById } from "@/server/cases";
+import type { CaseScores } from "@/server/scoring";
 
 /**
  * /cases/[id] — 案例详情页（V1-A，PRODUCT_SPEC §5）。
@@ -105,6 +106,9 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
           {c.sourceType ? <span className="ml-2 font-mono">({c.sourceType})</span> : null}
         </p>
       ) : null}
+
+      {/* 评分拆解（Phase 7 M3：可审计、复算自 10 维度录入分 + 证据） */}
+      <ScoreBreakdownCard scores={c.scoreBreakdown} />
 
       {/* 商业模式拆解 */}
       {c.businessModel ? (
@@ -233,5 +237,112 @@ function TagList({ title, items }: { title: string; items: string[] }) {
         </div>
       )}
     </div>
+  );
+}
+
+function ScoreBreakdownCard({ scores }: { scores: CaseScores | null }) {
+  if (!scores) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">评分拆解</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            该案例暂未录入 / 复算评分拆解。机会评分与证据可信度<strong>必须可复算、可追溯</strong>
+            （宪法第 7 条），因此在补录 10 维度评分输入之前，此处不展示任何推算结果，避免把猜测包装成结论。
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const dims = scores.opportunityBreakdown ?? [];
+
+  return (
+    <Card>
+      <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
+        <CardTitle className="text-base">评分拆解</CardTitle>
+        {scores.rubricVersion ? (
+          <span className="font-mono text-[11px] text-muted-foreground">公式 v{scores.rubricVersion}</span>
+        ) : null}
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        {/* 机会评分总分 */}
+        <div className="flex items-baseline gap-2">
+          <span className="text-xs text-muted-foreground">机会评分</span>
+          <span className="text-2xl font-semibold tabular-nums text-foreground">
+            {typeof scores.opportunityScore === "number" ? scores.opportunityScore : "—"}
+          </span>
+          <span className="text-sm text-muted-foreground">/ {scores.opportunityMax}</span>
+        </div>
+
+        {dims.length === 0 ? (
+          <p className="text-sm text-muted-foreground">机会评分入参非法，未能拆解到维度。</p>
+        ) : (
+          <div className="flex flex-col gap-2.5">
+            {dims.map((d) => {
+              const ratio = d.max > 0 ? Math.max(0, Math.min(1, d.contribution / d.max)) : 0;
+              return (
+                <div key={d.key} className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="flex items-center gap-2">
+                      <span className="font-medium text-foreground">{d.label}</span>
+                      {d.polarity === "inverse" ? (
+                        <span className="text-[10px] text-muted-foreground" title="该维度为负面强度，越低越好">
+                          （越低越好）
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="tabular-nums text-muted-foreground">
+                      {d.contribution}/{d.max}
+                      <span className="ml-1 text-[10px]">
+                        {d.polarity === "inverse" ? `录入 ${d.raw}` : `评分 ${d.raw}`}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                    <div
+                      className="h-full rounded-full bg-primary"
+                      style={{ width: `${Math.round(ratio * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* 证据可信度 / 关键未知变量 */}
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-lg border border-border p-3">
+            <div className="text-xs text-muted-foreground">证据可信度</div>
+            <div className="mt-1 text-lg font-semibold tabular-nums text-foreground">
+              {scores.evidenceConfidence}/100
+            </div>
+            <div className="mt-0.5 font-mono text-[11px] text-muted-foreground">{scores.evidenceCount} 条证据</div>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <div className="text-xs text-muted-foreground">关键未知变量</div>
+            <div className="mt-1 text-lg font-semibold tabular-nums text-foreground">{scores.unknownVariableCount}</div>
+            <div className="mt-0.5 text-[11px] text-muted-foreground">非事实类证据条数</div>
+          </div>
+          <div className="rounded-lg border border-border p-3">
+            <div className="text-xs text-muted-foreground">证据构成</div>
+            <div className="mt-1 flex flex-wrap gap-1">
+              <Badge variant="success" compact>事实 {scores.evidenceByType.FACT}</Badge>
+              <Badge variant="info" compact>假设 {scores.evidenceByType.ASSUMPTION}</Badge>
+              <Badge variant="warning" compact>推断 {scores.evidenceByType.INFERENCE}</Badge>
+              <Badge variant="neutral" compact>预测 {scores.evidenceByType.PREDICTION}</Badge>
+            </div>
+          </div>
+        </div>
+
+        <Alert variant="info" title="综合评分 ≠ 项目一定成功">
+          评分只表达「机会相对优先级 + 证据强度」（总控 §10 / 宪法第 9 条），不构成任何投资结论。
+          高机会分若伴随低证据可信度或多项关键未知变量，须先补充事实证据再决策。
+        </Alert>
+      </CardContent>
+    </Card>
   );
 }

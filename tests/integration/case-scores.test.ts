@@ -1,13 +1,15 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
 import { prisma, disconnectPrisma } from "@/lib/prisma";
 import { recomputeCaseScores, recomputeAllCaseScores } from "@/server/case-scores";
+import { getPublicCaseById } from "@/server/cases";
 import { CaseScoresSchema, SCORING_RUBRIC_VERSION } from "@/server/scoring";
 
 /**
- * 集成测试：评分持久化与复算（Phase 7 M2，真连 Neon，不 mock）。
+ * 集成测试：评分持久化与复算（Phase 7 M2）+ 详情页数据层暴露拆解（M3），真连 Neon，不 mock。
  *
  * 验证 recomputeCaseScores 把 scoreInput + evidences 复算成 scoreBreakdown 并同步两个标量；
- * 无 scoreInput 诚实跳过、非法 scoreInput 不写库、复算幂等、recomputeAllCaseScores 汇总自洽。
+ * 无 scoreInput 诚实跳过、非法 scoreInput 不写库、复算幂等、recomputeAllCaseScores 汇总自洽；
+ * 并验证 getPublicCaseById 把已复算的 scoreBreakdown 透传给详情页（无输入则诚实返回 null）。
  * 一次性夹具 afterAll 全量清理，不污染真库。
  */
 
@@ -162,6 +164,31 @@ describeDb("case scores persistence & recompute (Neon)", () => {
     await recomputeCaseScores(ids.validCase);
     const b = await prisma.case.findUnique({ where: { id: ids.validCase }, select: { scoreBreakdown: true } });
     expect(a?.scoreBreakdown).toEqual(b?.scoreBreakdown);
+  });
+
+  it("M3 详情页数据层：getPublicCaseById 暴露已复算的 scoreBreakdown", async () => {
+    await recomputeCaseScores(ids.validCase); // 确保库里已有拆解
+    const res = await getPublicCaseById(ids.validCase, false); // DEEP_CASE 公开、非 DEMO
+    expect(res.status).toBe("found");
+    if (res.status !== "found") return;
+    const sb = res.data.scoreBreakdown;
+    expect(sb).not.toBeNull();
+    expect(sb?.opportunityScore).toBe(88);
+    expect(sb?.evidenceConfidence).toBe(69);
+    expect(sb?.unknownVariableCount).toBe(2);
+    expect(sb?.opportunityBreakdown).toHaveLength(10);
+    const sum = (sb?.opportunityBreakdown ?? []).reduce((s, b) => s + b.contribution, 0);
+    expect(sum).toBe(88);
+    // 标量与拆解一致（都来自同一次复算）
+    expect(res.data.opportunityScore).toBe(88);
+  });
+
+  it("M3 详情页数据层：无评分输入的公开案例 scoreBreakdown 诚实为 null", async () => {
+    const res = await getPublicCaseById(ids.noInputCase, false);
+    expect(res.status).toBe("found");
+    if (res.status !== "found") return;
+    expect(res.data.scoreBreakdown).toBeNull();
+    expect(res.data.opportunityScore).toBeNull();
   });
 
   it("recomputeAllCaseScores：汇总自洽且覆盖各状态", async () => {

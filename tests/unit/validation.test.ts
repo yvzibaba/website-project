@@ -18,6 +18,13 @@ import {
   BuyerTypeSchema,
   OrderStatusSchema,
   ChangeActionSchema,
+  UserRoleSchema,
+  PASSWORD_MIN,
+  PASSWORD_MAX,
+  EmailSchema,
+  PasswordSchema,
+  RegisterInputSchema,
+  LoginInputSchema,
   paginatedResponseSchema,
   HealthResponseSchema,
 } from "@/lib/validation";
@@ -247,5 +254,73 @@ describe("validation — 响应包装", () => {
       timestamp: new Date().toISOString(),
     });
     expect(ok.success).toBe(true);
+  });
+});
+
+describe("validation — 认证 schemas (Phase 6)", () => {
+  it("UserRoleSchema 与 prisma/schema.prisma 的 UserRole 枚举同步", () => {
+    expect(UserRoleSchema.options).toEqual(["USER", "REVIEWER", "ADMIN"]);
+    expect(UserRoleSchema.safeParse("SUPERUSER").success).toBe(false);
+  });
+
+  it("EmailSchema 去首尾空白并转小写（同邮箱归一，防多账号）", () => {
+    expect(EmailSchema.parse("  Foo@Bar.COM ")).toBe("foo@bar.com");
+    expect(EmailSchema.parse("A@B.io")).toBe("a@b.io");
+  });
+
+  it("EmailSchema 拒绝非法邮箱与超长邮箱", () => {
+    expect(EmailSchema.safeParse("not-an-email").success).toBe(false);
+    expect(EmailSchema.safeParse("").success).toBe(false);
+    expect(EmailSchema.safeParse(`${"a".repeat(250)}@b.com`).success).toBe(false);
+    expect(EmailSchema.safeParse("ok@example.com").success).toBe(true);
+  });
+
+  it("PasswordSchema 强制最小 8 位、最多 128 位", () => {
+    expect(PASSWORD_MIN).toBe(8);
+    expect(PASSWORD_MAX).toBe(128);
+    expect(PasswordSchema.safeParse("a".repeat(7)).success).toBe(false);
+    expect(PasswordSchema.safeParse("a".repeat(8)).success).toBe(true);
+    expect(PasswordSchema.safeParse("a".repeat(128)).success).toBe(true);
+    expect(PasswordSchema.safeParse("a".repeat(129)).success).toBe(false);
+  });
+
+  it("RegisterInputSchema 空串 name 归一化为 undefined，非空保留", () => {
+    const empty = RegisterInputSchema.parse({
+      email: "u@e.com",
+      password: "password123",
+      name: "   ",
+    });
+    expect(empty.name).toBeUndefined();
+    expect(empty.email).toBe("u@e.com");
+
+    const named = RegisterInputSchema.parse({
+      email: "u@e.com",
+      password: "password123",
+      name: " 小明 ",
+    });
+    expect(named.name).toBe("小明");
+  });
+
+  it("RegisterInputSchema 拒绝弱密码与非法邮箱", () => {
+    expect(
+      RegisterInputSchema.safeParse({ email: "u@e.com", password: "short" }).success,
+    ).toBe(false);
+    expect(
+      RegisterInputSchema.safeParse({ email: "bad", password: "password123" }).success,
+    ).toBe(false);
+  });
+
+  it("LoginInputSchema 口令只要求非空（不以长度泄露账号是否存在）", () => {
+    // 登录处 min 1 而非 min 8：避免"密码太短"错误提示暴露账号是否存在
+    expect(LoginInputSchema.safeParse({ email: "u@e.com", password: "x" }).success).toBe(
+      true,
+    );
+    expect(
+      LoginInputSchema.safeParse({ email: "u@e.com", password: "" }).success,
+    ).toBe(false);
+    expect(
+      LoginInputSchema.safeParse({ email: "u@e.com", password: "a".repeat(129) })
+        .success,
+    ).toBe(false);
   });
 });

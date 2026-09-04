@@ -107,6 +107,36 @@ enum ChangeAction {
   ROLLBACK
 }
 
+// 最小角色模型（SECURITY.md §4：至少 管理员 / 审核员 / 普通用户）。
+// V1-A 只用到 USER（下单身份）；REVIEWER/ADMIN 供 Phase 13 后台与方案人工审核门禁使用，先建枚举避免二次迁移。
+enum UserRole {
+  USER
+  REVIEWER
+  ADMIN
+}
+
+// ----------------------------- Identity & access -----------------------------
+
+// 用户（Phase 6）。认证走 Auth.js v5 Credentials（邮箱 + 密码）+ JWT 会话：
+//  - passwordHash 存 scrypt 派生串（node:crypto，零额外依赖；格式见 src/lib/password.ts），绝不存明文（SECURITY §1/宪法第 11 条）。
+//  - 不使用 Prisma Adapter 的 Account/Session 表（Credentials+JWT 不需要），User 表由注册 Server Action 与 authorize() 直接管理，依赖更少（宪法第 2/4 条）。
+//  - role 默认 USER；Order.userId 关联下单身份，Order 仍保留 buyerEmail/buyerName 作下单时快照。
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String
+  role          UserRole  @default(USER)
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders Order[]
+
+  @@index([role])
+}
+
 // ----------------------------- Reference data -----------------------------
 
 model Region {
@@ -391,6 +421,8 @@ model Order {
   id              String      @id @default(cuid())
   solutionId      String
   solution        Solution    @relation(fields: [solutionId], references: [id])
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
   buyerType       BuyerType   @default(INDIVIDUAL)
   buyerEmail      String?
   buyerName       String?
@@ -405,6 +437,7 @@ model Order {
   updatedAt       DateTime    @updatedAt
 
   @@index([solutionId, status])
+  @@index([userId, status])
 }
 
 // ----------------------------- Versioning / audit (规则 13) -----------------------------

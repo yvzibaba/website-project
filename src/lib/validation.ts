@@ -216,6 +216,60 @@ export const ChangeActionSchema = z.enum([
 ]);
 export type ChangeAction = z.infer<typeof ChangeActionSchema>;
 
+/** 用户角色（SECURITY §4 最小角色：普通用户 / 审核员 / 管理员）。 */
+export const UserRoleSchema = z.enum(["USER", "REVIEWER", "ADMIN"]);
+export type UserRole = z.infer<typeof UserRoleSchema>;
+
+/* ─────────────────────────── 认证（Phase 6 用户系统） ─────────────────────────── */
+
+/**
+ * 口令策略常量（集中一处，便于注册页提示与 schema 复用）。
+ * 最小 8 位（业界通用基线）；最大 128 位（配合 password.ts 的 DoS 上限，前端更早拦截）。
+ */
+export const PASSWORD_MIN = 8;
+export const PASSWORD_MAX = 128;
+
+/**
+ * 邮箱：先去首尾空白并转小写（邮箱本地部分大小写不敏感按惯例统一小写存储，避免同一邮箱多账号），
+ * 再校验格式，长度上限 254（RFC 5321）。
+ */
+export const EmailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(254, "邮箱过长")
+  .pipe(z.email("邮箱格式不正确"));
+export type Email = z.infer<typeof EmailSchema>;
+
+/** 口令（注册用）：强制最小长度。 */
+export const PasswordSchema = z
+  .string()
+  .min(PASSWORD_MIN, `密码至少 ${PASSWORD_MIN} 位`)
+  .max(PASSWORD_MAX, `密码最多 ${PASSWORD_MAX} 位`);
+
+/** 注册入参。name 可选（1–50 字），空串归一化为 undefined。 */
+export const RegisterInputSchema = z.object({
+  email: EmailSchema,
+  password: PasswordSchema,
+  name: z
+    .string()
+    .trim()
+    .max(50, "昵称最多 50 字")
+    .optional()
+    .transform((v) => (v && v.length > 0 ? v : undefined)),
+});
+export type RegisterInput = z.infer<typeof RegisterInputSchema>;
+
+/**
+ * 登录入参。口令只要求非空——不在登录处强制最小长度，
+ * 以免通过"长度错误"泄露账号是否存在（登录失败一律同一提示）。
+ */
+export const LoginInputSchema = z.object({
+  email: EmailSchema,
+  password: z.string().min(1, "请输入密码").max(PASSWORD_MAX, "密码过长"),
+});
+export type LoginInput = z.infer<typeof LoginInputSchema>;
+
 /* ─────────────────────────── 通用响应包装 ─────────────────────────── */
 
 /**

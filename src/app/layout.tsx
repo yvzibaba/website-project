@@ -58,6 +58,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/about" className="hover:underline">
                 关于
               </Link>
+              <Link href="/login" className="hover:underline">
+                登录
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-full border border-border px-3 py-1 transition-colors hover:border-ring"
+              >
+                注册
+              </Link>
               <Link
                 href="/ui"
                 className="font-mono text-xs text-zinc-500 hover:underline"
@@ -101,6 +110,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </Link>
               <Link href="/terms" className="hover:underline">
                 服务条款
+              </Link>
+              <Link href="/login" className="hover:underline">
+                登录
+              </Link>
+              <Link href="/register" className="hover:underline">
+                注册
+              </Link>
+              <Link href="/account" className="hover:underline">
+                我的账号
               </Link>
               <a
                 href="https://github.com/yvzibaba/website-project"

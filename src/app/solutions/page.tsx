@@ -4,7 +4,7 @@ import { Container, Badge, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb, EmptyState } from "@/components/page";
 import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { listPublishedSolutions, SOLUTION_SORT_FIELDS, type SolutionSortField } from "@/server/solutions";
-import { PaginationSchema, makeSortSchema } from "@/lib/validation";
+import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@/lib/validation";
 import { cn } from "@/lib/cn";
 
 /**
@@ -51,18 +51,23 @@ export default async function SolutionsPage({ searchParams }: PageProps) {
   const industry = industrySlugRaw ? getIndustryBySlug(industrySlugRaw)?.enum : undefined;
   const includeDemo = first(sp.demo) === "1";
 
+  const qRaw = first(sp.q);
+  const qParsed = qRaw && qRaw.trim() ? SearchQuerySchema.safeParse(qRaw) : null;
+  const q = qParsed?.success ? qParsed.data : undefined;
+
   const result = await listPublishedSolutions({
     offset: pagination.offset,
     limit: pagination.limit,
     page: pagination.page,
     pageSize: pagination.pageSize,
     industry,
+    q,
     sortBy: sort.sortBy as SolutionSortField,
     sortOrder: sort.sortOrder,
     includeDemo,
   });
 
-  const common = { industry: industrySlugRaw, demo: includeDemo ? "1" : undefined, sortBy: sort.sortBy, sortOrder: sort.sortOrder };
+  const common = { q, industry: industrySlugRaw, demo: includeDemo ? "1" : undefined, sortBy: sort.sortBy, sortOrder: sort.sortOrder };
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-6">
@@ -88,6 +93,19 @@ export default async function SolutionsPage({ searchParams }: PageProps) {
           数据库可能正在冷启动或不可达，请稍后重试。
           <span className="font-mono text-xs opacity-70"> {result.error}</span>
         </Alert>
+      ) : null}
+
+      {q ? (
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-muted-foreground">关键词</span>
+          <Badge variant="info">{q}</Badge>
+          <Link
+            href={buildHref({ ...common, q: undefined, page: undefined })}
+            className="text-primary underline-offset-4 hover:underline"
+          >
+            清除
+          </Link>
+        </div>
       ) : null}
 
       <nav aria-label="按行业筛选" className="flex flex-wrap gap-2">

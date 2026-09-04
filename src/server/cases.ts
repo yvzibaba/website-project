@@ -30,6 +30,8 @@ export interface CaseListParams {
   page: number;
   pageSize: number;
   industry?: Industry;
+  /** 关键词模糊匹配（title/summary，ILIKE 不区分大小写）；为空/未传则不过滤。 */
+  q?: string;
   sortBy: CaseSortField;
   sortOrder: "asc" | "desc";
   includeDemo: boolean;
@@ -60,15 +62,23 @@ export interface CaseListResult {
   error?: string;
 }
 
-/** 组装公开案例的 where 条件（stage + 可选行业 + DEMO 可见性）。 */
-function buildCaseWhere(params: { industry?: Industry; includeDemo: boolean }): Prisma.CaseWhereInput {
-  const where: Prisma.CaseWhereInput = {
-    stage: { in: [...PUBLIC_CASE_STAGES] },
-  };
-  if (params.industry) where.industry = params.industry;
+/** 组装公开案例的 where 条件（stage + 可选行业 + 可选关键词 + DEMO 可见性）。 */
+function buildCaseWhere(params: { industry?: Industry; q?: string; includeDemo: boolean }): Prisma.CaseWhereInput {
+  // 用 AND 数组组合：DEMO 片段与关键词片段都用 OR，不能作为同级键共存于一个 where 对象。
+  const conds: Prisma.CaseWhereInput[] = [{ stage: { in: [...PUBLIC_CASE_STAGES] } }];
+  if (params.industry) conds.push({ industry: params.industry });
+  const q = params.q?.trim();
+  if (q) {
+    conds.push({
+      OR: [
+        { title: { contains: q, mode: "insensitive" } },
+        { summary: { contains: q, mode: "insensitive" } },
+      ],
+    });
+  }
   const demo = caseDemoVisibility(params.includeDemo);
-  // demo 片段用 OR，需与 stage/industry 以 AND 合并（Prisma 同级键默认 AND，OR 单键即可）
-  return demo.OR ? { AND: [where, demo] } : { ...where, ...demo };
+  if (demo.OR) conds.push(demo);
+  return { AND: conds };
 }
 
 export async function listPublicCases(params: CaseListParams): Promise<CaseListResult> {

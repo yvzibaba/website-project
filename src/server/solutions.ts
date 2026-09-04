@@ -27,6 +27,8 @@ export interface SolutionListParams {
   page: number;
   pageSize: number;
   industry?: Industry;
+  /** 关键词模糊匹配（title/summary，ILIKE 不区分大小写）；为空/未传则不过滤。 */
+  q?: string;
   sortBy: SolutionSortField;
   sortOrder: "asc" | "desc";
   includeDemo: boolean;
@@ -73,15 +75,22 @@ function formatPrice(value: unknown, currency: string): string | null {
   return `${symbol}${s}`;
 }
 
-function buildSolutionWhere(params: { industry?: Industry; includeDemo: boolean }): Prisma.SolutionWhereInput {
-  const base: Prisma.SolutionWhereInput = { status: "PUBLISHED" };
-  if (params.industry) base.case = { industry: params.industry };
-  const demo = solutionDemoVisibility(params.includeDemo);
-  // demo 片段针对 case；与 base.case（行业）需合并到同一 case 条件
-  if (demo.case) {
-    base.case = { ...(base.case as object), ...(demo.case as object) } as Prisma.SolutionWhereInput["case"];
+function buildSolutionWhere(params: { industry?: Industry; q?: string; includeDemo: boolean }): Prisma.SolutionWhereInput {
+  // AND 数组：关键词片段用 OR、DEMO 门控落在关联 case 上，二者不能作为同级键共存。
+  const conds: Prisma.SolutionWhereInput[] = [{ status: "PUBLISHED" }];
+  if (params.industry) conds.push({ case: { industry: params.industry } });
+  const q = params.q?.trim();
+  if (q) {
+    conds.push({
+      OR: [
+        { title: { contains: q, mode: "insensitive" } },
+        { summary: { contains: q, mode: "insensitive" } },
+      ],
+    });
   }
-  return base;
+  const demo = solutionDemoVisibility(params.includeDemo);
+  if (demo.case) conds.push(demo);
+  return { AND: conds };
 }
 
 export async function listPublishedSolutions(params: SolutionListParams): Promise<SolutionListResult> {

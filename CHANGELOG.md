@@ -3,6 +3,25 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.7.0] - 2026-09-04 · Phase 5 里程碑 3：搜索系统 + 首页组装（Phase 5 收官）
+
+- 原因：里程碑 1 立起页面地基、里程碑 2 打通案例/方案的列表与详情。里程碑 3 要补齐总控 Prompt §18「搜索系统」与 §6「首页六段体验」两块前台，让用户能从首页发现→按关键词/行业检索→进入案例/方案详情，闭合 V1-A「用户查看」环节的入口层。搜索为 V1 关键词匹配（标题 + 摘要 ILIKE），语义/向量搜索按宪法第 4 条 MVP 优先原则延后（不提前引入 embedding 依赖）。首页严格照 §6 六段组装，且对空数据保持诚实空态——当前库仅有里程碑 2 的【DEMO】种子，首页默认视图排除 DEMO，故案例/方案区显示"由每日流水线逐步填充"的真实空态，不伪造繁荣（宪法第 20 条）。
+- 内容：
+  - **搜索编排层** `src/server/search.ts`（server-only，新增）：`SEARCH_PREVIEW_LIMIT = 8`；`searchPublic({ q, industry?, includeDemo, limit? })` 用 `Promise.all` 并行调 `listPublicCases` 与 `listPublishedSolutions`（各自已带 $transaction[findMany,count] + DEMO 门控），复用两者的默认排序（案例 discoveredAt desc、方案 publishedAt desc）；聚合返回 `{ q, cases, solutions, ok: cases.ok && solutions.ok, hits: 案例命中数 + 方案命中数 }`；任一子查询抛错则 catch 记日志并降级为 `ok:false / hits:0`（两侧结果均标失败），页面据此显示 danger 提示而非崩溃——延续里程碑 2 的"DB 不可达软降级"契约。
+  - **案例/方案数据层加关键词维度**：`src/server/cases.ts` 与 `src/server/solutions.ts` 的列表参数各新增可选 `q?: string`，并重构出 `buildCaseWhere()` / `buildSolutionWhere()`——把 stage/status 白名单、行业筛选、关键词片段、DEMO 门控统一收集进 `{ AND: [...] }` 数组（关键：关键词的 `OR:[title,summary contains q, mode insensitive]` 与 DEMO 的 `OR:[{sourceType:null},{sourceType:{not}}]` 两个 OR 片段不能并列在同一 where 对象的兄弟键上，必须各自包进 AND 数组元素）。`q` 经 `.trim()` 后为空则不加关键词条件。列表函数签名不变、`q` 自动透传，向后兼容里程碑 2 的调用与测试。
+  - **搜索页** `/search`（force-dynamic，新增）：无 JS 亦可用的 GET 表单（`role="search"` + `Input name="q"` + 提交按钮 + 保留 industry/demo 上下文的 hidden input）；行业筛选 chips（保留当前关键词）；四态清晰分离——① 无关键词/纯空白 → EmptyState"输入关键词开始搜索"；② 关键词非法（`SearchQuerySchema.safeParse` 失败，如超 100 字）→ danger Alert"搜索关键词无效"并列出具体的 Zod issue；③ DB 失败 → danger Alert"搜索查询失败"；④ `hits===0` → 诚实空态"没有找到与「q」相关的案例或方案"；有结果则按 案例 / 方案 分两个 `ResultSection` 展示，各带"查看全部 N 个 →"深链到 `/cases?q=…` / `/solutions?q=…`（携带 industry/demo 参数）。
+  - **首页重写** `src/app/page.tsx`（force-dynamic，从 Phase 4 骨架文案整体重写为总控 §6 六段体验）：① Hero（`bg-muted/30` + Badge"V1-A · 案例 → 方案 → 购买 最小闭环" + h1"发现全球产业机会，把成功案例重新变成你的解决方案。" + 内联搜索框 GET /search + 双 CTA：主按钮"发现产业方案"→ /cases、次按钮"分析我的企业（即将开放）"disabled 并注明属 V1-B）；② 今日全球产业案例（`listPublicCases` limit 6 discoveredAt desc includeDemo:false，空则诚实 EmptyState，DB 失败则 Alert）；③ 今日产业解决方案（`listPublishedSolutions` limit 3 publishedAt desc，空态说明"里程碑 2 起不种子方案，由真实多角色流水线 + 人工审核发布"）；④ 企业 AI 产业诊断（V1-B 即将开放卡片）；⑤ 我们如何工作（六步工作流 const：全球案例发现 → AI 拆解 → 开源匹配 → 中国本土化重构 → 产业解决方案 → 验证与项目）；⑥ 按行业浏览（`INDUSTRIES` 七张卡片）。两个数据段用 `Promise.all` 并行取。`generateMetadata` 补 title.default 与 template。**移除** Phase 4 遗留的 pg_stat 开发面板（宪法第 4 条：首页是用户价值入口非调试面板）。
+  - **列表页加关键词回显**：`/cases`、`/solutions` 读取 `q` 参数、透传给列表函数、并在行业筛选导航前加"关键词：X ✕清除"指示条（Badge info + 清除链接 `buildHref({ ...common, q: undefined, page: undefined })`），使从搜索页"查看全部"深链过来时用户看得到当前检索词。
+  - **导航/页脚** `src/app/layout.tsx`：header 与 footer 导航在"方案"后各加入 `/search` 链接。
+  - **测试新增**：`tests/unit/search.test.ts`（5 cases，`vi.mock` 隔离 `@/server/cases` + `@/server/solutions`：默认 limit=SEARCH_PREVIEW_LIMIT、q/industry/includeDemo 正确透传、ok 聚合 + hits 求和 + q 回显、一侧失败则整体 ok:false、子查询 reject 时 catch 降级 ok:false/hits:0 且不抛）；`tests/integration/cases-solutions.test.ts` 追加 3 cases（真连 Neon：`searchPublic` 关键词命中自建真实案例 + 已发布方案且默认排除 DEMO/DRAFT、includeDemo:true 纳入匹配的 DEMO 案例、无意义关键词 → ok:true 且 hits:0）。
+- 验证（宪法第 5/18/20 条）：
+  - `next typegen` 成功；`tsc --noEmit` **0 错误**；`eslint .` **0 问题**。
+  - `vitest run tests/unit`：**152/152 全绿**（原 147 + 新增 5），~0.59s（日志里 `"searchPublic failed" ... boom` 是 search.test.ts 故意触发的 catch 路径断言，非失败）。
+  - `next build`（Turbopack）：编译成功，新增 `ƒ /search` 动态路由，首页 `ƒ /` 重写后无回归。
+  - `node --env-file=.env vitest run tests/integration`：**18/18 全绿**（原 15 + 新增 3），~43s，真连 Neon us-east-2。
+  - **HTTP 端到端冒烟**（`next start -p 3117`，**31/31 全过**）：首页 200 且含 hero 文案/我们如何工作/按行业浏览/搜索表单指向 /search/导航含 /search 链接；`/search` 无查询 → 200 + "输入关键词开始搜索"；`/search?q=沼气&demo=1` → 200 + 命中种子 DEMO 沼气案例标题 + DEMO 标记；`/search?q=沼气` 默认 → 200 + 不泄露 DEMO 标题 + 诚实空态"没有找到"；`/search?q=zzznonsense` → 0 命中空态；`/search?q=空白` → 回引导态；`/search?q=超长150字` → "搜索关键词无效"；**M2 404 回归**——`/cases/nonexistent-zzz-9999`、`/solutions/nonexistent-zzz-9999` 仍真 404（确认根 loading.tsx 保持删除）；`/cases?demo=1` 显示种子标题、`/cases` 默认不泄露、`/cases?q=沼气&demo=1` 命中。冒烟首轮 2 项误报（用 `!body.includes("【DEMO】")` 判排除，但"【DEMO】"字面量出现在默认页的帮助文案"开发期可加 ?demo=1 查看【DEMO】示例数据"里）→ 改为断言具体种子案例标题片段 `畜禽粪污沼气工程示例` 是否泄露，语义更准，复测 31/31。
+- 效果：**Phase 5 里程碑 3 达成，Phase 5「公共页面」全部完成**——首页六段体验 + 关键词搜索（/search + 案例/方案列表页关键词回显）就绪，全部经 build + 170 测试（152 单元 + 18 集成）+ 31 项 HTTP 冒烟（含 2 个真 404 回归）验证。V1-A 商业闭环的"用户查看"入口层（发现 → 检索 → 详情）打通；"购买"仍为 Phase 12 占位。测试基线扩到 170。下一步进入 Phase 6（用户系统 / 认证，待决：Auth.js vs 托管方案）。ROADMAP 阻塞剩余 #3 github.com CLI（API 绕行中）、#4 模型 API Key、#5 部署/支付、#6 对象存储。安全：旧高风险 PAT 已由创始人撤销（2026-09-05 确认）。
+
 ## [0.6.0] - 2026-09-04 · Phase 5 里程碑 2：案例/方案公共页 + DEMO 标注种子数据 + 真 404 修复
 
 - 原因：里程碑 1 立起了不依赖业务数据的页面地基（行业/关于/隐私/条款）。里程碑 2 要打通 V1-A 商业闭环里"用户查看"这一环的前台：案例列表/详情、方案列表/详情，并配套可控的 DEMO 数据用于开发期验证渲染路径。按创始人 2026-09-05 裁决——**只种子标注 DEMO 的案例，不种子任何方案**：案例是免费的研究展示、风险低；方案涉及定价与购买闭环，必须由真实多角色流水线（Research→Bull→Bear→Judge→QA）+ 人工审核产出，伪造可售商品违反宪法第 20 条（禁止虚构）。方案页在真实流水线产出前保持诚实空态。

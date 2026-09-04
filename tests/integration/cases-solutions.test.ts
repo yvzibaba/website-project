@@ -2,6 +2,7 @@ import { describe, it, expect, afterAll, beforeAll } from "vitest";
 import { prisma, disconnectPrisma } from "@/lib/prisma";
 import { listPublicCases, getPublicCaseById } from "@/server/cases";
 import { listPublishedSolutions, getPublishedSolutionById } from "@/server/solutions";
+import { searchPublic } from "@/server/search";
 import { DEMO_SOURCE_TYPE } from "@/server/demo";
 
 /**
@@ -229,5 +230,35 @@ describeDb("cases / solutions data layer (Neon)", () => {
     }
     expect((await getPublishedSolutionById(ids.draftSolution, false)).status).toBe("not_found");
     expect((await getPublishedSolutionById("nonexistent_cuid_0000000000", false)).status).toBe("not_found");
+  }, 60_000);
+
+  it("searchPublic 关键词命中真实案例与已发布方案，默认排除 DEMO 与 DRAFT", async () => {
+    const res = await searchPublic({ q: runId, includeDemo: false, limit: 100 });
+    expect(res.ok).toBe(true);
+    expect(res.hits).toBeGreaterThanOrEqual(2);
+    const caseIds = res.cases.items.map((i) => i.id);
+    expect(caseIds).toContain(ids.realCase);
+    expect(caseIds).not.toContain(ids.demoCase); // DEMO 标题也含 runId，但默认被门控排除
+    const solIds = res.solutions.items.map((i) => i.id);
+    expect(solIds).toContain(ids.publishedSolution);
+    expect(solIds).not.toContain(ids.draftSolution); // DRAFT 不公开
+  }, 60_000);
+
+  it("searchPublic includeDemo=true 时纳入匹配到的 DEMO 案例", async () => {
+    const res = await searchPublic({ q: runId, includeDemo: true, limit: 100 });
+    expect(res.ok).toBe(true);
+    const caseIds = res.cases.items.map((i) => i.id);
+    expect(caseIds).toContain(ids.realCase);
+    expect(caseIds).toContain(ids.demoCase);
+    const demo = res.cases.items.find((i) => i.id === ids.demoCase)!;
+    expect(demo.isDemo).toBe(true);
+  }, 60_000);
+
+  it("searchPublic 无匹配关键词 → ok 且 hits 为 0", async () => {
+    const res = await searchPublic({ q: "zzz-绝无此关键词-zzz", includeDemo: true, limit: 100 });
+    expect(res.ok).toBe(true);
+    expect(res.hits).toBe(0);
+    expect(res.cases.items).toHaveLength(0);
+    expect(res.solutions.items).toHaveLength(0);
   }, 60_000);
 });

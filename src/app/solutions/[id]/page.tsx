@@ -3,7 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container, Badge, Alert, Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
+import { BuyButton } from "@/components/solutions/BuyButton";
 import { getPublishedSolutionById } from "@/server/solutions";
+import { getCurrentUser } from "@/server/authz";
+import { hasPaidEntitlement } from "@/server/orders";
 import type { ParsedSolutionBody } from "@/server/solution-body";
 
 /**
@@ -44,6 +47,14 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
   if (res.status === "not_found") notFound();
   if (res.status === "error") throw new Error(`方案查询失败：${res.error}`);
   const s = res.data;
+
+  // 解锁门控（Phase 12 M3，V1 假设）：只有「付费(price>0) 且 非 DEMO 展示件」的方案才锁正文；
+  // 免费方案与 DEMO 示例正文恒开放。判定在服务端完成（getCurrentUser 只读会话、hasPaidEntitlement 数 PAID 单），
+  // 前端拿不到「未解锁的正文」，杜绝绕过（宪法第 7/20 条：程序判定 > 前端臆断；SECURITY：正文是付费交付物）。
+  const user = await getCurrentUser();
+  const entitled = s.isFree || s.isDemo ? true : await hasPaidEntitlement(s.id, { userId: user?.id, email: user?.email });
+  const locked = !entitled;
+  const loginHref = `/login?callbackUrl=${encodeURIComponent(`/solutions/${s.id}${includeDemo ? "?demo=1" : ""}`)}`;
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
@@ -97,14 +108,15 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
               机会评分 {s.opportunityScore ?? "—"}/100 · 证据可信度 {s.evidenceConfidence ?? "—"}/100 · 关键未知变量 {s.unknowns.length} 项
             </span>
           </div>
-          <div className="flex flex-col items-start gap-2 sm:items-end">
-            <Button variant="primary" size="lg" disabled title="购买与支付闭环将在 Phase 12 接入">
-              购买方案（即将开放）
-            </Button>
-            <span className="text-[11px] text-muted-foreground">
-              下单 → 支付说明 → 后台确认 → 解锁，将于用户系统与订单阶段接入。
-            </span>
-          </div>
+          <PurchaseAction
+            isFree={s.isFree}
+            isDemo={s.isDemo}
+            locked={locked}
+            loggedIn={Boolean(user)}
+            loginHref={loginHref}
+            solutionId={s.id}
+            solutionTitle={s.title}
+          />
         </CardContent>
       </Card>
 
@@ -179,8 +191,9 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
         )}
       </section>
 
-      {/* 方案正文（34 分节，总控 §3 Solution Package；规则 12 结构化保存） */}
-      <SolutionBodySection body={s.body} />
+      {/* 方案正文（34 分节，总控 §3 Solution Package；规则 12 结构化保存）。
+          付费未解锁时 locked=true：正文由服务端拒渲染（前端拿不到未解锁内容），仅显示解锁引导。 */}
+      <SolutionBodySection body={s.body} locked={locked} loginHref={loginHref} loggedIn={Boolean(user)} solutionId={s.id} solutionTitle={s.title} />
     </Container>
   );
 }
@@ -226,11 +239,46 @@ function renderSectionContent(content: unknown) {
   return null;
 }
 
-function SolutionBodySection({ body }: { body: ParsedSolutionBody }) {
+function SolutionBodySection({
+  body,
+  locked,
+  loginHref,
+  loggedIn,
+  solutionId,
+  solutionTitle,
+}: {
+  body: ParsedSolutionBody;
+  locked: boolean;
+  loginHref: string;
+  loggedIn: boolean;
+  solutionId: string;
+  solutionTitle: string;
+}) {
+  // 付费未解锁：正文是付费交付物，服务端根本不渲染任何分节内容（前端无从绕过，宪法第 7/20 条）。
+  if (locked) {
+    return (
+      <section id="solution-body" className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">方案正文</h2>
+        <div className="rounded-lg border border-dashed border-border p-6">
+          <div className="flex flex-col items-start gap-3">
+            <Badge variant="warning" compact>
+              正文未解锁
+            </Badge>
+            <p className="text-sm text-muted-foreground">
+              这是付费方案，完整 34 分节正文（研究→Bull→Bear→Judge→QA 产出、人工审核）在订单确认到账后解锁。
+              购买流程：下单 → 按支付说明完成站外付款 → 管理员确认 → 本页自动展示完整正文。
+            </p>
+            <LockedCta loginHref={loginHref} loggedIn={loggedIn} solutionId={solutionId} solutionTitle={solutionTitle} />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   // 空 body：诚实占位，不渲染半截分节（与 Phase 7 M3 scoreBreakdown=null 同构）。
   if (body.empty) {
     return (
-      <section className="flex flex-col gap-3">
+      <section id="solution-body" className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">方案正文</h2>
         <p className="rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground">
           本方案尚未填充 34 分节结构化正文（<code className="font-mono">Solution.body</code>，总控 §3
@@ -280,6 +328,84 @@ function SolutionBodySection({ body }: { body: ParsedSolutionBody }) {
         </p>
       ) : null}
     </section>
+  );
+}
+
+/** 购买卡右侧动作：按「免费/DEMO · 已解锁 · 待购买(登录) · 待登录(游客)」四态渲染。 */
+function PurchaseAction({
+  isFree,
+  isDemo,
+  locked,
+  loggedIn,
+  loginHref,
+  solutionId,
+  solutionTitle,
+}: {
+  isFree: boolean;
+  isDemo: boolean;
+  locked: boolean;
+  loggedIn: boolean;
+  loginHref: string;
+  solutionId: string;
+  solutionTitle: string;
+}) {
+  if (isFree || isDemo) {
+    return (
+      <div className="flex flex-col items-start gap-2 sm:items-end">
+        <Badge variant="success" compact>
+          正文开放 · 无需购买
+        </Badge>
+        <span className="text-[11px] text-muted-foreground">
+          {isDemo ? "DEMO 示例数据，仅供演示，非可售真实方案。" : "免费方案，完整正文即时开放。"}
+        </span>
+      </div>
+    );
+  }
+  if (!locked) {
+    // 已拥有：给出直达正文锚点的解锁态，不再重复售卖。
+    return (
+      <div className="flex flex-col items-start gap-2 sm:items-end">
+        <Badge variant="success" compact>
+          已解锁
+        </Badge>
+        <a href="#solution-body" className="text-sm font-medium text-primary hover:underline">
+          查看完整正文 →
+        </a>
+      </div>
+    );
+  }
+  if (loggedIn) {
+    return <BuyButton solutionId={solutionId} solutionTitle={solutionTitle} />;
+  }
+  return (
+    <div className="flex flex-col items-start gap-2 sm:items-end">
+      <Button variant="primary" size="lg" href={loginHref}>
+        登录后可购买
+      </Button>
+      <span className="text-[11px] text-muted-foreground">下单 → 支付说明 → 后台确认 → 解锁，需先登录。</span>
+    </div>
+  );
+}
+
+/** 正文锁面板里的行动号召：登录→BuyButton；游客→登录引导。 */
+function LockedCta({
+  loggedIn,
+  loginHref,
+  solutionId,
+  solutionTitle,
+}: {
+  loggedIn: boolean;
+  loginHref: string;
+  solutionId: string;
+  solutionTitle: string;
+}) {
+  if (loggedIn) {
+    return <BuyButton solutionId={solutionId} solutionTitle={solutionTitle} />;
+  }
+  return (
+    <Button variant="primary" href={loginHref}>
+      登录后购买并解锁正文
+    </Button>
   );
 }
 

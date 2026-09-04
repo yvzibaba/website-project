@@ -69,6 +69,12 @@ export default async function AccountPage() {
             <span className="tabular-nums">{profile.createdAt.toISOString().slice(0, 10)}</span>
           </div>
           <Separator />
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-muted-foreground">我的订单</span>
+            <Link href="/account/orders" className="font-medium text-primary hover:underline">
+              查看我的订单 →
+            </Link>
+          </div>
           {hasRole(profile.role, STAFF_ROLES) ? (
             <div className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">管理后台</span>
@@ -89,7 +95,7 @@ export default async function AccountPage() {
         <CardHeader>
           <CardTitle className="text-base">即将开放</CardTitle>
           <CardDescription>
-            我的订单（Phase 12 购买闭环）、我的报告 / 企业画像 / 诊断记录（V1-B 企业适配）将在此汇聚。当前 V1-A 仅提供登录身份，用于后续下单。
+            我的报告 / 企业画像 / 诊断记录（V1-B 企业适配）将在此汇聚。我的订单（购买闭环）已上线，可在上方查看。
           </CardDescription>
         </CardHeader>
       </Card>

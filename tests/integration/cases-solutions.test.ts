@@ -30,6 +30,7 @@ const ids = {
   demoCase: "",
   candidateCase: "",
   publishedSolution: "",
+  freeSolution: "",
   draftSolution: "",
 };
 
@@ -119,6 +120,21 @@ describeDb("cases / solutions data layer (Neon)", () => {
       data: { solutionId: pub.id, name: "电价政策", impact: "影响回收期", severity: 70 },
     });
 
+    // 免费已发布方案（price=0，测 isFree=true 分支）。挂到候选案例下，避免改动真实案例的 publishedSolutionCount。
+    // 多一条 PUBLISHED 命中不影响 searchPublic（其断言用 >=2 与显式 contains/not-contains）。
+    const free = await prisma.solution.create({
+      data: {
+        title: `免费开放方案-${runId}-nop`,
+        slug: `it-free-${runId}`,
+        caseId: cand.id,
+        status: "PUBLISHED",
+        price: "0.00",
+        currency: "CNY",
+        publishedAt: new Date(),
+      },
+    });
+    ids.freeSolution = free.id;
+
     // 草稿方案（不应公开）
     const draft = await prisma.solution.create({
       data: { title: `草稿方案-${runId}`, slug: `it-draft-${runId}`, caseId: real.id, status: "DRAFT" },
@@ -128,7 +144,7 @@ describeDb("cases / solutions data layer (Neon)", () => {
 
   afterAll(async () => {
     // 先删方案（Solution.caseId 为必需关系，默认 Restrict），再删案例（级联证据/能力），最后删引用数据
-    await prisma.solution.deleteMany({ where: { id: { in: [ids.publishedSolution, ids.draftSolution].filter(Boolean) } } }).catch(() => undefined);
+    await prisma.solution.deleteMany({ where: { id: { in: [ids.publishedSolution, ids.freeSolution, ids.draftSolution].filter(Boolean) } } }).catch(() => undefined);
     await prisma.case.deleteMany({ where: { id: { in: [ids.realCase, ids.demoCase, ids.candidateCase].filter(Boolean) } } }).catch(() => undefined);
     await prisma.techCapability.deleteMany({ where: { id: ids.capability || "__none__" } }).catch(() => undefined);
     await prisma.businessModel.deleteMany({ where: { id: ids.businessModel || "__none__" } }).catch(() => undefined);
@@ -230,7 +246,12 @@ describeDb("cases / solutions data layer (Neon)", () => {
       expect(res.data.unknowns[0].severity).toBe(70);
       expect(res.data.caseTitle).toContain(runId);
       expect(res.data.hasBody).toBe(false);
+      expect(res.data.isFree).toBe(false); // ¥1999 付费方案不免费
     }
+    // 免费方案（price=0）：isFree=true，正文恒开放（V1 门控假设的分支）。
+    const freeRes = await getPublishedSolutionById(ids.freeSolution, false);
+    expect(freeRes.status).toBe("found");
+    if (freeRes.status === "found") expect(freeRes.data.isFree).toBe(true);
     expect((await getPublishedSolutionById(ids.draftSolution, false)).status).toBe("not_found");
     expect((await getPublishedSolutionById("nonexistent_cuid_0000000000", false)).status).toBe("not_found");
   }, 60_000);

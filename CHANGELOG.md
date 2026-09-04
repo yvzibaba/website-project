@@ -3,6 +3,22 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.21.0] - 2026-09-05 · Phase 12 里程碑 3：购买闭环「用户界面」——详情页解锁门控 + 支付说明 + 我的订单 + 后台确认台
+
+- 原因：M1 交付订单数据层、M2 打通 HTTP 端点，但用户侧仍是详情页那个 `disabled` 的「购买方案（即将开放）」假按钮——商业闭环「用户查看 → **购买** → 解锁」对人尚未真正闭合。M3 把 M2 的端点接上"人面"：详情页真购买、下单后进支付说明页、买家可回看「我的订单」、正文按 `hasPaidEntitlement` 服务端解锁门控、后台一键确认收款/取消。零 schema 变更、零新数据层逻辑，全部复用已测的 `orders.ts` + `api-guard`（宪法第 16 条单一真源）。
+- 内容：
+  - `src/server/solutions.ts`：`SolutionDetail` 加 `isFree: boolean`（`price` 为 null/undefined 或 `toNumber()===0` 即免费），供详情页判定「是否锁正文」。
+  - `src/components/solutions/BuyButton.tsx`（新，client）：`fetch` 到 `POST /api/orders`，**只提交 `solutionId`**（身份服务端从会话注入、金额服务端快照，客户端一概不传，杜绝改价）；成功（含幂等复用）→ `router.push("/orders/<id>")`；409 已拥有→引导「我的订单」、401→登录、其它如实报错，绝不假装成功。刻意走 HTTP 而非另起 Server Action——门禁 + 判别联合翻译已收敛在 `api-guard` 一处，抄第二遍必漂移（第 16 条）。
+  - `src/app/solutions/[id]/page.tsx`（改造）：服务端算 `entitled = isFree||isDemo ? true : await hasPaidEntitlement(...)`、`locked=!entitled`、`loginHref`（带 callbackUrl）；购买卡按四态渲染（免费/DEMO→正文开放徽章、已购→已解锁 + `#solution-body` 锚、待购登录→`BuyButton`、游客→登录引导）。**`SolutionBodySection` 加 `locked` 入参**：locked 时服务端**根本不渲染 34 分节**、只出「正文未解锁」锁面板（内嵌 `BuyButton`/登录 CTA），未付费者拿不到正文任何字节（前端无从绕过，正文是付费交付物）。
+  - `src/app/orders/[id]/page.tsx`（新，RSC 支付说明页）：未登录 redirect /login（带 callbackUrl）；`getOrderById` 后**属主校验**（会话 userId 命中 或 归一 email 命中 `buyerEmail`），不匹配统一 `notFound()`（不区分「不存在」与「无权」，防 IDOR 探测）；展示 `amountDisplay` 快照 + 状态徽章 + **V1 站外付款三步指引**（未接网关，ROADMAP #5）；PAID→引导回详情页读已解锁正文。
+  - `src/app/account/orders/page.tsx`（新，RSC 我的订单）：登录门禁 → `listOrdersForBuyer({userId,email})`（数据层按属主过滤，绝不显示他人单）；每卡状态徽章 + 金额 + 「去支付 / 查看正文」入口。`src/app/account/page.tsx` 加「我的订单」链接、更新「即将开放」文案。
+  - `src/components/admin/AdminOrderActions.tsx`（新，client）：行内「确认收款 / 取消」，`fetch` M2 的 `/api/admin/orders/[id]/{confirm,cancel}`（CSRF + 角色 + 状态机全在既有端点），成功 `router.refresh()` 重取列表。`src/app/admin/orders/page.tsx`（新，RSC）：layout+page 双层防御自守（越权 `return null` 前绝不调 `listOrdersForAdmin`）、状态过滤 + 分页。`src/app/admin/page.tsx` 订单卡加「订单管理」入口。
+  - V1 有意识的最小化 / 待记录假设：**只有 price>0 且非 DEMO 的方案正文才锁**（免费与 DEMO 恒开放）；**购买需登录**（游客 buyerEmail 数据层/端点支持，但 UI 不暴露游客下单）；不接支付网关，人工确认到账即解锁。无删除文件。
+- 验证：`tsc`/`eslint` 0 错；`tests/integration/cases-solutions.test.ts` 扩 `isFree` 断言（¥1999 方案 `isFree=false`、新种 price=0 免费方案 `isFree=true` 且 found）——**基线 315（249 单元 + 66 集成）全绿**、`next build` 新增 **3 条 `ƒ` 动态路由**（`/orders/[id]`·`/account/orders`·`/admin/orders`）无回归。**购买闭环 UI 端到端冒烟 29/29**（`smoke-orders-ui.mjs`，`next start -p 3124`，自种 ¥3999 带正文标记方案 + 买家/管理员/路人三账号真实 Auth.js 登录）：钱-shot——**付款前游客/未购登录者/他人的详情页 HTML 全不含正文标记、显锁面板；后台确认 PAID 后仅属主再访问标记出现、锁面板消失、显「已解锁」，游客与他人仍不含标记**（正文从不泄露非属主，RSC 服务端拒渲染含 flight 负载）；下单后仍 PENDING 不解锁；支付说明页含金额 + 站外指引；**他人访问该单支付页 → 404**（防 IDOR 不泄露金额）；我的订单含本人单、路人不含金主单；`/admin/orders` USER→无权限面板、ADMIN 见单号；属主已购后不再出「立即购买方案」。finally 先收集本次 orderId 再删单→清审计→删方案/案例/用户，leftover=0（订单/审计/案例/用户四项）。
+- 效果：**Phase 12 购买闭环全部达成（M1 数据层 + M2 端点 + M3 UI）**——「用户查看 → 购买 → 支付说明 → 后台确认 → 解锁读正文」这条商业闭环主干从用户侧端到端可用且经真实 HTTP + 服务端门禁验证成立，且解锁判定守住"钱与付费内容"的安全底线。仍是有意的最小版：**不依赖 ROADMAP #5 支付网关**（人工确认收款即解锁，在线支付/自动对账属后续增量）；退款（REFUNDED 态 UI）、企业批量授权、订单明细编辑留后。下一步候选：Phase 13 M3 后台 UI 深化（方案/证据管理）、Phase 9 Model Router（stub provider 可先搭）、Phase 14 SEO、§11 grade 并入可信度公式（须升 `SCORING_RUBRIC_VERSION`）。
+
+
+ 
 ## [0.20.0] - 2026-09-05 · Phase 12 里程碑 2：订单「HTTP 端点」——购买闭环经 HTTP 打通（复用 api-guard，不含 UI）
 
 - 原因：M1 只交付了订单**数据层**（`src/server/orders.ts`），诚实标注「HTTP 端点延 M2」。数据层有函数无入口，用户点不动、后台确认不了，闭环仍断在「下单→确认」这一环。M2 就是把已测数据层用**已就绪的 `api-guard` 门禁**薄薄包一层 HTTP 端点——零业务逻辑、零 schema 变更，门禁 + 结果翻译全复用 M1/Phase13 沉淀的单一真源（宪法第 16 条防逐端点漂移）。UI（详情页真按钮 + 支付说明页 + 我的订单 + 正文按权益解锁门控）留 M3。

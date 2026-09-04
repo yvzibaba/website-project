@@ -187,6 +187,12 @@ export interface SolutionDetail {
   status: string;
   priceDisplay: string | null;
   currency: string;
+  /**
+   * 是否免费方案（Phase 12 M3 解锁门控用，V1 假设）：`price` 为空或数值为 0 → true。
+   * 详情页据此决定正文是否需要购买解锁——**只有 price>0 的付费方案才锁正文，免费方案正文恒开放**。
+   * 计算归服务端（程序判定，绝不由前端臆断，宪法第 7/20 条）。
+   */
+  isFree: boolean;
   publishedAt: Date | null;
   opportunityScore: number | null;
   evidenceConfidence: number | null;
@@ -238,6 +244,7 @@ export async function getPublishedSolutionById(id: string, includeDemo: boolean)
         status: s.status,
         priceDisplay: formatPrice(s.price, s.currency),
         currency: s.currency,
+        isFree: s.price === null || s.price === undefined || s.price.toNumber() === 0,
         publishedAt: s.publishedAt,
         opportunityScore: s.opportunityScore,
         evidenceConfidence: s.evidenceConfidence,

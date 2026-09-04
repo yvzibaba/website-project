@@ -108,7 +108,9 @@ export default async function AdminDashboardPage() {
           <Chips map={data.evidences.byGrade} />
         </StatCard>
         <StatCard title="订单" total={data.orders.total}>
-          <span className="text-xs text-muted-foreground">购买闭环将于 Phase 12 接入。</span>
+          <Link href="/admin/orders" className="text-sm hover:underline">
+            订单管理（确认收款 / 解锁）→
+          </Link>
         </StatCard>
         <StatCard title="内容入口" total={0}>
           <div className="flex flex-col gap-1 text-sm">

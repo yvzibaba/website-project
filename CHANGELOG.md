@@ -3,6 +3,15 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.13.0] - 2026-09-05 · Phase 7 里程碑 5：案例与证据数据层 CRUD（受校验写入 + 审计 + 复算联动）
+
+- 原因：此前案例只能靠 `prisma/seed.ts` 批量灌 DEMO，运营/AI 流水线无法逐条撰写真实案例（ROADMAP Phase 7「案例系统」后续待做 = 案例 CRUD）。M5 先交付**数据层**写入口，把"能读能展示"升级为"能全生命周期管理"，为 Phase 13 后台与 AI 生产链路打底。
+- 内容：
+  - `src/server/case-admin.ts`（新，server-only）：`createCase`（可内联证据）/`updateCase`（version 自增）/`deleteCase`（安全守卫：仍挂 PUBLISHED 方案 → `blocked` 拒绝，删前快照）/`addCaseEvidence`/`removeCaseEvidence`。入参经 Zod 校验（复用 `validation.ts` 枚举单一真源；`scoreInput` 只校结构，10 维齐全/越界交由评分内核在复算时裁决，避免两处口径漂移）。每个写操作在事务内落 `ChangeLog`（entityType=Case，CREATE/UPDATE/DELETE，含 before/after 快照与 `actor`）。凡影响评分的写入（scoreInput/证据增删）自动调用 `recomputeCaseScores` 联动复算，结果以 `recompute: computed|skipped|invalid|none|error` 如实回报。**关键边界**：本模块**不做鉴权**、信任调用方；对外 HTTP 写路由与角色门禁有意延后到 Phase 13（无鉴权公开写端点违反安全底线，宪法第 2/4 条）；`actor` 仅作审计标注不代表已鉴权。统一判别联合返回（invalid/not_found/blocked/error），Prisma P2003/P2025 归一，绝不抛裸异常。
+  - `tests/integration/case-admin.test.ts`（新，8 例，真连 Neon）：最小建案（CANDIDATE+CREATE 审计）、带 scoreInput+内联证据（computed 88/69/2、DEEP_CASE 详情页透传拆解）、非法行业不落库、评分输入越界仍建成但 recompute=invalid 无 breakdown、update version 自增+审计+空 patch 拒绝+不存在 not_found、证据增删联动可信度变化与还原+两条 UPDATE 审计、deleteCase 挂 PUBLISHED 方案 blocked→撤方案后成功+级联删证据+DELETE 审计、不存在 id not_found。afterAll 按 Restrict 外键序（先方案后案例）+ runId + ChangeLog 全清。
+- 验证：`tsc`/`eslint` 0 错；unit **194/194**；integration **39/39**（原 31 + 新 8，真连 Neon）；`next build` 无回归。无 schema/DB 变更（M5 纯服务层）。
+- 效果：**Phase 7 M5 达成**——案例聚合根（案例 + 证据）具备受校验、可审计、复算联写的写入能力，Phase 7「案例系统」的 CRUD 项在数据层闭环（UI/门禁留待 Phase 13）。下一步：行业关联收尾、把 §11 grade 并入可信度公式的后续待决、Phase 8 方案系统。
+
 ## [0.12.0] - 2026-09-05 · Phase 7 里程碑 4：§11 证据来源权威度分级（元数据 + 标签，不动分数）
 
 - 原因：总控 §11 按来源权威性分 S/A/B/C/D，与已建模的证据"类型"轴正交。创始人 2026-09-05 裁决「只记录 + 标签，不动分数」——先让等级可存、可查、可见，并暴露"仅 D 级支撑却称事实"的复核告警，但暂不并入可信度公式（避免无校准地改动已上线分数）。

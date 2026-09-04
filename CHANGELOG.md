@@ -3,6 +3,21 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.20.0] - 2026-09-05 · Phase 12 里程碑 2：订单「HTTP 端点」——购买闭环经 HTTP 打通（复用 api-guard，不含 UI）
+
+- 原因：M1 只交付了订单**数据层**（`src/server/orders.ts`），诚实标注「HTTP 端点延 M2」。数据层有函数无入口，用户点不动、后台确认不了，闭环仍断在「下单→确认」这一环。M2 就是把已测数据层用**已就绪的 `api-guard` 门禁**薄薄包一层 HTTP 端点——零业务逻辑、零 schema 变更，门禁 + 结果翻译全复用 M1/Phase13 沉淀的单一真源（宪法第 16 条防逐端点漂移）。UI（详情页真按钮 + 支付说明页 + 我的订单 + 正文按权益解锁门控）留 M3。
+- 内容：
+  - `src/server/api-guard.ts`（扩展，非另起炉灶）：把 `requireStaffWrite` 里的 CSRF 同源判定抽成共享纯函数 `sameOriginBlock(request)`（逻辑一字未改）；**新增 `requireSameOriginActor(request)`**——只做 CSRF 同源 + 从服务端会话注入 `userId/actor`，**不设角色门禁**（下单是"任何登录用户或游客"都能做的公开动作，与后台 staff 写明确分层）；`MutationLike` 显式补 `orderId?/deduped?/order?`（interface 无隐式索引签名，不补则 TS2345 不可赋值）。
+  - `POST /api/orders`（新，公开/游客可下单）：`requireSameOriginActor` 挡跨站 → 解析 body → **先 `delete raw.userId/actor` 再 `{...raw, userId: guard.user?.id ?? undefined}`**（客户端伪造的 userId/actor 一律丢弃、身份只从会话注入）→ `createOrder` → `mutationResponse`。金额防篡改由 M1 数据层白名单守，端点不碰。
+  - `GET /api/admin/orders`（新，staff 只读）：安全 GET 不做 CSRF，仅 `requireRole(STAFF_ROLES)`（未登录 401 / USER 403）+ `PaginationSchema` + 可选 `status` 过滤，调 `listOrdersForAdmin`。
+  - `POST /api/admin/orders/[id]/confirm` · `POST /api/admin/orders/[id]/cancel`（新，staff 写）：`requireStaffWrite`（CSRF + 角色）→ 调 `confirmOrderPaid`/`cancelOrder`（actor 由会话注入）→ `mutationResponse`。
+  - 4 路由全 `export const dynamic="force-dynamic"`、Next16 `params:Promise<{..}>` await、只「门禁→调数据层→翻译」，无任何业务/校验/schema。**`hasPaidEntitlement` 刻意不暴露为公开 HTTP 端点**（无额外面鉴权会引 IDOR），留 M3 在 RSC 页面服务端调用。无删除文件。
+- 验证：`tsc`/`eslint` 0 错；`tests/unit/api-guard.test.ts` 扩到 **22 例**（`vi.mock` authz，新增 `requireSameOriginActor` 3 例：跨站→403 且根本不查会话、登录→ok+actor、游客→ok 且 user/actor 为 null、以及绝不触碰 `requireRole`；`mutationResponse` orderId/deduped/order 透传 1 例）。基线 **249 单元（245+4）+ 66 集成**全绿、`next build` 新增 **4 条 `ƒ` 动态路由**无回归。**HTTP 端到端冒烟 29/29**（`smoke-orders.mjs`，`next start -p 3123`，自种 case+PUBLISHED 方案(¥2999)+USER/ADMIN，真实 Auth.js 登录拿 cookie）：游客下单金额服务端快照=2999.00（客户端夹带 `0.01/USD/PAID` 全被剥离、DB 侧复核）、同游客重复下单幂等复用同 orderId 且 DB 仅 1 张、跨站 Origin 下单 403 CSRF、缺身份 400、登录用户伪造 userId 被会话覆盖、后台列表 401/403/200 门禁矩阵、确认 PAID+paidAt+version=2+UPDATE 审计 `changedBy=human:<adminId>`、重复确认幂等 deduped、已 PAID 买家再下单 409 blocked、取消 PENDING→CANCELED、取消已 PAID 409、跨站确认 403 CSRF、`status=PAID` 过滤 items 全 PAID；finally 先收集本次 orderId 再删单→清其 ChangeLog→删 solution/case/user，末尾 leftover=0（订单/审计/案例/用户四项）。
+- 效果：**Phase 12 M2 达成**——「下单 → 后台确认 PAID」这条购买闭环主干从"只有数据层函数"升级为"经真实 HTTP、带会话身份、抗 CSRF、防篡改、防重复收钱、状态机守卫、全程审计"的可调用端点，M1 数据层自此获得首个真实外部消费者并端到端验证成立。仍是有意的最小竖切：面向用户的 UI（详情页购买按钮、支付说明页、「我的订单」、方案正文按 `hasPaidEntitlement` 解锁门控（price>0 才锁、免费保持开放——V1 假设））与后台订单管理页留 M3。**依旧不接、也不依赖 ROADMAP #5 支付网关**——人工确认（后台点确认收款）本身即跑通"下单→确认→（M3 可）解锁"，支付自动化对账属后续增量。
+
+
+
+
 ## [0.19.0] - 2026-09-05 · Phase 12 里程碑 1：订单「数据层」——购买闭环的可信底座（不含 HTTP/UI）
 
 - 原因：商业闭环「用户查看 → **购买** → 企业适配 → 真实验证 → 项目机会」里，"购买"这一环至今只在详情页留了个 `disabled` 的「购买方案（即将开放）」占位（Phase 5 M2 埋的），链路是断的。创始人裁决 + 总控 §5/PRODUCT_SPEC 把 V1 购买流明确为**「下单 → 支付说明（站外、无网关）→ 后台人工确认 PAID → 解锁」**——刻意**不接支付网关**，用"后台把 PENDING 确认为 PAID"这一最简闭环先跑通商业链路。所以 ROADMAP #5（支付渠道）**不是本环的阻塞项**：阻塞的是自动对账/在线收款，人工确认可现在做。且 `Order` 表早在 Phase 4/5 随 schema 建好（状态机 + `amount Decimal` + `paymentProvider` 预留），**无需任何 schema 迁移**——这是当下价值最高、又不撞外部阻塞的一环，按「一次一个明确任务」先切**数据层竖切**（对齐 Phase 7 M5 / Phase 8 M1 的"数据层先行、HTTP+UI 后到"节奏），HTTP 端点留 M2、UI + 解锁门控留 M3。
@@ -17,6 +32,8 @@
 - 效果：**Phase 12 M1 达成**——购买闭环从"详情页一个禁用的假按钮"升级为一层守住钱与安全的数据底座：金额不可篡改、只对可售方案开放、重复下单幂等、状态机 + 审计 + 保守的解锁判定俱备。仍是有意的最小竖切：用户下单 HTTP 端点、后台确认/取消/列表端点（M2，复用已就绪 `api-guard`）、详情页真按钮 + 支付说明页 + 「我的订单」+ 方案正文按 PAID 权益解锁门控（M3）待接。**不依赖、也不解锁 ROADMAP #5 支付网关**——人工确认闭环本身即可端到端跑通"下单→确认→解锁"，支付自动化属后续增量。
 
 
+
+## [0.18.0] - 2026-09-05 · Phase 13 里程碑 2：最小后台管理 UI（案例「列表 + 新建」竖切，消费 M1 写端点）
 
 - 原因：Phase 13 M1 把后台写门禁收敛成 `/api/admin/**` 一批已鉴权、抗 CSRF 的 HTTP 端点，但**造了还没人用**——没有真实调用方既浪费、也无法端到端验证门禁在浏览器同源场景下真的成立（宪法第 20 条：不虚构"已完成"）。「方向一：把案例/方案 CRUD 包成后台 HTTP 写路由 + 最小后台 UI」还剩另一半：一个能录入并浏览案例的最小后台页面。刻意只切**「案例列表 + 新建」这一条闭环**（MVP / 简单优先，一次一个明确任务），详情页/证据增删/删除案例/方案管理全部留 M3。
 - 内容：

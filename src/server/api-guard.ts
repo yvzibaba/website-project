@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireRole, STAFF_ROLES, type SessionUser } from "@/server/authz";
+import { requireRole, getCurrentUser, STAFF_ROLES, type SessionUser } from "@/server/authz";
 import { logger } from "@/lib/logger";
 
 /**
@@ -46,11 +46,12 @@ type GuardResult =
   | { ok: false; response: NextResponse };
 
 /**
- * 保护一个 mutating 端点：CSRF 同源 + staff 角色。通过返回 {ok,user,actor}，
- * 否则返回已构造好的 NextResponse（401 未登录 / 403 越权或跨站），调用方直接 return。
+ * 纯 CSRF 判定（纵深防御）：优先 Origin、退化到 Referer 的 origin。
+ * 命中跨站 → 返回已构造好的 403 NextResponse；同源或无头信息 → 返回 null（放行）。
+ * 抽成内部函数供 requireStaffWrite（后台写）与 requireSameOriginActor（用户下单）共用，
+ * 避免两套端点各写一遍 Origin/Referer 解析而漂移（宪法第 16 条）。
  */
-export async function requireStaffWrite(request: Request): Promise<GuardResult> {
-  // 1) CSRF：优先 Origin，退化到 Referer 的 origin。
+function sameOriginBlock(request: Request): NextResponse | null {
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
   let originForCheck = origin;
@@ -64,11 +65,19 @@ export async function requireStaffWrite(request: Request): Promise<GuardResult> 
   const host = new URL(request.url).host;
   if (!isSameOrigin(originForCheck, host)) {
     log.warn("csrf origin rejected", { origin: originForCheck, host });
-    return {
-      ok: false,
-      response: errorResponse("FORBIDDEN", "跨站请求被拒绝（CSRF 同源校验）", 403),
-    };
+    return errorResponse("FORBIDDEN", "跨站请求被拒绝（CSRF 同源校验）", 403);
   }
+  return null;
+}
+
+/**
+ * 保护一个 mutating 端点：CSRF 同源 + staff 角色。通过返回 {ok,user,actor}，
+ * 否则返回已构造好的 NextResponse（401 未登录 / 403 越权或跨站），调用方直接 return。
+ */
+export async function requireStaffWrite(request: Request): Promise<GuardResult> {
+  // 1) CSRF：同源判定（跨站先挡，且不查角色）。
+  const blocked = sameOriginBlock(request);
+  if (blocked) return { ok: false, response: blocked };
 
   // 2) 角色门禁（角色只从服务端 JWT 会话读，绝不信任客户端）。
   const authz = await requireRole(STAFF_ROLES);
@@ -85,6 +94,25 @@ export async function requireStaffWrite(request: Request): Promise<GuardResult> 
   }
 
   return { ok: true, user: authz.user, actor: actorOf(authz.user) };
+}
+
+type ActorGuardResult =
+  | { ok: true; user: SessionUser | null; actor: string | null }
+  | { ok: false; response: NextResponse };
+
+/**
+ * 保护「允许游客、但绝不信客户端身份」的写端点（用户下单）：只做 CSRF 同源，
+ * **不要求 staff 角色**；从服务端会话读取可选身份——登录用户注入 `human:<id>`（actor）与其
+ * userId（供上层强制覆盖客户端传入的 userId，杜绝冒名下单），游客则 user/actor 为 null。
+ * 之所以不套 requireStaffWrite：下单是买家行为，REVIEWER/ADMIN 门禁会把所有真实买家挡在门外。
+ * 诚实边界：游客身份仅凭其自填 buyerEmail（写在 Order 行），ChangeLog.changedBy 记 null——
+ * 无法伪造他人 userId 这一硬约束由"user 只从会话取"保证；限流/防刷 V1 延后（ROADMAP）。
+ */
+export async function requireSameOriginActor(request: Request): Promise<ActorGuardResult> {
+  const blocked = sameOriginBlock(request);
+  if (blocked) return { ok: false, response: blocked };
+  const user = await getCurrentUser();
+  return { ok: true, user, actor: user ? actorOf(user) : null };
 }
 
 /** 统一错误响应体（对齐 src/lib/errors.ts 的 {error:{code,message,details?}} 结构）。 */
@@ -115,6 +143,11 @@ interface MutationLike {
   financialId?: string;
   unknownId?: string;
   recompute?: string;
+  // 订单数据层（Phase 12 M2）透出的派生字段：ok 分支按 `{...result}` 原样透出，
+  // order 是可序列化的 OrderView 视图（Date 会被 JSON 序列化成 ISO 串）。
+  orderId?: string;
+  deduped?: boolean;
+  order?: unknown;
 }
 
 /**

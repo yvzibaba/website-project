@@ -5,21 +5,25 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/server/authz", () => ({
   STAFF_ROLES: ["REVIEWER", "ADMIN"],
   requireRole: vi.fn(),
+  getCurrentUser: vi.fn(),
 }));
 
-import { requireRole } from "@/server/authz";
+import { requireRole, getCurrentUser } from "@/server/authz";
 import {
   isSameOrigin,
   actorOf,
   mutationResponse,
   errorResponse,
   requireStaffWrite,
+  requireSameOriginActor,
 } from "@/server/api-guard";
 
 const requireRoleMock = requireRole as unknown as ReturnType<typeof vi.fn>;
+const getCurrentUserMock = getCurrentUser as unknown as ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   requireRoleMock.mockReset();
+  getCurrentUserMock.mockReset();
 });
 
 /* ─────────────── isSameOrigin（纯函数 · CSRF 判定） ─────────────── */
@@ -123,6 +127,22 @@ describe("api-guard.mutationResponse（写入结果翻译）", () => {
     expect(res.status).toBe(500);
     expect((await jsonOf(res)).error?.code).toBe("INTERNAL_ERROR");
   });
+
+  it("ok（订单结果）→ 200 透出 orderId/deduped/order 视图，剥掉 status", async () => {
+    const res = mutationResponse({
+      status: "ok",
+      orderId: "o_1",
+      deduped: true,
+      order: { id: "o_1", amount: "1999.00", currency: "CNY", amountDisplay: "¥1999.00", status: "PENDING" },
+    });
+    expect(res.status).toBe(200);
+    const body = await jsonOf(res);
+    expect(body.ok).toBe(true);
+    expect(body.orderId).toBe("o_1");
+    expect(body.deduped).toBe(true);
+    expect((body.order as Record<string, unknown>).amount).toBe("1999.00");
+    expect(body.status).toBeUndefined();
+  });
 });
 
 /* ─────────────── errorResponse ─────────────── */
@@ -209,6 +229,46 @@ describe("api-guard.requireStaffWrite（后台写端点统一门禁）", () => {
     );
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.response.status).toBe(403);
+    expect(requireRoleMock).not.toHaveBeenCalled();
+  });
+});
+
+/* ─────────────── requireSameOriginActor（用户下单：CSRF + 会话身份，不查角色） ─────────────── */
+
+describe("api-guard.requireSameOriginActor（买家写端点：只 CSRF、不 gate 角色）", () => {
+  const ORD = "http://localhost:3000/api/orders";
+
+  it("跨站 Origin → 403 CSRF，且根本不读会话（先挡跨站）", async () => {
+    const res = await requireSameOriginActor(makeRequest(ORD, "https://evil.com"));
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.response.status).toBe(403);
+      expect((await jsonOf(res.response)).error?.message).toContain("CSRF");
+    }
+    expect(getCurrentUserMock).not.toHaveBeenCalled();
+  });
+
+  it("同源 + 已登录 → ok，注入会话身份与 actor=human:<id>", async () => {
+    const user = { id: "buyer_5", email: "b@x.co", name: null, role: "USER" as const };
+    getCurrentUserMock.mockResolvedValue(user);
+    const res = await requireSameOriginActor(makeRequest(ORD, "http://localhost:3000"));
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.user?.id).toBe("buyer_5");
+      expect(res.actor).toBe("human:buyer_5");
+    }
+    // 下单端点绝不套角色门禁
+    expect(requireRoleMock).not.toHaveBeenCalled();
+  });
+
+  it("同源 + 游客（无会话）→ ok，user 与 actor 均为 null", async () => {
+    getCurrentUserMock.mockResolvedValue(null);
+    const res = await requireSameOriginActor(makeRequest(ORD, "http://localhost:3000"));
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.user).toBeNull();
+      expect(res.actor).toBeNull();
+    }
     expect(requireRoleMock).not.toHaveBeenCalled();
   });
 });

@@ -100,6 +100,9 @@ export default async function AdminDashboardPage() {
         </StatCard>
         <StatCard title="解决方案" total={data.solutions.total}>
           <Chips map={data.solutions.byStatus} labels={STATUS_LABEL} />
+          <Link href="/admin/solutions" className="text-sm hover:underline">
+            方案管理（录入 / 定价 / 发布）→
+          </Link>
         </StatCard>
         <StatCard title="用户" total={data.users.total}>
           <Chips map={data.users.byRole} labels={ROLE_LABEL} />

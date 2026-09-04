@@ -117,6 +117,7 @@ export default async function AdminDashboardPage() {
         </StatCard>
         <StatCard title="内容入口" total={0}>
           <div className="flex flex-col gap-1 text-sm">
+            <Link href="/admin/review" className="font-medium hover:underline">审核发布队列（待我处理）→</Link>
             <Link href="/admin/cases" className="hover:underline">案例管理（录入 / 浏览全量）→</Link>
             <Link href="/cases" className="hover:underline">公开案例列表 →</Link>
             <Link href="/solutions" className="hover:underline">已发布方案列表 →</Link>

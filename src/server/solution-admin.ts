@@ -186,6 +186,20 @@ function publishGuard(s: {
   return Object.keys(errs).length > 0 ? errs : null;
 }
 
+/**
+ * **只读**发布就绪预览（Phase 13 M6 审核队列用）：复用上面同一个 `publishGuard`，把按字段归类的
+ * 原因摊平成一句句人类可读的「还差什么才能发布」。返回空数组即就绪。刻意与真实发布走**同一函数**，
+ * 杜绝"队列说能发、点了却被拦"的口径漂移（宪法第 16 条单一真源）；不写库、不改状态。
+ */
+export function solutionPublishBlockers(s: {
+  price: { toString(): string } | null;
+  riskDomains: string[];
+  needsProfessionalReview: boolean;
+}): string[] {
+  const guard = publishGuard(s);
+  return guard ? Object.values(guard).flat().filter(Boolean) : [];
+}
+
 /* ─────────────────────────── create ─────────────────────────── */
 
 /**

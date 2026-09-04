@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import type { Industry } from "@prisma/client";
 import { getIndustryByEnum } from "@/server/industries";
 import { isDemoEntity } from "@/server/demo";
+import { CaseScoresSchema, type CaseScores } from "@/server/scoring";
 
 /**
  * 案例「后台」只读视图（Phase 13 M2，server-only）。
@@ -121,7 +122,7 @@ export interface AdminCaseEvidenceDetail {
   confidence: number | null;
 }
 
-/** 案例详情（编辑台读视图）：全量可编辑面 + 关联计数 + 评分标量（只读，评分录入留 M5b）。 */
+/** 案例详情（编辑台读视图）：全量可编辑面 + 关联计数 + 评分标量 + 原始评分输入 + 复算明细（M5b）。 */
 export interface AdminCaseDetail {
   id: string;
   title: string;
@@ -139,6 +140,10 @@ export interface AdminCaseDetail {
   opportunityScore: number | null;
   evidenceConfidence: number | null;
   hasScoreBreakdown: boolean;
+  /** 原始 10 维评分输入（编辑台表单初值）；未录入 → null。 */
+  scoreInput: Record<string, number> | null;
+  /** 数据层复算落库的评分明细（只读审计）；无/结构漂移 → null。 */
+  scoreBreakdown: CaseScores | null;
   evidenceCount: number;
   solutionCount: number;
   publishedSolutionCount: number;
@@ -181,6 +186,7 @@ export async function getAdminCaseDetail(id: string): Promise<AdminCaseDetailRes
         version: true,
         opportunityScore: true,
         evidenceConfidence: true,
+        scoreInput: true,
         scoreBreakdown: true,
         createdAt: true,
         updatedAt: true,
@@ -213,6 +219,23 @@ export async function getAdminCaseDetail(id: string): Promise<AdminCaseDetailRes
       confidence: e.confidence,
     }));
 
+    // 原始评分输入：仅接受"字符串→有限整数"的普通对象，脏形状一律降为 null（表单据此回落空初值，不伪造）。
+    let scoreInput: Record<string, number> | null = null;
+    if (c.scoreInput && typeof c.scoreInput === "object" && !Array.isArray(c.scoreInput)) {
+      const entries = Object.entries(c.scoreInput as Record<string, unknown>).filter(
+        ([, v]) => typeof v === "number" && Number.isFinite(v),
+      );
+      scoreInput = Object.fromEntries(entries) as Record<string, number>;
+    }
+
+    // 复算明细：入库前已由 CaseScoresSchema 校验；此处再防御性复核，结构漂移则诚实降级为 null。
+    let scoreBreakdown: CaseScores | null = null;
+    if (c.scoreBreakdown != null) {
+      const parsed = CaseScoresSchema.safeParse(c.scoreBreakdown);
+      if (parsed.success) scoreBreakdown = parsed.data as CaseScores;
+      else log.warn("getAdminCaseDetail: scoreBreakdown failed schema check, degraded to null", { id, issues: parsed.error.issues.map((i) => i.message) });
+    }
+
     return {
       ok: true,
       data: {
@@ -232,6 +255,8 @@ export async function getAdminCaseDetail(id: string): Promise<AdminCaseDetailRes
         opportunityScore: c.opportunityScore,
         evidenceConfidence: c.evidenceConfidence,
         hasScoreBreakdown: c.scoreBreakdown != null,
+        scoreInput,
+        scoreBreakdown,
         evidenceCount: evidences.length,
         solutionCount: c._count.solutions,
         publishedSolutionCount: c.solutions.length,

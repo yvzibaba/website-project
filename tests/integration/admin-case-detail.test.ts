@@ -1,6 +1,7 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
 import { prisma, disconnectPrisma } from "@/lib/prisma";
 import { getAdminCaseDetail } from "@/server/admin-cases";
+import { recomputeCaseScores } from "@/server/case-scores";
 import { DEMO_SOURCE_TYPE } from "@/server/demo";
 
 /**
@@ -13,7 +14,9 @@ import { DEMO_SOURCE_TYPE } from "@/server/demo";
  *   ③ evidenceCount = evidences.length（实时，可计算事实），solutionCount 取全量、
  *      publishedSolutionCount **只数 PUBLISHED**（删除守卫的判定依据）；
  *   ④ isDemo 由案例自身 sourceType=DEMO_FIXTURE 判定；行业 enum→中文名映射；
- *   ⑤ 评分标量快照（opportunityScore / evidenceConfidence）与 hasScoreBreakdown 一并透传（只读，录入留 M5b）；
+ *   ⑤ 评分标量快照（opportunityScore / evidenceConfidence）+ hasScoreBreakdown + **M5b 新增**：原始 scoreInput
+ *      （表单初值，脏/缺 → null）与复算 scoreBreakdown（合法 CaseScores 逐维度拆解）一并透传；持久化 breakdown
+ *      结构漂移（如历史遗留 {total,dims}）时诚实降级为 null（不渲染半截数据），与 hasScoreBreakdown（看原始 json）可不等价；
  *   ⑥ notFound 与「读失败」可区分：合法形状但库无行 → notFound；非法形状 id → notFound、不抛裸异常。
  * 夹具 afterAll 按外键序 solution→evidence→case + entityId 清理。
  */
@@ -44,6 +47,7 @@ async function warmup() {
 describeDb("admin case detail read-layer (Neon)", () => {
   let realCaseId = "";
   let demoCaseId = "";
+  let scoredCaseId = "";
 
   beforeAll(async () => {
     await warmup();
@@ -90,6 +94,38 @@ describeDb("admin case detail read-layer (Neon)", () => {
     });
     demoCaseId = demoCase.id;
     track(demoCase.id);
+
+    // M5b 评分录入台夹具：合法 10 维 scoreInput（黄金机会分 88）+ 2 条 FACT 证据，随即复算落库真实 breakdown。
+    const scoredCase = await prisma.case.create({
+      data: {
+        title: `详情-已评分案例-${runId}`,
+        industry: "NEW_ENERGY",
+        stage: "DEEP_CASE",
+        sourceType: "MANUAL",
+        scoreInput: {
+          commercialValue: 16,
+          marketDemand: 12,
+          techMaturity: 11,
+          localizationSpace: 8,
+          costAdvantage: 7,
+          replicability: 7,
+          supplyChainMaturity: 4,
+          competitionIntensity: 2,
+          policyEnvironment: 3,
+          implementationDifficulty: 2,
+        } as object,
+        evidences: {
+          create: [
+            { type: "FACT", statement: "实测度电成本 0.42 元", sourceUrl: "https://example.com/x", confidence: 90 },
+            { type: "FACT", statement: "装机 5MW 已并网", confidence: 80 },
+          ],
+        },
+      },
+      select: { id: true },
+    });
+    scoredCaseId = scoredCase.id;
+    track(scoredCase.id);
+    await recomputeCaseScores(scoredCase.id);
   });
 
   afterAll(async () => {
@@ -120,6 +156,10 @@ describeDb("admin case detail read-layer (Neon)", () => {
     expect(c!.opportunityScore).toBe(73);
     expect(c!.evidenceConfidence).toBe(55);
     expect(c!.hasScoreBreakdown).toBe(true);
+    // M5b：raw scoreBreakdown json 存在（hasScoreBreakdown=true），但夹具是历史 {total,dims} 非 CaseScores 形状 →
+    //       防御性复核失败诚实降级为 null（不渲染半截数据）；此案例未录 scoreInput → null。
+    expect(c!.scoreBreakdown).toBeNull();
+    expect(c!.scoreInput).toBeNull();
     expect(c!.version).toBeGreaterThanOrEqual(1);
   });
 
@@ -162,6 +202,42 @@ describeDb("admin case detail read-layer (Neon)", () => {
     expect(res.data!.evidenceCount).toBe(0);
     expect(res.data!.opportunityScore).toBeNull();
     expect(res.data!.hasScoreBreakdown).toBe(false);
+  });
+
+  it("M5b：合法 scoreInput 原样回读（表单初值）+ 复算 breakdown 逐维度自洽（机会 74 / 可信度 69 / 未知 0）", async () => {
+    const res = await getAdminCaseDetail(scoredCaseId);
+    expect(res.ok).toBe(true);
+    const c = res.data!;
+
+    // 原始 10 维评分输入原样透传，供录入台取初值。
+    expect(c.scoreInput).toMatchObject({
+      commercialValue: 16,
+      marketDemand: 12,
+      techMaturity: 11,
+      localizationSpace: 8,
+      costAdvantage: 7,
+      replicability: 7,
+      supplyChainMaturity: 4,
+      competitionIntensity: 2,
+      policyEnvironment: 3,
+      implementationDifficulty: 2,
+    });
+
+    // 复算明细已落库且过 CaseScoresSchema → 非 null（区别于 realCase 的历史漂移夹具）。
+    expect(c.hasScoreBreakdown).toBe(true);
+    expect(c.scoreBreakdown).not.toBeNull();
+    const sb = c.scoreBreakdown!;
+    expect(sb.opportunityBreakdown).toHaveLength(10);
+    // 黄金值：正向和 68 + 两反向各 (5-2)=3 → 机会分 74；三处（标量 / breakdown.total / 逐维度贡献和）必须一致。
+    expect(sb.opportunityScore).toBe(74);
+    expect(c.opportunityScore).toBe(74);
+    const contribSum = sb.opportunityBreakdown!.reduce((s, r) => s + r.contribution, 0);
+    expect(contribSum).toBe(74);
+    // 证据可信度：两条 FACT(w=1) — conf90 有源(1.0) + conf80 无源(0.6) → round(100·(0.9+0.48)/2)=69，标量同步。
+    expect(sb.evidenceConfidence).toBe(69);
+    expect(c.evidenceConfidence).toBe(69);
+    // 关键未知变量 = 非 FACT 证据条数；两条皆 FACT → 0。
+    expect(sb.unknownVariableCount).toBe(0);
   });
 
   it("notFound 与读失败可区分：库无行 / 非法形状 id 均 notFound、不抛", async () => {

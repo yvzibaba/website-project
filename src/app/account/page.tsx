@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container, Card, CardContent, CardHeader, CardTitle, CardDescription, Badge, Button, Separator } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { auth } from "@/auth";
 import { getProfileUserById } from "@/server/users";
+import { hasRole, STAFF_ROLES } from "@/server/authz";
 import { logout } from "./actions";
 
 /**
@@ -67,6 +69,14 @@ export default async function AccountPage() {
             <span className="tabular-nums">{profile.createdAt.toISOString().slice(0, 10)}</span>
           </div>
           <Separator />
+          {hasRole(profile.role, STAFF_ROLES) ? (
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground">管理后台</span>
+              <Link href="/admin" className="font-medium text-primary hover:underline">
+                进入管理后台 →
+              </Link>
+            </div>
+          ) : null}
           <form action={logout}>
             <Button type="submit" variant="secondary">
               登出

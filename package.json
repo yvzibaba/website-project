@@ -1,6 +1,6 @@
 {
   "name": "website-project",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -19,6 +19,7 @@
     "db:push": "prisma db push",
     "db:seed": "node --env-file=.env --import tsx prisma/seed.ts",
     "db:recompute-scores": "node --env-file=.env --import tsx scripts/recompute-scores.ts",
+    "user:promote": "node --env-file=.env --import tsx scripts/promote-user.ts",
     "db:studio": "prisma studio"
   },
   "dependencies": {

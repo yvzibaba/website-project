@@ -3,6 +3,20 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.14.0] - 2026-09-05 · Phase 6 里程碑 2：RBAC 鉴权原语 + /admin 后台门禁（双层防御）
+
+- 原因：M1 只解决"是谁"（认证），总控 §13 明确要求"后台必须有权限控制 + 管理员操作记录 Audit Log"；且 Phase 7 M5 案例 CRUD 数据层当时刻意**不暴露** HTTP 写端点，正是缺这层可信门禁。M2 补上"能干什么"（授权），既是独立安全里程碑，也解锁后续后台写路由（Phase 13）与订单确认（Phase 12）。
+- 内容：
+  - `src/server/authz.ts`（新，server-only）：鉴权原语。`hasRole(role, allowed)` 纯函数（权限单元测试主战场，不碰会话）；`getCurrentUser()` 从 JWT 会话读取身份（**绝不信任客户端传入 role**）；`requireUser()`/`requireRole(allowed)` 返回判别联合 `{ok:true,user} | {ok:false,reason:"unauthenticated"|"forbidden",required}`，越权记 `warn` 审计（只记 id/角色，不涉敏）。导出 `STAFF_ROLES=[REVIEWER,ADMIN]`。
+  - `src/server/admin.ts`（新）：`getAdminDashboardData()` **只读聚合**（不含鉴权）——案例/方案/用户/证据/订单计数与分维度分布 + 最近 ChangeLog 流水。**总数直接由各维度 groupBy 求和得出**（不再另发 count()），既少 4 次查询、又天然满足"分布之和≡总数"自洽不变式（并发写入下两边不打架）。
+  - `src/app/admin/layout.tsx`（新，force-dynamic + noindex）：可见 UI 层门禁——未登录 `redirect("/login")`；越权渲染"无访问权限"`Alert(danger)` 且**不渲染 children**；通过则渲染后台顶栏（角色徽章 + 邮箱 + 退出/账号链接）。
+  - `src/app/admin/page.tsx`（新）：运行概览仪表盘（六张统计卡 + 最近审计流水表，全部实时 DB 数字，诚实展示）。**关键安全修正**：页面在拉任何数据前**先自鉴权**（`requireRole` 不通过 → `return null`），与 layout 构成**双层防御**。HTTP 冒烟实测发现：仅靠 layout 拦截时，Next 仍会为 leaf page 段生成 RSC flight 负载，导致越权用户的 HTML 里泄露概览内容——页面自守后 `getAdminDashboardData` 根本不执行，敏感聚合绝不进响应；`metadata.title` 亦改为中性"管理后台"避免可探测指纹。
+  - `src/app/account/page.tsx`：`hasRole(profile.role, STAFF_ROLES)` 条件显示"进入管理后台"入口（普通用户不可见）。
+  - `scripts/promote-user.ts` + npm `user:promote`（新）：运维受控提权 CLI（`user:promote -- <email> <USER|REVIEWER|ADMIN>`），只改 role 一列、email 归一小写、角色须合法、账号不存在即报错退出不自动建号。注册入口仍永远只建 USER，提权是本机运维动作，不建公开改角色端点。
+  - 测试：`tests/unit/authz.test.ts`（新，15 例，`vi.mock("@/auth")` 固定会话）覆盖 hasRole 真值矩阵、STAFF_ROLES 守护、getCurrentUser（含缺 id 保守拒绝）、requireUser、requireRole 的 unauthenticated/forbidden/ok 三分支；`tests/integration/admin.test.ts`（新，4 例，真连 Neon）覆盖四维 groupBy 之和≡total、提权账号体现于 byRole.ADMIN、已发布方案体现于 byStatus.PUBLISHED 且夹具审计可被 recentChanges 查到、recentLimit 截断生效。
+- 验证：`tsc`/`eslint` 0 错；unit **209/209**（194 + 新 15）；integration **43/43**（39 + 新 4，真连 Neon）；`next build` 新增 `ƒ /admin`（动态）无回归；**HTTP 门禁端到端冒烟 15/15**（`next start -p 3111`：未登录 `/admin`→3xx 跳 /login；普通用户→200 且含"无访问权限"、**不泄露**"运行概览"/"最近审计流水"；管理员→200 含概览与审计表、顶栏"管理后台"+"管理员"、不显示"无访问权限"）。
+- 效果：**Phase 6 M2 达成**——授权层落地且经 HTTP 验证，/admin 为总控 §13"后台权限控制 + 审计"的首个真实受保护面；M5 数据层 CRUD 的 HTTP 化与订单确认从此有了可复用的 `requireRole` 前置。下一步：以 `requireRole` 保护案例 CRUD 写路由（Phase 13）、Phase 8 方案系统（方案须走真实多角色流水线产出，禁伪造；购买闭环阻塞于 ROADMAP #5 支付）。
+
 ## [0.13.0] - 2026-09-05 · Phase 7 里程碑 5：案例与证据数据层 CRUD（受校验写入 + 审计 + 复算联动）
 
 - 原因：此前案例只能靠 `prisma/seed.ts` 批量灌 DEMO，运营/AI 流水线无法逐条撰写真实案例（ROADMAP Phase 7「案例系统」后续待做 = 案例 CRUD）。M5 先交付**数据层**写入口，把"能读能展示"升级为"能全生命周期管理"，为 Phase 13 后台与 AI 生产链路打底。

@@ -3,6 +3,25 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.9.0] - 2026-09-05 · Phase 7 里程碑 1：案例评分内核（可复算公式 + 黄金样本 + 版本化文档）
+
+- 原因：在此之前 `Case.opportunityScore` / `Case.evidenceConfidence` / `Solution.unknownVariableCount` 只是几个手填/种子写入的 `Int?` **魔数**——无法复算、无法审计、假设变了也不知道影响了谁，违反宪法第 7 条"关键数字须来源可追溯 + 公式可复算 + 假设可改，程序计算 > LLM 口算"。评分是下游一切（案例排序、方案优先级、后台审核、机会池）的地基，故 Phase 7 先立**评分内核**。按宪法第 2/4 条 MVP 优先，M1 只做"纯函数 + Zod 校验 + 黄金样本测试 + 版本化公式文档"，**不动数据库、不动页面**（持久化 `Case.scoreBreakdown` 与详情页拆解展示 = M2）；本内核无新增运行时依赖。选此任务因其**无阻塞、无需创始人决策、高价值**（Phase 12 购买仍被定价/支付决策 + 模型 Key 阻塞，Phase 8 方案依赖本评分）。
+- 内容：
+  - **评分内核** `src/server/scoring.ts`（server 域逻辑，纯函数，新增）：
+    - `SCORING_RUBRIC_VERSION="1.0.0"`（宪法第 13 条：调权重/改公式必须升版本 + 记录原因 + 可回滚）。
+    - `OPPORTUNITY_DIMENSIONS`：10 个维度与权重**逐字照抄总控 Prompt §10**（商业价值 20 / 市场需求 15 / 技术成熟度 15 / 中国本土化空间 10 / 成本优势 10 / 可复制性 10 / 供应链成熟度 5 / 竞争强度 5 / 政策环境 5 / 实施难度 5），`OPPORTUNITY_MAX` 用 `reduce` 求和恒为 100（防维度改动后硬编码失真）。
+    - **反向极性设计**：`竞争强度` / `实施难度` 标为 `inverse`——录入者按直觉填"竞争 0=无…5=白热化""难度 0=极易…5=极难"，程序负责 `contribution = max - raw`，避免人工把方向填反。`computeOpportunityScore()` 经 `OpportunityInputSchema`（Zod，逐维度动态生成 0..max 整数约束）校验，非法（缺维度/越界/非整数）→ `{ok:false, issues}` **逐条指名维度、绝不静默截断**（宪法第 20 条诚实优先）；合法则返回 `total` + 每维度 `breakdown`（raw/contribution，作审计线索）。
+    - **证据可信度** `computeEvidenceConfidence()`：总控 §10 **只给示例值未给公式**，故本公式是**本项目 v1 假设**（已在文档明确标注、参数可调）。类型权重 `EVIDENCE_TYPE_WEIGHTS`（FACT 1.0 / ASSUMPTION 0.5 / INFERENCE 0.4 / PREDICTION 0.3）+ `EVIDENCE_CONFIDENCE_PARAMS`（无 sourceUrl 打 0.6 折、未填 confidence 缺省 50）；`value = round(100·Σ(w·q·sf)/Σw)`，空证据集 → 0，未知 type 跳过（防御脏数据不静默当 FACT），越界 confidence clamp。
+    - `countKeyUnknowns()` = 非 FACT 证据条数（呼应宪法第 6 条：把不确定显式计数暴露）；`computeCaseScores()` 一次算出三件套（机会评分 + 证据可信度 + 关键未知变量数，总控 §10 输出契约），机会评分非法不影响证据两项独立计算；`CaseScoresSchema`（Zod）供 M2 持久化前复核入库结构。
+  - **版本化公式文档** `docs/SCORING_V1.md`（新增）：把每个数字标注为**事实/假设/推断/预测**（宪法第 6 条）——维度权重=【事实】照抄总控 §10、反向极性与证据可信度公式=【假设】可调、边界值与样例=【推断】可复算；含机会评分/证据可信度两个**逐维度可复算工作样例**（→88 / →69，其中机会评分 88 与总控 §10 示例"综合价值 88/100"交叉验证一致）；**诚实记录已知缺口**（总控 §11 的证据"等级"S/A/B/C/D 轴尚未建模、当前公式未使用等级，列为 M2+ 开放决策；权重未经真实案例校准；raw 录入的客观性属 Phase 9）；含变更流程与版本历史表。重申铁律：综合评分 ≠"项目一定成功"（总控 §10 / 规则 9）。
+  - **测试新增** `tests/unit/scoring.test.ts`（26 cases，黄金样本）：锁定常量结构（满分 100、10 维度权重、恰两个反向维度、类型权重单调递减）；机会评分黄金值（最优 100 / 全填 max 90 / 全填 0 10 / 工作样例 88 / 反向极性 raw↑贡献↓ / 越界与缺维度与非整数与负数 ok:false / 确定性）；证据可信度黄金值（混合集 →69 且 Σnum=1.94、Σw=2.8 精确锁定 / 空集 →0 / 单条 FACT conf100 有源 →100 / 单条时类型权重约掉只由 q·sf 决定 / 缺省 confidence / clamp 越界 / 未知类型跳过 / 确定性）；关键未知变量数；组合契约（三件套 + CaseScoresSchema 一致 + 机会非法时 ok:false 但证据两项照算 + 无证据边界）。
+- 验证（宪法第 5/18/20 条）：
+  - `next typegen` 成功；`tsc --noEmit` **0 错误**；`eslint .` **0 问题**。
+  - `vitest run tests/unit`：**193/193 全绿**（原 167 + scoring 26），~0.9s。
+  - `next build`（Turbopack）：编译成功，全部路由无回归（本里程碑不新增路由/页面，故无新增 HTTP 冒烟——评分内核是纯函数，验证以单元黄金样本为准，符合"程序计算 > 口算"）。
+  - `node --env-file=.env vitest run tests/integration`：**23/23 全绿**（无回归，本里程碑不动 DB），~43s，真连 Neon us-east-2。
+- 效果：**Phase 7 里程碑 1 达成**——评分从"手填魔数"变成"可复算程序 + 版本化公式 + 26 黄金样本锁"，任何调权重/改公式都会被测试挡住并强制升版本（宪法第 7/13 条）。数据质量地基就绪，M2 可把 `computeCaseScores` 的 breakdown 持久化进 `Case.scoreBreakdown` 并在详情页展示（届时提供历史数据重算脚本 + 旧版本号标注）。下一步 Phase 7 M2（评分持久化 + 详情页拆解），随后案例 CRUD/证据管理，再 Phase 8+（方案系统、AI Agent、GitHub Scout）。ROADMAP 阻塞剩余 #3 github.com CLI（API 绕行中）、#4 模型 API Key、#5 部署/支付、#6 对象存储。
+
 ## [0.8.0] - 2026-09-05 · Phase 6 里程碑 1：用户系统最小闭环（注册 / 登录 / 会话 / 账号页）
 
 - 原因：V1-A 商业闭环「案例 → 方案 → 购买」的「购买」环节必须有下单身份，故 Phase 6 先立最小可用的用户系统。认证方案是"高价值、影响架构与厂商锁定"的决策，按宪法（AI 做大量劳动、人做关键决策）交创始人裁决 → 选定 **Auth.js 自建**（总控 §21「认证尽可能用成熟现成方案」）。V1 只需"下单身份"，不需要 OAuth / 魔法链接（后者要引入 nodemailer/Resend 邮件通道 = 额外依赖与成本），故按宪法第 2/4 条 MVP 优先：Credentials（邮箱 + 密码）+ JWT 会话，用户表留在自己的 Neon 库，零厂商锁定。口令哈希用 Node 内置 `node:crypto` 的 scrypt，**零额外依赖**、无需本机原生编译（Windows 友好），是 OWASP 认可的内存困难型 KDF。

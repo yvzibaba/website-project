@@ -72,8 +72,8 @@ describeDb("cases / solutions data layer (Neon)", () => {
       },
     });
     ids.realCase = real.id;
-    await prisma.evidence.create({ data: { caseId: real.id, type: "FACT", statement: "事实A", confidence: 60 } });
-    await prisma.evidence.create({ data: { caseId: real.id, type: "PREDICTION", statement: "预测B", confidence: 20 } });
+    await prisma.evidence.create({ data: { caseId: real.id, type: "FACT", statement: "事实A", confidence: 60, grade: "A" } });
+    await prisma.evidence.create({ data: { caseId: real.id, type: "PREDICTION", statement: "预测B", confidence: 20, grade: "D" } });
     await prisma.caseCapability.create({ data: { caseId: real.id, capabilityId: cap.id, relevance: 80 } });
 
     // DEMO 深度案例
@@ -182,6 +182,9 @@ describeDb("cases / solutions data layer (Neon)", () => {
     if (res.status !== "found") return;
     expect(res.data.evidences).toHaveLength(2);
     expect(res.data.evidences.map((e) => e.type).sort()).toEqual(["FACT", "PREDICTION"]);
+    // §11 来源权威度分级随证据透出
+    const gradeByType = Object.fromEntries(res.data.evidences.map((e) => [e.type, e.grade]));
+    expect(gradeByType).toEqual({ FACT: "A", PREDICTION: "D" });
     expect(res.data.capabilities).toHaveLength(1);
     expect(res.data.capabilities[0].relevance).toBe(80);
     expect(res.data.businessModel?.name).toContain(runId);

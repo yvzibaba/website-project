@@ -148,6 +148,10 @@ export const EvidenceTypeSchema = z.enum([
 ]);
 export type EvidenceType = z.infer<typeof EvidenceTypeSchema>;
 
+/** 总控 §11 证据等级（来源权威度）：与"类型"正交的第二条轴，v1 仅作元数据/标注，不进可信度打分。 */
+export const EvidenceGradeSchema = z.enum(["S", "A", "B", "C", "D"]);
+export type EvidenceGrade = z.infer<typeof EvidenceGradeSchema>;
+
 /** 技术成熟度。 */
 export const MaturitySchema = z.enum([
   "EMERGING",

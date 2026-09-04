@@ -1,4 +1,4 @@
-import { PrismaClient, Industry, CaseStage, EvidenceType, Maturity } from "@prisma/client";
+import { PrismaClient, Industry, CaseStage, EvidenceType, EvidenceGrade, Maturity } from "@prisma/client";
 import { DEMO_SOURCE_TYPE, DEMO_TITLE_PREFIX } from "../src/server/demo";
 import { computeCaseScores } from "../src/server/scoring";
 
@@ -35,7 +35,7 @@ interface SeedCase {
   opportunityScore: number;
   evidenceConfidence: number;
   capabilities: Array<{ id: string; relevance: number; note: string }>;
-  evidences: Array<{ type: EvidenceType; statement: string; confidence?: number }>;
+  evidences: Array<{ type: EvidenceType; statement: string; confidence?: number; grade?: EvidenceGrade }>;
 }
 
 const REGIONS = [
@@ -76,10 +76,10 @@ const CASES: SeedCase[] = [
     evidenceConfidence: 38,
     capabilities: [{ id: `${DEMO_ID}cap_biogas`, relevance: 90, note: "【DEMO】核心产气能力" }],
     evidences: [
-      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：该类工程在国内已有多个县建成运行（占位，未引用真实来源）。", confidence: 50 },
-      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：粪污收储半径 30km 内、含固率 20% 左右。", confidence: 30 },
-      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：在处理费 + 上网电价叠加下项目可能勉强盈亏平衡。", confidence: 35 },
-      { type: EvidenceType.PREDICTION, statement: "【DEMO】示例预测：若碳资产价格上行，IRR 有改善空间（不确定性高）。", confidence: 20 },
+      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：该类工程在国内已有多个县建成运行（占位，未引用真实来源）。", confidence: 50, grade: EvidenceGrade.B },
+      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：粪污收储半径 30km 内、含固率 20% 左右。", confidence: 30, grade: EvidenceGrade.D },
+      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：在处理费 + 上网电价叠加下项目可能勉强盈亏平衡。", confidence: 35, grade: EvidenceGrade.D },
+      { type: EvidenceType.PREDICTION, statement: "【DEMO】示例预测：若碳资产价格上行，IRR 有改善空间（不确定性高）。", confidence: 20, grade: EvidenceGrade.D },
     ],
   },
   {
@@ -98,9 +98,9 @@ const CASES: SeedCase[] = [
       { id: `${DEMO_ID}cap_predictive_maint`, relevance: 55, note: "【DEMO】可叠加" },
     ],
     evidences: [
-      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：AI 视觉质检在 3C/汽车零部件已有成熟落地（占位）。", confidence: 55 },
-      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：单产线年质检人力成本约若干万元（占位数字，非实测）。", confidence: 30 },
-      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：漏检率下降可带来返工成本节约。", confidence: 40 },
+      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：AI 视觉质检在 3C/汽车零部件已有成熟落地（占位）。", confidence: 55, grade: EvidenceGrade.D },
+      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：单产线年质检人力成本约若干万元（占位数字，非实测）。", confidence: 30, grade: EvidenceGrade.D },
+      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：漏检率下降可带来返工成本节约。", confidence: 40, grade: EvidenceGrade.D },
     ],
   },
   {
@@ -116,9 +116,9 @@ const CASES: SeedCase[] = [
     evidenceConfidence: 42,
     capabilities: [{ id: `${DEMO_ID}cap_bess`, relevance: 92, note: "【DEMO】储能系统" }],
     evidences: [
-      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：多地已实施工商业分时电价（占位）。", confidence: 50 },
-      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：日均两充两放、峰谷价差达到某阈值（占位）。", confidence: 28 },
-      { type: EvidenceType.PREDICTION, statement: "【DEMO】示例预测：电价政策变动会显著影响回收期（高不确定性）。", confidence: 18 },
+      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：多地已实施工商业分时电价（占位）。", confidence: 50, grade: EvidenceGrade.A },
+      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：日均两充两放、峰谷价差达到某阈值（占位）。", confidence: 28, grade: EvidenceGrade.C },
+      { type: EvidenceType.PREDICTION, statement: "【DEMO】示例预测：电价政策变动会显著影响回收期（高不确定性）。", confidence: 18, grade: EvidenceGrade.D },
     ],
   },
   {
@@ -133,8 +133,8 @@ const CASES: SeedCase[] = [
     evidenceConfidence: 36,
     capabilities: [{ id: `${DEMO_ID}cap_cold_chain`, relevance: 88, note: "【DEMO】冷链溯源" }],
     evidences: [
-      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：冷链断链导致损耗是行业痛点（占位）。", confidence: 48 },
-      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：溯源可提升溢价与准入合规。", confidence: 33 },
+      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：冷链断链导致损耗是行业痛点（占位）。", confidence: 48, grade: EvidenceGrade.B },
+      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：溯源可提升溢价与准入合规。", confidence: 33, grade: EvidenceGrade.D },
     ],
   },
   {
@@ -149,8 +149,8 @@ const CASES: SeedCase[] = [
     evidenceConfidence: 30,
     capabilities: [{ id: `${DEMO_ID}cap_prefab_energy`, relevance: 85, note: "【DEMO】装配式 + 能耗模拟" }],
     evidences: [
-      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：项目位于寒冷地区、执行某节能标准（占位）。", confidence: 25 },
-      { type: EvidenceType.PREDICTION, statement: "【DEMO】示例预测：运行能耗较基准下降一定比例（不确定）。", confidence: 20 },
+      { type: EvidenceType.ASSUMPTION, statement: "【DEMO】示例假设：项目位于寒冷地区、执行某节能标准（占位）。", confidence: 25, grade: EvidenceGrade.C },
+      { type: EvidenceType.PREDICTION, statement: "【DEMO】示例预测：运行能耗较基准下降一定比例（不确定）。", confidence: 20, grade: EvidenceGrade.D },
     ],
   },
   {
@@ -165,8 +165,8 @@ const CASES: SeedCase[] = [
     evidenceConfidence: 34,
     capabilities: [{ id: `${DEMO_ID}cap_ai_tutor`, relevance: 90, note: "【DEMO】AI 助教" }],
     evidences: [
-      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：职业教育数字化是政策鼓励方向（占位）。", confidence: 45 },
-      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：个性化训练可提升取证通过率。", confidence: 30 },
+      { type: EvidenceType.FACT, statement: "【DEMO】示例事实：职业教育数字化是政策鼓励方向（占位）。", confidence: 45, grade: EvidenceGrade.S },
+      { type: EvidenceType.INFERENCE, statement: "【DEMO】示例推断：个性化训练可提升取证通过率。", confidence: 30, grade: EvidenceGrade.D },
     ],
   },
 ];
@@ -236,6 +236,7 @@ async function main() {
         data: {
           caseId: c.id,
           type: ev.type,
+          grade: ev.grade,
           statement: ev.statement,
           sourceUrl: c.sourceUrl,
           sourceType: DEMO_SOURCE_TYPE,

@@ -143,6 +143,7 @@ export async function listPublicCases(params: CaseListParams): Promise<CaseListR
 export interface CaseEvidenceItem {
   id: string;
   type: string;
+  grade: string | null;
   statement: string;
   sourceUrl: string | null;
   sourceType: string | null;
@@ -249,6 +250,7 @@ export async function getPublicCaseById(id: string, includeDemo: boolean): Promi
         evidences: c.evidences.map((e) => ({
           id: e.id,
           type: e.type,
+          grade: e.grade,
           statement: e.statement,
           sourceUrl: e.sourceUrl,
           sourceType: e.sourceType,

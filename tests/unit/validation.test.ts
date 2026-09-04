@@ -10,6 +10,7 @@ import {
   IndustrySchema,
   CaseStageSchema,
   EvidenceTypeSchema,
+  EvidenceGradeSchema,
   MaturitySchema,
   LicenseTypeSchema,
   LicenseReviewStatusSchema,
@@ -159,6 +160,11 @@ describe("validation — 业务枚举与 prisma/schema.prisma 同步", () => {
       "INFERENCE",
       "PREDICTION",
     ]);
+  });
+
+  it("EvidenceGrade 与 prisma 同步：总控 §11 来源权威度 S/A/B/C/D（5 级）", () => {
+    expect(EvidenceGradeSchema.options).toEqual(["S", "A", "B", "C", "D"]);
+    expect(EvidenceGradeSchema.options).toHaveLength(5);
   });
 
   it("Maturity has 4 levels", () => {

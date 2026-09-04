@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.12.0] - 2026-09-05 · Phase 7 里程碑 4：§11 证据来源权威度分级（元数据 + 标签，不动分数）
+
+- 原因：总控 §11 按来源权威性分 S/A/B/C/D，与已建模的证据"类型"轴正交。创始人 2026-09-05 裁决「只记录 + 标签，不动分数」——先让等级可存、可查、可见，并暴露"仅 D 级支撑却称事实"的复核告警，但暂不并入可信度公式（避免无校准地改动已上线分数）。
+- 内容：
+  - `prisma/schema.prisma`：新增 `enum EvidenceGrade`（S/A/B/C/D）与 `Evidence.grade EvidenceGrade?`；纯加性迁移 `20260905110000_add_evidence_grade` 已 deploy Neon（表数仍 18，枚举 12→13）。
+  - `src/lib/validation.ts`：`EvidenceGradeSchema = z.enum(["S","A","B","C","D"])`。
+  - `src/server/cases.ts` + `src/app/cases/[id]/page.tsx`：证据透出 `grade`；详情页每条证据叠一个来源等级徽章（S=success/A=info/B=primary/C=warning/D=danger「来源 D·AI推断」），并对存在 D 级、尤其"FACT 仅 D 级支撑"给 `Alert` 复核告警。公式与 `SCORING_RUBRIC_VERSION` 保持 1.0.0，历史 `scoreBreakdown` 仍有效解析。
+  - `prisma/seed.ts`：6 个 DEMO 案例 16 条证据补 `grade` 并在 create 落库（保留 ai_vision 的 FACT=D 以演示"事实被 D 级支撑"告警）。
+  - 测试：`validation.test` +1（等级 5 值）；`db-smoke` 枚举 12→13；`cases-solutions.test` 断言 `getPublicCaseById` 随证据透传 grade（FACT→A、PREDICTION→D）。`docs/SCORING_V1.md` §4 缺口#1 记为"已建元数据、暂未并入打分"。
+- 验证：`tsc`/`eslint` 0 错；unit **194/194**；integration **31/31**（真连 Neon）；`next build` 无回归；`db:seed` 后 grade groupBy 实测 A1/B2/C2/D10/S1=16，`db:recompute-scores` 6 computed / 0 error；HTTP 冒烟 `GET /cases/demo_case_biogas?demo=1` 实测渲染「来源 D」「来源 B」徽章与「存在 AI 推断 / 待验证来源（D 级）」告警，health 报 0.12.0。
+- 效果：**Phase 7 M4 达成**——来源权威度分级可记录、可查询、可展示，D 级不得当已确认事实的宪法约束在 UI 层落地为显式告警。下一步：案例 CRUD、行业关联、把 grade 并入可信度公式的后续待决（属公式形态变更，须走 §5 升版）。
+
 ## [0.11.0] - 2026-09-05 · Phase 7 里程碑 3：评分拆解上详情页（可审计展示 + DEMO 端到端）
 
 - 原因：M2 已把 `scoreInput`（输入）与 `scoreBreakdown`（可复算输出）落库，但用户界面尚未展示——评分仍是一个不可解释的标量。M3 把拆解搬到案例详情页，让"机会分从哪些维度来、证据有多强、有多少关键未知变量"对用户可见（宪法第 6/7/9 条），并给 DEMO 种子补输入使 `?demo=1` 能端到端演示。

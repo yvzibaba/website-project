@@ -30,6 +30,15 @@ const EVIDENCE_META: Record<string, { label: string; variant: "success" | "info"
   PREDICTION: { label: "预测", variant: "neutral" },
 };
 
+// 总控 §11 来源权威度等级（v1 仅标注，不参与打分）。
+const GRADE_META: Record<string, { label: string; variant: "success" | "info" | "primary" | "warning" | "danger" }> = {
+  S: { label: "来源 S", variant: "success" },
+  A: { label: "来源 A", variant: "info" },
+  B: { label: "来源 B", variant: "primary" },
+  C: { label: "来源 C", variant: "warning" },
+  D: { label: "来源 D·AI推断", variant: "danger" },
+};
+
 function first(v: string | string[] | undefined): string | undefined {
   return Array.isArray(v) ? v[0] : v;
 }
@@ -155,23 +164,40 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
         )}
       </section>
 
-      {/* 证据（事实/假设/推断/预测 分层） */}
+      {/* 证据（事实/假设/推断/预测 分层 + §11 来源权威度分级） */}
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">证据与判断分层</h2>
         <p className="text-xs text-muted-foreground">
-          依据宪法第 6 条，结论严格区分「事实 / 假设 / 推断 / 预测」，并标注可信度，避免把推断包装成事实。
+          依据宪法第 6 条，每条结论标注「类型（事实 / 假设 / 推断 / 预测）+ 来源等级（总控 §11 的 S/A/B/C/D）+ 可信度」，
+          避免把推断包装成事实。等级只作权威度参考标注，v1 不并入可信度打分。
         </p>
+        {c.evidences.some((ev) => ev.grade === "D") ? (
+          <Alert variant="warning" title="存在 AI 推断 / 待验证来源（D 级）">
+            依据总控 §11，来源仅为 D 级（AI 推断）的信息<strong>不得表述为已确认事实</strong>，须待补充 S/A/B 级来源后复核。
+            {c.evidences.some((ev) => ev.grade === "D" && ev.type === "FACT") ? (
+              <> 当前有被标为「事实」的结论仅由 D 级来源支撑，请特别留意。</>
+            ) : null}
+          </Alert>
+        ) : null}
         {c.evidences.length === 0 ? (
           <p className="text-sm text-muted-foreground">暂无证据条目。</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {c.evidences.map((ev) => {
               const meta = EVIDENCE_META[ev.type] ?? { label: ev.type, variant: "neutral" as const };
+              const grade = ev.grade ? GRADE_META[ev.grade] : undefined;
               return (
                 <li key={ev.id} className="flex gap-3 rounded-lg border border-border p-3">
-                  <Badge variant={meta.variant} compact className="shrink-0 self-start">
-                    {meta.label}
-                  </Badge>
+                  <div className="flex shrink-0 flex-col items-start gap-1">
+                    <Badge variant={meta.variant} compact>
+                      {meta.label}
+                    </Badge>
+                    {grade ? (
+                      <Badge variant={grade.variant} compact>
+                        {grade.label}
+                      </Badge>
+                    ) : null}
+                  </div>
                   <div className="flex flex-col gap-1">
                     <p className="text-sm leading-6 text-foreground">{ev.statement}</p>
                     <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">

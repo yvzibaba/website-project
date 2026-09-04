@@ -86,7 +86,7 @@ describeDb("db smoke (Neon Postgres)", () => {
     createdId = null; // 已删除，afterAll 无需再清
   });
 
-  it("exposes all 12 enum types in public schema", async () => {
+  it("exposes all 13 enum types in public schema", async () => {
     const rows = await prisma.$queryRaw<Array<{ enum_name: string }>>`
       SELECT t.typname AS enum_name
       FROM pg_type t
@@ -100,6 +100,7 @@ describeDb("db smoke (Neon Postgres)", () => {
       "CaseStage",
       "ChangeAction",
       "Currency",
+      "EvidenceGrade",
       "EvidenceType",
       "Industry",
       "LicenseReviewStatus",

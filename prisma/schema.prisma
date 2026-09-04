@@ -48,6 +48,16 @@ enum EvidenceType {
   PREDICTION
 }
 
+// 总控 §11 证据等级体系：按来源权威度分级（与"类型"正交的第二条轴）。
+// 注：v1 仅作**可查询元数据 + 前端标注**，不参与证据可信度打分（创始人 2026-09-05 裁决）。
+enum EvidenceGrade {
+  S // 政府/法规/原始论文/企业原始披露/审计资料
+  A // 权威机构/上市公司年报/专业数据库
+  B // 行业媒体/行业报告
+  C // 普通二手资料
+  D // AI 推断（只有 D 级时不得表述为已确认事实，须标"AI推断/待验证"）
+}
+
 enum Maturity {
   EMERGING
   DEVELOPING
@@ -212,6 +222,7 @@ model Evidence {
   caseId      String
   case        Case         @relation(fields: [caseId], references: [id], onDelete: Cascade)
   type        EvidenceType
+  grade       EvidenceGrade? // 总控 §11 来源权威度分级（v1 元数据/标注，不参与可信度打分）
   statement   String       // 结论陈述
   sourceUrl   String?
   sourceType  String?

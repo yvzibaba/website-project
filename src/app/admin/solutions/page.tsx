@@ -17,8 +17,8 @@ import { requireRole, STAFF_ROLES } from "@/server/authz";
  * 组成：① 全量方案列表（含 DRAFT / UNDER_HUMAN_REVIEW / DEMO 关联，`listAdminSolutions`，非公开橱窗）；
  *       ② `NewSolutionForm` 新建（POST `/api/admin/solutions`，强制 DRAFT）；
  *       ③ 每行 `PublishSolutionButton` 发布（PATCH `/api/admin/solutions/[id]`，走数据层 publishGuard）。
- *   刻意只做「列表 + 新建 + 发布」这条最小闭环；正文 34 分节 / 财务 / 未知变量 / 删除的录入留 M4
- *   （简单优先，一次一个明确任务）。force-dynamic + noindex。
+ *   本页承载「列表 + 新建 + 发布」这条最小闭环；每行「编辑内容」链向 `/admin/solutions/[id]` 内容编辑台
+ *   （正文 34 分节 / 财务 / 未知变量 / 删除，Phase 13 M4）。force-dynamic + noindex。
  */
 export const dynamic = "force-dynamic";
 
@@ -125,6 +125,10 @@ export default async function AdminSolutionsPage() {
                       <div className="text-xs text-muted-foreground">高风险领域：{s.riskDomains.join("、")}</div>
                     ) : null}
                     <div className="text-[11px] text-muted-foreground">
+                      <Link href={`/admin/solutions/${s.id}`} className="font-medium underline">
+                        编辑内容
+                      </Link>
+                      {" · "}
                       <Link href={`/solutions/${s.id}`} className="underline">
                         详情页预览
                       </Link>

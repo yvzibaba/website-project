@@ -57,7 +57,7 @@ export const ADMIN_CASE_LIST_LIMIT = 500;
  */
 export async function listAdminCases(): Promise<AdminCaseListResult> {
   try {
-    const [rows, total] = await prisma.$transaction([
+    const [rows, rawCount] = await prisma.$transaction([
       prisma.case.findMany({
         orderBy: { updatedAt: "desc" },
         take: ADMIN_CASE_LIST_LIMIT,
@@ -97,6 +97,9 @@ export async function listAdminCases(): Promise<AdminCaseListResult> {
       };
     });
 
+    // READ COMMITTED 下 count() 与 findMany() 各取各快照：并发写可能在两语句之间落地，令 count < items.length。
+    // 诚实兜底：绝不报告比实际返回更少的总数（真实单用户场景 count≥items，此钳位无副作用）。
+    const total = Math.max(rawCount, items.length);
     return { ok: true, items, total, truncated: total > items.length };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

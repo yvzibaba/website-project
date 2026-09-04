@@ -19,7 +19,7 @@
 | 10 | GitHub Scout | 开源发现/去重/评分/许可证检查/技术匹配 | 9 | ⬜ |
 | 11 | 企业诊断 | 企业画像、诊断会话、方案匹配、Top5、定制方案（V1-B） | 8,9 | ⬜ |
 | 12 | 订单 | 下单、最简支付确认、后台确认、解锁；预留多渠道 | 6,8 | ⬜ |
-| 13 | 后台 | 每日任务中心、各领域管理、审核发布、日志、成本看板 | 7–12 | ⬜ |
+| 13 | 后台 | 每日任务中心、各领域管理、审核发布、日志、成本看板 | 7–12 | 🟡 **M1 完成（后台「写」HTTP 端点，统一门禁）**：兑现 Phase 7 M5 / Phase 8 M1 数据层「不做鉴权、HTTP 写路由延 Phase 13」的安全承诺。`src/server/api-guard.ts` 作为**唯一门禁 + 结果翻译点**（宪法第 16 条防逐端点漂移）——`actorOf` 只从服务端会话派生 `human:<id>`（绝不信客户端 actor/role）、`isSameOrigin` 纯函数做 CSRF 同源判定（无头放行 / 有头 host 精确相等 / 解析失败拒）、`requireStaffWrite` 先挡跨站 403（且不查角色）再 `requireRole(STAFF_ROLES)`（未登录 401 / USER 越权 403 带 `required`）、`mutationResponse` 把数据层判别联合统一翻译（ok→200、invalid→400、not_found→404、blocked→409、error→500 生产屏蔽）。10 个薄封装写路由（案例 create/update/delete + evidence add/remove、方案 create/update/delete + financial/unknown add/remove），**零业务逻辑、零 schema 变更**，校验/审计/守卫/复算全在已测数据层；**仍不含限流/幂等**（V1 延后）。`tests/unit/api-guard.test.ts` 18 例锁门禁与状态映射；基线 **238 单元 + 52 集成**全绿、`tsc`/`eslint` 0 错、`next build` 新增 10 条 `ƒ /api/admin/**` 无回归、**HTTP 端到端冒烟 24/24**（未登录 401 / USER 403 / 跨站 CSRF 403 / 非法入参 400 / ADMIN 全链路写成功且 `ChangeLog.changedBy=human:<adminId>`、临时数据 leftover=0），版本 **0.17.0**。**M2+ 待做**：最小后台管理 UI（表单消费本批端点）、审核发布队列、成本看板、更细粒度权限矩阵（按资源/动作）|
 | 14 | SEO | 独立 URL、meta/OG/结构化数据/canonical、sitemap | 5,7,8 | ⬜ |
 | 15 | 测试 | Unit/Integration/API/DB/AI Workflow/Permission/Security/E2E | 各 Phase | ⬜ 随 Phase 进行 |
 | 16 | 部署 | Serverless/低运维上线、环境变量、域名 | 4–14 + **托管资源** | ⬜ 阻塞 |

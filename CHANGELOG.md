@@ -3,6 +3,19 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.17.0] - 2026-09-05 · Phase 13 里程碑 1：后台「写」HTTP 端点（requireRole + CSRF 统一门禁）
+
+- 原因：Phase 7 M5（案例 CRUD）、Phase 8 M1（方案 CRUD）两期数据层当时刻意都留了一句「**不做鉴权、HTTP 写路由延 Phase 13**」——没有可信门禁就上线公开写端点违反安全底线（宪法优先级：安全/数据质量 > 功能数量）。Phase 6 M2 的 `requireRole` 原语与 layout+page 双层防御经验已就绪，这一层把「谁在写」收敛到**一处**，让 `/api/admin/**` 写端点共用同一套 CSRF 同源 + 角色门禁 + 结果翻译，为 Phase 13 M2 后台 UI（以及 Phase 8 M4 AI 流水线的服务端写入）提供安全入口。**这一步是"方向一：把案例/方案 CRUD 数据层用 requireRole 包成后台 HTTP 写路由"的安全地基**；最小后台 UI 拆到 M2。
+- 内容：
+  - `src/server/api-guard.ts`（新）：后台写端点的**唯一门禁 + 翻译点**（宪法第 16 条单一真源，防逐端点漂移）。
+    - `actorOf(user)` → `human:<userId>`（actor **只从服务端会话**派生，绝不接受客户端传入的 actor/role，宪法第 20 条）。
+    - `isSameOrigin(originHeader, reqHost)` 纯函数：无头信息放行（真正防线是会话 cookie 的 `SameSite=Lax` + 鉴权）、有头则 host 必须精确相等、解析失败按不安全拒绝（SECURITY：CSRF 判定禁止口算，拆纯函数便于单测锁边界）。
+    - `requireStaffWrite(request)`：先 CSRF 同源（Origin 优先、退化到 Referer 的 origin；跨站直接 403、**根本不查角色**），再 `requireRole(STAFF_ROLES)`——未登录 401、USER 越权 403（透出 `required`）；通过返回 `{ok,user,actor}`。
+    - `mutationResponse(result)`：把数据层判别联合统一翻译成 HTTP——`ok`→200 `{ok:true,...派生字段}`（剔除 status、透出 caseId/solutionId/evidenceId/financialId/unknownId/recompute）、`invalid`→400 VALIDATION_ERROR（`details.fields`）、`not_found`→404、`blocked`→409 CONFLICT、`error`→500（生产屏蔽原始 message）。`errorResponse`/`readJsonSafe`（非法 JSON→400）配套。
+  - 10 个薄封装写路由（每个仅 `requireStaffWrite` → 解析 body → 调既有数据层 → `mutationResponse`，`export const dynamic="force-dynamic"`）：案例 `POST /api/admin/cases`、`PATCH|DELETE /api/admin/cases/[id]`、`POST /api/admin/cases/[id]/evidence`、`DELETE /api/admin/cases/[id]/evidence/[evidenceId]`；方案 `POST /api/admin/solutions`、`PATCH|DELETE /api/admin/solutions/[id]`、`POST|DELETE .../financial[/[financialId]]`、`POST|DELETE .../unknown[/[unknownId]]`。**零业务逻辑、零 schema 变更**——校验/审计/守卫/复算全在已测数据层，路由只加门禁与翻译。
+- 验证：`tsc`/`eslint` 0 错；新增 `tests/unit/api-guard.test.ts` **18 例**（`vi.mock` authz）：`isSameOrigin` 无头/同源/跨站 host·端口·子域/解析失败/空串 + `actorOf` + `mutationResponse` 五态映射与默认兜底 + `errorResponse` 两形态 + `requireStaffWrite` 组合（跨站先挡且不查角色 / 未登录 401 / USER 403 带 required / ADMIN 放行注入 `human:<id>` / 无 Origin 但同源 Referer 放行 / 跨站 Referer 拒）。基线 **238 单元（220+18）+ 52 集成**全绿、`next build` 新增 10 条 `ƒ /api/admin/**` 路由无回归。**HTTP 端到端冒烟 24/24**（`next start -p 3121`，直插 USER/REVIEWER/ADMIN 三账号走真实 Auth.js 登录拿 cookie）：未登录写案例→401 UNAUTHORIZED / USER→403 FORBIDDEN 且透出 `required` / ADMIN 跨站 Origin→403 含 CSRF 字样 / 非法入参→400 VALIDATION_ERROR / ADMIN 全链路写成功（建案例 200 + `ChangeLog.changedBy=human:<adminId>` 服务端注入审计 + 改案例 + 加证据带 recompute + 删证据 + 建方案 DRAFT + 加关键未知量后 `unknownVariableCount=1` + 删后回落 0 + 删方案 + 删案例），finally 硬删全部临时数据、末尾确认 leftover=0。**踩坑**：冒烟用 `127.0.0.1` 作 host 时 `request.url` 被 Next 归一化后与 Origin `host` 不同源导致全量 CSRF 误拒，改 `localhost` 一致后全过（同源判定 host 精确相等的现实体现）。
+- 效果：**Phase 13 M1 达成**——「案例/方案 CRUD」从"只有数据层"升级为"受鉴权、抗 CSRF、口径统一的可信 HTTP 写 API"，兑现 M5/M8-M1 两期数据层的安全承诺，为后台 UI 与 AI 流水线服务端写入扫清门禁障碍。**仍不含限流/幂等**（V1 延后，见 ROADMAP）；更细粒度权限矩阵（按资源/动作）随需要再补。下一步：Phase 13 M2 最小后台管理 UI（表单消费本批端点）、Phase 8 M3 方案评分内核（须走 SCORING §5 升版）；购买闭环仍阻塞 ROADMAP #5 支付。
+
 ## [0.16.0] - 2026-09-05 · Phase 8 里程碑 2：方案 34 分节正文（Solution.body）结构化渲染
 
 - 原因：总控 §3「产业解决方案 Solution Package」**已逐字给定一份可售方案的 34 个分节**（项目名称…AI 假设标注），ROADMAP §8 的「Solution.body 34 分节规范」正是这一节——无需另等裁决。M1 已能写入 `Solution.body`（`z.record(z.string(), z.unknown())`），但详情页仅在 `body` 为空时显示一句占位、有 body 时**不渲染**，用户看不到「买的是什么」。M2 补齐展示契约：把任意入库 body 归一成固定 34 分节有序视图并渲染，让「方案详情」从"摘要+数字"升级为"结构化正文包"，直接服务商业闭环里的「用户查看→理解价值→购买」环节。刻意**不动 schema、不开 HTTP 写端点、不等真实流水线**（后者属 M4 + ROADMAP #4 模型 Key）。

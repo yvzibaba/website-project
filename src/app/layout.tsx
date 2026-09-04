@@ -46,6 +46,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/industries" className="hover:underline">
                 行业
               </Link>
+              <Link href="/cases" className="hover:underline">
+                案例
+              </Link>
+              <Link href="/solutions" className="hover:underline">
+                方案
+              </Link>
               <Link href="/about" className="hover:underline">
                 关于
               </Link>
@@ -74,6 +80,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
               <Link href="/industries" className="hover:underline">
                 行业
+              </Link>
+              <Link href="/cases" className="hover:underline">
+                案例
+              </Link>
+              <Link href="/solutions" className="hover:underline">
+                方案
               </Link>
               <Link href="/about" className="hover:underline">
                 关于我们

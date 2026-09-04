@@ -3,6 +3,32 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.6.0] - 2026-09-04 · Phase 5 里程碑 2：案例/方案公共页 + DEMO 标注种子数据 + 真 404 修复
+
+- 原因：里程碑 1 立起了不依赖业务数据的页面地基（行业/关于/隐私/条款）。里程碑 2 要打通 V1-A 商业闭环里"用户查看"这一环的前台：案例列表/详情、方案列表/详情，并配套可控的 DEMO 数据用于开发期验证渲染路径。按创始人 2026-09-05 裁决——**只种子标注 DEMO 的案例，不种子任何方案**：案例是免费的研究展示、风险低；方案涉及定价与购买闭环，必须由真实多角色流水线（Research→Bull→Bear→Judge→QA）+ 人工审核产出，伪造可售商品违反宪法第 20 条（禁止虚构）。方案页在真实流水线产出前保持诚实空态。
+- 内容：
+  - **DEMO 可见性层** `src/server/demo.ts`：`DEMO_SOURCE_TYPE = "DEMO_FIXTURE"` + `DEMO_TITLE_PREFIX = "【DEMO】"`；`isDemoEntity()` 判定；`caseDemoVisibility(includeDemo)` 生成 Prisma where 片段——默认排除 DEMO，且用 `OR: [{ sourceType: null }, { sourceType: { not: DEMO } }]` 规避 Prisma `{ not }` 的 NULL 陷阱（`<> X` 会连带排除 sourceType 为 NULL 的真实行）；`solutionDemoVisibility()` 把门控包到关联 `case` 上（方案本身无 sourceType）。
+  - **DEMO 种子脚本** `prisma/seed.ts`（`npm run db:seed` = `node --env-file=.env --import tsx`）：写入 3 地区 / 3 商业模式 / 7 技术能力 / **6 个【DEMO】案例**（覆盖农林牧渔×2、工业制造、新能源、地产建筑、教育培训；每个 stage=DEEP_CASE、sourceType=DEMO_FIXTURE、标题【DEMO】前缀、正文写明"演示数据非真实案例"，含事实/假设/推断/预测分层证据 + 能力关联）。安全护栏：`NODE_ENV=production` 直接拒跑、缺 DATABASE_URL 报错退出；幂等——所有种子行固定 `demo_` id 前缀，运行先级联清理旧 DEMO（案例→CaseCapability→Localization→CapabilityProject→TechCapability→BusinessModel→Region）再重建。**不写入任何 Solution**。
+  - **案例数据层** `src/server/cases.ts`（server-only）：`PUBLIC_CASE_STAGES` 白名单（漏斗内部态 CANDIDATE/KEY_RESEARCH 不对外）；`listPublicCases()` 用 `prisma.$transaction([findMany(include region), count])` 一次取回列表 + 总数，支持行业筛选（slug→enum）/分页（offset+limit）/排序（`makeSortSchema` 白名单 discoveredAt|opportunityScore|title），DB 失败降级 `ok:false` + error 而非崩溃；`getPublicCaseById()` 取详情（region/businessModel/evidences asc/capabilities+capability/`_count` 已发布方案数），对不存在 id、非公开阶段、或 DEMO 未带 includeDemo 一律返回 `not_found`（联合返回类型 found|not_found|error）。
+  - **方案数据层** `src/server/solutions.ts`（server-only）：仅暴露 `status=PUBLISHED`（DRAFT/UNDER_HUMAN_REVIEW 属内部态，宪法第 10 条高风险方案须人工审核后才发布）；`listPublishedSolutions()` 同 $transaction 模式 + 行业筛选 + DEMO 门控（经关联 case）；`getPublishedSolutionById()` 返回财务明细（capex/opex/年收益/ROI/IRR/回收期，Decimal→string 精确保真）与关键未知变量列表；`formatPrice()` 修复为**金额统一两位小数**（Prisma Decimal 的 `toString()` 会丢尾零使 1999.00→"1999"，改用 `toFixed(2)`，宪法第 7 条数字精确）。
+  - **四个页面**：
+    - `/cases`（force-dynamic）：PageHeader + 实时计数 Badge + 行业筛选 chips（全部 + 7 行业）+ 案例卡片（DEMO 角标 / 机会评分 / 证据可信度 / 地区）+ 分页导航；`?demo=1` 时顶部 warning Alert 声明"当前为【DEMO】示例数据"；空态区分"暂无已发布深度案例"（默认）与"连 DEMO 都没有，请先 seed"（demo 视图）；DB 失败展示 danger 提示条。
+    - `/cases/[id]`（force-dynamic）：概览 + 地区/来源链接 + 机会评分/证据可信度 Metric 网格 + 商业模式拆解（收入来源/成本结构）+ 技术能力关联网格 + **按 事实/假设/推断/预测 分层标注的证据列表**（宪法第 6 条，四类各配色 Badge）+ 已发布方案区；DEMO 案例顶部 warning Alert。
+    - `/solutions`（force-dynamic）：结构同案例列表，卡片额外显示需专业人工确认（danger Badge）/价格/风险域；空态诚实说明"方案由每日流水线经多角色质量门禁 + 人工审核生成，当前尚未有方案发布"；`?demo=1` 时 Alert 明示"按创始人裁决里程碑 2 不种子任何方案"。
+    - `/solutions/[id]`（force-dynamic）：财务明细（CAPEX/OPEX/年收益/ROI/IRR/回收期）+ 关键未知变量列表 + 风险域 + needsProfessionalReview danger Alert（宪法第 10 条）+ 关联案例链接 + **购买按钮占位（disabled，title 注明"购买与支付闭环将在 Phase 12 接入"）**；34 分节 body 延后 Phase 8。
+  - **导航/页脚** `src/app/layout.tsx`：里程碑 1 曾移除的 `/cases` `/solutions` 死链现已建成，重新加回主导航。
+  - **删除根 `src/app/loading.tsx`**（关键修复，见验证）：里程碑 1 引入的全局 Suspense 骨架屏与"运行时 DB 查找 + notFound()"的动态详情页存在根本冲突，故移除。
+  - **测试新增**：`tests/unit/demo.test.ts`（7 cases：DEMO 常量、isDemoEntity 对 true/false/null/undefined、caseDemoVisibility 的 includeDemo 分支与 OR[null,not] 结构、solutionDemoVisibility 的 case 包裹）；`tests/integration/cases-solutions.test.ts`（8 cases，真连 Neon：自建 realCase/demoCase/candidateCase + publishedSolution/draftSolution 全生命周期夹具，afterAll 按 Restrict 外键顺序清理 + runId 兜底——listPublicCases 默认排除 DEMO 与内部阶段但含真实公开案例、includeDemo=true 纳入并标记 isDemo、行业筛选生效、getPublicCaseById 完整详情/DEMO 门控/内部阶段与不存在 id 均 not_found、listPublishedSolutions 只含 PUBLISHED 且 priceDisplay="¥1999.00"、getPublishedSolutionById 财务与未知变量/DRAFT 与不存在 id not_found）。
+- 验证（宪法第 5/18/20 条）：
+  - `next typegen` 成功；`tsc --noEmit` **0 错误**（修复 seed.ts 中 `as const` 使 BUSINESS_MODELS.revenueStreams/costStructure 变 readonly 元组、Prisma create 需可变 string[] 的 TS2322 → 建时展开为可变数组）；`eslint .` **0 问题**。
+  - `vitest run tests/unit`：**147/147 全绿**（原 140 + 新增 7），~0.56s。
+  - `next build`（Turbopack）：编译成功，新增 `ƒ /cases`、`ƒ /cases/[id]`、`ƒ /solutions`、`ƒ /solutions/[id]` 四条动态路由（M1 的行业 SSG / 内容页 / Proxy 无回归）。
+  - `npm run db:seed`：成功写入 6 DEMO 案例 / 16 证据 / 7 能力关联（生产护栏未触发，本机 NODE_ENV≠production）。
+  - `node --env-file=.env vitest run tests/integration`：**15/15 全绿**（原 7 + 新增 8），~39s，真连 Neon us-east-2；首轮暴露并修复 priceDisplay 尾零问题（¥1999→¥1999.00）。
+  - **HTTP 端到端冒烟**（`next start -p 3116`，**14 项全过**）：列表页 `/cases`（默认空态）、`/cases?demo=1`（含种子案例标题 + DEMO Alert）、`/cases?industry=…&demo=1`（行业筛选）、`/cases?demo=1&page=1`（分页）、`/solutions`（空态）、`/solutions?demo=1`（"不种子任何方案"声明）均 200；详情 `/cases/demo_case_biogas?demo=1` 200 且含"证据与判断分层"；**404 语义**——`/cases/demo_case_biogas`（DEMO 未带 demo=1）、`/cases/nonexistent-zzz-9999`、`/solutions/nonexistent-zzz-9999` 均 **404**；回归 `/industries` 200、`/industries/new-energy` 200、`/industries/not-a-real-one` 404、`/api/health` 200。
+  - **冒烟暴露并修复的真 404 缺陷（重要）**：首轮冒烟在保留根 `loading.tsx` 时，上述 3 个动态详情页无效 id **全部返回 200 而非 404**（body ~16KB，渲染了 not-found UI 但状态码错误）——根因是 `loading.tsx` 的 Suspense 边界会先 flush 200 响应头 + 骨架 shell，等异步页面组件里 `notFound()` resolve 时已无法回退状态码，会导致无效 URL 被 SEO 误收录。SSG 路由（`/industries/[slug]` + `dynamicParams=false`）在路由器层先判、**免疫**此问题（同轮仍真 404）。对"取值来自固定枚举集合"的路由用 SSG+dynamicParams=false 是正解（里程碑 1 已采用）；但对 `/cases/[id]`、`/solutions/[id]` 这类**取值来自任意 DB id**、无法预渲染的路由，唯一干净解法是移除制造提前 flush 的根 `loading.tsx`。移除后重建，14/14 冒烟全过、3 个无效 id 均真 404。代价是失去全局骨架屏，但热态页面查询 ~100ms、冷启动已在列表页内联降级提示，正确性与 SEO 优先级高于轻微 UX（宪法第 2 条：冲突时选更简单更可验证的方案）。
+- 效果：**Phase 5 里程碑 2 达成**——案例/方案的列表与详情四页 + DEMO 标注种子 + 分页/筛选/排序 + 证据分层展示就绪，全部经 build + 162 测试（147 单元 + 15 集成）+ 14 项 HTTP 冒烟（含 3 个真 404）验证；并修复了一个会影响 SEO 收录质量的状态码缺陷。商业闭环"用户查看"环节的前台打通（"购买"仍为 Phase 12 占位）。测试基线扩到 162。里程碑 3（搜索 + 首页组装，首页 `src/app/page.tsx` 仍是 Phase 4 骨架文案待重写）待续。ROADMAP 阻塞剩余 #3 github.com CLI（API 绕行中）、#4 模型 API Key、#5 部署/支付、#6 对象存储。安全待办：提醒创始人撤销此前会话暴露过的旧 PAT。
+
 ## [0.5.0] - 2026-09-04 · Phase 5 里程碑 1：公共页面地基（内容页 + 行业页 + 可复用页面骨架）
 
 - 原因：Phase 4 交付清单（Web 骨架 / DB / 基础 UI / env / 日志 / 错误 / 测试）已全部完成，进入总控 Phase 5「公共页面」。按 PRODUCT_SPEC §5 的信息架构，先把 V1-A 里"不依赖案例/方案数据就能立起来"的页面地基做扎实：可复用页面级布局组件、行业列表/详情、关于/隐私/条款内容页、导航页脚与 Suspense 态。案例列表/详情、方案列表/详情依赖真实数据，拆到里程碑 2（配合 DEMO 标注的种子数据），搜索与首页组装拆到里程碑 3（宪法第 4 条 MVP、第 2 条不为"看起来像大平台"而铺空页）。

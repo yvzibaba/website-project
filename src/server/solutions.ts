@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import type { Prisma } from "@prisma/client";
 import { getIndustryByEnum } from "@/server/industries";
 import { solutionDemoVisibility, DEMO_SOURCE_TYPE } from "@/server/demo";
+import { parseSolutionBody, type ParsedSolutionBody } from "@/server/solution-body";
 import type { Industry } from "@/lib/validation";
 
 /**
@@ -198,6 +199,8 @@ export interface SolutionDetail {
   financials: SolutionFinancialItem[];
   unknowns: SolutionUnknownItem[];
   hasBody: boolean;
+  /** 归一后的 34 分节视图（Phase 8 M2：有则逐节透出、无则显式 pending，绝不臆造）。 */
+  body: ParsedSolutionBody;
   isDemo: boolean;
 }
 
@@ -266,6 +269,7 @@ export async function getPublishedSolutionById(id: string, includeDemo: boolean)
           severity: u.severity,
         })),
         hasBody: s.body !== null && s.body !== undefined,
+        body: parseSolutionBody(s.body),
         isDemo,
       },
     };

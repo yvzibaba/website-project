@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Container, Badge, Alert, Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { getPublishedSolutionById } from "@/server/solutions";
+import type { ParsedSolutionBody } from "@/server/solution-body";
 
 /**
  * /solutions/[id] — 方案详情页（V1-A，PRODUCT_SPEC §5，含购买入口）。
@@ -178,13 +179,107 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
         )}
       </section>
 
-      {!s.hasBody ? (
+      {/* 方案正文（34 分节，总控 §3 Solution Package；规则 12 结构化保存） */}
+      <SolutionBodySection body={s.body} />
+    </Container>
+  );
+}
+
+/** 把一节内容渲染成可读块：字符串成段、数组列点、对象转键值、标量直显。 */
+function renderSectionContent(content: unknown) {
+  if (typeof content === "string") {
+    return (
+      <div className="whitespace-pre-wrap text-sm text-foreground">{content}</div>
+    );
+  }
+  if (typeof content === "number" || typeof content === "boolean") {
+    return <div className="text-sm tabular-nums text-foreground">{String(content)}</div>;
+  }
+  if (Array.isArray(content)) {
+    return (
+      <ul className="flex flex-col gap-1 text-sm text-foreground">
+        {content.map((item, i) => (
+          <li key={i} className="list-disc pl-4 marker:text-muted-foreground">
+            {typeof item === "string" || typeof item === "number" || typeof item === "boolean"
+              ? String(item)
+              : renderSectionContent(item)}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  if (content && typeof content === "object") {
+    const entries = Object.entries(content as Record<string, unknown>);
+    return (
+      <dl className="grid grid-cols-1 gap-x-4 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
+        {entries.map(([k, v]) => (
+          <div key={k} className="contents">
+            <dt className="text-xs text-muted-foreground">{k}</dt>
+            <dd className="text-foreground">
+              {v && typeof v === "object" ? renderSectionContent(v) : String(v)}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
+  return null;
+}
+
+function SolutionBodySection({ body }: { body: ParsedSolutionBody }) {
+  // 空 body：诚实占位，不渲染半截分节（与 Phase 7 M3 scoreBreakdown=null 同构）。
+  if (body.empty) {
+    return (
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">方案正文</h2>
         <p className="rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground">
-          方案的 34 分节结构化正文（<code className="font-mono">Solution.body</code>）规范将在 Phase 8 定稿并渲染，
-          当前尚未填充。
+          本方案尚未填充 34 分节结构化正文（<code className="font-mono">Solution.body</code>，总控 §3
+          「Solution Package」）。正文须由多角色流水线（研究→Bull→Bear→Judge→QA）产出、人工审核后写入，
+          禁止单模型直出充数（宪法第 20 条）。
+        </p>
+      </section>
+    );
+  }
+
+  const pct = Math.round((body.filledCount / body.totalCount) * 100);
+  return (
+    <section className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">方案正文</h2>
+        <Badge variant={body.filledCount === body.totalCount ? "success" : "outline"} compact>
+          分节完成度 {body.filledCount}/{body.totalCount}（{pct}%）
+        </Badge>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        按总控 §3「Solution Package」34 分节结构化呈现；标注「待补充」的分节表示流水线尚未产出，
+        不代表方案已完整可售（宪法第 9/20 条）。
+      </p>
+      <div className="flex flex-col gap-3">
+        {body.sections.map((sec) => (
+          <Card key={sec.key}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <span>{sec.title}</span>
+                {!sec.filled ? <Badge variant="outline" compact>待补充</Badge> : null}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {sec.filled ? (
+                renderSectionContent(sec.content)
+              ) : (
+                <p className="text-sm text-muted-foreground">该分节尚未填充。</p>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      {body.extras.length > 0 ? (
+        <p className="text-[11px] text-muted-foreground">
+          另有 {body.extras.length} 个未归入 34 分节的字段（{body.extras.map((e) => e.key).join("、")}），
+          已在正文契约外保留以便审计（不静默丢弃）。
         </p>
       ) : null}
-    </Container>
+    </section>
   );
 }
 

@@ -3,6 +3,17 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.16.0] - 2026-09-05 · Phase 8 里程碑 2：方案 34 分节正文（Solution.body）结构化渲染
+
+- 原因：总控 §3「产业解决方案 Solution Package」**已逐字给定一份可售方案的 34 个分节**（项目名称…AI 假设标注），ROADMAP §8 的「Solution.body 34 分节规范」正是这一节——无需另等裁决。M1 已能写入 `Solution.body`（`z.record(z.string(), z.unknown())`），但详情页仅在 `body` 为空时显示一句占位、有 body 时**不渲染**，用户看不到「买的是什么」。M2 补齐展示契约：把任意入库 body 归一成固定 34 分节有序视图并渲染，让「方案详情」从"摘要+数字"升级为"结构化正文包"，直接服务商业闭环里的「用户查看→理解价值→购买」环节。刻意**不动 schema、不开 HTTP 写端点、不等真实流水线**（后者属 M4 + ROADMAP #4 模型 Key）。
+- 内容：
+  - `src/server/solution-body.ts`（新，纯函数、零 DB、零 Next 依赖）：`SOLUTION_SECTIONS` 常量表——34 分节的**单一真源**（`key` 稳定英文标识 + `title` 照抄总控 §3 中文标题）。`parseSolutionBody(body)` 把任意输入归一为固定 34 节有序数组：按 `key` 或中文 `title` 命中即 `filled`、取到内容；空串/空数组/空对象/`null`/`undefined` 视为未填 `pending`（但数字 `0`/布尔 `false` 算有内容，绝不当空丢掉）；落在 34 节之外的未知键收进 `extras` 供审计透出、**不静默丢弃**；另回 `filledCount/totalCount/empty`。传非对象（含 null）判 `empty=true`、全 pending。规则 12「结构化保存而非纯文章」+ 宪法第 16 条单一真源。
+  - `src/server/solutions.ts`：`getPublishedSolutionById` 的 `SolutionDetail` 增 `body: ParsedSolutionBody` 字段（保留 `hasBody`），返回前对库中 `Solution.body` 调 `parseSolutionBody` 归一——数据层做薄透传、语义全在纯函数（避免录入端与展示端两套规则漂移）。
+  - `src/app/solutions/[id]/page.tsx`：新增 `SolutionBodySection` + `renderSectionContent`——`empty` 时显示**诚实占位**（说明正文须走多角色流水线、禁单模型直出，与 Phase 7 M3 `scoreBreakdown=null` 占位同构）；有内容时按 canonical 顺序渲染 34 张分节卡（`Badge` 显「分节完成度 n/34（%）」），未填节标「待补充」不臆造，`extras` 以一行小字提示契约外字段。内容渲染兼容字符串成段 / 标量直显 / 数组列点 / 对象转键值。
+  - **刻意保留的可控冗余**（已在代码注释标注）：成本模型/收入模型/ROI/回收期/关键未知变量/来源等节在详情页另有结构化卡片（`SolutionFinancial`/`UnknownVariable`/`Evidence`）——结构化卡为可复算真源、body 分节为叙述说明，待真实流水线接入后再收敛，不在 M2 提前优化。
+- 验证：`tsc`/`eslint` 0 错；unit **220/220**（209 + 新 `solution-body.test.ts` 11 例：常量恰 34 节且顺序稳定 / null 及非对象判空 / 按 key 命中 / 按中文 title 命中 / 空值判 pending / 0 与 false 算有内容 / extras 不静默丢弃且空未知键不入 / key 优先于 title / 顺序严格等于常量表 / 全填满 34）；integration **52/52** 无回归；`next build` 路由清单不变（无新增 HTTP 端点）。**HTTP 渲染端到端冒烟 15/15**（`next start -p 3111` + 临时「已发布+带 body」方案挂既有 DEMO 案例，验证后即硬删）：有 body 页 200 且出「方案正文」+完成度徽章 + key/中文 title/数组/嵌套对象各类型内容 + 未填节「待补充」+ extras 审计提示；空 body 页出诚实占位、不含完成度徽章；临时数据清理干净（leftover=0）。精确 `filledCount` 由单测锁定，HTML 侧只断言徽章标签存在（SSR 会在动态文本间插注释节点，不宜正则匹配 `5/34`）。
+- 效果：**Phase 8 M2 达成**——方案详情页具备 34 分节结构化正文的展示能力，「用户查看」能直观看到一份 Solution Package 的完整骨架与当前完成度。无 schema/DB 变更。下一步：Phase 8 M3 方案评分内核建模（含 SCORING §5 升版）/ M4 AI 多角色流水线灌真实方案（阻塞 ROADMAP #4 模型 Key）；HTTP 写路由 + 后台 UI 延 Phase 13；购买闭环延 Phase 12（阻塞 #5）。
+
 ## [0.15.0] - 2026-09-05 · Phase 8 里程碑 1：方案数据层 CRUD（受校验写入 + 审计 + 发布守卫）
 
 - 原因：Phase 5 里程碑 2 刻意**不灌 DEMO 方案**（方案涉及定价/购买，宪法第 20 条：真数据必须走真实多角色流水线），因此方案表当前 0 行、"案例→方案→购买"闭环卡在**没有真实写入口**。Phase 7 M5 已把案例侧的 CRUD 数据层打样（`src/server/case-admin.ts`），Phase 6 M2 又备好鉴权原语——横向复制同样模式给方案，就能让 Phase 8 M2+ 的多角色 AI 流水线与 Phase 13 后台 UI 有真实落地路径。M1 只交付**数据层**（server-only，不开 HTTP 写端点），沿用 M5 一致的边界与错误策略避免"两处口径漂移"。

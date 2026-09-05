@@ -1,6 +1,6 @@
 {
   "name": "website-project",
-  "version": "0.51.0",
+  "version": "0.52.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:unit": "vitest run tests/unit",
-    "test:integration": "node --env-file=.env ./node_modules/vitest/vitest.mjs run tests/integration",
+    "test:integration": "node --env-file=.env ./node_modules/vitest/vitest.mjs run tests/integration --no-file-parallelism",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

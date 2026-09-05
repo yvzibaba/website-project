@@ -28,8 +28,11 @@ import { logger } from "@/lib/logger";
 
 /* ─────────────────────────── 版本 & 任务分类（§16 统一接口） ─────────────────────────── */
 
-/** Model Router 契约版本（宪法第 13 条：改路由策略/单价/返回结构须升版本并记录原因，可回滚）。 */
-export const MODEL_ROUTER_VERSION = "1.0.0";
+/** Model Router 契约版本（宪法第 13 条：改路由策略/单价/返回结构须升版本并记录原因，可回滚）。
+ *  1.1.0：`MODEL_CATALOG` 改为「env 可覆写、缺省回落占位默认」，使接真实供应商（如 DeepSeek）时
+ *  无需改业务代码即可把每层级的模型 id 与真实单价注入配置层（宪法「禁止业务代码硬编码模型名」+
+ *  「关键数字来源可追溯、假设可标注可调」）。默认值与 1.0.0 完全一致 → 无 env 时行为不变、离线测试不受影响。 */
+export const MODEL_ROUTER_VERSION = "1.1.0";
 
 /** 任务类型——逐字对齐总控 §16 的六个统一入口。 */
 export const MODEL_TASK_KINDS = [
@@ -72,11 +75,50 @@ export interface ModelSpec {
   outputPer1kUsd: number;
 }
 
-/** 每层级一个（占位）模型规格；stub provider 用它保证「同层级同结果」的确定性。 */
+/** 从 env 读非负数（供单价覆写）；缺失/空白/非法/负数一律 undefined（回落默认）。 */
+function envPrice(name: string): number | undefined {
+  const raw = process.env[name];
+  if (raw == null || raw.trim() === "") return undefined;
+  const n = Number(raw.trim());
+  return Number.isFinite(n) && n >= 0 ? n : undefined;
+}
+
+/** 从 env 读非空字符串（供模型 id 覆写）；缺失/纯空白 → undefined（回落默认）。 */
+function envId(name: string): string | undefined {
+  const raw = process.env[name];
+  const v = raw?.trim();
+  return v && v.length > 0 ? v : undefined;
+}
+
+/**
+ * 构建某层级的 `ModelSpec`：**env 优先、缺省回落 v1 占位默认**。这样接入真实供应商（DeepSeek 等）
+ * 时只需在部署环境设 `MODEL_ID_<TIER>` / `MODEL_PRICE_IN_<TIER>` / `MODEL_PRICE_OUT_<TIER>`
+ * （单位 USD / 1K token，单价以供应商官方定价页为准、可标注可调），业务代码与 `runTask` 一行不改。
+ * 无这些 env 时（如离线单测）默认值与 M1 完全一致，成本黄金样本不受影响。
+ */
+function tierSpec(
+  tier: ModelTier,
+  defId: string,
+  defIn: number,
+  defOut: number,
+): ModelSpec {
+  const K = tier.toUpperCase();
+  return {
+    id: envId(`MODEL_ID_${K}`) ?? defId,
+    tier,
+    inputPer1kUsd: envPrice(`MODEL_PRICE_IN_${K}`) ?? defIn,
+    outputPer1kUsd: envPrice(`MODEL_PRICE_OUT_${K}`) ?? defOut,
+  };
+}
+
+/**
+ * 每层级一个模型规格（**默认是 v1 占位假设、可被 env 覆写**，见 `tierSpec`）。
+ * provider 用它保证「同层级同模型同单价」；真实供应商下 `req.model.id` 即调用所用真实模型名。
+ */
 export const MODEL_CATALOG: Record<ModelTier, ModelSpec> = {
-  low: { id: "stub-lite", tier: "low", inputPer1kUsd: 0.0005, outputPer1kUsd: 0.0015 },
-  medium: { id: "stub-mid", tier: "medium", inputPer1kUsd: 0.002, outputPer1kUsd: 0.006 },
-  high: { id: "stub-max", tier: "high", inputPer1kUsd: 0.008, outputPer1kUsd: 0.024 },
+  low: tierSpec("low", "stub-lite", 0.0005, 0.0015),
+  medium: tierSpec("medium", "stub-mid", 0.002, 0.006),
+  high: tierSpec("high", "stub-max", 0.008, 0.024),
 };
 
 export interface TokenUsage {

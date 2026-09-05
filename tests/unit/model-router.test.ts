@@ -31,7 +31,7 @@ describe("constants", () => {
       ["code", "embedding", "generate_text", "research", "structured_output", "vision"].sort(),
     );
     expect([...MODEL_TIERS].sort()).toEqual(["high", "low", "medium"]);
-    expect(MODEL_ROUTER_VERSION).toBe("1.0.0");
+    expect(MODEL_ROUTER_VERSION).toBe("1.1.0");
   });
 
   it("每个任务都能路由到合法层级；复杂研究走 high、纯生成/向量走 low", () => {

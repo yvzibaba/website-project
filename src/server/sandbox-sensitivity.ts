@@ -16,10 +16,11 @@ import {
   SANDBOX_PARAMETER_SPECS,
   resolveSandbox,
 } from "@/server/sandbox-params";
+import type { ResolveLayers } from "@/server/parameter-engine";
 import { runSandboxModel, runSandboxModelBaseline, type CalcResult } from "@/server/sandbox-model";
 
-/** 敏感性分析版本。 */
-export const SENSITIVITY_VERSION = "1.0.0";
+/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。 */
+export const SENSITIVITY_VERSION = "1.1.0";
 export function sensitivityCalcRef(): string {
   return `sensitivity@${SENSITIVITY_VERSION}`;
 }
@@ -102,25 +103,43 @@ export interface TornadoResult {
 const BASELINE_NUMERIC: Record<string, number> = resolveSandbox().numeric;
 
 /**
- * OAT 龙卷风敏感性扫描。`baseNumeric` 省略时用 R1.2 全默认。
- * 每个参数以 `values:{[key]: base×(1±delta)}` 覆写 → `runSandboxModel` 重算 → 取指标。
+ * 在既有分层的 user 层上「单点覆写」某键（其余 user 覆写与 region/policy 层原样保留）。
+ * `layers` 省略时退化为纯 user 单覆写（= 全局基线上扰动该键），与旧行为逐字一致。
+ */
+function withUserOverride(
+  layers: Omit<ResolveLayers, "derived"> | undefined,
+  key: string,
+  value: number,
+): Omit<ResolveLayers, "derived"> {
+  const userValues = layers?.user?.values ?? {};
+  return { ...layers, user: { ...layers?.user, values: { ...userValues, [key]: value } } };
+}
+
+/**
+ * OAT 龙卷风敏感性扫描。`opts.layers` 省略时锚定 R1.2 全默认（旧行为）；传入时锚定到「当前情景」
+ * （地区 / 政策 / 用户分层）——基线值、各参数生效值、扰动覆写均在该情景上叠加，使龙卷风与页面
+ * 展示的 NPV/指标同源（§8 图表绑模型）。每个参数以 `values:{[key]: base×(1±delta)}` 覆写 →
+ * `runSandboxModel` 重算 → 取指标。
  */
 export function computeTornado(
   opts: {
     params?: readonly SensitivityParam[];
     metric?: MetricKey;
     deltaPct?: number;
+    /** 锚定的分层情景（含 region/policy/user + now）；省略=全局基线。 */
+    layers?: Omit<ResolveLayers, "derived">;
   } = {},
 ): TornadoResult {
   const metric: MetricKey = opts.metric ?? "npv";
   const globalDelta = opts.deltaPct ?? 20;
   const params = opts.params ?? DEFAULT_SENSITIVITY_PARAMS;
+  const layers = opts.layers;
 
-  const base = runSandboxModelBaseline();
+  const base = layers ? runSandboxModel(layers) : runSandboxModelBaseline();
   const baseValue = metricValue(base, metric);
 
-  // 基线各参数生效值：取自参数引擎无覆写解析的数值快照（R1.2 单一真源）。
-  const baseNumeric = BASELINE_NUMERIC;
+  // 基线各参数生效值：取自参数引擎对应分层的数值快照（R1.2 单一真源；有情景则按情景解析）。
+  const baseNumeric = layers ? resolveSandbox(layers).numeric : BASELINE_NUMERIC;
 
   const rows: TornadoRow[] = [];
   for (const p of params) {
@@ -149,8 +168,8 @@ export function computeTornado(
 
     const lowInput = baseInput * (1 - delta);
     const highInput = baseInput * (1 + delta);
-    const lowRes = runSandboxModel({ user: { values: { [p.key]: lowInput } } });
-    const highRes = runSandboxModel({ user: { values: { [p.key]: highInput } } });
+    const lowRes = runSandboxModel(withUserOverride(layers, p.key, lowInput));
+    const highRes = runSandboxModel(withUserOverride(layers, p.key, highInput));
     const lowMetric = metricValue(lowRes, metric);
     const highMetric = metricValue(highRes, metric);
     if (!lowRes.ok) notes.push(`低端模型未通过：${lowRes.reason}`);

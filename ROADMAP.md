@@ -18,11 +18,11 @@
 | R2.4 | `runSandboxModel` 编排 | `sandbox-model.ts` 消费 `resolveSandbox`→`computeTechModel`→现金流（E1–E8 透明经济模型）→npv/irr/payback/roi→`CalcResult` + 18 黄金样本（§4 命脉端到端焊通） | R2.1–R2.2 | ✅ **v0.39.0**（基线 652=551 单元+101 集成、`tsc`/`eslint` 0 错、build 无新增路由） |
 | R3 | 项目模型持久层 | additive 迁移 `Project/ProjectScenario/ProjectVersion` | R2 | ✅ **v0.40.0**（新枚举 `ProjectStatus` + 三表落库、`sandbox-store.ts` 存**输入 paramLayers + 现算 CalcResult**（§4 真源）、货币仅持久边界用 Decimal、版本快照重算式回滚；单元 +11=562、集成 +6（sandbox-store 6/6 单跑绿、db-smoke 枚举 13→14/表 19→22 计数如实修正）；`tsc`/`eslint` 0 错、build 无新增路由；§17 E2E 仍待 R6） |
 | R4 | 可视化 | recharts 绑模型、改参数图表即时联动 + 交互主链 | R2 | ✅ **v0.41.0**（新纯函数视图模型 `src/lib/sandbox-view.ts`（`CalcResult`/`Tech`/`Tornado`→图表数据+中文格式化、`VIEW_VERSION 1.0.0`）+ client 交互工作台 `SandboxWorkbench`（引擎打进浏览器、`useMemo` 即时重算整链、参数驱动 UI、只读派生量联动）+ `SandboxCharts`（recharts 3.10.1：现金流/回收、年收入成本、CAPEX·收入·OPEX·能量分解、敏感性龙卷风）+ 新静态路由 `○ /sandbox`；单元 +21=583（含★§8 图表绑定真引擎实证 + §4 改参数→视图 NPV 升穿透呈现层）、集成 107 不变（零 DB）；`tsc`/`eslint` 0 错、build 唯一新增 `/sandbox`；**§17 E2E 仍待 R6**——项目持久化/版本 UI、地区种子、AI 解释尚未接到本页） |
-| R5 | 地区政策 | 先 1 省（山西）载默认电价/光照/补贴参数 + 种子 | R1, R3 | ⬜ **下一步**（山西真实电价/光照/补贴参数 + seed，接进 `/sandbox` 地区切换；可与 R6 并行推进） |
-| R6 | 动态报告 + AI 解释 | 报告读最新 `CalcResult`、`runTask` 解释「为何变/最敏感变量/what-if」、存项目版本、**§17 E2E 主链跑通** | R2–R5 | ⬜ |
+| R5 | 地区政策 | 先 1 省（山西）载默认电价/光照/补贴参数包 + 工作台地区切换 | R1, R3 | ✅ **v0.42.0**（新纯数据 + 纯函数目录 `src/server/sandbox-regions.ts`（`SANDBOX_REGIONS_VERSION 1.0.0`）：全国通用兜底包（空覆写=黄金基线逐字不变）+ 山西包（地区层电价 0.55/光照 1400h + `bounds` 限幅、政策层现行补贴·上网价 + **一条故意已过期碳价实证 §6「过期政策绝不作现行默认」**），**★诚实不变式**凡覆写层恒 `ASSUMPTION·confidence≤50·【示例·待核实】`，`buildSandboxLayers` 把 region/policy 垫底、user 在上并透传本省 `bounds` 到 user 层、`now` 绕开引擎 epoch0 坑；改 `sandbox-sensitivity.ts`（`SENSITIVITY_VERSION 1.0.0→1.1.0`·`computeTornado` 新增可选 `layers` 使龙卷风可锚当前情景、省略则逐字保旧行为向后兼容）；`SandboxWorkbench` 加「选地区」pill + `origin` 分层徽标（地区默认/政策/已改/裁剪）、敏感性 `useMemo` 依赖 `[]→[layers]` 随地区即时重算；单元 +10=593（含★诚实遍历/§6 双向过期/§4+§6 端到端换山西 NPV↑且龙卷风锚当前情景）、集成 107 不变（零 DB）；`tsc`/`eslint` 0 错、build 路由清单不变（地区为纯前端状态）；**刻意边界**：地区包是版本化纯代码目录刻意不落 Region DB、只 1 省、数字全占位假设；§17 E2E 仍待 R6） |
+| R6 | 动态报告 + AI 解释 | 报告读最新 `CalcResult`、`runTask` 解释「为何变/最敏感变量/what-if」、存项目版本、**§17 E2E 主链跑通** | R2–R5 | ⬜ **下一步**（把 R3 项目保存/版本 UI 接进沙盘页、动态报告 + AI 解释串起 §17 E2E 主链——E2E 未通不得宣布核心完成） |
 | R7 | 企业个性化 | 依企业画像裁剪方案 | R6 | ⬜ |
 
-> 建议执行序：R0→R1→R1.2→R2→R3→R4（✅ 参数地基 + 计算内核 + 项目持久层 + 可视化交互全部已成，v0.36.0–v0.41.0）→ **R5（当前，山西地区参数 + 种子接进沙盘）** → R6（动态报告 + AI 解释 + 项目保存 UI，§17 E2E 打通）→ R7。
+> 建议执行序：R0→R1→R1.2→R2→R3→R4→R5（✅ 参数地基 + 计算内核 + 项目持久层 + 可视化交互 + 地区政策全部已成，v0.36.0–v0.42.0）→ **R6（当前，动态报告 + AI 解释 + 项目保存 UI，§17 E2E 打通）** → R7。
 
 ## 1. Phase 任务树
 

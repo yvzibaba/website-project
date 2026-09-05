@@ -31,6 +31,13 @@ import { SANDBOX_PARAMS, resolveSandbox } from "@/server/sandbox-params";
 import { runSandboxModel } from "@/server/sandbox-model";
 import { computeTechModel } from "@/server/sandbox-tech";
 import { computeTornado } from "@/server/sandbox-sensitivity";
+import {
+  DEFAULT_REGION_ID,
+  buildSandboxLayers,
+  getRegionPack,
+  listRegionOptions,
+  SANDBOX_REGIONS_VERSION,
+} from "@/server/sandbox-regions";
 import { buildSandboxViewModel } from "@/lib/sandbox-view";
 import type { MetricCard, Tone } from "@/lib/sandbox-view";
 import {
@@ -48,6 +55,14 @@ const TONE_CLASS: Record<Tone, string> = {
   warn: "border-amber-200 bg-amber-50 text-amber-700",
   muted: "border-zinc-200 bg-zinc-50 text-zinc-600",
 };
+
+/** 参数来源徽章文案（§5/§6：让用户看见「这个值是从哪层来的」）。 */
+const ORIGIN_BADGE: Record<string, { label: string; cls: string } | null> = {
+  region: { label: "地区默认", cls: "border-sky-200 bg-sky-50 text-sky-700" },
+  policy: { label: "政策", cls: "border-violet-200 bg-violet-50 text-violet-700" },
+};
+
+const REGION_OPTIONS = listRegionOptions();
 
 /** 由区间推一个「好看」的滑杆步长（避免 1e-15 级细碎步进）。 */
 function niceStep(min: number, max: number): number {
@@ -71,15 +86,20 @@ function MetricTile({ card }: { card: MetricCard }) {
 export function SandboxWorkbench() {
   const [overrides, setOverrides] = useState<Override>({});
   const [advanced, setAdvanced] = useState(false);
+  const [regionId, setRegionId] = useState<string>(DEFAULT_REGION_ID);
 
-  // 参数分层解析（含派生）→ 经济编排 → 技术能量 → 敏感性（基线锚定，只算一次）。
-  const resolved = useMemo(() => resolveSandbox({ user: { values: overrides } }), [overrides]);
-  const calc = useMemo(() => runSandboxModel({ user: { values: overrides } }), [overrides]);
+  // 分层情景 = 地区包(region+policy) 垫底 + 用户覆写在上（§6 优先级）。切地区即换整份默认。
+  const layers = useMemo(() => buildSandboxLayers(regionId, overrides), [regionId, overrides]);
+  const pack = getRegionPack(regionId);
+
+  // 参数分层解析（含派生）→ 经济编排 → 技术能量 → 敏感性（锚定「当前情景」，随地区/参数变）。
+  const resolved = useMemo(() => resolveSandbox(layers), [layers]);
+  const calc = useMemo(() => runSandboxModel(layers), [layers]);
   const tech = useMemo(
     () => (calc.ok ? computeTechModel(resolved.numeric) : null),
     [calc, resolved],
   );
-  const tornado = useMemo(() => computeTornado(), []);
+  const tornado = useMemo(() => computeTornado({ layers }), [layers]);
   const discountRate = (resolved.numeric["finance.discountRate"] ?? 8) / 100;
 
   const vm = useMemo(
@@ -125,10 +145,39 @@ export function SandboxWorkbench() {
           <CardHeader>
             <CardTitle className="text-base">参数控制台</CardTitle>
             <CardDescription>
-              一切关键变量皆参数（§5）。改任一项，右侧全链即时重算。
+              先选地区载入默认电价 / 光照 / 补贴（§6），再改任一项，右侧全链即时重算。
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
+            {/* 选地区（§6：地区/政策层垫底，用户覆写在上；切地区即换整份默认） */}
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-zinc-500">选地区（载入默认参数）</div>
+              <div className="flex flex-wrap gap-2">
+                {REGION_OPTIONS.map((r) => {
+                  const active = r.id === regionId;
+                  return (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => setRegionId(r.id)}
+                      aria-pressed={active}
+                      title={r.summary}
+                      className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                        active
+                          ? "border-blue-500 bg-blue-50 text-blue-700"
+                          : "border-input bg-transparent text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {r.name}
+                    </button>
+                  );
+                })}
+              </div>
+              {regionId !== DEFAULT_REGION_ID ? (
+                <p className="text-[11px] leading-tight text-zinc-500">{pack.summary}</p>
+              ) : null}
+            </div>
+
             <div className="flex items-center justify-between">
               <Button
                 type="button"
@@ -173,6 +222,8 @@ export function SandboxWorkbench() {
               }
 
               const value = typeof raw === "number" ? raw : Number(raw);
+              const userTouched = overrides[s.key] !== undefined;
+              const originBadge = !userTouched ? ORIGIN_BADGE[rp?.origin ?? ""] : null;
               return (
                 <div key={s.key} className="flex flex-col gap-1">
                   <div className="flex items-center justify-between text-sm">
@@ -212,10 +263,16 @@ export function SandboxWorkbench() {
                       <Badge variant="neutral" className="text-[10px]">
                         已裁剪到边界
                       </Badge>
-                    ) : rp?.overridden ? (
+                    ) : userTouched ? (
                       <Badge variant="neutral" className="text-[10px]">
                         已改
                       </Badge>
+                    ) : originBadge ? (
+                      <span
+                        className={`rounded border px-1.5 py-0.5 text-[10px] ${originBadge.cls}`}
+                      >
+                        {originBadge.label}
+                      </span>
                     ) : null}
                   </div>
                 </div>
@@ -316,7 +373,8 @@ export function SandboxWorkbench() {
 
               <div className="text-[11px] text-zinc-400">
                 溯源 {vm.calcRef} · 版本 model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} /
-                finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} · 视图 v{vm.viewVersion}
+                finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} ·
+                regions@{SANDBOX_REGIONS_VERSION} · 视图 v{vm.viewVersion}
               </div>
             </>
           )}

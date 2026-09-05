@@ -19,9 +19,10 @@
  */
 
 import type { SandboxViewModel } from "@/lib/sandbox-view";
+import type { ProfileFocusTag, SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
 
 /** 报告口径版本（叙述结构 / 择要规则变化须升版记因，宪法第 13 条）。 */
-export const REPORT_VERSION = "1.0.0";
+export const REPORT_VERSION = "1.1.0"; // 1.1.0：新增可选「企业个性化视角」节（R7 · 依画像裁剪，只重排既有指标卡值、绝不重算）
 
 /* ────────────────────────────── 类型 ────────────────────────────── */
 
@@ -43,6 +44,11 @@ export interface ReportInput {
   changedParams?: ChangedParamView[];
   /** 折现率（百分数原值，如 8 表示 8%），仅供执行摘要口径提示，不参与任何计算。 */
   discountRatePct?: number;
+  /**
+   * 当前企业画像（R7 · §14 第 7 项）。**仅在 vm.ok 且提供了非空画像时**追加一节「企业个性化视角」，
+   * 该节只从已算好的指标卡里**挑选/排序/引用**，绝不重算任何数字。省略此字段 → 报告与 R6 输出逐字一致（向后兼容）。
+   */
+  profile?: SandboxEnterpriseProfile;
 }
 
 /** 报告的一个分节。kind 决定 UI 如何渲染（prose=段落；bullets=键值条；list=要点）。 */
@@ -91,6 +97,45 @@ function npvNonNegative(vm: SandboxViewModel): boolean | null {
   return !v.trim().startsWith("-");
 }
 
+/** 关注点 token → 中文短语（未知 token 一律忽略，绝不臆造未在模型中出现的内容，§16）。 */
+const FOCUS_PHRASE: Record<ProfileFocusTag, string> = {
+  selfConsumption: "光伏绿电自用比例（自发自用能省多少电费）",
+  green: "绿电渗透率（碳减排与绿色示范价值）",
+  cashflow: "逐年现金流的稳定与前期回正节奏",
+  scale: "可复制扩张的规模弹性",
+  risk: "对关键假设的敏感性与下行风险",
+};
+
+/**
+ * R7「企业个性化视角」节：**只引用已算好的指标卡值**（按画像 emphasis 的优先级挑卡），
+ * 把「这类企业最该看哪几个结论」讲清。绝不重算、绝不引入报告外的新数字。无画像 / 无可用卡则不产出该节（返回 null）。
+ */
+function buildProfileSection(vm: SandboxViewModel, profile: SandboxEnterpriseProfile): ReportSection | null {
+  const byKey = new Map((vm.cards ?? []).map((c) => [c.key, c] as const));
+  const picked = profile.emphasis.metricKeys
+    .map((k) => byKey.get(k))
+    .filter((c): c is NonNullable<typeof c> => c != null);
+  const focus = profile.emphasis.focusTags.map((t) => FOCUS_PHRASE[t]).filter(Boolean);
+
+  const paragraphs: string[] = [profile.emphasis.headline];
+  if (picked.length) {
+    paragraphs.push(`本画像建议优先关注：${picked.map((c) => `「${c.label} ${c.value}」`).join("、")}。`);
+  }
+  if (focus.length) {
+    paragraphs.push(`此外，这类企业通常还侧重：${focus.join("；")}。`);
+  }
+  paragraphs.push(
+    `企业画像「${profile.name}」的默认参数为示例占位假设（非经核事实）：${profile.note} 换画像即换一组预设起点，但方案数字仍全部由确定性引擎现算、不随画像口径改动。`,
+  );
+
+  return {
+    key: "profile",
+    title: "企业个性化视角（依企业画像裁剪）",
+    kind: "list",
+    paragraphs,
+  };
+}
+
 /* ────────────────────────────── 报告装配 ────────────────────────────── */
 
 const BASE_DISCLAIMERS = [
@@ -103,7 +148,7 @@ const E2E_DISCLAIMER =
 
 /** 生成结构化报告。`vm.ok=false` 时只回诚实错误 + 免责，绝不编造结论。 */
 export function buildSandboxReport(input: ReportInput): SandboxReport {
-  const { vm, regionName, changedParams = [], discountRatePct } = input;
+  const { vm, regionName, changedParams = [], discountRatePct, profile } = input;
 
   const generatedFrom: SandboxReport["generatedFrom"] = {
     calcRef: vm.calcRef,
@@ -174,6 +219,13 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
   const sections: ReportSection[] = [
     { key: "exec", title: "一、执行摘要", kind: "prose", paragraphs: execParagraphs },
   ];
+
+  // R7 · §14 第 7 项「企业个性化」：仅当调用方给了画像时，紧随执行摘要追加一节「企业个性化视角」，
+  // 只挑既有的确定性指标卡值按画像优先级重排解读，绝不重算、绝不引新数字（不选画像 → 本节不出现，输出逐字同 R6）。
+  if (profile) {
+    const profileSection = buildProfileSection(vm, profile);
+    if (profileSection) sections.push(profileSection);
+  }
 
   // 投资与成本结构
   if (meta) {

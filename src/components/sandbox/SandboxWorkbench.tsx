@@ -11,12 +11,13 @@
  *   - **诚实贯穿**（第 16/20 条）：顶部横幅声明「全部为占位假设 + 需专业人工确认 + E2E 主链未通不得当决策依据」，
  *     每个参数标 `ASSUMPTION` 置信度，被裁剪到边界如实标注，指标算不出显示「—」而非 0。
  *
- * 边界（截至 R6.3）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）、
+ * 边界（截至 R7）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）、
  *   **AI 解释**（`SandboxExplainPanel` → 受登录门禁的 `POST /api/sandbox/explain`，LLM 只解读报告、绝不算数、成本入 ModelCall）、
- *   以及**项目保存 / 情景更新 / 版本 / 回滚**（`SandboxSavePanel` → 受登录 + owner 门禁的 `/api/sandbox/**`，
- *   落到 R3 `sandbox-store`，**服务端按输入重跑引擎**落库——非搬页面数字）。至此 §17 端到端主链
- *   「选地区→改参数→跑→技术/经济/风险/敏感性→报告→AI解释→保存」在页面上全部接通，唯留 R6.4 的 E2E 冒烟脚本作最终核验；
- *   在 R6.4 通过前，顶部横幅仍如实标注「端到端主链待最终验证、不得作为决策依据」。
+ *   **项目保存 / 情景更新 / 版本 / 回滚**（`SandboxSavePanel` → 受登录 + owner 门禁的 `/api/sandbox/**`，落到 R3 `sandbox-store`，
+ *   **服务端按输入重跑引擎**落库——非搬页面数字），以及 R7 的**企业个性化**（「选企业画像」把典型企业预设垫作参数起点、
+ *   并在动态报告里追加一节「企业个性化视角」按画像侧重挑读既有指标——全程零重算，数字仍由确定性引擎现算）。
+ *   §17 端到端主链「选地区→(选画像)→改参数→跑→技术/经济/风险/敏感性→报告→AI解释→保存」已于 R6.4 以自动化冒烟脚本跑通并宣布核心完成。
+ *   ⚠️ 但全部默认数字仍是**占位假设**、经济口径为透明简化 E1–E8、画像预设亦为示例假设，结论恒「需专业人工确认」，不得作投资/并网决策依据。
  */
 
 "use client";
@@ -38,11 +39,18 @@ import { computeTechModel } from "@/server/sandbox-tech";
 import { computeTornado } from "@/server/sandbox-sensitivity";
 import {
   DEFAULT_REGION_ID,
-  buildSandboxLayers,
   getRegionPack,
   listRegionOptions,
   SANDBOX_REGIONS_VERSION,
 } from "@/server/sandbox-regions";
+import {
+  DEFAULT_PROFILE_ID,
+  buildProfileLayers,
+  getEnterpriseProfile,
+  isProfileDefault,
+  listProfileOptions,
+  SANDBOX_PROFILES_VERSION,
+} from "@/server/sandbox-profiles";
 import { buildSandboxViewModel } from "@/lib/sandbox-view";
 import type { MetricCard, Tone } from "@/lib/sandbox-view";
 import { buildSandboxReport } from "@/lib/sandbox-report";
@@ -73,6 +81,10 @@ const ORIGIN_BADGE: Record<string, { label: string; cls: string } | null> = {
 };
 
 const REGION_OPTIONS = listRegionOptions();
+const PROFILE_OPTIONS = listProfileOptions();
+
+/** R7「画像默认」徽章样式（参数值来自当前企业画像预设、且用户本次未改）。 */
+const PROFILE_BADGE = { label: "画像默认", cls: "border-teal-200 bg-teal-50 text-teal-700" };
 
 /** 由区间推一个「好看」的滑杆步长（避免 1e-15 级细碎步进）。 */
 function niceStep(min: number, max: number): number {
@@ -97,13 +109,19 @@ export function SandboxWorkbench() {
   const [overrides, setOverrides] = useState<Override>({});
   const [advanced, setAdvanced] = useState(false);
   const [regionId, setRegionId] = useState<string>(DEFAULT_REGION_ID);
+  const [profileId, setProfileId] = useState<string>(DEFAULT_PROFILE_ID);
   const [showReport, setShowReport] = useState(false);
   const [showExplain, setShowExplain] = useState(false);
   const [showSave, setShowSave] = useState(false);
 
-  // 分层情景 = 地区包(region+policy) 垫底 + 用户覆写在上（§6 优先级）。切地区即换整份默认。
-  const layers = useMemo(() => buildSandboxLayers(regionId, overrides), [regionId, overrides]);
+  // 分层情景 = 地区包(region+policy) 垫底 → 企业画像预设 → 用户本次覆写 依次在上（§6 优先级 + §14 #7）。
+  // 切地区换整份默认、切画像换一组预设起点，两者都被用户显式改动覆盖（裁剪而非锁死）。
+  const layers = useMemo(
+    () => buildProfileLayers(profileId, regionId, overrides),
+    [profileId, regionId, overrides],
+  );
   const pack = getRegionPack(regionId);
+  const profile = getEnterpriseProfile(profileId);
 
   // 参数分层解析（含派生）→ 经济编排 → 技术能量 → 敏感性（锚定「当前情景」，随地区/参数变）。
   const resolved = useMemo(() => resolveSandbox(layers), [layers]);
@@ -148,7 +166,8 @@ export function SandboxWorkbench() {
       });
   }, [overrides]);
 
-  // 动态报告：吃「当前」视图模型，改任参数/切地区即整份重写（§9「读最新 CalcResult」，无 AI/无网络/无重算）。
+  // 动态报告：吃「当前」视图模型，改任参数/切地区/换画像即整份重写（§9「读最新 CalcResult」，无 AI/无网络/无重算）。
+  // 选非通用画像时传入 profile → 报告追加「企业个性化视角」节；通用画像传 undefined → 逐字同 R6。
   const report = useMemo(
     () =>
       buildSandboxReport({
@@ -156,8 +175,9 @@ export function SandboxWorkbench() {
         regionName: pack.name,
         changedParams,
         discountRatePct: discountRate * 100,
+        profile: profileId === DEFAULT_PROFILE_ID ? undefined : profile,
       }),
-    [vm, pack.name, changedParams, discountRate],
+    [vm, pack.name, changedParams, discountRate, profileId, profile],
   );
 
   function setVal(key: string, v: number | boolean) {
@@ -171,10 +191,10 @@ export function SandboxWorkbench() {
     <div className="flex flex-col gap-6">
       <Alert variant="warning">
         <strong>这是「产业项目可视化决策沙盘」演示（V1）。</strong>
-        下方全部默认数字都是<span className="font-medium">占位假设（未经逐条核实）</span>
-        ，经济口径为透明简化的 E1–E8 而非可研级，结果恒「需专业人工确认」；且 §17 端到端主链（报告 /
-        AI 解释 / 落库）尚未全接通，<span className="font-medium">不得作为投资或并网决策依据</span>。
-        拖动左侧参数即可看到技术 / 经济 / 图表 / 敏感性即时重算——这才是沙盘的命脉，而非页面数字游戏。
+        下方全部默认数字（含企业画像预设）都是<span className="font-medium">占位假设（未经逐条核实）</span>
+        ，经济口径为透明简化的 E1–E8 而非可研级，结果恒「需专业人工确认」；§17 端到端主链（报告 /
+        AI 解释 / 落库）已接通并经自动化冒烟实证，但仍<span className="font-medium">不得作为投资或并网决策依据</span>。
+        选地区 / 选企业画像 / 拖动参数都会让技术 / 经济 / 图表 / 敏感性即时重算——这才是沙盘的命脉，而非页面数字游戏。
       </Alert>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,320px)_1fr]">
@@ -183,7 +203,7 @@ export function SandboxWorkbench() {
           <CardHeader>
             <CardTitle className="text-base">参数控制台</CardTitle>
             <CardDescription>
-              先选地区载入默认电价 / 光照 / 补贴（§6），再改任一项，右侧全链即时重算。
+              先选地区载入默认电价 / 光照 / 补贴（§6），再选企业画像裁剪预设起点（§14 #7），改任一项右侧全链即时重算。
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
@@ -213,6 +233,38 @@ export function SandboxWorkbench() {
               </div>
               {regionId !== DEFAULT_REGION_ID ? (
                 <p className="text-[11px] leading-tight text-zinc-500">{pack.summary}</p>
+              ) : null}
+            </div>
+
+            {/* 选企业画像（R7 · §14 第 7 项：画像预设垫作参数起点、报告按侧重裁剪；用户仍可逐项覆写） */}
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-zinc-500">选企业画像（裁剪方案起点）</div>
+              <div className="flex flex-wrap gap-2">
+                {PROFILE_OPTIONS.map((p) => {
+                  const active = p.id === profileId;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setProfileId(p.id)}
+                      aria-pressed={active}
+                      title={p.summary}
+                      className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                        active
+                          ? "border-teal-500 bg-teal-50 text-teal-700"
+                          : "border-input bg-transparent text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {p.name}
+                    </button>
+                  );
+                })}
+              </div>
+              {profileId !== DEFAULT_PROFILE_ID ? (
+                <p className="text-[11px] leading-tight text-zinc-500">
+                  {profile.summary}
+                  <span className="mt-0.5 block text-teal-700/80">{profile.emphasis.headline}</span>
+                </p>
               ) : null}
             </div>
 
@@ -294,6 +346,8 @@ export function SandboxWorkbench() {
               const value = typeof raw === "number" ? raw : Number(raw);
               const userTouched = overrides[s.key] !== undefined;
               const originBadge = !userTouched ? ORIGIN_BADGE[rp?.origin ?? ""] : null;
+              // R7：值来自当前画像预设、且用户本次未改 → 标「画像默认」（与地区/政策/已改区分，用数据算不臆测）。
+              const showProfileBadge = !userTouched && isProfileDefault(profileId, s.key, overrides);
               return (
                 <div key={s.key} className="flex flex-col gap-1">
                   <div className="flex items-center justify-between text-sm">
@@ -337,6 +391,12 @@ export function SandboxWorkbench() {
                       <Badge variant="neutral" className="text-[10px]">
                         已改
                       </Badge>
+                    ) : showProfileBadge ? (
+                      <span
+                        className={`rounded border px-1.5 py-0.5 text-[10px] ${PROFILE_BADGE.cls}`}
+                      >
+                        {PROFILE_BADGE.label}
+                      </span>
                     ) : originBadge ? (
                       <span
                         className={`rounded border px-1.5 py-0.5 text-[10px] ${originBadge.cls}`}
@@ -444,7 +504,7 @@ export function SandboxWorkbench() {
               <div className="text-[11px] text-zinc-400">
                 溯源 {vm.calcRef} · 版本 model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} /
                 finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} ·
-                regions@{SANDBOX_REGIONS_VERSION} · 视图 v{vm.viewVersion}
+                regions@{SANDBOX_REGIONS_VERSION} · profiles@{SANDBOX_PROFILES_VERSION} · 视图 v{vm.viewVersion}
               </div>
             </>
           )}

@@ -13,6 +13,7 @@ import { runSandboxModel, runSandboxModelBaseline } from "@/server/sandbox-model
 import { resolveSandbox } from "@/server/sandbox-params";
 import { computeTechModel as techFromTech } from "@/server/sandbox-tech";
 import { computeTornado } from "@/server/sandbox-sensitivity";
+import { getEnterpriseProfile } from "@/server/sandbox-profiles";
 
 function okViewModel() {
   const calc = runSandboxModelBaseline();
@@ -167,5 +168,44 @@ describe("sandbox-report · 确定性（同输入两次深相等，可复算）"
     expect(npvUp).not.toBe(npvBase);
     const execUp = (repUp.sections.find((s) => s.key === "exec")?.paragraphs ?? []).join("\n");
     expect(execUp).toContain(npvUp);
+  });
+});
+
+describe("sandbox-report · R7 企业个性化视角（依画像裁剪，§14 第 7 项）", () => {
+  it("不传 profile → 无「profile」节，分节序列与 R6 一致（向后兼容）", () => {
+    const vm = okViewModel();
+    const rep = buildSandboxReport({ vm, regionName: "山西" });
+    expect(rep.sections.map((s) => s.key)).not.toContain("profile");
+  });
+
+  it("★带画像 → exec 之后紧随「profile」节：含画像基调 + 引用的指标值逐字等于卡片（不重算）", () => {
+    const vm = okViewModel();
+    const fleet = getEnterpriseProfile("fleet");
+    const rep = buildSandboxReport({ vm, regionName: "山西", profile: fleet });
+    const keys = rep.sections.map((s) => s.key);
+    expect(keys).toContain("profile");
+    expect(keys.indexOf("profile")).toBe(keys.indexOf("exec") + 1); // 紧随执行摘要
+    const sec = rep.sections.find((s) => s.key === "profile");
+    const text = (sec?.paragraphs ?? []).join("\n");
+    // 画像一句话基调透传
+    expect(text).toContain(fleet.emphasis.headline);
+    // 每个被引用的指标值串必须逐字来自视图模型卡片（单一真源，报告绝不换算）
+    const cards = Object.fromEntries((vm.cards ?? []).map((c) => [c.key, c.value]));
+    for (const mk of fleet.emphasis.metricKeys) {
+      const v = cards[mk];
+      if (v != null && v !== "—") expect(text, `画像节应引用 ${mk} 卡值 ${v}`).toContain(v);
+    }
+    // 诚实脚注随画像带出（占位假设 / 人工确认）
+    expect(text).toMatch(/占位假设|人工确认|待核实/);
+  });
+
+  it("★失败报告忽略画像：仍只有 error 一节，绝不产出个性化脏结论", () => {
+    const badCalc = runSandboxModel({ user: { values: { "project.pvCapacity": Number.NaN } } });
+    const vm = buildSandboxViewModel({ calc: badCalc });
+    expect(vm.ok).toBe(false);
+    const rep = buildSandboxReport({ vm, regionName: "山西", profile: getEnterpriseProfile("operator") });
+    expect(rep.ok).toBe(false);
+    expect(rep.sections.map((s) => s.key)).toEqual(["error"]);
+    expect(rep.sections.find((s) => s.key === "profile")).toBeUndefined();
   });
 });

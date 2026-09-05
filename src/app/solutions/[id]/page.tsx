@@ -7,6 +7,7 @@ import { BuyButton } from "@/components/solutions/BuyButton";
 import { getPublishedSolutionById } from "@/server/solutions";
 import { getCurrentUser } from "@/server/authz";
 import { hasPaidEntitlement } from "@/server/orders";
+import { describeSandboxLineage } from "@/lib/sandbox-solution-lineage";
 import type { ParsedSolutionBody } from "@/server/solution-body";
 import { seoMetadata } from "@/lib/site";
 
@@ -64,6 +65,8 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
   const entitled = s.isFree || s.isDemo ? true : await hasPaidEntitlement(s.id, { userId: user?.id, email: user?.email });
   const locked = !entitled;
   const loginHref = `/login?callbackUrl=${encodeURIComponent(`/solutions/${s.id}${includeDemo ? "?demo=1" : ""}`)}`;
+  // 沙盘来源识别（R8.3）：只读已落库财务的溯源指纹，不重算——决定是否为买家额外挂一条诚实声明。
+  const lineage = describeSandboxLineage(s.financials);
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
@@ -84,6 +87,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
           <Link href={`/industries/${s.industrySlug}`}>
             <Badge variant="outline">{s.industryName}</Badge>
           </Link>
+          {lineage ? <Badge variant="info">沙盘推演生成</Badge> : null}
           {s.isDemo ? <Badge variant="warning">DEMO 数据</Badge> : null}
         </div>
       </PageHeader>
@@ -104,6 +108,24 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
       {s.isDemo ? (
         <Alert variant="warning" title="这是 DEMO 示例数据">
           本方案关联的案例为 DEMO 示例，<strong>不是可购买的真实方案</strong>。
+        </Alert>
+      ) : null}
+
+      {lineage ? (
+        <Alert variant="info" title="本方案由产业决策沙盘推演生成">
+          下方所有关键数字（CAPEX/OPEX/NPV/IRR/回收期/ROI 等）均由确定性沙盘模型
+          {lineage.engineCalcRef ? <code className="mx-1 font-mono text-xs">{lineage.engineCalcRef}</code> : null}
+          （方案生成口径 <code className="mx-1 font-mono text-xs">{lineage.solutionCalcRef}</code>
+          {lineage.regionName ? <>，地区「{lineage.regionName}」</> : null}
+          {lineage.profileName ? <>，画像「{lineage.profileName}」</> : null}）计算并原样搬运，非二次换算。
+          其入参目前仍为<strong>示例占位假设（{lineage.evidenceKind ?? "ASSUMPTION"}）</strong>，
+          须以来源可追溯的真实电价、光照、补贴、造价、负荷等数据替换并经专业人员复核后方可作投资依据
+          （宪法第 16/20/21 条）。
+          {lineage.npvNonPositive ? (
+            <span className="mt-1 block text-danger">
+              注意：按当前参数 NPV 为非正，商业决策前须重点复核。
+            </span>
+          ) : null}
         </Alert>
       ) : null}
 

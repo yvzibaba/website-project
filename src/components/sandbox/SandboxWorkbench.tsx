@@ -11,11 +11,13 @@
  *   - **诚实贯穿**（第 16/20 条）：顶部横幅声明「全部为占位假设 + 需专业人工确认 + E2E 主链未通不得当决策依据」，
  *     每个参数标 `ASSUMPTION` 置信度，被裁剪到边界如实标注，指标算不出显示「—」而非 0。
  *
- * 边界（截至 R7）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）、
+ * 边界（截至 R8.2）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）、
  *   **AI 解释**（`SandboxExplainPanel` → 受登录门禁的 `POST /api/sandbox/explain`，LLM 只解读报告、绝不算数、成本入 ModelCall）、
  *   **项目保存 / 情景更新 / 版本 / 回滚**（`SandboxSavePanel` → 受登录 + owner 门禁的 `/api/sandbox/**`，落到 R3 `sandbox-store`，
  *   **服务端按输入重跑引擎**落库——非搬页面数字），以及 R7 的**企业个性化**（「选企业画像」把典型企业预设垫作参数起点、
  *   并在动态报告里追加一节「企业个性化视角」按画像侧重挑读既有指标——全程零重算，数字仍由确定性引擎现算）。
+ *   R8.2 起另有**导出产业方案**（`SandboxSolutionPanel` → 受 staff + CSRF 门禁的 `POST /api/sandbox/solution`）：
+ *   把 R8.1 草案（引擎现算、逐字搬运）连同**人挑定的真实案例 caseId** 落成一条 DRAFT `Solution`，接进「案例→方案→查看→购买」闭环。
  *   §17 端到端主链「选地区→(选画像)→改参数→跑→技术/经济/风险/敏感性→报告→AI解释→保存」已于 R6.4 以自动化冒烟脚本跑通并宣布核心完成。
  *   ⚠️ 但全部默认数字仍是**占位假设**、经济口径为透明简化 E1–E8、画像预设亦为示例假设，结论恒「需专业人工确认」，不得作投资/并网决策依据。
  */
@@ -58,6 +60,7 @@ import type { ChangedParamView } from "@/lib/sandbox-report";
 import { SandboxReportPanel } from "./SandboxReportPanel";
 import { SandboxExplainPanel } from "./SandboxExplainPanel";
 import { SandboxSavePanel } from "./SandboxSavePanel";
+import { SandboxSolutionPanel } from "./SandboxSolutionPanel";
 import {
   BreakdownBar,
   CashFlowChart,
@@ -113,6 +116,7 @@ export function SandboxWorkbench() {
   const [showReport, setShowReport] = useState(false);
   const [showExplain, setShowExplain] = useState(false);
   const [showSave, setShowSave] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
 
   // 分层情景 = 地区包(region+policy) 垫底 → 企业画像预设 → 用户本次覆写 依次在上（§6 优先级 + §14 #7）。
   // 切地区换整份默认、切画像换一组预设起点，两者都被用户显式改动覆盖（裁剪而非锁死）。
@@ -301,6 +305,18 @@ export function SandboxWorkbench() {
                 aria-pressed={showExplain}
               >
                 {showExplain ? "收起 AI 解释" : "AI 解释此结果"}
+              </Button>
+            ) : null}
+
+            {vm.ok ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowSolution((v) => !v)}
+                aria-pressed={showSolution}
+              >
+                {showSolution ? "收起导出方案" : "导出产业方案"}
               </Button>
             ) : null}
 
@@ -516,6 +532,14 @@ export function SandboxWorkbench() {
               layers={layers as unknown as Record<string, unknown>}
               regionId={regionId}
               regionName={pack.name}
+            />
+          ) : null}
+          {showSolution && vm.ok ? (
+            <SandboxSolutionPanel
+              calc={calc}
+              vm={vm}
+              regionName={pack.name}
+              profile={profileId === DEFAULT_PROFILE_ID ? undefined : profile}
             />
           ) : null}
         </div>

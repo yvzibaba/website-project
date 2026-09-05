@@ -11,9 +11,12 @@
  *   - **诚实贯穿**（第 16/20 条）：顶部横幅声明「全部为占位假设 + 需专业人工确认 + E2E 主链未通不得当决策依据」，
  *     每个参数标 `ASSUMPTION` 置信度，被裁剪到边界如实标注，指标算不出显示「—」而非 0。
  *
- * 边界（截至 R6.2）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）
- *   与**AI 解释**（`SandboxExplainPanel` → 受登录门禁的 `POST /api/sandbox/explain`，LLM 只解读报告、绝不算数、成本入 ModelCall）。
- *   项目保存/版本（R3 `sandbox-store`，R6.3）尚未接到本页。
+ * 边界（截至 R6.3）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）、
+ *   **AI 解释**（`SandboxExplainPanel` → 受登录门禁的 `POST /api/sandbox/explain`，LLM 只解读报告、绝不算数、成本入 ModelCall）、
+ *   以及**项目保存 / 情景更新 / 版本 / 回滚**（`SandboxSavePanel` → 受登录 + owner 门禁的 `/api/sandbox/**`，
+ *   落到 R3 `sandbox-store`，**服务端按输入重跑引擎**落库——非搬页面数字）。至此 §17 端到端主链
+ *   「选地区→改参数→跑→技术/经济/风险/敏感性→报告→AI解释→保存」在页面上全部接通，唯留 R6.4 的 E2E 冒烟脚本作最终核验；
+ *   在 R6.4 通过前，顶部横幅仍如实标注「端到端主链待最终验证、不得作为决策依据」。
  */
 
 "use client";
@@ -46,6 +49,7 @@ import { buildSandboxReport } from "@/lib/sandbox-report";
 import type { ChangedParamView } from "@/lib/sandbox-report";
 import { SandboxReportPanel } from "./SandboxReportPanel";
 import { SandboxExplainPanel } from "./SandboxExplainPanel";
+import { SandboxSavePanel } from "./SandboxSavePanel";
 import {
   BreakdownBar,
   CashFlowChart,
@@ -95,6 +99,7 @@ export function SandboxWorkbench() {
   const [regionId, setRegionId] = useState<string>(DEFAULT_REGION_ID);
   const [showReport, setShowReport] = useState(false);
   const [showExplain, setShowExplain] = useState(false);
+  const [showSave, setShowSave] = useState(false);
 
   // 分层情景 = 地区包(region+policy) 垫底 + 用户覆写在上（§6 优先级）。切地区即换整份默认。
   const layers = useMemo(() => buildSandboxLayers(regionId, overrides), [regionId, overrides]);
@@ -246,6 +251,16 @@ export function SandboxWorkbench() {
                 {showExplain ? "收起 AI 解释" : "AI 解释此结果"}
               </Button>
             ) : null}
+
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowSave((v) => !v)}
+              aria-pressed={showSave}
+            >
+              {showSave ? "收起保存面板" : "保存 / 版本"}
+            </Button>
 
             {editable.map((s) => {
               const rp = resolved.params[s.key];
@@ -436,6 +451,13 @@ export function SandboxWorkbench() {
 
           {showReport ? <SandboxReportPanel report={report} /> : null}
           {showExplain && vm.ok ? <SandboxExplainPanel report={report} /> : null}
+          {showSave ? (
+            <SandboxSavePanel
+              layers={layers as unknown as Record<string, unknown>}
+              regionId={regionId}
+              regionName={pack.name}
+            />
+          ) : null}
         </div>
       </div>
     </div>

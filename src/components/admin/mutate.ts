@@ -36,7 +36,7 @@ export function fieldHints(fields?: Record<string, string[]>): string[] {
  */
 export async function mutateJson(
   url: string,
-  method: "POST" | "PATCH" | "PUT" | "DELETE",
+  method: "POST" | "PATCH" | "PUT" | "DELETE" | "GET",
   body?: unknown,
 ): Promise<MutateResult> {
   try {

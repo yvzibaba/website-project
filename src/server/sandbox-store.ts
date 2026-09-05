@@ -16,22 +16,74 @@
  *   单一真源仍是 JSON 快照；算不出（失败 / NaN / IRR 无解）时**诚实留 null，绝不填假值**（第 20 条）。
  *
  * ⚠️ 全部结论继承 R2 的 `needsProfessionalReview=true`（§16），本层不做任何「已核实」暗示；
- *    本层**不含鉴权**——「谁能建/改哪个项目」由调用方（R4 页面 / 路由）用 `requireUser` 把关。
+ *    本层**不含鉴权**——「谁能建/改哪个项目」由 R6.3 接上的路由层（`/api/sandbox/**`）用
+ *    `requireSameOriginActor`（登录）+ `sandbox-projects` 的 owner-or-staff 判定把关，本层只认调用方已鉴权。
  */
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { Prisma, type ChangeAction, type Industry } from "@prisma/client";
 import { runSandboxModel, type CalcResult } from "@/server/sandbox-model";
 import { resolveSandbox } from "@/server/sandbox-params";
-import type { ResolveLayers } from "@/server/parameter-engine";
+import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
 
 const log = logger.child({ module: "server/sandbox-store" });
 
 /** 持久层版本（改映射口径须升版并记原因，规则 13）。 */
-export const STORE_VERSION = "1.0.0";
+export const STORE_VERSION = "1.0.1";
 
-/** 落库的参数分层（去掉引擎注入项 derived 与运行时钟 now，now 每次重算取当前时间）。 */
-export type StoredParamLayers = Pick<ResolveLayers, "region" | "policy" | "user">;
+/**
+ * 落库的参数分层（去掉引擎注入项 `derived`——派生值注册在引擎里，不该持久化函数）。
+ *
+ * `now` 语义（R6.3 修正）：**判政策生效/过期的时钟作为「输入」被持久化并回放**，而非每次重算取当前时间。
+ *   理由（§4 / 规则 7 可复算 / §9）：一个已存情景若用「此刻」重算，会随某省补贴到期而在未来悄悄变数——
+ *   审计/版本系统绝不该有这种时间漂移。锁定当时时钟 → 同输入必得同结果，且服务端重算与客户端预览逐位对齐。
+ *   省略 `now` 则回落引擎极早时间（epoch-0）——兼容既有仅传 `user` 值、不含日期窗的用例（如 R3 集成测试）。
+ *   经 JSON 落库后 Date 会变成 ISO 串，故类型允许 `Date | string`，重放前由 `toEngineLayers` 统一复活。
+ */
+export interface StoredParamLayers {
+  region?: ValueLayer;
+  policy?: ValueLayer[];
+  user?: ValueLayer;
+  now?: Date | string | null;
+}
+
+/** 把可能来自 JSON 的日期字段复活成引擎要的 `Date`；无效/缺失 → undefined（绝不塞 Invalid Date）。 */
+function toDate(v: Date | string | number | null | undefined): Date | undefined {
+  if (v == null) return undefined;
+  if (v instanceof Date) return Number.isNaN(v.getTime()) ? undefined : v;
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? undefined : d;
+}
+
+/** 复活单个 ValueLayer 的生效窗口（policy 层常带 effectiveFrom/Until，落库后为 ISO 串）。 */
+function reviveValueLayer(l: ValueLayer): ValueLayer {
+  const out: ValueLayer = { ...l };
+  const ef = toDate(l.effectiveFrom as Date | string | null | undefined);
+  const eu = toDate(l.effectiveUntil as Date | string | null | undefined);
+  if (ef) out.effectiveFrom = ef;
+  else delete out.effectiveFrom;
+  if (eu) out.effectiveUntil = eu;
+  else delete out.effectiveUntil;
+  return out;
+}
+
+/**
+ * 把持久化/客户端传来的分层归一成引擎入参：复活 `now` 与各层日期窗为真正的 `Date`。
+ *
+ * 为何必须（§4/§6 正确性）：`resolveParameters` 里 `now < layer.effectiveFrom` 若一侧是 JSON 反序列化出的
+ *   **字符串**，关系运算会把字符串 `Number()` 成 `NaN` → 比较恒 false → 过期/未生效政策被**误判为现行**
+ *   （与 `now` 回落 epoch-0 把现行政策误判为未生效，是同一处的两个方向性 bug）。落库回放前一律复活为 Date。
+ * 纯函数、可离线单测；`region/policy/user` 缺省即不注入该层（保持既有空分层行为不变）。
+ */
+export function toEngineLayers(layers: StoredParamLayers): Omit<ResolveLayers, "derived"> {
+  const out: Omit<ResolveLayers, "derived"> = {};
+  if (layers.region) out.region = reviveValueLayer(layers.region);
+  if (layers.policy) out.policy = layers.policy.map(reviveValueLayer);
+  if (layers.user) out.user = reviveValueLayer(layers.user);
+  const now = toDate(layers.now);
+  if (now) out.now = now;
+  return out;
+}
 
 /**
  * 从 `CalcResult` 派生可查询的精确汇总列（纯函数，脱离 DB 单测）。
@@ -105,10 +157,12 @@ function jsonOrNull(v: unknown): Prisma.InputJsonValue | typeof Prisma.DbNull {
 
 /* 一次「算 + 准备入库数据」的中间产物（纯，供建/改情景复用）。 */
 function computeScenarioData(layers: StoredParamLayers) {
-  const calc = runSandboxModel(layers);
-  const numeric = resolveSandbox(layers).numeric;
+  // ★用归一（复活 now 与政策日期窗）后的分层喂引擎，保证服务端重算 == 客户端预览、可复算确定（§4/§6/§9）。
+  const engineLayers = toEngineLayers(layers);
+  const calc = runSandboxModel(engineLayers);
+  const numeric = resolveSandbox(engineLayers).numeric;
   return {
-    paramLayers: jsonSafe(layers) as object,
+    paramLayers: jsonSafe(layers) as object, // 存原始输入（now 及日期窗 JSON 化后为 ISO 串，回放时再复活）
     paramSnapshot: jsonSafe(numeric) as object,
     calcResult: jsonSafe(calc) as object,
     ...projectCalcToColumns(calc),

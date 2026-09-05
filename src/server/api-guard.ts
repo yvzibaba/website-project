@@ -134,7 +134,7 @@ export function errorResponse(
  * 会导致上面的具体结果类型不可赋值（TS2345）；这里显式列出两个数据层会透出的所有 id/派生字段。
  */
 interface MutationLike {
-  status: "ok" | "invalid" | "not_found" | "blocked" | "error";
+  status: "ok" | "invalid" | "not_found" | "forbidden" | "blocked" | "error";
   fieldErrors?: Record<string, string[]>;
   error?: string;
   caseId?: string;
@@ -168,6 +168,8 @@ export function mutationResponse(result: MutationLike): NextResponse {
       });
     case "not_found":
       return errorResponse("NOT_FOUND", "目标记录不存在", 404);
+    case "forbidden":
+      return errorResponse("FORBIDDEN", "无权访问该资源", 403);
     case "blocked":
       return errorResponse("CONFLICT", "操作被守卫拒绝", 409, {
         fields: result.fieldErrors ?? {},

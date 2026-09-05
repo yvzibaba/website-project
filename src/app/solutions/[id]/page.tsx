@@ -8,6 +8,7 @@ import { getPublishedSolutionById } from "@/server/solutions";
 import { getCurrentUser } from "@/server/authz";
 import { hasPaidEntitlement } from "@/server/orders";
 import { describeSandboxLineage } from "@/lib/sandbox-solution-lineage";
+import { evaluateSandboxSolutionProvenance } from "@/lib/sandbox-solution-provenance";
 import type { ParsedSolutionBody } from "@/server/solution-body";
 import { seoMetadata } from "@/lib/site";
 
@@ -67,6 +68,8 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
   const loginHref = `/login?callbackUrl=${encodeURIComponent(`/solutions/${s.id}${includeDemo ? "?demo=1" : ""}`)}`;
   // 沙盘来源识别（R8.3）：只读已落库财务的溯源指纹，不重算——决定是否为买家额外挂一条诚实声明。
   const lineage = describeSandboxLineage(s.financials);
+  // 溯源审计（R8.4）：仅对沙盘来源方案做「可复算 + 可追溯」只读体检（比存量、不重跑引擎、不写库）。
+  const provenance = lineage ? evaluateSandboxSolutionProvenance(s.financials) : null;
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
@@ -124,6 +127,14 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
           {lineage.npvNonPositive ? (
             <span className="mt-1 block text-danger">
               注意：按当前参数 NPV 为非正，商业决策前须重点复核。
+            </span>
+          ) : null}
+          {provenance ? (
+            <span className="mt-2 block border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
+              溯源审计（<code className="font-mono">{provenance.auditRef}</code>）：{provenance.buyerSummary}
+              {provenance.reproducibility.allReproducible
+                ? " 若已接入来源可追溯的真实数据，可提交带合法链接与置信度的出处，经人工复核后把对应数字从 ASSUMPTION 升级为 FACT。"
+                : " 复算校验发现异常，该方案在数据修复并复核前不应对外销售。"}
             </span>
           ) : null}
         </Alert>

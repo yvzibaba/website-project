@@ -112,7 +112,7 @@ describeDb("db smoke (Neon Postgres)", () => {
     ]);
   });
 
-  it("has all 18 V1 business tables present", async () => {
+  it("has all 19 V1 business tables present", async () => {
     const rows = await prisma.$queryRaw<Array<{ table_name: string }>>`
       SELECT table_name
       FROM information_schema.tables
@@ -130,6 +130,7 @@ describeDb("db smoke (Neon Postgres)", () => {
       "Localization",
       "LocalizationSupplier",
       "Market",
+      "ModelCall",
       "OpenSourceProject",
       "Order",
       "Region",

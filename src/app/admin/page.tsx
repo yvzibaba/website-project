@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container, Card, CardContent, CardHeader, CardTitle, CardDescription, Badge } from "@/components/ui";
 import { PageHeader } from "@/components/page";
 import { getAdminDashboardData } from "@/server/admin";
+import { getCostSummary } from "@/server/model-calls";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 
 /**
@@ -51,6 +52,20 @@ const ACTION_LABEL: Record<string, string> = {
   DELETE: "删除",
   ROLLBACK: "回滚",
 };
+const TIER_LABEL: Record<string, string> = {
+  low: "低档",
+  medium: "中档",
+  high: "高档",
+};
+const CALL_STATUS_LABEL: Record<string, string> = {
+  ok: "成功",
+  schema_invalid: "校验失败",
+  provider_error: "供应商错误",
+};
+/** 成本展示：亚分级单价用 4 位小数（$0.0042 这类才看得见）。 */
+function usd(n: number): string {
+  return `$${n.toFixed(4)}`;
+}
 
 function Chips({ map, labels }: { map: Record<string, number>; labels?: Record<string, string> }) {
   const entries = Object.entries(map).sort((a, b) => b[1] - a[1]);
@@ -86,6 +101,8 @@ export default async function AdminDashboardPage() {
   if (!res.ok) return null;
 
   const data = await getAdminDashboardData(20);
+  // AI 成本观测（Phase 9 M5 / §31）：全量 ModelCall 聚合；已在自鉴权之后，仅员工可达。
+  const cost = await getCostSummary();
 
   return (
     <Container className="py-10 flex flex-col gap-6">
@@ -169,6 +186,86 @@ export default async function AdminDashboardPage() {
                 </tbody>
               </table>
             </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>AI 成本观测（ModelCall）</CardTitle>
+          <CardDescription>
+            每次 AI 任务落一条记录：模型 / tokens / 延迟 / 状态 / 成本（总控 §31、宪法第 7 条——成本由程序计算非模型口算）。
+            当前主要由方案「一键生成正文」触发的 §33 多角色流水线写入。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          {cost.totalCalls === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              暂无 AI 调用记录。在方案编辑台点「生成 AI 正文草稿」跑一条流水线后，此处即会累计成本与调用分布。
+            </p>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">累计成本</div>
+                  <div className="text-2xl font-semibold tabular-nums">{usd(cost.totalCostUsd)}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">调用次数</div>
+                  <div className="text-2xl font-semibold tabular-nums">{cost.totalCalls}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">失败调用</div>
+                  <div className="text-2xl font-semibold tabular-nums">{cost.errorCalls}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">平均延迟</div>
+                  <div className="text-2xl font-semibold tabular-nums">
+                    {cost.avgLatencyMs === null ? "—" : `${cost.avgLatencyMs} ms`}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <div className="mb-1 text-xs font-medium text-muted-foreground">按档位</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {Object.entries(cost.byTier).map(([tier, v]) => (
+                      <Badge key={tier} variant="neutral" className="tabular-nums">
+                        {(TIER_LABEL[tier] ?? tier)} {v.calls} 次 · {usd(v.costUsd)}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="mb-1 text-xs font-medium text-muted-foreground">按状态</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {Object.entries(cost.byStatus).map(([st, n]) => (
+                      <Badge
+                        key={st}
+                        variant={st === "ok" ? "success" : "danger"}
+                        className="tabular-nums"
+                      >
+                        {(CALL_STATUS_LABEL[st] ?? st)} {n}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-1 text-xs font-medium text-muted-foreground">
+                  按 Agent 成本 Top（tokens：输入 {cost.totalPromptTokens} / 输出 {cost.totalCompletionTokens}）
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {cost.byAgent.slice(0, 12).map((a) => (
+                    <Badge key={a.agent} variant="info" className="font-mono tabular-nums">
+                      {a.agent} {a.calls} · {usd(a.costUsd)}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

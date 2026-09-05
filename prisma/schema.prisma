@@ -472,3 +472,40 @@ model ChangeLog {
 
   @@index([entityType, entityId, createdAt])
 }
+
+// ----------------------------- AI 成本观测（总控 §31 / 宪法第 7 条） -----------------------------
+
+// 每次 AI 任务落一条成本/延迟/状态观测记录，供「每日 / 每 Agent / 每案例 / 每方案」成本看板（§31）与
+// 「未来据成本自动选模型」（§32）使用。由 Model Router 的 `CallRecord` 经 `dbCallRecorder` 写入——
+// **成本是 estimateCost 程序计算所得（宪法第 7 条：程序计算 > LLM 口算），非模型口算**。
+// 设计取舍（对齐 ChangeLog 这类追加型观测日志，非内容实体）：
+//  - **只 createdAt、无 version/updatedAt**：一次调用一条、不可变，不是可回滚的业务实体。
+//  - tier/taskKind/status 存 **String 而非新增枚举**：它们本就是 model-router 的 TS 字符串联合，写入前已编译期约束；
+//    再加 3 个 Prisma 枚举只增迁移面与漂移风险（宪法「更简单、更少依赖」），故按 ChangeLog.entityType 先例存串。
+//  - estimatedCostUsd 用 **Decimal(12,6)**：estimateCost round 到 6 位、真实单价常为亚分级（如 $0.0042），
+//    Decimal 避免 JS 浮点污染（同 Order.amount 用 Decimal）。
+//  - caseId/solutionId 存 **无外键的归因串**：观测历史不应因案例/方案被删而级联丢失（同 ChangeLog.entityId）。
+model ModelCall {
+  id               String   @id @default(cuid())
+  taskId           String   // runTask 生成（如 "research-1"）；跨进程计数会重置，非唯一，仅供排查
+  providerId       String   // "deepseek" / "stub" …
+  modelId          String   // 实际使用的模型 id（来自可 env 覆写的 MODEL_CATALOG）
+  tier             String   // low | medium | high
+  taskKind         String   // generate_text | structured_output | research | vision | code | embedding
+  status           String   // ok | schema_invalid | provider_error
+  latencyMs        Int
+  promptTokens     Int
+  completionTokens Int
+  estimatedCostUsd Decimal  @db.Decimal(12, 6)
+  agent            String?  // 成本归因（如 "pipeline:bull" / "solution-generation"）
+  caseId           String?  // 归因（无 FK）
+  solutionId       String?  // 归因（无 FK）
+  createdAt        DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([agent, createdAt])
+  @@index([tier])
+  @@index([status])
+  @@index([caseId])
+  @@index([solutionId])
+}

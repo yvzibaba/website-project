@@ -1,6 +1,7 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse, readJsonSafe } from "@/server/api-guard";
 import { generateSolutionContent } from "@/server/solution-generation";
+import { createDbCallRecorder } from "@/server/model-calls";
 
 /**
  * /api/admin/solutions/[id]/generate — 触发一条 §33 多角色流水线为该**草稿**方案生成正文并落库
@@ -27,6 +28,10 @@ export async function POST(request: Request, { params }: Ctx): Promise<NextRespo
   // 长度兜底（防超长 prompt 灌入）；非法/缺失 → undefined 交编排器派生默认问题。
   const question = rawQuestion && rawQuestion.trim().length > 0 ? rawQuestion.trim().slice(0, 2000) : undefined;
 
-  const result = await generateSolutionContent(id, { question });
+  // 请求作用域的落库记录器：把流水线各角色的 CallRecord（成本/延迟/状态/归因）持久化到 ModelCall 表（Phase 9 M5 / §31）。
+  const recorder = createDbCallRecorder();
+  const result = await generateSolutionContent(id, { question, recorder });
+  // 等在途成本写入落定再响应（§31 成本可追踪；观测失败仍被 recorder 内部吞掉、不影响本次结果）。
+  await recorder.flush();
   return mutationResponse(result);
 }

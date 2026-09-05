@@ -11,8 +11,9 @@
  *   - **诚实贯穿**（第 16/20 条）：顶部横幅声明「全部为占位假设 + 需专业人工确认 + E2E 主链未通不得当决策依据」，
  *     每个参数标 `ASSUMPTION` 置信度，被裁剪到边界如实标注，指标算不出显示「—」而非 0。
  *
- * 边界（截至 R6.1）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）；
- *   AI 自然语言解释（R6.2 `runTask`）与项目保存/版本（R3 `sandbox-store`，R6.3）尚未接到本页。
+ * 边界（截至 R6.2）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）
+ *   与**AI 解释**（`SandboxExplainPanel` → 受登录门禁的 `POST /api/sandbox/explain`，LLM 只解读报告、绝不算数、成本入 ModelCall）。
+ *   项目保存/版本（R3 `sandbox-store`，R6.3）尚未接到本页。
  */
 
 "use client";
@@ -44,6 +45,7 @@ import type { MetricCard, Tone } from "@/lib/sandbox-view";
 import { buildSandboxReport } from "@/lib/sandbox-report";
 import type { ChangedParamView } from "@/lib/sandbox-report";
 import { SandboxReportPanel } from "./SandboxReportPanel";
+import { SandboxExplainPanel } from "./SandboxExplainPanel";
 import {
   BreakdownBar,
   CashFlowChart,
@@ -92,6 +94,7 @@ export function SandboxWorkbench() {
   const [advanced, setAdvanced] = useState(false);
   const [regionId, setRegionId] = useState<string>(DEFAULT_REGION_ID);
   const [showReport, setShowReport] = useState(false);
+  const [showExplain, setShowExplain] = useState(false);
 
   // 分层情景 = 地区包(region+policy) 垫底 + 用户覆写在上（§6 优先级）。切地区即换整份默认。
   const layers = useMemo(() => buildSandboxLayers(regionId, overrides), [regionId, overrides]);
@@ -231,6 +234,18 @@ export function SandboxWorkbench() {
             >
               {showReport ? "收起动态报告" : "生成动态报告"}
             </Button>
+
+            {vm.ok ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowExplain((v) => !v)}
+                aria-pressed={showExplain}
+              >
+                {showExplain ? "收起 AI 解释" : "AI 解释此结果"}
+              </Button>
+            ) : null}
 
             {editable.map((s) => {
               const rp = resolved.params[s.key];
@@ -420,6 +435,7 @@ export function SandboxWorkbench() {
           )}
 
           {showReport ? <SandboxReportPanel report={report} /> : null}
+          {showExplain && vm.ok ? <SandboxExplainPanel report={report} /> : null}
         </div>
       </div>
     </div>

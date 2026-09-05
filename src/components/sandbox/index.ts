@@ -1,5 +1,6 @@
 export { SandboxWorkbench } from "./SandboxWorkbench";
 export { SandboxReportPanel } from "./SandboxReportPanel";
+export { SandboxExplainPanel } from "./SandboxExplainPanel";
 export {
   BreakdownBar,
   CashFlowChart,

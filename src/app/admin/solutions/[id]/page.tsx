@@ -9,6 +9,7 @@ import { AdminSolutionFinancials } from "@/components/admin/AdminSolutionFinanci
 import { AdminSolutionUnknowns } from "@/components/admin/AdminSolutionUnknowns";
 import { DeleteSolutionButton } from "@/components/admin/DeleteSolutionButton";
 import { PublishSolutionButton } from "@/components/admin/PublishSolutionButton";
+import { GenerateBodyButton } from "@/components/admin/GenerateBodyButton";
 import { getAdminSolutionDetail } from "@/server/admin-solutions";
 import { parseSolutionBody } from "@/server/solution-body";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
@@ -116,6 +117,17 @@ export default async function AdminSolutionDetailPage({ params }: { params: Prom
           needsProfessionalReview: s.needsProfessionalReview,
         }}
       />
+
+      <Card>
+        <CardContent className="py-4">
+          <h2 className="mb-1 text-sm font-semibold">AI 生成正文草稿（§33 多角色研究）</h2>
+          <p className="mb-3 text-xs text-muted-foreground">
+            跑一条 Research→Bull→Bear→Judge→QA 流水线，把研究结论、正反证据、风险与关键未知变量自动写入下方对应分节，
+            供你在人工审核后编辑、再决定是否发布。此为「AI 做大量劳动、人做关键决策」的入口——生成只落草稿，绝不自动发布。
+          </p>
+          <GenerateBodyButton solutionId={s.id} status={s.status} />
+        </CardContent>
+      </Card>
 
       <SolutionBodyEditor solutionId={s.id} sections={sections} extras={extras} />
 

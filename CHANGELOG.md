@@ -3,6 +3,16 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.33.0] - 2026-09-05 · Phase 13 里程碑 7：后台「一键生成 AI 正文草稿」按钮（消费 Phase 8 M3 生成端点，人触发、AI 起草、仍由人决定发布）
+
+- 原因：Phase 8 M3 已把 §33 多角色流水线接入真实方案生成，但只交付了一个裸端点 `POST /api/admin/solutions/[id]/generate`（供 RSC / 脚本调用），**后台无任何运营可点的人面入口**——「AI 做大量劳动」造好的能力对人是断链的，运营要生成草稿还得自己敲 API。ROADMAP Phase 8 M4 / Phase 13 后续明列此项。本里程碑把这条能力接上方案内容编辑台，落成「人点一下 → AI 起草 → 人在正文编辑台核对 → 人决定是否发布」的最小可用运营闭环，严格守住「禁止 AI 自动公开发布」「人做关键决策」。
+- 内容（**加性竖切、零 schema、零新数据层写逻辑、零新 HTTP 端点**——复用 M3 已受门禁端点 + 已测 `updateSolution` 合并落库）：
+  - `src/components/admin/GenerateBodyButton.tsx`（新，client）：挂在方案编辑台正文上方。可选「研究聚焦问题」文本框（留空则由服务端按方案/案例标题确定性派生，前端二次 `slice(0,2000)` 与端点同口径）；点击 `mutateJson('/api/admin/solutions/[id]/generate', 'POST', question?{question}:{})`，成功读服务端回传的 `generation` 元数据如实回报「已生成 N 节 / 流水线终态（研究完成·需人工复核·未完成）/ 成本约 $x」并 `router.refresh()` 让正文编辑台即时反映新分节；无可写分节时诚实显示「已运行但无内容写入、未改正文」；被守卫拒（如已发布 409）原样回显字段原因，**UI 不自行判定能否发布、不自证成功**。**已发布方案直接禁用按钮 + `Alert` 说明**（须先退回草稿或复制新草稿），与端点 `blocked` 契约一致但服务端仍为唯一权威（竞态下 409 照实回显）。附常驻说明：仅生成流水线能诚实支撑的分节，**成本/收入/ROI/回收期/来源刻意不生成、须程序计算 + 人工溯源补充后方案才算完整可售**——把 M3 的 `notGenerated` 语义在 UI 层转达清楚，绝不暗示草稿即可售。
+  - `src/components/admin/mutate.ts`（**加性扩展**）：`MutateResult` 新增可选 `data`（成功时透出剔除 `ok` 后的完整响应体），让需要读服务端派生元数据的调用方（本按钮读 `generation`）复用同一薄封装而非各抄一遍 fetch/解析（宪法第 16 条单一真源）；既有 5 个 client 组件忽略 `data`、行为不变。
+  - `src/app/admin/solutions/[id]/page.tsx`（改）：在 `EditSolutionMetaForm` 与 `SolutionBodyEditor` 之间插入一个说明性 `Card`，承载 `GenerateBodyButton`（透传 `solutionId` 与当前 `status`）。双层门禁不变（越权 `return null` 前不调读层）。
+- 验证：五道门全绿（全新复跑）——`tsc --noEmit` **0 错**、`eslint`（全部新增/改动文件）**0 问题（含消除一处 `_ok` 未用变量告警，改用 delete 法）**、单元测试**基线 367→375**（新 `tests/unit/mutate.test.ts` **8 例**，`vi.stubGlobal("fetch")` 锁 mutateJson 归一契约：成功透出 `data`（剔除 ok）·设 content-type·带 body / 非 2xx+error→ok:false+message+fields+`data` 缺席 / 2xx 但 body.ok 非真→按失败回落 HTTP 码 / json 解析抛错不崩归一失败 / fetch reject→status 0 友好 message / body=undefined 不设头不发体 / `fieldHints` 摊平与空值）、集成测试**基线 94**（本里程碑不动数据层/端点、无新集成例）、`next build` **无新增路由**（复用既有 `/admin/solutions/[id]` 页与 M3 生成端点、无回归）。
+- 效果：**Phase 13 M7 达成**——Phase 8 M3 的生成能力第一次有了后台人面入口，「方案生成」在运营侧从断链变为可点用，且守住「AI 只起草、发布由人、不臆造财务与来源」三条底线。**刻意边界**：不在审核队列页重复挂生成按钮（编辑台一处即可，避免多处入口漂移）；不做逐分节增量重生成的 UI 选择器（现为整批五节合并，细粒度重生成属后续）；不做生成进度流式展示（同步等待 + `router.refresh()`，V1 够用）；生成结果的 `ModelCall` 成本落库与看板仍属 Phase 9 后续（成本已随响应回显）。
+
 ## [0.32.0] - 2026-09-05 · Phase 8 里程碑 3：§33 多角色流水线接入真实方案生成（纯映射器 + 编排落库 + 受门禁生成端点，永不自动发布）
 
 - 原因：Phase 9 三件套（M1 Model Router · M2 §33 流水线 · M3 真实 DeepSeek 供应商）已全部建好并测死，但 grep 证实它们在 `src/` 里**零调用方**——「案例 → 产业解决方案」这一商业闭环关键节点仍无人真正驱动，方案表只能靠人工 CRUD 填写。M3 承接 ROADMAP「Phase 9 M4：把 §33 流水线接到具体方案/案例生成（灌真实方案）」（#4 模型 key 已于 v0.31 解阻塞），把研究→正反证据→裁决→质检的对抗式产出**映射进 `Solution.body` 的 34 分节并经既有 `updateSolution` 落库**，让方案生成第一次能被真实模型驱动，且严格守住宪法「禁止单模型直出最终方案」「结论区分事实/假设/推断/预测」「AI 做大量劳动、人做关键决策」「禁止 AI 自动公开发布」。

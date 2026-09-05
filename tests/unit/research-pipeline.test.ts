@@ -87,7 +87,7 @@ const FULL_QUEUE = [q.research, q.bull, q.bear, q.judge, q.qa].map((json) => ({ 
 
 describe("constants", () => {
   it("版本已定、恰 5 角色且顺序固定 research→bull→bear→judge→qa", () => {
-    expect(PIPELINE_VERSION).toBe("1.0.0");
+    expect(PIPELINE_VERSION).toBe("1.1.0");
     expect([...PIPELINE_ROLES]).toEqual(["research", "bull", "bear", "judge", "qa"]);
   });
 

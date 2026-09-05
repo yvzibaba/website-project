@@ -34,8 +34,14 @@ import {
 
 /* ─────────────────────────── 版本 & 角色定义（§33 固定序） ─────────────────────────── */
 
-/** 流水线契约版本（改角色顺序 / schema / 阈值 / 返回结构须升版本并记录原因，可回滚）。 */
-export const PIPELINE_VERSION = "1.0.0";
+/**
+ * 流水线契约版本（改角色顺序 / schema / 阈值 / 返回结构须升版本并记录原因，可回滚）。
+ * 1.1.0（Phase 8 M3）：把各角色**期望的精确 JSON 契约**（键名 / 英文枚举 / 0–100 整数置信度）写进
+ *   `roleInstruction`——真实 DeepSeek 实测发现仅靠 `response_format:json_object` 不足以保证模型按 schema
+ *   出参（会把 `statement` 写成 `finding`、`evidenceKind` 用中文值、`confidence` 用 0~1 小数）。角色顺序 /
+ *   schema / 阈值 / 返回结构均未变，仅提示词强化，故次版本号 +1（可回滚到 1.0.0 提示词）。
+ */
+export const PIPELINE_VERSION = "1.1.0";
 
 /**
  * 角色顺序——逐字对齐总控 §33：研究 → 找支持证据（bull）→ 找推翻证据（bear）→ 裁决（judge）→ 质检门禁（qa）。
@@ -212,15 +218,15 @@ export type PipelineResult =
 function roleInstruction(role: PipelineRole): string {
   switch (role) {
     case "research":
-      return "你是产业研究员。围绕问题做尽职研究，给出简要综述与若干条区分事实/假设/推断/预测的发现（每条标注 evidenceKind 与 confidence）。只依据问题本身，不臆造未提供的数字。";
+      return "你是产业研究员。围绕问题做尽职研究。严格只输出一个 JSON 对象，结构为 {\"summary\": 非空字符串, \"findings\": [{\"statement\": 非空字符串, \"evidenceKind\": 取 \"FACT\"|\"ASSUMPTION\"|\"INFERENCE\"|\"PREDICTION\" 之一（大写英文，勿用中文）, \"confidence\": 0 到 100 的整数（勿用 0~1 小数）}]}。只依据问题本身，不臆造未提供的数字；确实没查到时 findings 返回空数组。";
     case "bull":
-      return "你是多头分析师（正方）。仅从下方已有研究出发，找出支持该主张的证据点（claim+evidence+strength）。若确无支持证据，如实返回空 points，绝不编造。";
+      return "你是多头分析师（正方）。仅从下方已有研究出发，找出支持该主张的证据点。严格只输出 JSON：{\"points\": [{\"claim\": 字符串, \"evidence\": 字符串, \"strength\": 0 到 100 整数}]}。确无支持证据则 points 返回空数组，绝不编造。";
     case "bear":
-      return "你是空头分析师（反方）。主动寻找能推翻或削弱该主张的证据点（claim+evidence+severity）。若确无反证，如实返回空 points，绝不为凑数编造风险。";
+      return "你是空头分析师（反方）。主动寻找能推翻或削弱该主张的证据点。严格只输出 JSON：{\"points\": [{\"claim\": 字符串, \"evidence\": 字符串, \"severity\": 0 到 100 整数}]}。确无反证则 points 返回空数组，绝不为凑数编造风险。";
     case "judge":
-      return "你是裁判。综合正方与反方证据，给出裁决 verdict(supported|mixed|weakened)、理由 rationale 与整体置信 confidence。不得把推断/预测当已确认事实。";
+      return "你是裁判。综合正方与反方证据给出裁决。严格只输出 JSON：{\"verdict\": 取 \"supported\"|\"mixed\"|\"weakened\" 之一, \"rationale\": 非空字符串, \"confidence\": 0 到 100 整数}。不得把推断/预测当已确认事实。";
     case "qa":
-      return "你是质检门禁。审查整条研究是否可交付：给出 approved、qualityScore(0-100)、needsHumanReview 与 issues 列表。证据链薄弱、来源存疑或涉高风险领域时应拒绝或要求人工复核。";
+      return "你是质检门禁。审查整条研究是否可交付。严格只输出 JSON：{\"approved\": 布尔, \"qualityScore\": 0 到 100 整数, \"needsHumanReview\": 布尔, \"issues\": 字符串数组}。证据链薄弱、来源存疑或涉高风险领域时应拒绝或要求人工复核。";
   }
 }
 

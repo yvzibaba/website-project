@@ -91,9 +91,16 @@ export class DeepSeekProvider implements ChatProvider {
       throw new Error("DeepSeek 未提供 embedding 端点（§16 embedding 请配独立向量供应商）");
     }
     const wantJson = JSON_RESPONSE_TASKS.has(req.taskKind);
+    // DeepSeek 硬约束（真实 API 实测：chat 与 reasoner 皆然）：启用 response_format=json_object 时，
+    // prompt 必须**字面包含 "json"** 否则直接 HTTP 400（"Prompt must contain the word 'json'..."）。
+    // 而 §33 流水线的中文 prompt 从不出现该词——故这一供应商专属的补强只放在**本适配器**里（业务/流水线
+    // 保持供应商无关、一行不改），既满足约束又顺带提升 JSON 输出的稳定性。
+    const userContent = wantJson
+      ? `${req.prompt}\n\n请严格只输出一个合法的 JSON 对象（respond with valid JSON only, no extra prose）。`
+      : req.prompt;
     const payload: Record<string, unknown> = {
       model: req.model.id,
-      messages: [{ role: "user", content: req.prompt }],
+      messages: [{ role: "user", content: userContent }],
     };
     if (wantJson) payload.response_format = { type: "json_object" };
 

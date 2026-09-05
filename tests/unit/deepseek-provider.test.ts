@@ -169,6 +169,18 @@ describe("DeepSeekProvider.complete 请求构造", () => {
     expect(payload.response_format).toEqual({ type: "json_object" });
   });
 
+  it("结构化任务：prompt 被补强为含字面 'json'（DeepSeek json_object 硬约束，否则 400）", async () => {
+    const { fetch, calls } = makeFetch({ kind: "json", body: chatBody('{"ok":true}') });
+    const p = providerWith(fetch);
+    await p.complete(req("structured_output", "分析磷酸铁锂回收的经济性要点"));
+    const payload = JSON.parse(calls[0].init!.body as string);
+    const content = payload.messages[0].content as string;
+    // 原 prompt 保留（不吞掉业务意图）
+    expect(content).toContain("分析磷酸铁锂回收的经济性要点");
+    // 且字面含 "json"（DeepSeek 强制），否则真实 API 直接 400
+    expect(content.toLowerCase()).toContain("json");
+  });
+
   it("signal 透传给 fetch", async () => {
     const ctrl = new AbortController();
     const { fetch, calls } = makeFetch({ kind: "json", body: chatBody("ok") });

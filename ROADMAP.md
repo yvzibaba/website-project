@@ -11,7 +11,11 @@
 | R0 | 契约设计 | 参数/计算/结果的数据契约（`parameter-engine.ts` 类型 + `REFACTORING_ASSESSMENT_V1.md` 任务树） | — | ✅ **v0.36.0** |
 | R1 | 参数引擎 | 分层解析（default<region<policy<user）、裁剪、过期政策跳过、派生重算、仅数值快照；纯函数 + 29 黄金样本 | R0 | ✅ **v0.36.0**（`src/server/parameter-engine.ts`，基线 541=440 单元+101 集成、`tsc`/`eslint` 0 错） |
 | R1.2 | 沙盘参数模板 | 「重卡+光伏+储能+充电」逐参数 `source/confidence/占位 ASSUMPTION/min·max/exposure/派生关系` | R1 | ✅ **v0.37.0**（`src/server/sandbox-params.ts` 40 参数 + `resolveSandbox` 接缝 + 20 黄金样本，基线 561=460 单元+101 集成） |
-| R2 | 计算引擎 | R2.1 技术模型 · R2.2 财务（NPV/IRR/ROI/回收期，Decimal-safe）· R2.3 敏感性+高风险标记 · R2.4 `runSandboxModel` | R1.2 | ⬜ **进行中（当前步）** |
+| R2 | 计算引擎 | R2.1 技术模型 · R2.2 财务（NPV/IRR/ROI/回收期）· R2.3 敏感性+高风险标记 · R2.4 `runSandboxModel` | R1.2 | 🟡 **拆分推进**（见下 R2.1/R2.2/R2.3/R2.4 行） |
+| R2.1 | 技术能耗模型 | `sandbox-tech.ts` PV出力/充电负荷/自用余电/储能吞吐/能量平衡（透明简化 + needsProfessionalReview）+ 25 黄金样本 | R1.2 | ✅ **v0.38.0**（基线 619=518 单元+101 集成、`tsc`/`eslint` 0 错、build 无新增路由） |
+| R2.2 | 财务评价原语 | `sandbox-finance.ts` npv/irr(区间二分)/回收期/roi/现金流构造（无除零 + calcRef + 诚实降级）+ 33 黄金样本 | R1.2 | ✅ **v0.38.0**（同上基线） |
+| R2.3 | 敏感性 + 高风险标记 | 关键参数 one-at-a-time tornado + 高风险「需专业人工确认」标记 | R2.1, R2.2 | ⬜ **进行中（当前步，随 R2.4 合 v0.39.0）** |
+| R2.4 | `runSandboxModel` 编排 | 消费 `resolveSandbox`→`computeTechModel`→现金流→npv/irr/payback/roi→`CalcResult` | R2.1–R2.3 | ⬜ **下一步（v0.39.0 收官 R2）** |
 | R3 | 项目模型持久层 | additive 迁移 `Project/ProjectScenario/ProjectVersion` | R2 | ⬜ |
 | R4 | 可视化 | recharts 绑模型、改参数图表即时联动 + 交互主链 | R2 | ⬜ |
 | R5 | 地区政策 | 先 1 省（山西）载默认电价/光照/补贴参数 + 种子 | R1, R3 | ⬜ |

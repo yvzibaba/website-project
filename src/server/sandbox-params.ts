@@ -30,7 +30,7 @@ import {
  */
 
 /** 参数模板版本（改结构/默认口径须升版并记录原因，宪法第 13 条）。 */
-export const SANDBOX_PARAMS_VERSION = "1.0.0";
+export const SANDBOX_PARAMS_VERSION = "1.1.0"; // 1.1.0：新增 project.chargingPrice 收益端第一杠杆（供 R2.4 编排消费）
 
 /** 沙盘模板的稳定标识（供 R3 建项目时引用模板来源）。 */
 export const SANDBOX_DEPOT_TEMPLATE = "new-energy-heavy-truck-pv-storage-charging" as const;
@@ -98,6 +98,8 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("project.chargerUnitPower", "单桩额定功率", "project", "advanced", 360, "kW", { min: 60, max: 960 }),
   num("project.gridCapacity", "并网报装容量", "project", "pro", 2000, "kW", { min: 100, max: 20000 }),
   num("project.chargerUtilization", "充电桩平均利用率", "project", "advanced", 35, "%", { min: 5, max: 90 }),
+  // 综合充电单价：向重卡收取的电费+服务费合一价（收益端第一杠杆，R2.4 编排据此算充电收入）。
+  num("project.chargingPrice", "综合充电单价(含电费+服务)", "project", "basic", 0.9, "元/kWh", { min: 0.3, max: 3.0, confidence: 45 }),
   // 布尔开关：是否配储能——验证引擎对非数值参数的透传（不进 R2 数值快照）。
   {
     key: "project.includeStorage",

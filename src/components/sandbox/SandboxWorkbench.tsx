@@ -11,7 +11,8 @@
  *   - **诚实贯穿**（第 16/20 条）：顶部横幅声明「全部为占位假设 + 需专业人工确认 + E2E 主链未通不得当决策依据」，
  *     每个参数标 `ASSUMPTION` 置信度，被裁剪到边界如实标注，指标算不出显示「—」而非 0。
  *
- * 边界（R4 只做可视化）：持久化项目/版本（R3 `sandbox-store`）与 AI 解释、动态报告（R6）尚未接到本页。
+ * 边界（截至 R6.1）：本页已接入**确定性动态报告**（`buildSandboxReport` + `SandboxReportPanel`，改参数即整份重写）；
+ *   AI 自然语言解释（R6.2 `runTask`）与项目保存/版本（R3 `sandbox-store`，R6.3）尚未接到本页。
  */
 
 "use client";
@@ -40,6 +41,9 @@ import {
 } from "@/server/sandbox-regions";
 import { buildSandboxViewModel } from "@/lib/sandbox-view";
 import type { MetricCard, Tone } from "@/lib/sandbox-view";
+import { buildSandboxReport } from "@/lib/sandbox-report";
+import type { ChangedParamView } from "@/lib/sandbox-report";
+import { SandboxReportPanel } from "./SandboxReportPanel";
 import {
   BreakdownBar,
   CashFlowChart,
@@ -87,6 +91,7 @@ export function SandboxWorkbench() {
   const [overrides, setOverrides] = useState<Override>({});
   const [advanced, setAdvanced] = useState(false);
   const [regionId, setRegionId] = useState<string>(DEFAULT_REGION_ID);
+  const [showReport, setShowReport] = useState(false);
 
   // 分层情景 = 地区包(region+policy) 垫底 + 用户覆写在上（§6 优先级）。切地区即换整份默认。
   const layers = useMemo(() => buildSandboxLayers(regionId, overrides), [regionId, overrides]);
@@ -121,6 +126,31 @@ export function SandboxWorkbench() {
     value: resolved.params[s.key]?.value ?? s.defaultValue,
   }));
   const changedCount = Object.keys(overrides).length;
+
+  // 用户改动清单（§9 报告来路叙述用）：键排序保证确定性，标签/单位取自参数模板单一真源。
+  const changedParams = useMemo<ChangedParamView[]>(() => {
+    return Object.keys(overrides)
+      .sort()
+      .map((key) => {
+        const spec = SANDBOX_PARAMS.find((s) => s.key === key);
+        const raw = overrides[key];
+        const value =
+          typeof raw === "boolean" ? (raw ? "开" : "关") : String(raw);
+        return { key, label: spec?.label ?? key, value, unit: spec?.unit };
+      });
+  }, [overrides]);
+
+  // 动态报告：吃「当前」视图模型，改任参数/切地区即整份重写（§9「读最新 CalcResult」，无 AI/无网络/无重算）。
+  const report = useMemo(
+    () =>
+      buildSandboxReport({
+        vm,
+        regionName: pack.name,
+        changedParams,
+        discountRatePct: discountRate * 100,
+      }),
+    [vm, pack.name, changedParams, discountRate],
+  );
 
   function setVal(key: string, v: number | boolean) {
     setOverrides((prev) => ({ ...prev, [key]: v }));
@@ -191,6 +221,16 @@ export function SandboxWorkbench() {
                 重置{changedCount ? `（已改 ${changedCount}）` : ""}
               </Button>
             </div>
+
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowReport((v) => !v)}
+              aria-pressed={showReport}
+            >
+              {showReport ? "收起动态报告" : "生成动态报告"}
+            </Button>
 
             {editable.map((s) => {
               const rp = resolved.params[s.key];
@@ -378,6 +418,8 @@ export function SandboxWorkbench() {
               </div>
             </>
           )}
+
+          {showReport ? <SandboxReportPanel report={report} /> : null}
         </div>
       </div>
     </div>

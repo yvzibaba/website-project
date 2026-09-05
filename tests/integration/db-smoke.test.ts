@@ -86,7 +86,7 @@ describeDb("db smoke (Neon Postgres)", () => {
     createdId = null; // 已删除，afterAll 无需再清
   });
 
-  it("exposes all 13 enum types in public schema", async () => {
+  it("exposes all 14 enum types in public schema", async () => {
     const rows = await prisma.$queryRaw<Array<{ enum_name: string }>>`
       SELECT t.typname AS enum_name
       FROM pg_type t
@@ -107,12 +107,13 @@ describeDb("db smoke (Neon Postgres)", () => {
       "LicenseType",
       "Maturity",
       "OrderStatus",
+      "ProjectStatus",
       "SolutionStatus",
       "UserRole",
     ]);
   });
 
-  it("has all 19 V1 business tables present", async () => {
+  it("has all 22 business tables present", async () => {
     const rows = await prisma.$queryRaw<Array<{ table_name: string }>>`
       SELECT table_name
       FROM information_schema.tables
@@ -133,6 +134,9 @@ describeDb("db smoke (Neon Postgres)", () => {
       "ModelCall",
       "OpenSourceProject",
       "Order",
+      "Project",
+      "ProjectScenario",
+      "ProjectVersion",
       "Region",
       "Solution",
       "SolutionFinancial",

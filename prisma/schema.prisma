@@ -22,11 +22,11 @@ datasource db {
 // ----------------------------- Enums -----------------------------
 
 enum Industry {
-  NEW_ENERGY               // 新能源
+  NEW_ENERGY // 新能源
   INDUSTRIAL_MANUFACTURING // 工业制造
-  TRANSPORTATION           // 交通运输
+  TRANSPORTATION // 交通运输
   AGRICULTURE_FORESTRY_FISHERY // 农林牧渔
-  EDUCATION_TRAINING       // 教育培训
+  EDUCATION_TRAINING // 教育培训
   REAL_ESTATE_CONSTRUCTION // 房地产建筑
   OTHER
 }
@@ -125,6 +125,14 @@ enum UserRole {
   ADMIN
 }
 
+// 中途重构 R3：沙盘「项目」生命周期状态（区别于案例/方案漏斗，这是用户自己建的可视化决策沙盘）。
+// V1 只用到 DRAFT/ACTIVE；ARCHIVED 供归档不删（软删，保留历史与版本）。
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
 // ----------------------------- Identity & access -----------------------------
 
 // 用户（Phase 6）。认证走 Auth.js v5 Credentials（邮箱 + 密码）+ JWT 会话：
@@ -142,7 +150,8 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  orders Order[]
+  orders   Order[]
+  projects Project[]
 
   @@index([role])
 }
@@ -158,44 +167,45 @@ model Region {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  cases      Case[]
-  markets    Market[]
-  suppliers  Supplier[]
+  cases     Case[]
+  markets   Market[]
+  suppliers Supplier[]
+  projects  Project[]
 }
 
 model Market {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  regionId    String?
-  region      Region?  @relation(fields: [regionId], references: [id])
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  regionId     String?
+  region       Region?  @relation(fields: [regionId], references: [id])
   sizeEstimate Decimal? // 市场规模（须配合 sourceUrl/confidence 使用，规则 7）
-  currency    Currency @default(CNY)
-  sourceUrl   String?
-  confidence  Int?     // 0-100，该规模估计的证据可信度
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  currency     Currency @default(CNY)
+  sourceUrl    String?
+  confidence   Int? // 0-100，该规模估计的证据可信度
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 // ----------------------------- Core: Case & research -----------------------------
 
 model Case {
-  id          String     @id @default(cuid())
-  title       String
-  titleEn     String?
-  industry    Industry
-  regionId    String?
-  region      Region?    @relation(fields: [regionId], references: [id])
-  sourceUrl   String?
-  sourceType  String?    // 新闻/论文/年报/访谈/数据库...
-  summary     String?
-  summaryEn   String?
-  stage       CaseStage  @default(CANDIDATE)
+  id           String    @id @default(cuid())
+  title        String
+  titleEn      String?
+  industry     Industry
+  regionId     String?
+  region       Region?   @relation(fields: [regionId], references: [id])
+  sourceUrl    String?
+  sourceType   String? // 新闻/论文/年报/访谈/数据库...
+  summary      String?
+  summaryEn    String?
+  stage        CaseStage @default(CANDIDATE)
   discoveredAt DateTime  @default(now())
 
   // 规则 9：评分与不确定性
-  opportunityScore    Int? // 0-100 机会价值（= scoreBreakdown.opportunityScore，由 recompute 写入，便于排序/索引）
-  evidenceConfidence  Int? // 0-100 证据可信度（同上，由 recompute 写入）
+  opportunityScore   Int? // 0-100 机会价值（= scoreBreakdown.opportunityScore，由 recompute 写入，便于排序/索引）
+  evidenceConfidence Int? // 0-100 证据可信度（同上，由 recompute 写入）
 
   // 规则 7/13：评分可复算 + 版本化。scoreInput=10 维度原始录入分（人工/Agent 填，评分输入）；
   // scoreBreakdown=computeCaseScores 输出（含 rubricVersion + 每维度贡献 + 证据可信度明细，审计/复算用）。
@@ -218,19 +228,19 @@ model Case {
 
 // 规则 6：每条重要结论的来源 + 证据 + 类型 + 置信度
 model Evidence {
-  id          String       @id @default(cuid())
+  id          String         @id @default(cuid())
   caseId      String
-  case        Case         @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  case        Case           @relation(fields: [caseId], references: [id], onDelete: Cascade)
   type        EvidenceType
   grade       EvidenceGrade? // 总控 §11 来源权威度分级（v1 元数据/标注，不参与可信度打分）
-  statement   String       // 结论陈述
+  statement   String // 结论陈述
   sourceUrl   String?
   sourceType  String?
-  confidence  Int?         // 0-100
-  extractedAt DateTime     @default(now())
-  version     Int          @default(1)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  confidence  Int? // 0-100
+  extractedAt DateTime       @default(now())
+  version     Int            @default(1)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   @@index([caseId, type])
 }
@@ -261,8 +271,8 @@ model TechCapability {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  cases        CaseCapability[]
-  projects     CapabilityProject[]
+  cases         CaseCapability[]
+  projects      CapabilityProject[]
   localizations Localization[]
 }
 
@@ -272,7 +282,7 @@ model CaseCapability {
   capabilityId String
   case         Case           @relation(fields: [caseId], references: [id], onDelete: Cascade)
   capability   TechCapability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
-  relevance    Int?           // 该能力对此案例的重要度 0-100
+  relevance    Int? // 该能力对此案例的重要度 0-100
   note         String?
 
   @@id([caseId, capabilityId])
@@ -307,7 +317,7 @@ model CapabilityProject {
   projectId    String
   capability   TechCapability    @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
   project      OpenSourceProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  fitScore     Int?              // 匹配度 0-100
+  fitScore     Int? // 匹配度 0-100
   note         String?
 
   @@id([capabilityId, projectId])
@@ -323,8 +333,8 @@ model Localization {
   capabilityId String?
   capability   TechCapability? @relation(fields: [capabilityId], references: [id])
   description  String?
-  adaptations  String[]        // 本土化适配点
-  constraints  String[]        // 约束（政策/供应链/标准等）
+  adaptations  String[] // 本土化适配点
+  constraints  String[] // 约束（政策/供应链/标准等）
   version      Int             @default(1)
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
@@ -333,16 +343,16 @@ model Localization {
 }
 
 model Supplier {
-  id          String   @id @default(cuid())
-  name        String
-  regionId    String?
-  region      Region?  @relation(fields: [regionId], references: [id])
+  id           String   @id @default(cuid())
+  name         String
+  regionId     String?
+  region       Region?  @relation(fields: [regionId], references: [id])
   capabilities String[] // 可供能力（自由文本列表）
-  contactInfo String?
-  notes       String?
-  version     Int      @default(1)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  contactInfo  String?
+  notes        String?
+  version      Int      @default(1)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   localizations LocalizationSupplier[]
 }
@@ -367,7 +377,7 @@ model Solution {
   case     Case           @relation(fields: [caseId], references: [id])
   status   SolutionStatus @default(DRAFT)
   summary  String?
-  body     Json?          // 结构化正文（分节，规则 12：结构化保存而非纯文章）
+  body     Json? // 结构化正文（分节，规则 12：结构化保存而非纯文章）
   price    Decimal?       @db.Decimal(12, 2)
   currency Currency       @default(CNY)
 
@@ -395,39 +405,39 @@ model Solution {
 
 // 规则 7：关键数字须来源可追溯、公式可复算、假设可改
 model SolutionFinancial {
-  id           String   @id @default(cuid())
-  solutionId   String
-  solution     Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
-  capex        Decimal? @db.Decimal(14, 2)
-  opexAnnual   Decimal? @db.Decimal(14, 2)
+  id            String   @id @default(cuid())
+  solutionId    String
+  solution      Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  capex         Decimal? @db.Decimal(14, 2)
+  opexAnnual    Decimal? @db.Decimal(14, 2)
   revenueAnnual Decimal? @db.Decimal(14, 2)
-  roiPct       Decimal? @db.Decimal(8, 4)
-  irrPct       Decimal? @db.Decimal(8, 4)
-  paybackYears Decimal? @db.Decimal(8, 2)
-  currency     Currency @default(CNY)
-  assumptions  Json?    // 假设列表（可修改，规则 7）
-  calcRef      String?  // 计算脚本/公式引用（程序计算 > 口算）
-  sourceUrl    String?
-  note         String?
-  version      Int      @default(1)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  roiPct        Decimal? @db.Decimal(8, 4)
+  irrPct        Decimal? @db.Decimal(8, 4)
+  paybackYears  Decimal? @db.Decimal(8, 2)
+  currency      Currency @default(CNY)
+  assumptions   Json? // 假设列表（可修改，规则 7）
+  calcRef       String? // 计算脚本/公式引用（程序计算 > 口算）
+  sourceUrl     String?
+  note          String?
+  version       Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([solutionId])
 }
 
 // 规则 9：关键未知变量，禁止高评分掩盖高不确定性
 model UnknownVariable {
-  id          String   @id @default(cuid())
-  solutionId  String
-  solution    Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
-  name        String
-  impact      String?  // 若该变量变化会如何影响结论
+  id           String   @id @default(cuid())
+  solutionId   String
+  solution     Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  name         String
+  impact       String? // 若该变量变化会如何影响结论
   howToResolve String? // 如何验证/消除该未知
-  severity    Int?     // 0-100
-  version     Int      @default(1)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  severity     Int? // 0-100
+  version      Int      @default(1)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([solutionId])
 }
@@ -446,7 +456,7 @@ model Order {
   amount          Decimal     @db.Decimal(12, 2)
   currency        Currency    @default(CNY)
   status          OrderStatus @default(PENDING)
-  paymentProvider String?     // stripe/alipay/wechat...（V1 先留字段）
+  paymentProvider String? // stripe/alipay/wechat...（V1 先留字段）
   paymentRef      String?
   paidAt          DateTime?
   version         Int         @default(1)
@@ -461,11 +471,11 @@ model Order {
 
 model ChangeLog {
   id         String       @id @default(cuid())
-  entityType String       // 如 "Solution" / "Case"
+  entityType String // 如 "Solution" / "Case"
   entityId   String
   action     ChangeAction
-  changedBy  String?      // "ai:<model>" / "human:<user>"
-  reason     String?      // 修改原因
+  changedBy  String? // "ai:<model>" / "human:<user>"
+  reason     String? // 修改原因
   before     Json?
   after      Json?
   createdAt  DateTime     @default(now())
@@ -487,19 +497,19 @@ model ChangeLog {
 //  - caseId/solutionId 存 **无外键的归因串**：观测历史不应因案例/方案被删而级联丢失（同 ChangeLog.entityId）。
 model ModelCall {
   id               String   @id @default(cuid())
-  taskId           String   // runTask 生成（如 "research-1"）；跨进程计数会重置，非唯一，仅供排查
-  providerId       String   // "deepseek" / "stub" …
-  modelId          String   // 实际使用的模型 id（来自可 env 覆写的 MODEL_CATALOG）
-  tier             String   // low | medium | high
-  taskKind         String   // generate_text | structured_output | research | vision | code | embedding
-  status           String   // ok | schema_invalid | provider_error
+  taskId           String // runTask 生成（如 "research-1"）；跨进程计数会重置，非唯一，仅供排查
+  providerId       String // "deepseek" / "stub" …
+  modelId          String // 实际使用的模型 id（来自可 env 覆写的 MODEL_CATALOG）
+  tier             String // low | medium | high
+  taskKind         String // generate_text | structured_output | research | vision | code | embedding
+  status           String // ok | schema_invalid | provider_error
   latencyMs        Int
   promptTokens     Int
   completionTokens Int
   estimatedCostUsd Decimal  @db.Decimal(12, 6)
-  agent            String?  // 成本归因（如 "pipeline:bull" / "solution-generation"）
-  caseId           String?  // 归因（无 FK）
-  solutionId       String?  // 归因（无 FK）
+  agent            String? // 成本归因（如 "pipeline:bull" / "solution-generation"）
+  caseId           String? // 归因（无 FK）
+  solutionId       String? // 归因（无 FK）
   createdAt        DateTime @default(now())
 
   @@index([createdAt])
@@ -508,4 +518,100 @@ model ModelCall {
   @@index([status])
   @@index([caseId])
   @@index([solutionId])
+}
+
+// ----------------------------- 中途重构 R3：沙盘「项目模型」持久层 -----------------------------
+// 这是 V1 核心产品「产业项目可视化决策沙盘」的落地容器（§14 优先级 #2「项目模型」）。
+// 三层：Project（项目·用户建的一次沙盘）→ ProjectScenario（情景·一组参数 + 最近一次 CalcResult）
+//       → ProjectVersion（版本·情景的历史快照切片，支持回滚，规则 13 / §9 报告读版本）。
+// 命脉设计（§4）：只持久化**输入参数**（paramLayers 分层覆写 + paramSnapshot 解析后 numeric）与
+//       **可复算的 CalcResult 快照**（JSON），绝不做「只存页面数字」——读回时对 paramLayers 重跑
+//       runSandboxModel 即得同一结果（sandbox-store 的 recompute 路径实证）。
+// 货币精确（第 15 条唯一动用 Decimal 处）：沙盘**引擎内部**估算用 Number（见 sandbox-finance），
+//       但**落库持久**的关键汇总（capex/npv/payback/roi/irr）用 Prisma Decimal 防浮点漂移，
+//       与 Order.amount / SolutionFinancial 同一口径；这些列是从 calcResult 派生的可查询冗余，
+//       单一真源仍是 JSON 快照，列表/排序读它们以免解析大 JSON。
+
+// 用户创建的沙盘项目（一个选址/一套光储充重卡方案的决策沙盘）。
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  industry    Industry      @default(NEW_ENERGY)
+  // 选地区（§6）：region 可空（未选省），选中则 R5 从此载入默认电价/光照/补贴参数层。
+  regionId    String?
+  region      Region?       @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  // 归属用户（可空：允许开发期匿名沙盘；登录用户删除时项目保留、ownerId 置空，不级联丢数据）。
+  ownerId     String?
+  owner       User?         @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  status      ProjectStatus @default(DRAFT)
+
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  scenarios ProjectScenario[]
+
+  @@index([ownerId, status])
+  @@index([regionId])
+  @@index([status, updatedAt])
+}
+
+// 一个项目下的「情景」= 一组参数配置 + 最近一次计算结果（§14 #9 情景对比的最小载体）。
+model ProjectScenario {
+  id         String  @id @default(cuid())
+  projectId  String
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name       String  @default("基准情景")
+  isBaseline Boolean @default(false)
+
+  // 分层参数输入（region/policy/user 各 ValueLayer 的 values+source…），重放 resolveSandbox→runSandboxModel 的唯一真源。
+  paramLayers   Json
+  // 解析后的 numeric 快照（含派生值）——便于直接查看「实际用了哪些数」、与复算比对，不参与重放。
+  paramSnapshot Json
+  // 最近一次 runSandboxModel 产出的 CalcResult 完整快照（技术 + 经济 + 风险 + needsProfessionalReview + calcRef 溯源）。
+  calcResult    Json?
+  // 计算状态（诚实标注：未跑/成功/失败各不同，供 UI 与报告判定，绝不在失败时留旧数字冒充）。
+  calcStatus    String  @default("pending") // pending | ok | tech_error | missing_econ_inputs | invalid_econ_inputs | error
+  calcRef       String? // 产出该结果的计算版本引用（model@1.0.0），供追溯与升版比对
+
+  // ↓ 从 calcResult 派生的可查询精确汇总（Decimal 防漂移；未跑/失败为 null，绝不填假值）。
+  capexNet     Decimal? @db.Decimal(16, 2)
+  npv          Decimal? @db.Decimal(16, 2)
+  irrPct       Decimal? @db.Decimal(9, 4) // 百分数（如 23.7553），与 SolutionFinancial.irrPct 口径一致
+  paybackYears Decimal? @db.Decimal(8, 2) // 折现回收期（更审慎口径；分析期内未回本为 null，不假设迟早回本）
+  roiRatio     Decimal? @db.Decimal(12, 4) // 累计净现金流/初始投资（finance.roiPct 实为比值，诚实存比值）
+  currency     Currency @default(CNY)
+
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  savedVersions ProjectVersion[]
+
+  @@index([projectId])
+  @@index([projectId, isBaseline])
+}
+
+// 规则 13 / §9：情景的**不可变历史版本切片**，支持回滚与逐版本报告。每次「存为新版本」追加一行。
+// 与 ProjectScenario（保存「当前可编辑态」）不同，ProjectVersion 冻结某时刻的输入 + 结果，绝不就地改写。
+model ProjectVersion {
+  id                      String          @id @default(cuid())
+  scenarioId              String
+  scenario                ProjectScenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  // 冗余 projectId（无独立 FK，指回 project 由 scenario 级联保证）——便于「按项目拉全部版本时间线」免多表 join。
+  projectId               String
+  seq                     Int // 场景内版本序号（1,2,3…），保存时 = 该场景现有 max(seq)+1
+  label                   String? // 用户命名（如「初版」「电价上调后」）
+  note                    String?
+  paramLayers             Json
+  paramSnapshot           Json
+  calcResult              Json?
+  calcRef                 String?
+  needsProfessionalReview Boolean         @default(true) // §16：沙盘结论默认须专业人工确认，快照冻结该标记
+  savedBy                 String? // "human:<id>" / "ai:<model>"（对齐 ChangeLog.changedBy 口径，仅审计、非鉴权）
+  createdAt               DateTime        @default(now())
+
+  @@unique([scenarioId, seq])
+  @@index([projectId, createdAt])
 }

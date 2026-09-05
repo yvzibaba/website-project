@@ -3,6 +3,16 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.46.0] - 2026-09-06 · 中途重构 R6.4：§17 沙盘端到端主链一次性跑通并宣布核心完成（scratch E2E + 抓出并修复「保存项目」外键 500 真 bug）
+
+- 原因：§17 硬性规定「沙盘端到端主链（选地区→改参数→跑→技术/经济/风险/敏感性→AI 解释→个性化方案→保存）未跑通，不得宣布核心完成」。R2–R6.3 已逐环节就绪，但**从未有一条真 fetch、真库、真模型的端到端把它们咬合验证过**；尤其 R6.3 的写路径只在**mock 了 prisma 的单测**里跑过，真实 Neon 的外键约束从未被 HTTP 面触碰。本里程碑补这条 E2E（刻意 workspace scratch、**不入库**），既是宣布核心完成的唯一凭据，也是最后一道真机验证。
+- 内容（**无新增生产代码文件；一处正确性修复 + 两条可久留的集成回归用例**）：
+  - ★E2E 抓出的真 bug：`src/components/sandbox/SandboxSavePanel.tsx` 保存时把**沙盘地区包代码**（如 `"shanxi"` / `"national"`）当 `regionId` POST 到 `/api/sandbox/projects`；而 `Project.regionId` 是指向规范 `Region` 表（cuid）的**外键**——R5 之前二者不建表链接，`prisma.project.create` 触发 `P2003 Foreign key constraint violated (Project_regionId_fkey)`，**任何真实用户点「保存为项目」都会 500**。单测因整体 mock 了 `sandbox-store`、集成测试因从不传 `regionId` 而双双漏网——正是 §17 端到端把它们逼出来。
+  - `src/server/sandbox-store.ts`（**改·正确性护栏**·`STORE_VERSION 1.0.1→1.0.2`）：`createProject` 落库前，若带 `regionId` 则先 `prisma.region.findUnique` 校验确有其行才写外键，否则**诚实置 null**（地区真值本已完整存于情景 `paramLayers/paramSnapshot`，绝不因置空外键而丢，也绝不再 500）；合法 `Region.id` 仍正常落地。修在数据层=对所有调用方（含真实 UI）一并止血，未来 R5 建了规范 Region 行即自动接通、无需回改。
+  - `tests/integration/sandbox-store.test.ts`（**改·加 2 例**）：`regionId="shanxi"`（非规范行）→ `ok` 且落库 `regionId` 被安全置空、情景 `calcStatus=ok`；种一条真 `Region` 再以其实 `id` 建项目 → 外键正常落地。护栏「不误伤合法链接」的回归从此钉进真库套件，`afterAll` 连带清理 `Region`。
+- 效果：**§17 端到端主链首次在真 HTTP + 真 Neon + 真 DeepSeek 上一次性跑通**（scratch 脚本 `smoke-sandbox-e2e.mts`，40 项断言全绿）：同进程纯函数算出「山西」真报告（NPV 11,424,894·7 分节·改价 0.9→1.2→1.5 单调升）→ 活体 `POST /api/sandbox/explain` 真模型解释（`deepseek-chat`·成本入账 `ModelCall agent=sandbox:explain` 计数 +1）→ 鉴权门禁（游客 401 / 跨站 Origin 403 CSRF / 非 owner USER 403 越权且**不触引擎** / REVIEWER staff 200）→ 建项目 200 且 `ownerId=会话`、**落库 NPV 与页面纯函数逐位一致**、`ChangeLog changedBy=human:<id>` → §4 持久层现算回环（改价 1.2→服务端重算 NPV 升 v2→1.5 再升 v3→冻结版本→回改 1.2 NPV 回落→restore 回滚 NPV **精确复现**已存的 1.5 水平）→ 全量清理残留 0。据此**正式宣布 V1 沙盘核心主链端到端完成**（占位假设与「需专业人工确认」声明贯穿不变）。
+- 验证：五道门全新复跑全绿——`tsc --noEmit` 0 错；`eslint .` 0 问题；单元测试 **643/643 不变**（store 在 `sandbox-projects` 单测里被整体 mock、护栏不触达纯函数用例）；集成 **107→109**（+2 回归，连 Neon 实跑护栏两分支皆对）；`next build` 0 错、路由与 `/sandbox ○` 静态性均无变化（仅 `sandbox-store.ts` 行为改，无新路由）；`smoke-sandbox-e2e.mts` E2E 40/40 绿。
+
 ## [0.45.0] - 2026-09-06 · 中途重构 R6.3：沙盘「项目保存 / 版本 / 回滚」接线（§14 第 2 项持久层 R3 首次接上 `/sandbox`——登录 + owner-or-staff 门禁 HTTP 端点，服务端现算落库、修 R3 复算时钟漂移隐患）
 
 - 原因：R3（v0.40.0）焊好了「项目 / 情景 / 版本」三层持久化 `sandbox-store`，但它**头注白纸黑字写着「不含鉴权」**、且从未被任何路由 / UI import——一直是「跑在集成测试里的存储件」。§14 命脉「改参数→重算→结果变」要真正对用户成立，得让人能在 `/sandbox` 上**把当前情景存成项目、冻结版本、回滚**；§17 E2E 主链的最后一环「保存」至此仍空。同时埋着一颗隐患：R3 落库把参数分层（含 `policy` 的 `effectiveFrom/effectiveUntil` 与判生效的 `now`）JSON 化后 Date 变 ISO 串，而 R3 回放时直接喂给引擎——`resolveParameters` 里 `now < layer.effectiveFrom` 一旦两侧一 Date 一串，关系运算 `Number()` 成 `NaN`、比较恒 false，会让**过期 / 未生效政策被误判为现行**（§6 硬约束被悄悄击穿）。R6.3 接路由层的同时一并收口这个复算时钟正确性问题。

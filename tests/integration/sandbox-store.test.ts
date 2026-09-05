@@ -28,6 +28,7 @@ const num = (d: unknown): number | null => (d == null ? null : Number(d));
 describeDb("sandbox-store 项目/情景/版本持久层（Neon Postgres）", () => {
   const runId = `sbx-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const projectIds: string[] = [];
+  const regionIds: string[] = [];
   const actor = `human:${runId}`;
 
   afterAll(async () => {
@@ -42,6 +43,9 @@ describeDb("sandbox-store 项目/情景/版本持久层（Neon Postgres）", () 
     await prisma.project
       .deleteMany({ where: { name: { startsWith: runId } } })
       .catch(() => undefined);
+    if (regionIds.length > 0) {
+      await prisma.region.deleteMany({ where: { id: { in: regionIds } } }).catch(() => undefined);
+    }
     await disconnectPrisma();
   });
 
@@ -211,6 +215,41 @@ describeDb("sandbox-store 项目/情景/版本持久层（Neon Postgres）", () 
     if (!created.ok) return;
     projectIds.push(created.projectId);
     expect(await listScenarioVersions(created.scenarioId)).toEqual([]);
+  });
+
+  it("createProject：regionId 非规范 Region 行（沙盘地区包代码）→ 不报 P2003、诚实置空（§17 E2E 回归）", async () => {
+    // "shanxi" 是 sandbox-regions 的内存包代码，不是 Region 表行——旧实现塞进外键会 500。
+    const res = await createProject({
+      name: `${runId}-badregion`,
+      regionId: "shanxi",
+      actor,
+    });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    projectIds.push(res.projectId);
+    const proj = await prisma.project.findUnique({ where: { id: res.projectId }, select: { regionId: true } });
+    expect(proj?.regionId).toBeNull();
+    // 地区真值仍完整存于情景分层（paramSnapshot 里含 region 层），未因置空外键而丢失。
+    const sc = (await getProjectWithScenarios(res.projectId))!.scenarios[0];
+    expect(sc.calcStatus).toBe("ok");
+  });
+
+  it("createProject：regionId 确有其 Region 行 → 外键正常落地（护栏不误伤合法链接）", async () => {
+    const region = await prisma.region.create({
+      data: { name: `沙盘E2E地区-${runId}`, code: `SBX-${runId}`.slice(0, 24) },
+      select: { id: true },
+    });
+    regionIds.push(region.id);
+    const res = await createProject({
+      name: `${runId}-realregion`,
+      regionId: region.id,
+      actor,
+    });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    projectIds.push(res.projectId);
+    const proj = await prisma.project.findUnique({ where: { id: res.projectId }, select: { regionId: true } });
+    expect(proj?.regionId).toBe(region.id);
   });
 });
 

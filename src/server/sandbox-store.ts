@@ -29,7 +29,7 @@ import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
 const log = logger.child({ module: "server/sandbox-store" });
 
 /** 持久层版本（改映射口径须升版并记原因，规则 13）。 */
-export const STORE_VERSION = "1.0.1";
+export const STORE_VERSION = "1.0.2"; // 1.0.2：createProject 加 regionId 外键安全护栏（§17 E2E 抓出：地区包代码塞进 Region FK 会 P2003→500）
 
 /**
  * 落库的参数分层（去掉引擎注入项 `derived`——派生值注册在引擎里，不该持久化函数）。
@@ -197,13 +197,26 @@ export async function createProject(input: CreateProjectInput): Promise<CreatePr
   const layers: StoredParamLayers = input.initialLayers ?? {};
   const data = computeScenarioData(layers);
 
+  // regionId 外键安全护栏（§17 E2E 抓出的真 bug）：沙盘「选地区」用的是内存地区包代码
+  // （如 "shanxi" / "national"），而 Project.regionId 是指向规范 Region 表（cuid）的外键。
+  // R5 之前二者不建表链接——直接把包代码塞进外键会 P2003、保存即 500。故：仅当传入的 regionId
+  // 确有其 Region 行才落该外键，否则诚实置空（地区真值已完整存于 layers / paramSnapshot，绝不丢）。
+  let regionId: string | null = input.regionId ?? null;
+  if (regionId) {
+    const regionRow = await prisma.region.findUnique({ where: { id: regionId }, select: { id: true } });
+    if (!regionRow) {
+      log.info("sandbox regionId not a canonical Region row; leaving Project.regionId null", { regionId });
+      regionId = null;
+    }
+  }
+
   try {
     const project = await prisma.project.create({
       data: {
         name,
         description: input.description?.trim() || null,
         industry: input.industry ?? "NEW_ENERGY",
-        regionId: input.regionId ?? null,
+        regionId,
         ownerId: input.ownerId ?? null,
         status: "DRAFT",
         scenarios: {

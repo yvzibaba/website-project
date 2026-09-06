@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/server/authz";
 import { hasPaidEntitlement } from "@/server/orders";
 import { describeSandboxLineage } from "@/lib/sandbox-solution-lineage";
 import { evaluateSandboxSolutionProvenance } from "@/lib/sandbox-solution-provenance";
+import { readSandboxSourceFromFinancials, describeSandboxSource } from "@/lib/sandbox-solution-source";
 import type { ParsedSolutionBody } from "@/server/solution-body";
 import { seoMetadata } from "@/lib/site";
 
@@ -70,6 +71,8 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
   const lineage = describeSandboxLineage(s.financials);
   // 溯源审计（R8.4）：仅对沙盘来源方案做「可复算 + 可追溯」只读体检（比存量、不重跑引擎、不写库）。
   const provenance = lineage ? evaluateSandboxSolutionProvenance(s.financials) : null;
+  // 来源关联（R8.6）：该沙盘方案是否记录了指回「导出它的那个已保存沙盘情景 / 项目」的指针（只读、不重算、不查库）。
+  const sandboxSourceText = lineage ? describeSandboxSource(readSandboxSourceFromFinancials(s.financials)) : null;
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
@@ -135,6 +138,11 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
               {provenance.reproducibility.allReproducible
                 ? " 若已接入来源可追溯的真实数据，可提交带合法链接与置信度的出处，经人工复核后把对应数字从 ASSUMPTION 升级为 FACT。"
                 : " 复算校验发现异常，该方案在数据修复并复核前不应对外销售。"}
+            </span>
+          ) : null}
+          {sandboxSourceText ? (
+            <span className="mt-2 block border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
+              来源关联：本方案{sandboxSourceText}（可在沙盘侧反向追溯到它导出过的方案）。
             </span>
           ) : null}
         </Alert>

@@ -52,11 +52,14 @@ export function SandboxSavePanel({
   layers,
   regionId,
   regionName,
+  onSavedSource,
 }: {
   /** 工作台当前参数分层（含 now / 政策窗），随请求原样上行；组件不解释其内容。 */
   layers: Record<string, unknown>;
   regionId: string;
   regionName: string;
+  /** R8.6 反查关联：项目 / 基线情景建成（服务端派生的 id）后上提给工作台，供「导出产业方案」挂来源指针。 */
+  onSavedSource?: (source: { projectId: string; scenarioId: string }) => void;
 }) {
   const [name, setName] = useState("");
   const [projectId, setProjectId] = useState<string | null>(null);
@@ -68,6 +71,42 @@ export function SandboxSavePanel({
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+
+  // R8.6 反查：本项目 / 情景导出过的产业方案（须 staff 才看得到；非 staff 端点回 403，诚实提示）。
+  interface LinkedSolution {
+    id: string;
+    title: string;
+    slug: string;
+    status: string;
+    updatedAt: string;
+  }
+  const [linked, setLinked] = useState<LinkedSolution[] | null>(null);
+  const [linkedBusy, setLinkedBusy] = useState(false);
+  const [linkedDenied, setLinkedDenied] = useState<string | null>(null);
+
+  async function loadLinkedSolutions(sid: string) {
+    setLinkedBusy(true);
+    setLinkedDenied(null);
+    const res = await mutateJson(`/api/sandbox/source/solutions?scenarioId=${encodeURIComponent(sid)}`, "GET");
+    setLinkedBusy(false);
+    if (res.status === 401) {
+      setLinkedDenied("查看关联产业方案需要登录（且需审核员 / 管理员权限）。");
+      setLinked(null);
+      return;
+    }
+    if (res.status === 403) {
+      setLinkedDenied("查看关联产业方案需审核员 / 管理员权限（导出本身即 staff-only）。");
+      setLinked(null);
+      return;
+    }
+    if (!res.ok) {
+      setLinkedDenied(res.message ?? "关联方案查询失败");
+      setLinked(null);
+      return;
+    }
+    const items = (res.data as { items?: LinkedSolution[] })?.items ?? [];
+    setLinked(items);
+  }
 
   const report = useCallback((res: Awaited<ReturnType<typeof mutateJson>>, okNotice: string) => {
     if (res.status === 401) {
@@ -117,6 +156,10 @@ export function SandboxSavePanel({
     if (data.projectId) {
       setProjectId(data.projectId);
       setScenarioId(data.scenarioId ?? null);
+      // R8.6：把服务端派生的「项目 + 基线情景」id 上提，供导出方案时挂来源关联（两 id 齐备才有意义）。
+      if (data.projectId && data.scenarioId) {
+        onSavedSource?.({ projectId: data.projectId, scenarioId: data.scenarioId });
+      }
       if (data.scenarioId) {
         void refreshVersions(data.scenarioId);
         void refreshProject(data.projectId);
@@ -230,6 +273,39 @@ export function SandboxSavePanel({
             <Button type="button" size="sm" variant="secondary" onClick={saveVersion} disabled={busy}>
               存为新版本
             </Button>
+          </div>
+        ) : null}
+
+        {projectId && scenarioId ? (
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-zinc-500">来源反查（本项目 / 情景导出过的产业方案）</span>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => void loadLinkedSolutions(scenarioId)}
+                disabled={linkedBusy}
+              >
+                {linkedBusy ? "查询中…" : linked === null ? "查看关联方案" : "刷新关联方案"}
+              </Button>
+            </div>
+            {linkedDenied ? <p className="text-[11px] leading-snug text-sky-700">{linkedDenied}</p> : null}
+            {linked && linked.length === 0 ? (
+              <p className="text-[11px] leading-snug text-zinc-500">该情景尚未导出过产业方案。</p>
+            ) : null}
+            {linked && linked.length > 0 ? (
+              <ul className="flex list-disc flex-col gap-0.5 pl-4 text-[11px] leading-snug text-zinc-600">
+                {linked.map((s) => (
+                  <li key={s.id} className="flex items-center justify-between gap-2">
+                    <span className="truncate">{s.title}</span>
+                    <Link href={`/admin/solutions/${s.id}`} className="shrink-0 underline">
+                      查看（{s.status}）
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         ) : null}
 

@@ -118,6 +118,10 @@ export function SandboxWorkbench() {
   const [showSave, setShowSave] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
 
+  // R8.6 反查关联：当前情景一旦被「保存为项目」，SavePanel 把服务端派生的 {projectId, scenarioId} 上提到这里；
+  // 之后「导出产业方案」会把这枚来源指针随草案上行（未保存则为 null → 导出诚实不挂指针，绝不虚构）。
+  const [savedSource, setSavedSource] = useState<{ projectId: string; scenarioId: string } | null>(null);
+
   // 分层情景 = 地区包(region+policy) 垫底 → 企业画像预设 → 用户本次覆写 依次在上（§6 优先级 + §14 #7）。
   // 切地区换整份默认、切画像换一组预设起点，两者都被用户显式改动覆盖（裁剪而非锁死）。
   const layers = useMemo(
@@ -532,6 +536,7 @@ export function SandboxWorkbench() {
               layers={layers as unknown as Record<string, unknown>}
               regionId={regionId}
               regionName={pack.name}
+              onSavedSource={setSavedSource}
             />
           ) : null}
           {showSolution && vm.ok ? (
@@ -540,6 +545,7 @@ export function SandboxWorkbench() {
               vm={vm}
               regionName={pack.name}
               profile={profileId === DEFAULT_PROFILE_ID ? undefined : profile}
+              savedSource={savedSource}
             />
           ) : null}
         </div>

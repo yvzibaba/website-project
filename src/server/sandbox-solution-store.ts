@@ -27,6 +27,8 @@
 import { z } from "zod";
 // 注：本模块为 server 域逻辑（route 层调用）。本仓刻意不 import "server-only"（vitest/node 会抛错），仅注释标注。
 import { CuidSchema, SlugSchema, CurrencySchema } from "@/lib/validation";
+import { attachSandboxSource, type SandboxSourceInput } from "@/lib/sandbox-solution-source";
+import { verifySandboxSource } from "@/server/sandbox-solution-source";
 import {
   createSolution,
   addSolutionFinancial,
@@ -35,8 +37,12 @@ import {
   SolutionUnknownInputSchema,
 } from "@/server/solution-admin";
 
-/** 落库编排口径版本（组合规则 / 回写字段变化须升版记因，宪法第 13 条）。 */
-export const SANDBOX_SOLUTION_STORE_VERSION = "1.0.0";
+/**
+ * 落库编排口径版本（组合规则 / 回写字段变化须升版记因，宪法第 13 条）。
+ * 1.1.0：新增可选 `sandboxSource` 入参——导出时把「来源已保存情景 / 项目」指针经服务端验存后并入财务 assumptions
+ *      （R8.6 反查关联）；核验不过即诚实丢指针、绝不阻断导出。向后兼容：不传 `sandboxSource` 行为逐字同 1.0.0。
+ */
+export const SANDBOX_SOLUTION_STORE_VERSION = "1.1.0";
 
 /* ─────────────────────────── 入参 schema（复用既有单一真源，防录入/落库两套规则漂移） ─────────────────────────── */
 
@@ -64,6 +70,16 @@ export const SandboxSolutionPersistSchema = z.object({
   unknowns: z.array(SolutionUnknownInputSchema).max(200).optional(),
   /** 客户端算出的发布阻塞清单：仅原样回显给人（不参与落库判定），故宽松接收。 */
   publishBlockers: z.array(z.string().max(500)).max(50).optional(),
+  /**
+   * 来源沙盘情景 / 项目指针（R8.6 反查关联）：仅当用户**已把当前情景保存为项目**时客户端才拿得到 id。
+   * 两 id 均可选；落库前经 `verifySandboxSource` 查库确有其行才并入财务 assumptions，否则诚实丢弃（绝不虚构关联）。
+   */
+  sandboxSource: z
+    .object({
+      scenarioId: CuidSchema.optional(),
+      projectId: CuidSchema.optional(),
+    })
+    .optional(),
 });
 export type SandboxSolutionPersistInput = z.infer<typeof SandboxSolutionPersistSchema>;
 
@@ -109,6 +125,20 @@ export async function persistSandboxSolutionDraft(
   const d = parsed.data;
   const publishBlockers = d.publishBlockers;
 
+  // 0) 来源关联指针（R8.6）：仅当客户端提供了 sandboxSource 才核验。★验存确有其行（情景 / 项目）才并入财务
+  //    assumptions（走 client-safe 不可变合并，绝不覆盖 solutionCalcRef 等既有溯源键）；核验不过 → 诚实丢指针、
+  //    记一条 warning，但**照常完成导出**（来源关联是增强，绝不该反过来卡住「草案落 DRAFT」主链）。
+  const warnings: string[] = [];
+  let financialInputs = d.financials ?? [];
+  if (d.sandboxSource) {
+    const { ok, ref, note } = await verifySandboxSource(d.sandboxSource as SandboxSourceInput);
+    if (ok && ref) {
+      financialInputs = attachSandboxSource(financialInputs, ref) as typeof financialInputs;
+    } else if (note) {
+      warnings.push(`来源关联未附于方案：${note}`);
+    }
+  }
+
   // 1) 建方案（createSolution 内部：校验 SolutionCreateSchema + caseId 外键预检 + 强制 DRAFT + CREATE 审计）。
   const created = await createSolution(
     {
@@ -136,9 +166,8 @@ export async function persistSandboxSolutionDraft(
   const solutionId = created.solutionId;
 
   // 2) 追加财务条目（各条独立事务；个别失败记 warnings，不让整笔伪失败——方案仍是合法 DRAFT）。
-  const warnings: string[] = [];
   let financialCount = 0;
-  for (const f of d.financials ?? []) {
+  for (const f of financialInputs) {
     const r = await addSolutionFinancial(solutionId, f, actor);
     if (r.status === "ok") financialCount += 1;
     else warnings.push(`财务条目落库未成功（${r.error ?? r.status}）：可在方案后台手动补录。`);

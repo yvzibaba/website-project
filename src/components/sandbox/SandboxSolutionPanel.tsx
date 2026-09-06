@@ -74,6 +74,7 @@ export function SandboxSolutionPanel({
   vm,
   regionName,
   profile,
+  savedSource,
 }: {
   /** 引擎对**当前**情景的 CalcResult；面板据此现算草案（§9 读最新结果）。 */
   calc: CalcResult;
@@ -82,6 +83,8 @@ export function SandboxSolutionPanel({
   regionName: string;
   /** R7 企业画像（通用=undefined）。 */
   profile?: SandboxEnterpriseProfile;
+  /** R8.6 反查关联：当前情景若已「保存为项目」，这里带上服务端派生的 {projectId, scenarioId}；未保存为 null。 */
+  savedSource?: { projectId: string; scenarioId: string } | null;
 }) {
   const [projectName, setProjectName] = useState("");
   const [scenarioName, setScenarioName] = useState("");
@@ -176,6 +179,8 @@ export function SandboxSolutionPanel({
       financials: draftOk.financials,
       unknowns: draftOk.unknowns,
       publishBlockers: draftOk.publishBlockers,
+      // R8.6：把来源情景指针随草案上行；未保存情景则 undefined（服务端亦会二次验存，绝不虚构关联）。
+      sandboxSource: savedSource ?? undefined,
     };
     const res = await mutateJson("/api/sandbox/solution", "POST", body);
     setBusy(false);
@@ -377,6 +382,20 @@ export function SandboxSolutionPanel({
                 </select>
               </div>
             </div>
+
+            {/* R8.6 来源关联的诚实提示：仅在已「保存为项目」时才挂反查指针，否则如实说明不挂。 */}
+            {savedSource ? (
+              <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-[11px] leading-snug text-sky-800">
+                将同时记录<strong>来源关联</strong>：本方案会标注派生自当前已保存的沙盘情景（
+                <code className="mx-0.5 rounded bg-sky-100 px-1">{savedSource.scenarioId.slice(0, 8)}…</code>），
+                便于日后从该情景反查此方案。服务端会二次核验情景确实存在后才落库。
+              </div>
+            ) : (
+              <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-[11px] leading-snug text-zinc-500">
+                当前情景<strong>尚未保存为项目</strong>，导出的方案不会挂来源关联（无从反查它出自哪版沙盘参数）。
+                如需可追溯关联，先用「保存 / 版本」保存本情景再导出。
+              </div>
+            )}
 
             {/* 草案摘要（预览，逐字来自 draft） */}
             <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs leading-relaxed text-zinc-600">

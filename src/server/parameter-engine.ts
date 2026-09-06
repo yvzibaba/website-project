@@ -29,8 +29,15 @@ import { EvidenceTypeSchema, type EvidenceType } from "@/lib/validation";
 
 /* ─────────────────────────── 版本（第 13 条：改契约/默认须升版并记录原因） ─────────────────────────── */
 
-/** 参数引擎契约版本。新增来源层语义、改解析优先级、改覆写裁剪规则等 = 破坏性 → 升主版本。 */
-export const PARAM_ENGINE_VERSION = "1.0.0";
+/**
+ * 参数引擎契约版本。新增来源层语义、改解析优先级、改覆写裁剪规则等 = 破坏性 → 升主版本。
+ *
+ * 1.1.0（中途重构 R8.7 · 真实数据接入）：**加性**扩展——`ValueLayer` 新增逐值结构化溯源 `sources`，
+ *   `ResolvedParameter` 新增 `sourceUrl` / `sourceType` / `asOf` 三字段，并加一条**诚实闸门**：凡逐值 `sources`
+ *   声称 `evidenceKind="FACT"` 却无可用 `http(s)` 链接，一律降为 `ASSUMPTION` 并留痕（§20 绝不把无来源的值当事实）。
+ *   不改动解析优先级 / 裁剪 / 过期语义，也不追溯改变既有「层级 evidenceKind（无链接）」的 legacy 行为（向后兼容，非破坏 → 升次版本）。
+ */
+export const PARAM_ENGINE_VERSION = "1.1.0";
 
 /* ─────────────────────────── 枚举与判别 ─────────────────────────── */
 
@@ -135,10 +142,47 @@ export const ParameterSetSchema = z
 
 /* ─────────────────────────── 来源层（Region/Policy/User）+ 派生注册表 ─────────────────────────── */
 
+/**
+ * 单个参数值的**结构化溯源**（R8.7 真实数据接入）。与 `ValueLayer` 里旧的层级 `source`（自由文本，可能只是文件名/省份名）
+ * 不同，本结构承载**可点击、可核验**的来源：`sourceUrl`（http(s) 链接）+ `sourceType`（官方/统计/行业媒体…）+ `asOf`（数据时点）。
+ * 关键诚实约束（§20 / §12）：只有当 `sourceUrl` 是可用 http(s) 链接时才允许把该值记为 `FACT`；
+ * 解析层遇到「FACT 却无可用链接」会**自动降级为 ASSUMPTION**并留痕，绝不把无来源的数字当事实外泄。
+ * 纯契约类型、无副作用，供地区/政策包逐值挂载；未挂 `sources` 的键沿用层级 `source`/`confidence`/`evidenceKind`（向后兼容）。
+ */
+export interface ValueSourceMeta {
+  /** 可核验来源链接（须 http(s) 才会被承认为 FACT 依据；否则视为脏输入降级）。 */
+  sourceUrl?: string;
+  /** 来源类型标签（如 "政府公告" / "统计年鉴" / "行业媒体" / "企业披露"），供报告分类展示。 */
+  sourceType?: string;
+  /** 数据时点（"as of"，如 "2024-06" / "2024-12-31"），区分「现价 / 历史价」。 */
+  asOf?: string;
+  /** 该值的认识论标签；缺省 ASSUMPTION（没核实不得自动升 FACT）。 */
+  evidenceKind?: EvidenceType;
+  /** 0..100 置信度（覆盖层级 confidence）。 */
+  confidence?: number;
+  /** 人类可读补充说明（如口径、含不含基金附加）。 */
+  note?: string;
+}
+
+export const ValueSourceMetaSchema = z.object({
+  sourceUrl: z.string().optional(),
+  sourceType: z.string().optional(),
+  asOf: z.string().optional(),
+  evidenceKind: EvidenceTypeSchema.optional(),
+  confidence: z.number().int().min(0).max(100).optional(),
+  note: z.string().optional(),
+});
+
 /** 一层"键→值"覆写。region / policy 共用此形状，policy 额外带生效窗口。 */
 export interface ValueLayer {
   /** 参数键 → 该层给出的值。 */
   values: Record<string, number | boolean | string>;
+  /**
+   * 逐值结构化溯源（R8.7）：参数键 → `ValueSourceMeta`。命中该层某个键时，若此处给了 `sources[key]`，
+   * 其 `sourceUrl/sourceType/asOf/evidenceKind/confidence` 覆盖层级同名字段，成为该解析值的最终溯源。
+   * 缺省 undefined = 该层沿用旧行为（只有层级 `source` 自由文本，无结构化链接）。
+   */
+  sources?: Record<string, ValueSourceMeta>;
   /** 该层来源描述（如省份名 / 政策文件名）。 */
   source?: string;
   confidence?: number;
@@ -189,6 +233,15 @@ export interface ResolvedParameter {
   confidence: number;
   /** 认识论标签（透传命中层 evidenceKind，否则 spec.evidenceKind）。 */
   evidenceKind: EvidenceType;
+  /**
+   * R8.7：命中层为该键提供的**可核验来源链接**（仅当 `sources[key].sourceUrl` 是合法 http(s) 才落此处）。
+   * 缺省 undefined = 该值无结构化来源（沿用旧行为，或 FACT 声称因缺链接已被降级）。
+   */
+  sourceUrl?: string;
+  /** R8.7：来源类型标签（政府公告 / 统计年鉴 / 行业媒体 / 企业披露…），供报告分类展示。 */
+  sourceType?: string;
+  /** R8.7：数据时点（"as of"），区分现价 / 历史价。 */
+  asOf?: string;
   /** 是否可编辑（来自 spec）。 */
   editable: boolean;
   /** 是否相对 spec.defaultValue 被覆写过。 */
@@ -259,6 +312,17 @@ function layerActive(layer: ValueLayer, now: Date): boolean {
 
 function isExpired(layer: ValueLayer, now: Date): boolean {
   return layer.effectiveUntil != null && now > layer.effectiveUntil;
+}
+
+/**
+ * R8.7 诚实闸门的判据：一个 `sourceUrl` 只有是 http(s) 开头、去空白后非空、不含空格时才算「可核验来源」。
+ * 宁可误拒不可误收——脏输入回 undefined，令依赖它的 FACT 声称被降级（§20 绝不把无来源的数字当事实）。
+ */
+function usableHttpUrl(url: unknown): string | undefined {
+  if (typeof url !== "string") return undefined;
+  const t = url.trim();
+  if (t === "" || /\s/.test(t)) return undefined;
+  return /^https?:\/\//i.test(t) ? t : undefined;
 }
 
 /* ─────────────────────────── 核心解析 ─────────────────────────── */
@@ -362,6 +426,32 @@ export function resolveParameters(
     const overridden = origin !== "default";
     const bFinal = effectiveBounds(spec, winningLayer);
 
+    // ── R8.7：解析命中层的**逐值结构化溯源** + 诚实闸门 ──
+    // 仅对显式挂了 sources[key] 的键生效；未挂则沿用上面层级结果（向后兼容，不改 legacy 行为）。
+    let effEvidenceKind = evidenceKind;
+    let effConfidence = confidence;
+    let sourceUrl: string | undefined;
+    let sourceType: string | undefined;
+    let asOf: string | undefined;
+    const meta = winningLayer?.sources?.[spec.key];
+    if (meta) {
+      if (typeof meta.confidence === "number") effConfidence = meta.confidence;
+      if (meta.evidenceKind) effEvidenceKind = meta.evidenceKind;
+      const url = usableHttpUrl(meta.sourceUrl);
+      if (url) {
+        sourceUrl = url;
+        sourceType = meta.sourceType;
+        asOf = meta.asOf;
+      } else if (typeof meta.sourceUrl === "string" && meta.sourceUrl.trim() !== "") {
+        notes.push(`${spec.key}: 来源链接非 http(s) 或含空格，不作可核验来源`);
+      }
+      // 诚实闸门：逐值声称 FACT 却无可用链接 → 降级 ASSUMPTION（§20 绝不把无来源的数字当事实外泄）。
+      if (effEvidenceKind === "FACT" && !sourceUrl) {
+        effEvidenceKind = "ASSUMPTION";
+        notes.push(`${spec.key}: 声称 FACT 但缺可核验 http(s) 来源链接，已诚实降级为 ASSUMPTION`);
+      }
+    }
+
     params[spec.key] = {
       key: spec.key,
       group: spec.group,
@@ -371,8 +461,11 @@ export function resolveParameters(
       value,
       origin,
       source,
-      confidence,
-      evidenceKind,
+      confidence: effConfidence,
+      evidenceKind: effEvidenceKind,
+      sourceUrl,
+      sourceType,
+      asOf,
       editable: spec.editable,
       overridden,
       clamped,
@@ -486,6 +579,9 @@ export const ResolvedParameterSchema = z.object({
   source: z.string(),
   confidence: z.number().int().min(0).max(100),
   evidenceKind: EvidenceTypeSchema,
+  sourceUrl: z.string().optional(),
+  sourceType: z.string().optional(),
+  asOf: z.string().optional(),
   editable: z.boolean(),
   overridden: z.boolean(),
   clamped: z.boolean(),
@@ -493,3 +589,55 @@ export const ResolvedParameterSchema = z.object({
   allowedMax: z.number().optional(),
   notes: z.array(z.string()),
 });
+
+/* ─────────────────────────── R8.7：输入溯源汇总（喂计算/方案层，§4/§12） ─────────────────────────── */
+
+/**
+ * 单个入参的溯源摘要（把解析层的逐值来源结构化搬运给下游，供 `CalcResult` / 方案草案 / 报告消费）。
+ * 只含展示与可追溯所需字段，不回带引擎内部结构，避免跨边界耦合漂移（§16 单一真源）。
+ */
+export interface InputProvenance {
+  key: string;
+  group: ParamGroup;
+  value: number | boolean | string;
+  origin: ValueOrigin;
+  source: string;
+  confidence: number;
+  evidenceKind: EvidenceType;
+  /** 仅当命中层挂了合法 http(s) 逐值来源时非空（R8.7）。 */
+  sourceUrl?: string;
+  sourceType?: string;
+  asOf?: string;
+}
+
+/**
+ * 把一次解析结果收敛成「键 → 溯源摘要」的扁平表（纯函数、无副作用、可离线测死）。
+ * R8.7「真实数据接入」的对内接缝：`runSandboxModel` 过去只取 `resolved.numeric` 丢弃了溯源，
+ * 本函数把被丢弃的逐值来源重新暴露出来，供方案草案 `sourceUrl` / 报告「数据来源」/ R8.5 升级写路径使用。
+ * 非法解析（ok:false）→ 空表（诚实「无从汇总」，不抛）。
+ */
+export function collectInputProvenance(result: ResolveResult): Record<string, InputProvenance> {
+  const out: Record<string, InputProvenance> = {};
+  if (!result.ok) return out;
+  for (const p of Object.values(result.params)) {
+    const ip: InputProvenance = {
+      key: p.key,
+      group: p.group,
+      value: p.value,
+      origin: p.origin,
+      source: p.source,
+      confidence: p.confidence,
+      evidenceKind: p.evidenceKind,
+    };
+    if (p.sourceUrl) ip.sourceUrl = p.sourceUrl;
+    if (p.sourceType) ip.sourceType = p.sourceType;
+    if (p.asOf) ip.asOf = p.asOf;
+    out[p.key] = ip;
+  }
+  return out;
+}
+
+/** 便捷：从溯源表里挑出「有可核验来源链接」的那批（即 R8.7 意义下真正落地的 FACT 输入）。 */
+export function factInputs(provenance: Record<string, InputProvenance>): InputProvenance[] {
+  return Object.values(provenance).filter((p) => p.evidenceKind === "FACT" && !!p.sourceUrl);
+}

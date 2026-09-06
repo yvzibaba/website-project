@@ -26,6 +26,7 @@
  *      无逐时曲线（S1）、无 SOH/温度/弃电（S5）、无充电需求增长曲线、残值不再按通胀折算（E7 取名义常数）。
  */
 import { resolveSandbox } from "@/server/sandbox-params";
+import { collectInputProvenance, type InputProvenance } from "@/server/parameter-engine";
 import type { ResolveLayers } from "@/server/parameter-engine";
 import {
   computeTechModel,
@@ -127,6 +128,13 @@ export interface CalcResultOk {
     discountedPaybackYears: number | null;
     roi: { ok: boolean; value?: number; reason?: string };
   };
+  /**
+   * R8.7「真实数据接入」：本次结果各入参的溯源（键 → 值/来路/认识论标签 + 可选 sourceUrl/sourceType/asOf）。
+   * 过去 `runSandboxModel` 只把 `resolved.numeric` 交给经济引擎、**丢弃了逐值来源**，此字段把那层被丢的溯源
+   * 重新暴露，供方案草案 `sourceUrl`、报告「数据来源」、R8.5 升级写路径消费。**加性元数据**：经济口径未变，
+   * 故 `MODEL_VERSION` 刻意不升（calcRef 仍指同一套现金流公式，§13 只在口径变化时升版）。
+   */
+  inputProvenance?: Record<string, InputProvenance>;
   notes: string[];
 }
 
@@ -328,6 +336,8 @@ export function runSandboxModel(layers: Omit<ResolveLayers, "derived"> = {}): Ca
   const econ = computeEconomics(resolved.numeric);
   if (econ.ok) {
     econ.engineVersions.params = `${econ.engineVersions.params}`; // 保持 tech calcRef 溯源（tech@x）
+    // R8.7：把解析层的逐值溯源（含可选 sourceUrl）挂回结果，补上「numeric 快照丢弃来源」这一缺口。
+    econ.inputProvenance = collectInputProvenance(resolved);
   }
   return econ;
 }

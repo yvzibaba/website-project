@@ -23,9 +23,14 @@
  * pack 不新增参数、只给地区/政策层的取值与区间，避免与参数目录漂移（第 16 条单一真源）。
  */
 import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
+import { SHANXI_REGION_SOURCES, SHANXI_POLICY_SOURCES } from "@/server/sandbox-region-facts";
 
-/** 地区参数包目录版本（增删地区 / 改默认口径须升版并记原因，宪法第 13 条）。 */
-export const SANDBOX_REGIONS_VERSION = "1.0.0";
+/**
+ * 地区参数包目录版本（增删地区 / 改默认口径须升版并记原因，宪法第 13 条）。
+ * 1.1.0（R8.7）：山西 region/policy 层挂上来自 `sandbox-region-facts` 的**逐值结构化溯源** `sources`
+ *   （数值一字未改，现全为诚实 ASSUMPTION 占位；核实到权威原文后仅改编目即自动升 FACT 并贯通下游）。
+ */
+export const SANDBOX_REGIONS_VERSION = "1.1.0";
 
 /** 溯源引用（供报告标注「这组地区默认是按哪版给的」，第 7/16 条）。 */
 export function regionCalcRef(): string {
@@ -86,6 +91,7 @@ const SHANXI_PACK: SandboxRegionPack = {
       "region.demandCharge": 44,
       "region.landRent": 500,
     },
+    sources: SHANXI_REGION_SOURCES,
     source: SRC,
     confidence: 45,
     evidenceKind: "ASSUMPTION",
@@ -99,6 +105,7 @@ const SHANXI_PACK: SandboxRegionPack = {
     {
       // 已过期示例：仅它提供「碳价加计」，一旦过期即被引擎跳过、落回全局默认（§6 硬约束，测试实证）。
       values: { "policy.carbonPrice": 120 },
+      sources: SHANXI_POLICY_SOURCES[0],
       source: "【示例·已过期·待核实】山西某碳交易试点激励（窗口已过，仅作 §6 过期回落演示）",
       confidence: 40,
       evidenceKind: "ASSUMPTION",
@@ -112,6 +119,7 @@ const SHANXI_PACK: SandboxRegionPack = {
         "policy.operationSubsidy": 0.08,
         "policy.feedInTariff": 0.33,
       },
+      sources: SHANXI_POLICY_SOURCES[1],
       source: SRC,
       confidence: 45,
       evidenceKind: "ASSUMPTION",

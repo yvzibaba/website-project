@@ -24,12 +24,18 @@
  */
 
 import type { CalcResult, CalcResultOk } from "@/server/sandbox-model";
+import { factInputs } from "@/server/parameter-engine";
 import { formatMoney, type NamedValue, type SandboxViewModel } from "@/lib/sandbox-view";
 import type { SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
 import { SANDBOX_PROFILES_VERSION } from "@/server/sandbox-profiles";
 
-/** 方案草案口径版本（分节映射 / 财务搬运规则变化须升版记因，宪法第 13 条）。 */
-export const SANDBOX_SOLUTION_VERSION = "1.0.0";
+/**
+ * 方案草案口径版本（分节映射 / 财务搬运规则变化须升版记因，宪法第 13 条）。
+ * 1.1.0（R8.7）：财务条目新增 `assumptions.inputProvenance`（逐输入溯源，从 `CalcResult.inputProvenance` 搬运），
+ *   并在存在**可核验来源 FACT 输入**时把首条（按 key 稳定序）的 http(s) 链接搬到 `financial.sourceUrl`，
+ *   以喂 R8.5 升级写路径；`evidenceGrade` 仍诚实保持 ASSUMPTION（只要还有任一入参是占位假设，聚合结果即不升 FACT）。
+ */
+export const SANDBOX_SOLUTION_VERSION = "1.1.0";
 
 /** 溯源引用：把草案钉到「方案生成口径版本」（与各区段引擎 calcRef 并列，供发布后审计）。 */
 export function sandboxSolutionCalcRef(): string {
@@ -192,6 +198,16 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
   const engineVersions = c.engineVersions;
   const profileVersion = profile ? `profiles@${SANDBOX_PROFILES_VERSION}` : "通用（无画像裁剪）";
 
+  /* —— R8.7：从引擎带来的逐输入溯源里，筛出「有可核验 http(s) 来源」的真正 FACT（本模块绝不重算/编造）—— */
+  const inputProvenance = c.inputProvenance;
+  const factInputsSorted = inputProvenance
+    ? factInputs(inputProvenance)
+        .slice()
+        .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0))
+    : [];
+  const factCount = factInputsSorted.length;
+  const representativeFactUrl: string | undefined = factInputsSorted[0]?.sourceUrl;
+
   const name = projectName?.trim() || "沙盘产业项目方案";
   const scen = scenarioName?.trim() || "基准情景";
   const title = `${name}｜${scen}（${regionName}）`;
@@ -289,10 +305,14 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
   ];
 
   // 溯源 + AI 标注（把草案钉回引擎与版本，供审计与可信度判定）
+  const provenanceTail =
+    factCount === 0
+      ? "全部入参为示例假设，无外部来源可追溯。"
+      : `其中 ${factCount} 项入参已带可核验来源链接（代表：${representativeFactUrl}），其余仍为示例假设，须逐项核实后方可整体升为事实。`;
   body.sources =
     `结果溯源：引擎 calcRef=${c.calcRef}；内核版本 model@${engineVersions.model} · tech@${engineVersions.tech} · ` +
     `finance@${engineVersions.finance} · params@${engineVersions.params}；地区=「${regionName}」；画像=${profileVersion}；` +
-    `方案生成口径 ${solutionCalcRef}。全部入参为示例假设，无外部来源可追溯。`;
+    `方案生成口径 ${solutionCalcRef}。${provenanceTail}`;
   body.aiAnnotations =
     "本方案的每一个数字均由确定性程序模型计算并经视图模型格式化呈现；画像与（若接入的）AI 解释仅做侧重裁剪与自然语言解读，" +
     "不新增、不改写任何数字。证据等级：ASSUMPTION（示例·待核实）。";
@@ -320,6 +340,15 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
     },
     note: "全部为示例占位假设下的计算结果，Decimal 串直接搬运引擎值，未二次换算；为负或算不出的指标已省略并登记于关键未知/阻塞项。",
   };
+  // R8.7：仅在确有可核验 FACT 来源时，把逐输入溯源 + 代表链接搬进行级数据，喂 R8.5 升级写路径。
+  // （诚实基线 factCount=0 → 整段不触发，既有黄金草案逐字不变。）
+  if (factCount > 0) {
+    financial.assumptions = { ...(financial.assumptions ?? {}), inputProvenance, factInputCount: factCount };
+    if (representativeFactUrl) financial.sourceUrl = representativeFactUrl;
+    financial.note =
+      `${financial.note ?? ""} 另有 ${factCount} 项入参带可核验来源链接（逐输入见 assumptions.inputProvenance、代表见 sourceUrl），` +
+      "其余仍为示例假设，须逐项核实后方可整体升为事实（§20）；本行 evidenceKind 暂留 ASSUMPTION。";
+  }
   // ROI 引擎给比值 → roiPct 需要百分数（×100），仅非负可入 Decimal 字段。
   if (c.metrics.roi.ok && typeof c.metrics.roi.value === "number" && c.metrics.roi.value >= 0) {
     financial.roiPct = (c.metrics.roi.value * 100).toFixed(2);
@@ -335,7 +364,9 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
 
   /* —— 发布阻塞项：机器可校验，把「尚不可售卖」钉成产物（§16 / 总控）—— */
   const publishBlockers: string[] = [
-    "入参均为【示例·待核实】占位假设（ASSUMPTION），须以来源可追溯的真实数据替换并复核后方可对外发布/售卖",
+    factCount === 0
+      ? "入参均为【示例·待核实】占位假设（ASSUMPTION），须以来源可追溯的真实数据替换并复核后方可对外发布/售卖"
+      : `部分入参（${factCount} 项）已接可核验来源链接，但仍有其余入参为示例假设，须全部替换为可追溯真实数据并复核后方可对外发布/售卖`,
     "沙盘方案须挂靠一个已存在的案例（Case.caseId 必填外键）才能进入发布/购买闭环——当前草案未附 caseId",
     "需专业人工确认（§16：经济与技术假设属高风险领域，AI 只解读、人做关键决策）",
   ];

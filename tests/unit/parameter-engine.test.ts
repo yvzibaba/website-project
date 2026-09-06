@@ -11,8 +11,11 @@ import {
   getValue,
   filterByExposure,
   collectNotes,
+  collectInputProvenance,
+  factInputs,
   type ParameterSpec,
   type ResolveLayers,
+  type ValueSourceMeta,
 } from "@/server/parameter-engine";
 
 /**
@@ -303,5 +306,121 @@ describe("helpers & determinism", () => {
     const r = resolveParameters(specs, layers);
     expect(ResolvedParameterSchema.safeParse(r.params["price"]).success).toBe(true);
     expect(ResolvedParameterSchema.safeParse(r.params["total"]).success).toBe(true);
+  });
+});
+
+/* ─────────────────────────── R8.7：逐值结构化溯源 + 诚实闸门 ─────────────────────────── */
+
+describe("resolveParameters · R8.7 逐值溯源（ValueLayer.sources）", () => {
+  const priceSpecs = [spec({ key: "region.elecPrice", group: "region", defaultValue: 0.7 })];
+
+  it("★FACT + 合法 http(s) 链接 → sourceUrl/sourceType/asOf 落地 + 逐值 evidenceKind/confidence 覆盖层级", () => {
+    const sources: Record<string, ValueSourceMeta> = {
+      "region.elecPrice": {
+        sourceUrl: "https://example.gov.cn/price",
+        sourceType: "政府公告",
+        asOf: "2024-06",
+        evidenceKind: "FACT",
+        confidence: 92,
+      },
+    };
+    const r = resolveParameters(priceSpecs, {
+      region: { values: { "region.elecPrice": 0.55 }, source: "山西", confidence: 45, evidenceKind: "ASSUMPTION", sources },
+    });
+    const p = r.params["region.elecPrice"];
+    expect(p.origin).toBe("region");
+    expect(p.sourceUrl).toBe("https://example.gov.cn/price");
+    expect(p.sourceType).toBe("政府公告");
+    expect(p.asOf).toBe("2024-06");
+    expect(p.evidenceKind).toBe("FACT"); // 逐值 FACT 覆盖层级 ASSUMPTION
+    expect(p.confidence).toBe(92); // 逐值置信覆盖层级 45
+    expect(p.notes.join(" ")).not.toMatch(/降级/);
+  });
+
+  it("★诚实闸门：逐值声称 FACT 却无可核验链接 → 降为 ASSUMPTION 并留痕、不落 sourceUrl", () => {
+    const sources: Record<string, ValueSourceMeta> = {
+      "region.elecPrice": { evidenceKind: "FACT", confidence: 90 }, // 无 sourceUrl
+    };
+    const r = resolveParameters(priceSpecs, { region: { values: { "region.elecPrice": 0.55 }, sources } });
+    const p = r.params["region.elecPrice"];
+    expect(p.evidenceKind).toBe("ASSUMPTION");
+    expect(p.sourceUrl).toBeUndefined();
+    expect(p.notes.join(" ")).toContain("降级");
+  });
+
+  it("脏链接（ftp / 含空格）不作可核验来源：不记 sourceUrl，若据此称 FACT 则降级", () => {
+    const r = resolveParameters(priceSpecs, {
+      region: {
+        values: { "region.elecPrice": 0.55 },
+        sources: { "region.elecPrice": { sourceUrl: "ftp://x/y", evidenceKind: "FACT" } },
+      },
+    });
+    const p = r.params["region.elecPrice"];
+    expect(p.sourceUrl).toBeUndefined();
+    expect(p.evidenceKind).toBe("ASSUMPTION");
+    expect(p.notes.join(" ")).toMatch(/非 http\(s\)|降级/);
+  });
+
+  it("逐值给链接但不声明 FACT → 仍记 sourceUrl，evidenceKind 沿用层级（ASSUMPTION）不擅自升格", () => {
+    const r = resolveParameters(priceSpecs, {
+      region: {
+        values: { "region.elecPrice": 0.55 },
+        evidenceKind: "ASSUMPTION",
+        sources: { "region.elecPrice": { sourceUrl: "https://a.gov/x", sourceType: "统计" } },
+      },
+    });
+    const p = r.params["region.elecPrice"];
+    expect(p.sourceUrl).toBe("https://a.gov/x");
+    expect(p.evidenceKind).toBe("ASSUMPTION");
+  });
+
+  it("未命中层（被 user 覆写）的 sources 不外泄——sourceUrl 只随最终命中层", () => {
+    const r = resolveParameters(priceSpecs, {
+      region: {
+        values: { "region.elecPrice": 0.55 },
+        sources: { "region.elecPrice": { sourceUrl: "https://region.only", evidenceKind: "FACT" } },
+      },
+      user: { values: { "region.elecPrice": 0.6 } }, // user 覆写、无 sources
+    });
+    const p = r.params["region.elecPrice"];
+    expect(p.origin).toBe("user");
+    expect(p.sourceUrl).toBeUndefined(); // 地区层的 FACT 链接不残留
+    expect(p.evidenceKind).toBe("ASSUMPTION"); // spec 默认（user 层未带 FACT）
+  });
+
+  it("collectInputProvenance 展平（仅在有链接时带 sourceUrl）；factInputs 只留 FACT+链接", () => {
+    const r = resolveParameters(priceSpecs, {
+      region: {
+        values: { "region.elecPrice": 0.55 },
+        sources: { "region.elecPrice": { sourceUrl: "https://a.gov/x", evidenceKind: "FACT", confidence: 88 } },
+      },
+    });
+    const prov = collectInputProvenance(r);
+    expect(prov["region.elecPrice"].sourceUrl).toBe("https://a.gov/x");
+    expect(prov["region.elecPrice"].evidenceKind).toBe("FACT");
+    expect(prov["region.elecPrice"].value).toBe(0.55);
+    expect(factInputs(prov).map((f) => f.key)).toEqual(["region.elecPrice"]);
+
+    // 无逐值来源：collect 仍产出但无 sourceUrl，factInputs 为空。
+    const plain = resolveParameters(priceSpecs);
+    const pp = collectInputProvenance(plain);
+    expect(pp["region.elecPrice"].sourceUrl).toBeUndefined();
+    expect(factInputs(pp)).toHaveLength(0);
+  });
+
+  it("非法解析（ok:false）→ collectInputProvenance 回空表（诚实「无从汇总」、不抛）", () => {
+    const bad = resolveParameters([{ nope: 1 }], {});
+    expect(bad.ok).toBe(false);
+    expect(collectInputProvenance(bad)).toEqual({});
+  });
+
+  it("ResolvedParameterSchema 仍校验带 sourceUrl 的解析产物", () => {
+    const r = resolveParameters(priceSpecs, {
+      region: {
+        values: { "region.elecPrice": 0.55 },
+        sources: { "region.elecPrice": { sourceUrl: "https://a.gov/x", evidenceKind: "FACT" } },
+      },
+    });
+    expect(ResolvedParameterSchema.safeParse(r.params["region.elecPrice"]).success).toBe(true);
   });
 });

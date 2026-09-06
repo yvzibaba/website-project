@@ -188,3 +188,70 @@ describe("sandbox-solution · 确定性（同输入两次深相等，可复算�
     expect(a).toEqual(b);
   });
 });
+
+/* ─────────────────────────── R8.7：真实数据来源接入 → 草案 sourceUrl / 逐输入溯源 ─────────────────────────── */
+
+function draftFromCalc(calc: ReturnType<typeof runSandboxModel>) {
+  const resolved = resolveSandbox();
+  const tech = calc.ok ? computeTechModel(resolved.numeric) : null;
+  const vm = buildSandboxViewModel({
+    calc,
+    tech: tech && tech.ok ? tech.firstYear : null,
+    tornado: calc.ok ? computeTornado() : null,
+    discountRate: (resolved.numeric["finance.discountRate"] ?? 8) / 100,
+  });
+  return buildSandboxSolutionDraft({ calc, vm, regionName: "山西", projectName: "晋中站", scenarioName: "基准情景" });
+}
+
+describe("sandbox-solution · R8.7 逐输入溯源与 sourceUrl 填充（喂 R8.5 升级写路径）", () => {
+  it("★存在可核验 FACT 来源时：行级 sourceUrl 落地 + assumptions.inputProvenance + 诚实措辞，但 evidenceGrade 仍 ASSUMPTION", () => {
+    const calc = runSandboxModel({
+      region: {
+        values: { "region.elecPrice": 0.55 },
+        evidenceKind: "ASSUMPTION",
+        sources: {
+          "region.elecPrice": {
+            sourceUrl: "https://example.gov.cn/sx-price",
+            sourceType: "政府公告",
+            asOf: "2024-06",
+            evidenceKind: "FACT",
+            confidence: 90,
+          },
+        },
+      },
+    });
+    expect(calc.ok).toBe(true);
+    const d = draftFromCalc(calc);
+    expect(d.ok).toBe(true);
+    if (!d.ok) return;
+    const f = d.financials[0];
+    // 唯一 FACT（region.elecPrice）→ 代表链接搬到行级 sourceUrl。
+    expect(f.sourceUrl).toBe("https://example.gov.cn/sx-price");
+    const a = f.assumptions as Record<string, unknown>;
+    expect(a.factInputCount).toBe(1);
+    const ip = a.inputProvenance as Record<string, { evidenceKind: string; sourceUrl?: string }>;
+    expect(ip["region.elecPrice"].evidenceKind).toBe("FACT");
+    expect(ip["region.elecPrice"].sourceUrl).toBe("https://example.gov.cn/sx-price");
+    // 诚实措辞：正文溯源与发布阻塞点出「部分入参已接可核验来源」。
+    expect(String(d.body.sources)).toContain("已带可核验来源链接");
+    expect(d.publishBlockers.join("\n")).toContain("已接可核验来源链接");
+    // 关键：只要仍有占位假设，聚合证据等级不得升 FACT（§20）。
+    expect(d.evidenceGrade).toBe("ASSUMPTION");
+    expect(a.evidenceKind).toBe("ASSUMPTION");
+  });
+
+  it("★诚实基线回归：全 ASSUMPTION（factCount=0）→ 草案逐字如旧（无 sourceUrl / 无 inputProvenance 键 / 原文措辞）", () => {
+    const calc = runSandboxModelBaseline(); // 现已带 inputProvenance，但全为 ASSUMPTION
+    expect(calc.ok && calc.inputProvenance).toBeTruthy();
+    const d = draftFromCalc(calc);
+    expect(d.ok).toBe(true);
+    if (!d.ok) return;
+    const f = d.financials[0];
+    expect(f.sourceUrl).toBeUndefined();
+    const a = f.assumptions as Record<string, unknown>;
+    expect(a.inputProvenance).toBeUndefined();
+    expect(a.factInputCount).toBeUndefined();
+    expect(String(d.body.sources)).toContain("全部入参为示例假设，无外部来源可追溯");
+    expect(d.publishBlockers[0]).toContain("入参均为【示例·待核实】");
+  });
+});

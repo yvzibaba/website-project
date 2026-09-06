@@ -11,7 +11,9 @@ import { describeSandboxLineage } from "@/lib/sandbox-solution-lineage";
 import { evaluateSandboxSolutionProvenance } from "@/lib/sandbox-solution-provenance";
 import { readSandboxSourceFromFinancials, describeSandboxSource } from "@/lib/sandbox-solution-source";
 import type { ParsedSolutionBody } from "@/server/solution-body";
+import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, solutionProductJsonLd } from "@/lib/json-ld";
 
 /**
  * /solutions/[id] — 方案详情页（V1-A，PRODUCT_SPEC §5，含购买入口）。
@@ -76,6 +78,33 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
+      {/* 结构化数据（Phase 14 M2）：仅真实可售方案发 Product/Breadcrumb；DEMO 非可售真实方案，绝不发（宪法第 20 条）。价格仅在能解析出数字时才进 Offer，「定价待定」不编价。 */}
+      {!s.isDemo ? (
+        <>
+          <JsonLd
+            id="ld-product"
+            data={solutionProductJsonLd({
+              id: s.id,
+              title: s.title,
+              summary: s.summary,
+              industryName: s.industryName,
+              isFree: s.isFree,
+              currency: s.currency,
+              priceDisplay: s.priceDisplay,
+              caseTitle: s.caseTitle,
+              publishedAt: s.publishedAt,
+            })}
+          />
+          <JsonLd
+            id="ld-breadcrumb"
+            data={breadcrumbJsonLd([
+              { label: "首页", href: "/" },
+              { label: "方案", href: "/solutions" },
+              { label: s.title },
+            ])}
+          />
+        </>
+      ) : null}
       <PageHeader
         title={s.title}
         description={s.summary ?? undefined}

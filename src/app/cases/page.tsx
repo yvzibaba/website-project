@@ -6,7 +6,9 @@ import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { listPublicCases, CASE_SORT_FIELDS, type CaseSortField } from "@/server/cases";
 import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@/lib/validation";
 import { cn } from "@/lib/cn";
+import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/json-ld";
 
 /**
  * /cases — 案例列表页（V1-A，PRODUCT_SPEC §5）。
@@ -90,6 +92,23 @@ export default async function CasesPage({ searchParams }: PageProps) {
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-6">
+      {/* 集合页结构化数据（Phase 14 M2）：仅真实视图（?demo=1 的 DEMO 视图与页面 noindex 同口径，不发集合 LD）。 */}
+      {!includeDemo ? (
+        <>
+          <JsonLd
+            id="ld-collection"
+            data={collectionPageJsonLd({
+              name: "案例",
+              description: "每天从全球六大产业发现并深度拆解的高价值案例。案例免费查看，可进一步购买对应的产业解决方案。",
+              path: "/cases",
+            })}
+          />
+          <JsonLd
+            id="ld-breadcrumb"
+            data={breadcrumbJsonLd([{ label: "首页", href: "/" }, { label: "案例" }])}
+          />
+        </>
+      ) : null}
       <PageHeader
         title="案例"
         description="每天从全球六大产业发现并深度拆解的高价值案例。案例免费查看，可进一步购买对应的产业解决方案。"

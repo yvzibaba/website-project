@@ -5,7 +5,9 @@ import { Container, Badge, Alert, Card, CardContent, CardHeader, CardTitle } fro
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { getPublicCaseById } from "@/server/cases";
 import type { CaseScores } from "@/server/scoring";
+import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, caseArticleJsonLd } from "@/lib/json-ld";
 
 /**
  * /cases/[id] — 案例详情页（V1-A，PRODUCT_SPEC §5）。
@@ -75,6 +77,32 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
+      {/* 结构化数据（Phase 14 M2）：仅真实案例发 Article/Breadcrumb；DEMO 非真实研究产出，绝不发（宪法第 20 条，与页面 noindex 同口径）。 */}
+      {!c.isDemo ? (
+        <>
+          <JsonLd
+            id="ld-article"
+            data={caseArticleJsonLd({
+              id: c.id,
+              title: c.title,
+              summary: c.summary,
+              industryName: c.industryName,
+              regionName: c.regionName,
+              regionCountry: c.regionCountry,
+              sourceUrl: c.sourceUrl,
+              discoveredAt: c.discoveredAt,
+            })}
+          />
+          <JsonLd
+            id="ld-breadcrumb"
+            data={breadcrumbJsonLd([
+              { label: "首页", href: "/" },
+              { label: "案例", href: "/cases" },
+              { label: c.title },
+            ])}
+          />
+        </>
+      ) : null}
       <PageHeader
         title={c.title}
         description={c.summary ?? undefined}

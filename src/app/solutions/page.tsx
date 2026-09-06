@@ -6,7 +6,9 @@ import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { listPublishedSolutions, SOLUTION_SORT_FIELDS, type SolutionSortField } from "@/server/solutions";
 import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@/lib/validation";
 import { cn } from "@/lib/cn";
+import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/json-ld";
 
 /**
  * /solutions — 方案列表页（V1-A，PRODUCT_SPEC §5）。
@@ -77,6 +79,24 @@ export default async function SolutionsPage({ searchParams }: PageProps) {
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-6">
+      {/* 集合页结构化数据（Phase 14 M2）：仅真实视图；DEMO 视图与页面 noindex 同口径不发集合 LD。 */}
+      {!includeDemo ? (
+        <>
+          <JsonLd
+            id="ld-collection"
+            data={collectionPageJsonLd({
+              name: "产业解决方案",
+              description:
+                "把全球成功案例经 AI 拆解、开源匹配与中国本土化重构，形成可购买、可实施的方案。每份方案含成本/收益模型、ROI、回收期、风险与关键未知变量。",
+              path: "/solutions",
+            })}
+          />
+          <JsonLd
+            id="ld-breadcrumb"
+            data={breadcrumbJsonLd([{ label: "首页", href: "/" }, { label: "方案" }])}
+          />
+        </>
+      ) : null}
       <PageHeader
         title="产业解决方案"
         description="把全球成功案例经 AI 拆解、开源匹配与中国本土化重构，形成可购买、可实施的方案。每份方案含成本/收益模型、ROI、回收期、风险与关键未知变量。"

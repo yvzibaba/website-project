@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Badge, Button, Input, Alert } from "@/components/ui";
 import { EmptyState } from "@/components/page";
+import { JsonLd } from "@/components/seo";
 import { INDUSTRIES } from "@/server/industries";
 import { listPublicCases } from "@/server/cases";
 import { listPublishedSolutions } from "@/server/solutions";
 import { seoMetadata } from "@/lib/site";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
 
 /**
  * 首页 `/`（V1-A，总控第 6 节 / PRODUCT_SPEC §6）。
@@ -74,6 +76,9 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
+      {/* 站点级结构化数据（Phase 14 M2）：声明 Organization / WebSite 身份。纯加性、不涉及任何内容结论。 */}
+      <JsonLd id="ld-organization" data={organizationJsonLd()} />
+      <JsonLd id="ld-website" data={websiteJsonLd()} />
       {/* ① 主视觉 */}
       <section className="border-b border-border bg-muted/30">
         <Container size="lg" className="py-16 flex flex-col gap-6">

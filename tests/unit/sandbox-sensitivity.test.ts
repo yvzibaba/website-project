@@ -122,3 +122,61 @@ describe("确定性", () => {
     expect(computeTornado()).toEqual(computeTornado());
   });
 });
+
+/**
+ * TASK 5 覆盖度确认（2026-09-08 夜）——创始人点名 5 项：电价 / 年里程 / 车辆利用率 / 储能 CAPEX / 光伏 CAPEX。
+ * 前四项 已能真实扫到（年里程以 `chargePerTruck` 作合并代理，详见 docs/MODEL_CAUSALITY_AUDIT_V1.md P2-5）；
+ * 第五项「车辆利用率」`chargerUtilization` V1 未接入 E 层（P1-1 假联动），
+ * **不**塞进默认扫描集，避免"摆幅永远 0 的假柱子"污染龙卷风可读性；
+ * 通过自定义 `params` 显式扫它，会得到 swing=0 且 notes 提示，本测试钉住这一诚实策略。
+ */
+describe("TASK 5 · 创始人点名 5 项覆盖度", () => {
+  const t = computeTornado();
+  const keys = t.rows.map((r) => r.key);
+
+  it("电价 region.elecPrice 在默认扫描集，且 swing 非 null", () => {
+    expect(keys).toContain("region.elecPrice");
+    const r = t.rows.find((x) => x.key === "region.elecPrice")!;
+    expect(r.swing).not.toBeNull();
+    expect(r.swing!).toBeLessThan(0); // 电价↑ → NPV↓（方向可解释）
+  });
+
+  it("年里程×电耗合并代理 project.chargePerTruck 在默认扫描集，swing 非 null", () => {
+    expect(keys).toContain("project.chargePerTruck");
+    const r = t.rows.find((x) => x.key === "project.chargePerTruck")!;
+    expect(r.swing).not.toBeNull();
+    expect(Math.abs(r.swing!)).toBeGreaterThan(1e4); // 有意义摆幅
+  });
+
+  it("储能 CAPEX tech.storageCapex 在默认扫描集，swing 非 null", () => {
+    expect(keys).toContain("tech.storageCapex");
+    const r = t.rows.find((x) => x.key === "tech.storageCapex")!;
+    expect(r.swing).not.toBeNull();
+    expect(r.swing!).toBeLessThan(0); // 造价↑ → NPV↓
+  });
+
+  it("光伏 CAPEX tech.pvCapex 在默认扫描集，swing 非 null", () => {
+    expect(keys).toContain("tech.pvCapex");
+    const r = t.rows.find((x) => x.key === "tech.pvCapex")!;
+    expect(r.swing).not.toBeNull();
+  });
+
+  /**
+   * 车辆利用率：**故意不在默认扫描集**。若有人误把它加入，会得到 swing=0 → 用户以为"这东西对结果零影响"
+   * 而非"这东西根本没接进模型"——即"假敏感"陷阱。此处显式验证：手动扫它，能得到"摆幅 0"的诚实结论。
+   */
+  it("project.chargerUtilization 不在默认扫描集（防假敏感），显式扫时 swing 恒为 0", () => {
+    expect(keys).not.toContain("project.chargerUtilization");
+    const custom = computeTornado({ params: [{ key: "project.chargerUtilization", deltaPct: 20 }] });
+    const r = custom.rows[0];
+    expect(r.swing).toBe(0);
+    // 摆幅 0 但 baseMetric 存在——证明"扰动执行了，只是 E 层未消费"，与"根本没扫"不同
+    expect(r.baseMetric).not.toBeNull();
+    expect(r.lowMetric).toBe(r.highMetric);
+  });
+
+  it("默认扫描集规模≥5（覆盖创始人 5 项要求里可真实量化的 4 项 + 6 项其他主杠杆）", () => {
+    expect(t.rows.length).toBeGreaterThanOrEqual(10);
+  });
+});
+

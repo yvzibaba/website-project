@@ -19,8 +19,8 @@ import {
 import type { ResolveLayers } from "@/server/parameter-engine";
 import { runSandboxModel, runSandboxModelBaseline, type CalcResult } from "@/server/sandbox-model";
 
-/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。 */
-export const SENSITIVITY_VERSION = "1.1.0";
+/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。1.2.0（TASK 5 · 2026-09-08）：默认扫描集补 2 项——`tech.storageCapex`（储能 CAPEX）与 `project.chargePerTruck`（里程×电耗合并代理），兑现「电价/年里程/储能 CAPEX/光伏 CAPEX」四项主用户关切中此前缺席的两项；纯加性，既有排序逻辑不变。 */
+export const SENSITIVITY_VERSION = "1.2.0";
 export function sensitivityCalcRef(): string {
   return `sensitivity@${SENSITIVITY_VERSION}`;
 }
@@ -34,13 +34,30 @@ export interface SensitivityParam {
   deltaPct?: number;
 }
 
-/** 默认扫描集：覆盖收益/成本/资源/规模/财务五类第一杠杆（±按各自 delta）。 */
+/**
+ * 默认扫描集：覆盖收益/成本/资源/规模/财务/储能六类第一杠杆（±按各自 delta）。
+ *
+ * TASK 5（2026-09-08 夜）追加两项：
+ *   · `tech.storageCapex`——创始人点名"储能 CAPEX"敏感度的直接量化；
+ *   · `project.chargePerTruck`——**里程×电耗合并代理**：`derived.dailyChargeEnergy = trucksPerDay × chargePerTruck`，
+ *     故 chargePerTruck ±X% ≡ "年里程 × 百公里电耗" ±X%（车队数不变时）。V1 引擎无独立"里程"参数，
+ *     此为最贴近用户语义的替代（详见 docs/MODEL_CAUSALITY_AUDIT_V1.md P2-5）。
+ *
+ * **未加入**的参数与理由（防"假联动"混入龙卷风）：
+ *   · `project.chargerUtilization`——V1 未接入 E 层计算（P1-1），加进来 swing 恒为 0，误导读者；
+ *   · `project.gridCapacity`——未参与功率约束（P1-3），同上；
+ *   · `region.peakValleySpread` / `region.demandCharge` / `region.landRent` / `policy.carbonPrice` /
+ *     `finance.equityRatio` / `finance.loanRate`——E 层未消费（P2-6），加了会显示"改了无反应"的伪敏感。
+ *   一旦创始人批准接入 E 层，本注释过期，届时把对应键加入即可。
+ */
 export const DEFAULT_SENSITIVITY_PARAMS: readonly SensitivityParam[] = [
   { key: "project.chargingPrice", deltaPct: 15 },
   { key: "region.elecPrice", deltaPct: 15 },
   { key: "project.trucksPerDay", deltaPct: 20 },
+  { key: "project.chargePerTruck", deltaPct: 20 }, // 里程×电耗合并代理
   { key: "project.pvCapacity", deltaPct: 20 },
   { key: "tech.pvCapex", deltaPct: 20 },
+  { key: "tech.storageCapex", deltaPct: 20 }, // 储能单位造价
   { key: "region.pvEquivalentHours", deltaPct: 15 },
   { key: "policy.constructionSubsidy", deltaPct: 50 },
   { key: "finance.discountRate", deltaPct: 25 },

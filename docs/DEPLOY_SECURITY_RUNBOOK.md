@@ -14,6 +14,7 @@
 - 数据库：Neon 远程 PostgreSQL（`.env` 里的 `DATABASE_URL`）。`.env` 已被 `.gitignore`（`.env*`，仅放行 `.env.example`），远端仓库里 `.env` 恒为 404，从未通过 Git 泄漏。
 - 模型供应商：DeepSeek（OpenAI 兼容）。`DEEPSEEK_API_KEY` 走环境变量；无 key 时 `createChatProvider()` 回落确定性 StubProvider（CI/离线无需 key）。
 - 商业闭环：案例发现→拆解→技术/开源匹配→本土化→方案→查看→购买（下单→站外付款→后台确认解锁正文）已打通到 v0.55.0。**支付仍是「支付说明 + 后台人工确认」，未接真实支付网关回调**（高风险，刻意暂缓）。
+- **v0.56.1 只读安全审计结论（本次实测核实，非推断）**：① 仓库内**无任何**明文 `sk-` 密钥（唯一 `sk-` 命中是测试假常量 `sk-SECRET-DO-NOT-LEAK-123`）；② `.env*` 全未被 Git 跟踪，远端 `.env` 恒 404，从未入库；③ 本机 `.env` 仅存**新** DeepSeek key（尾 `…4e87`，len 35＝`sk-`+32hex），**旧 `…1fd0` 已不在任何配置中**；④ `NODE_TLS_REJECT_UNAUTHORIZED` **既不在仓库、也不在 `.env`**——本机运行时看到的 `=0` 来自**系统级环境变量注入**（须由部署侧清除，见 §3）。完整变量清单与逐条处置见 **§附录 A 环境变量 / 密钥清单**。
 
 ---
 
@@ -41,6 +42,7 @@
 - [ ] 生产 `DATABASE_URL` 指向**独立的生产库**（勿复用开发/预览库），连接串含强密码，走 secret 注入。
 - [ ] 新生成 `AUTH_SECRET`：`node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`（32 字节 base64，**每个环境不同**，勿复用开发值）。
 - [ ] 生产 `DEEPSEEK_API_KEY` 用**专用生产 key**（与开发分离，便于单独轮换/限额）。
+- [ ] 逐变量对照 **§附录 A 环境变量 / 密钥清单** 核对：哪些必填、哪些须为生产换独立值、哪些是预留未启用（支付/OAuth/S3 走各自 secret）。
 
 构建与运行
 - [ ] `npm ci`（锁定 lockfile，勿 `npm install` 漂移）。
@@ -63,6 +65,7 @@
 
 加固
 - [ ] 生产进程环境**不得**含 `NODE_TLS_REJECT_UNAUTHORIZED`（缺省即 `1`，最安全）。
+- [ ] **定位并彻底清除 `=0` 的来源**：本次审计已核实仓库与 `.env` 均无此变量，本机运行时看到的 `=0` 源于**系统级环境变量注入**（Windows 用户/系统环境变量或 shell profile / 部署平台 env 配置）。清理后 `printenv NODE_TLS_REJECT_UNAUTHORIZED` 应为空；部署平台的环境变量里也应确认无此项或显式设为非 0。
 - [ ] 若确需连自签证书的内部服务：**用正确的 CA 证书链**（`NODE_EXTRA_CA_CERTS=/path/ca.pem`）而非关掉校验。
 - [ ] CI 加断言（见 §5 模板）：构建/测试 job 若检测到 `NODE_TLS_REJECT_UNAUTHORIZED=0` 立即 fail。
 
@@ -142,6 +145,30 @@ git grep -nE 'sk-[a-z0-9]{20,}' -- ':!*.example' ':!docs' || echo "no plaintext 
 
 1. 公开收款 / 真实支付网关回调（含对账）——涉及资金，须人工确认。
 2. R8.8b 融资模型核心口径（总投资自上而下反推规模、贷款比例、债务现金流、DSCR、Equity IRR、银行可贷性）——改变财务口径，高风险。
-3. 法务/合规审定（隐私政策、服务条款目前为占位草稿；页脚已注明）。
+3. 法务/合规审定——`/privacy`、`/terms` 现为**诚实的结构化占位大纲**（页已标"未生效"、页脚亦注明"占位草稿，待法务审定后生效"）；**免责声明页尚缺**。正式公开收款前须由法务出具终稿，再完成三页接线 + 结账/注册的同意留痕（AI 不代拟法律终稿，宪法 §21）。
 4. 生产部署 / 域名 / TLS / 密钥轮换（本 Runbook §1–§3，全部 ⚠️ 归人）。
 5. 权威地区真实数据接入（山西电价/光照/补贴/造价等）→ 经 `makeVerifiedFact` 把沙盘入参落成带 `sourceUrl` 的真 FACT（§20：无可靠来源绝不虚构数值）。
+
+---
+
+## 附录 A：环境变量 / 密钥清单（Secret Inventory）
+
+> 「当前」列＝本机 `.env` 的**只读审计实测**（值一律掩码，仅记长度/尾号，绝不落全文）。类别：🔑 密钥（仅走 env）／⚙️ 配置（非敏感）／🌐 公开配置（会进前端/索引）。
+
+| 变量 | 类别 | 当前（本机实测） | 生产来源 | 轮换 / 注意 |
+| --- | --- | --- | --- | --- |
+| `DATABASE_URL` | 🔑 高 | 已配（Neon，len 148，尾 …uire） | **独立生产库**连接串（强密码 + SSL mode），secret 注入 | 与开发/预览库分离；泄露＝立即改库密码并换串；迁移前先备份（§4） |
+| `AUTH_SECRET` | 🔑 高 | 已配（base64，len 44，尾 …Crc=） | **每个环境新生成**：`node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"` | 各环境唯一、勿复用开发值；泄露即重铸（会使全部会话失效） |
+| `DEEPSEEK_API_KEY` | 🔑 高 | 已配（**新** key，len 35，尾 …4e87） | 专用生产 key，与开发分离 | ⚠️ **旧 `…1fd0` 曾明文泄露，须在控制台吊销（§1）**；日志只记掩码/长度 |
+| `DEEPSEEK_BASE_URL` | ⚙️ | 已配（`https://api.deepseek.com`） | 一般不改 | 非密钥 |
+| `NEXT_PUBLIC_SITE_URL` | 🌐 | **未配**（故 `isIndexable()` 返回 false，全站仍 noindex） | 正式 **https** 域名（非 localhost） | 影响 canonical / robots / sitemap / JSON-LD 绝对 URL；一旦设定即对索引可见，须与正式上线同步决策 |
+| `AUTH_URL` | ⚙️ | 未配（trustHost 默认可不填） | 反代后回调 URL 异常时才显式设 | 非密钥 |
+| `MODEL_ID_LOW/MEDIUM/HIGH` | ⚙️ | 已配（deepseek-chat / deepseek-reasoner） | 覆写 `MODEL_CATALOG` | 非密钥；勿在业务代码硬编码模型名（§16） |
+| `MODEL_PRICE_IN/OUT_*` | ⚙️ | 已配（**占位价，须以 DeepSeek 官网核对**） | 供应商真实定价 | 只影响成本估算、不影响调用；填错不外泄 |
+| `PRISMA_ENGINES_MIRROR` | ⚙️ | 已配（npmmirror） | 构建期引擎镜像源 | 非密钥 |
+| `LOG_LEVEL` | ⚙️ | 未配（默认按 `NODE_ENV`→prod=info） | 生产 info | 非密钥；严禁记明文密钥 |
+| `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` / `S3_ENDPOINT` / `S3_REGION` / `S3_BUCKET` | 🔑 预留 | **未配**（未启用对象存储） | 企业文件/PDF 导出凭证 | 启用时走 secret；当前代码路径不依赖 |
+| `STRIPE_SECRET_KEY` / `ALIPAY_APP_ID` / `WECHATPAY_MCHID` | 🔑 预留 | **未配**（未接支付网关） | 支付通道凭证 | 属**决策1**「真支付」阶段才启用；过渡版（人工确认收款）不需要任何支付密钥 |
+| `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET`（及未来 OAuth） | 🔑 预留 | **未配**（V1 未启用第三方登录） | OAuth 应用凭证 | 启用时走 secret |
+
+红线（SECURITY.md / 宪法 §20）：所有 🔑 只经环境变量注入，**绝不**写进代码、前端 bundle、日志、Git 或错误信息；日志对密钥仅记长度/掩码；`.env*` 已被 `.gitignore` 屏蔽（仅放行 `.env.example`），本清单中的尾号仅作人工核对用、非完整值。

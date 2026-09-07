@@ -16,15 +16,25 @@ interface AuthFormProps {
   mode: "login" | "register";
   submitLabel: string;
   pendingLabel: string;
+  /**
+   * 可选隐藏字段（决策1.5 回跳：登录页把已清洗的 callbackUrl 通过 hidden input 随表单一起 POST，
+   * server action 再走一次 sanitize 兜底）。值一律走 React 自动转义，无 XSS 面。
+   */
+  hiddenFields?: Record<string, string>;
 }
 
-export function AuthForm({ action, mode, submitLabel, pendingLabel }: AuthFormProps) {
+export function AuthForm({ action, mode, submitLabel, pendingLabel, hiddenFields }: AuthFormProps) {
   const [state, formAction, pending] = useActionState<AuthFormState, FormData>(action, {});
   const fe = state.fieldErrors ?? {};
   const isRegister = mode === "register";
 
   return (
     <form action={formAction} className="flex flex-col gap-4" noValidate>
+      {hiddenFields
+        ? Object.entries(hiddenFields).map(([k, v]) => (
+            <input key={k} type="hidden" name={k} value={v} />
+          ))
+        : null}
       {state.error ? (
         <Alert variant="danger" title={isRegister ? "注册失败" : "登录失败"}>
           {state.error}

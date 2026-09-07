@@ -7,7 +7,7 @@ import { SubmitPaymentProofForm } from "@/components/orders/SubmitPaymentProofFo
 import { getOrderById, type OrderView } from "@/server/orders";
 import { getCurrentUser } from "@/server/authz";
 import { deriveOrderDisplayState, ORDER_STATE_LABEL, ORDER_STATE_VARIANT } from "@/lib/order-status";
-import { getPaymentInfo, PAYMENT_UNCONFIGURED_LABEL } from "@/lib/payment-info";
+import { getPaymentInfo, PAYMENT_UNCONFIGURED_LABEL, getSupportContact, SUPPORT_UNCONFIGURED_LABEL } from "@/lib/payment-info";
 
 /**
  * /orders/[id] — 订单支付说明页（Phase 12 M3，购买闭环第二站，RSC）。
@@ -75,12 +75,14 @@ export default async function OrderPaymentPage({ params }: PageProps) {
   const displayState = deriveOrderDisplayState(order.status, order.paymentRef);
   // 人工收款信息：只透出运维在部署环境显式配置的 PAYMENT_*；未配置则页面显示占位，绝不虚构账户（宪法第 20 条）。
   const payment = getPaymentInfo();
+  // 客服入口：同样只透出运维显式配置的 SUPPORT_*；未配置时诚实显示占位，绝不虚构邮箱/微信/链接（§20）。
+  const support = getSupportContact();
 
   return (
     <Container size="md" className="py-10 flex flex-col gap-6">
       <PageHeader
         title="订单支付说明"
-        description="按下方说明完成付款，管理员确认到账后即解锁方案完整正文。"
+        description="购买流程：下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 解锁方案完整正文。本页给出转账说明与凭证入口。"
         breadcrumb={
           <Breadcrumb items={[{ label: "首页", href: "/" }, { label: "我的订单", href: "/account/orders" }, { label: "订单详情" }]} />
         }
@@ -149,7 +151,8 @@ export default async function OrderPaymentPage({ params }: PageProps) {
             ) : (
               <Alert variant="warning" title={PAYMENT_UNCONFIGURED_LABEL}>
                 平台尚未配置收款账户信息（环境变量 <code className="font-mono text-xs">PAYMENT_*</code>），暂时无法给出具体转账指引。
-                请联系客服，或待配置完成后回来按说明付款。你仍应先记录本单订单号以便对账。
+                请通过下方「客服入口」联系我们，或待配置完成后回来按说明付款。你仍应先记录本单订单号
+                （<code className="font-mono text-xs">{order.id}</code>）以便对账。
               </Alert>
             )}
 
@@ -174,6 +177,62 @@ export default async function OrderPaymentPage({ params }: PageProps) {
         </Card>
       )}
 
+      {/* 客服入口（决策1.5 P0：修付款页「请联系客服」死胡同）——只透出运维配置的 SUPPORT_*；
+          未配置时诚实显示占位、绝不虚构邮箱/微信/链接（§20）。付款遇到问题、凭证核对超时、
+          或想核对到账状态，都可从这里发起。 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">客服入口</CardTitle>
+          <CardDescription>
+            付款遇到问题、想核对到账状态或更正凭证信息，都可通过以下渠道联系人工客服。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          {support.configured ? (
+            <div className="flex flex-col gap-2 rounded-md border border-border bg-muted/30 p-3">
+              {support.email ? (
+                <InfoRow
+                  label="邮箱"
+                  value={
+                    <a href={`mailto:${support.email}`} className="text-primary underline">
+                      {support.email}
+                    </a>
+                  }
+                />
+              ) : null}
+              {support.wechat ? <InfoRow label="微信" value={support.wechat} /> : null}
+              {support.url ? (
+                <InfoRow
+                  label="客服/帮助中心"
+                  value={
+                    /^https:/i.test(support.url) ? (
+                      <a
+                        href={support.url}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        className="text-primary underline"
+                      >
+                        打开客服表单
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">{support.url}</span>
+                    )
+                  }
+                />
+              ) : null}
+            </div>
+          ) : (
+            <Alert variant="warning" title={SUPPORT_UNCONFIGURED_LABEL}>
+              平台尚未配置客服联系方式（环境变量{" "}
+              <code className="font-mono text-xs">SUPPORT_EMAIL / SUPPORT_WECHAT / SUPPORT_URL</code>
+              ），本页暂时无法给出可用的联系入口。你仍可先记录订单号（
+              <code className="font-mono text-xs">{order.id}</code>
+              ）与联系方式，待运营方在部署环境填好客服信息后回来联系我们。
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
       <div className="text-sm">
         <Link href="/account/orders" className="text-muted-foreground hover:underline">
           ← 返回我的订单
@@ -192,7 +251,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function InfoRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function InfoRow({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
       <span className="flex-none text-muted-foreground">{label}</span>

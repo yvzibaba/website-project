@@ -62,6 +62,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/about" className="hover:underline">
                 关于
               </Link>
+              {/* 决策1.5 P1：主 header 增加「我的订单」锚点，让买家从任何页面都能直达订单闭环。
+                  游客点击会走 /account/orders → 由该页 redirect 携 callbackUrl 回跳登录（决策1.5 回跳已修复）。
+                  保持 layout 同步渲染，不引 auth()，静态页 prerender 不受影响。 */}
+              <Link href="/account/orders" className="hover:underline">
+                我的订单
+              </Link>
               <Link href="/login" className="hover:underline">
                 登录
               </Link>

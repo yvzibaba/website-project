@@ -345,7 +345,7 @@ function SolutionBodySection({
             </Badge>
             <p className="text-sm text-muted-foreground">
               这是付费方案，完整 34 分节正文（研究→Bull→Bear→Judge→QA 产出、人工审核）在订单确认到账后解锁。
-              购买流程：下单 → 按支付说明完成站外付款 → 管理员确认 → 本页自动展示完整正文。
+              购买流程：下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 本页自动展示完整正文。
             </p>
             <LockedCta loginHref={loginHref} loggedIn={loggedIn} solutionId={solutionId} solutionTitle={solutionTitle} />
           </div>
@@ -461,7 +461,9 @@ function PurchaseAction({
       <Button variant="primary" size="lg" href={loginHref}>
         登录后可购买
       </Button>
-      <span className="text-[11px] text-muted-foreground">下单 → 支付说明 → 后台确认 → 解锁，需先登录。</span>
+      <span className="text-[11px] text-muted-foreground">
+        需先登录 → 下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 解锁。登录后会自动回到本方案页。
+      </span>
     </div>
   );
 }

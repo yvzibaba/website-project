@@ -55,3 +55,36 @@ export function getPaymentInfo(): PaymentInfo {
 
 /** 未配置时的统一占位文案（全站唯一口径，页面与单测都引用此常量，避免各处字符串漂移）。 */
 export const PAYMENT_UNCONFIGURED_LABEL = "人工付款信息待配置";
+
+/* ───────────────────── 客服联系入口（决策1.5：修付款页「请联系客服」死胡同） ───────────────────── */
+
+/**
+ * 客服联系入口（同样**运维显式配置才生效，绝不由代码虚构邮箱/微信/链接**）。
+ * 与 PAYMENT_* 一样：只在服务端 RSC 读取，不进 client bundle，`.env*` 被 gitignore。
+ */
+export interface SupportContact {
+  /** 客服邮箱（渲染为 mailto: 链接）。 */
+  email?: string;
+  /** 客服微信号 / 企业微信 / 微信名片文本。 */
+  wechat?: string;
+  /** 客服表单页 / 帮助中心 URL（必须绝对 https，前端渲染前再校一次协议）。 */
+  url?: string;
+  /** 任一非空即 true；全空 → 页面显 SUPPORT_UNCONFIGURED_LABEL，不虚构联系方式（§20）。 */
+  configured: boolean;
+}
+
+/** 读取当前环境的客服入口（每次现读，便于测试注入 process.env）。 */
+export function getSupportContact(): SupportContact {
+  const email = envTrim("SUPPORT_EMAIL");
+  const wechat = envTrim("SUPPORT_WECHAT");
+  const url = envTrim("SUPPORT_URL");
+  return {
+    ...(email ? { email } : {}),
+    ...(wechat ? { wechat } : {}),
+    ...(url ? { url } : {}),
+    configured: Boolean(email || wechat || url),
+  };
+}
+
+/** 客服入口未配置时的统一占位文案（全站唯一口径，页面与单测都引用此常量）。 */
+export const SUPPORT_UNCONFIGURED_LABEL = "客服联系信息待配置";

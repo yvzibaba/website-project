@@ -3,6 +3,28 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.57.1] - 2026-09-07 · 决策1.5 购买闭环可演示化（首批真实客户能走完 P0/P1·小改动·零迁移·不动财务/MODEL_VERSION/R8.8a·不接支付网关/回调）
+
+- 原因：v0.57.0 后，以陌生买家视角端到端读源码审计发现——代码链路虽通（134 集成测全绿）但真实用户走不完：**P0 三硬阻塞**（无 1 条 PUBLISHED+price>0 方案 / PAYMENT_* 未配 / 付款页「请联系客服」死胡同）；**P1 三伤转化**（`/login?callbackUrl=…` 被 `redirectTo:"/account"` 忽略，游客点登录后可购买→登录成功掉进 /account 找不到原方案；`/admin/orders` 里「支付说明页预览」直连 `/orders/[id]` 会因 owner 校验 404；主 header 无「我的订单」入口，买家回不来）。创始人批准本批只处理这 6 项 P0/P1，**不做**接支付/邮件通知/图片上传/融资模型/大重构。
+- 内容（**零迁移、不动 `Order` schema、不动 `confirmOrderPaid`/`hasPaidEntitlement`、不动 R8.8a/MODEL_VERSION**）：
+  - `src/lib/redirect-safety.ts`（新·纯函数·SECURITY）：`sanitizeCallbackUrl(raw, fallback)` 白名单**只放行** `/solutions*`、`/orders*`、`/account*` 三类站内路径；非字符串/空/纯空白/非 `/` 开头 /协议相对 `//evil` / `/\evil` /含 `:` 或 `@` 的 scheme-userinfo 注入 /控制字符 /非白名单前缀 → 一律回落 `LOGIN_FALLBACK="/account"`；`/admin/*` 与 `/login` 自身都拒。
+  - `src/lib/payment-info.ts`（扩）：新增 `getSupportContact()` 读非 `NEXT_PUBLIC` 服务端环境变量 `SUPPORT_EMAIL`/`SUPPORT_WECHAT`/`SUPPORT_URL`，同 `envTrim` 空串归一口径；`configured = Boolean(email||wechat||url)`；导出 `SUPPORT_UNCONFIGURED_LABEL="客服联系信息待配置"`。★§20 **绝不虚构邮箱/微信/链接**。
+  - `src/app/orders/[id]/page.tsx`（改）：PageHeader 描述改**5 步流程文案**「下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 解锁方案完整正文」；PAYMENT_UNCONFIGURED Alert 内文把「请联系客服」改为「请通过下方『客服入口』联系我们」并复述订单号；页底新增 `<Card>客服入口</Card>` 区——`support.configured` 时按 email→`mailto:` / wechat→纯文本 / url→**校 `https:` 才渲染 `<a target="_blank" rel="noopener noreferrer nofollow">`，非 https 只显纯文本**防注入；未配置时诚实显示 `SUPPORT_UNCONFIGURED_LABEL` Alert。`InfoRow.value` 类型放宽 `string→ReactNode` 以支持富链接（其余调用点仅字符串、行为不变）。
+  - `src/app/login/page.tsx`（改）：新增 `searchParams` 读，`cb = sanitizeCallbackUrl(sp.callbackUrl)`；已登录跳 `cb`（原硬编码 `/account` 保留为回落值）；`AuthForm` 加 `hiddenFields={{callbackUrl: cb}}`。
+  - `src/app/login/actions.ts`（改）：`formData.get("callbackUrl")` → `sanitizeCallbackUrl(raw)` **二次清洗** → 作 `signIn("credentials",{redirectTo})`；与页面共用同一函数、同一白名单，防两处漂移。
+  - `src/components/auth/AuthForm.tsx`（改）：新增 `hiddenFields?: Record<string,string>` prop，条件渲染 `<input type="hidden">`；`register` 分支未传即不渲染，行为零变化。
+  - `src/app/admin/orders/[id]/page.tsx`（新·STAFF-only 预览）：`requireRole(STAFF_ROLES)` **不通过则 return null**（与 `/admin/orders` 双层同口径，防 leaf-page RSC flight 泄露）→ `getOrderById(id)` 读快照；渲染 Badge（`deriveOrderDisplayState` 派生态含 `PROOF_SUBMITTED`）+ 金额快照 + 买家身份（userId/buyerEmail/buyerName/buyerType）+ `paymentProvider` + `paymentRef` 全文（供人工核对）+ 关联方案跳 `/admin/solutions/[id]`；**只读，无写动作**（确认/取消仍在列表行）；不放宽 `/orders/[id]` 的 owner 校验（买家页保持「非属主 404」）。
+  - `src/app/admin/orders/page.tsx`（改）：每行「支付说明页预览」链接 → 「订单详情预览」并改指 `/admin/orders/${o.id}`（原本对非买家 admin 恒 404 的死链修掉）。
+  - `src/app/solutions/[id]/page.tsx`（改）：锁面板文案 + 游客「登录后可购买」提示的**5 步流程**统一：`下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 解锁`，登录提示补一句「登录后会自动回到本方案页」。
+  - `src/components/solutions/BuyButton.tsx`（改）：小字辅助文案同步 5 步流程（原「下单后按支付说明完成站外付款，管理员确认到账即解锁…」缺「提交付款凭证」这一站）。
+  - `src/app/layout.tsx`（改）：主 header「关于」和「登录」之间加一条 `我的订单 → /account/orders`——保持 layout 同步渲染不引 `auth()`、静态 prerender 不受影响；游客点击时由 `/account/orders` 页现有 `redirect("/login?callbackUrl=%2Faccount%2Forders")` 走本批新回跳通道。
+  - `.env.example`（改）：在「过渡版人工收款说明」段之下新增「过渡版客服联系入口」段——`SUPPORT_EMAIL` / `SUPPORT_WECHAT` / `SUPPORT_URL` 三条注释占位、`§20` 不虚构说明、URL 前端 `https:` 协议自校提示。
+  - `docs/DEPLOY_SECURITY_RUNBOOK.md`（改）：附录 A 密钥清单**新增 SUPPORT_* 三槽一行**（⚙️🔑·未配则订单页客服卡显「待配置」·须创始人手工填真实可用·前端二次校 `https:` 防 `javascript:/data:` 混入·须与隐私政策一致）。
+  - `package.json` `0.57.0→0.57.1`、`src/app/api/health/route.ts` 兜底同步 `0.57.1`。
+- 验证：五道门全新复跑全绿——`tsc --noEmit` **0 错**；`eslint` **0 问题**；单元 **821→836**（新 `tests/unit/redirect-safety.test.ts` **9 例**·白名单三类站内路径放行 + 绝对 URL/协议相对/反斜杠 host/scheme-userinfo/非白名单/空非字符串/控制字符/trim/自定义 fallback/常量稳定；`tests/unit/payment-info.test.ts` 6→**12 例**·新增 `getSupportContact` 6 例·全空未配·任一非空即配·三槽组合原样透出·空串/纯空白归一·**客服与收款两组 env 互不干扰**·占位文案常量稳定）；集成 **134 保持**（本批无新增 DB 交互路径，`/admin/orders/[id]` 是 RSC 页非 API；`orders.test.ts` 已覆盖 CSRF+owner+`confirmOrderPaid`+`hasPaidEntitlement`，旧断言零削弱）；`next build` **0 错**、路由清单新增 `ƒ /admin/orders/[id]` 一条动态端点。全量旧测（R1–R7 沙盘 + R8.1–R8.8a + 购买闭环 + SEO + 财务/评分黄金样本）**零回归**。
+- 效果：陌生买家从「找不到可买方案 → 详情页点立即购买 → 登录 → **回到原方案** → 创建订单 → **看到付款说明+客服入口** → 提交凭证 → **PROOF_SUBMITTED** 徽章 → 后台点确认 → PAID → 完整正文」的每一步都**在有 PAYMENT_*/SUPPORT_* env + 至少 1 条 PUBLISHED+price>0 方案时**可独立完成；主 header「我的订单」让买家从任意页回到订单闭环。**开放重定向被白名单挡死**、**admin 预览不放宽 owner 校验**、**未付款仍被 hasPaidEntitlement 阻止解锁**、**不同用户不可查看他人订单**、**重复 confirmPaid 幂等**——所有原安全/审计断言保持不变。
+- ⚠️ **仍属人工执行、本批未代做（诚实清单）**：① 数据库当前**0 条 PUBLISHED+price>0 方案**，须创始人经 `/admin/solutions` 手工 `NewSolutionForm → 编辑财务/未知变量 → PublishSolutionButton` 建**至少 1 条**真实可售方案（§20 **不虚构方案/价格**，本批**未种子**）；② 部署环境须**手工填入**`PAYEE_NAME`/`PAYMENT_ACCOUNT`/`PAYMENT_INSTRUCTION` 三选一以上 + 至少 1 项 `SUPPORT_*`，未配前付款页与客服卡均落占位（**绝不代码硬编**）；③ 公开收款前须法务终稿 + 同意留痕 + 免责声明页（Runbook §6·决策3 范畴，本批不越界）。
+
 ## [0.57.0] - 2026-09-07 · 决策1 过渡版真实购买路径（Phase 12 M4·补上「买家提交付款凭证」中间环·零 schema 迁移·不接任何支付网关/回调·复用既有 confirmPaid/解锁·不改财务内核/MODEL_VERSION/沙盘参数模型）
 
 - 原因：创始人批准总执行序第二项「第一笔真实付费」，并明确本次为**过渡版**——打通「方案详情→立即购买→创建订单→显示人工付款方式→买家提交付款凭证/订单信息→后台人工确认已付款→复用现有 `confirmOrderPaid`→自动解锁 Solution 权益」这条**可跑通真实首单**的闭环，但**严禁**接第三方支付网关/微信支付宝 API/自动回调、严禁改财务模型口径/`MODEL_VERSION`/R8.8a 参数模型/仿真/新增行业或 Agent、**严禁真正公开生产部署、严禁激活 CI、严禁改无关页面**。经 READ 确认：Phase 12 已把下单→订单页→后台确认→解锁整链建好，真实缺口只有「可配置收款信息 + 买家提交凭证这一步 + 派生『已提交凭证』态 + 后台回显」，故本批**不重写订单系统、只做窄加**。

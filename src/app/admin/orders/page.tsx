@@ -140,8 +140,8 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                     </div>
                   ) : null}
                   <div className="text-[11px] text-muted-foreground">
-                    <Link href={`/orders/${o.id}`} className="underline">
-                      支付说明页预览
+                    <Link href={`/admin/orders/${o.id}`} className="underline">
+                      订单详情预览
                     </Link>
                     {" · "}
                     <code className="font-mono">{o.id}</code>

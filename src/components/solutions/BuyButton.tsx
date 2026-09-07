@@ -93,7 +93,7 @@ export function BuyButton({ solutionId, solutionTitle }: BuyButtonProps) {
         </div>
       ) : (
         <span className="text-[11px] text-muted-foreground">
-          下单后按支付说明完成站外付款，管理员确认到账即解锁《{solutionTitle.slice(0, 16)}…》完整正文。
+          下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 解锁《{solutionTitle.slice(0, 16)}…》完整正文。
         </span>
       )}
     </div>

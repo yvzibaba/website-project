@@ -170,6 +170,7 @@ git grep -nE 'sk-[a-z0-9]{20,}' -- ':!*.example' ':!docs' || echo "no plaintext 
 | `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` / `S3_ENDPOINT` / `S3_REGION` / `S3_BUCKET` | 🔑 预留 | **未配**（未启用对象存储） | 企业文件/PDF 导出凭证 | 启用时走 secret；当前代码路径不依赖 |
 | `STRIPE_SECRET_KEY` / `ALIPAY_APP_ID` / `WECHATPAY_MCHID` | 🔑 预留 | **未配**（未接支付网关） | 支付通道凭证 | 属**决策1**「真支付」阶段才启用；过渡版（人工确认收款）不需要任何支付密钥 |
 | `PAYEE_NAME` / `PAYMENT_ACCOUNT` / `PAYMENT_INSTRUCTION` / `PAYMENT_NOTE` | ⚙️🔑 过渡版收款说明 | **未配**（订单页显示「人工付款信息待配置」） | 创始人手工填入**真实、可核验**的收款主体/账号/步骤 | **决策1** 过渡版人工收款：仅服务端读取（无 `NEXT_PUBLIC` 前缀），由 `src/lib/payment-info.ts` 渲染；★§20 **绝不虚构账户/二维码/价格**，全缺即回退占位；公开收款前须法务终稿 + 同意留痕（§6），账号虽对用户展示但仍属敏感、勿入前端 bundle/日志 |
+| `SUPPORT_EMAIL` / `SUPPORT_WECHAT` / `SUPPORT_URL` | ⚙️🔑 过渡版客服入口 | **未配**（订单页「客服入口」卡显示「客服联系信息待配置」） | 创始人手工填入**真实、可用**的客服邮箱 / 微信号 / 帮助中心 URL（SUPPORT_URL 前端渲染时再校 `https:`，非 https 只显纯文本） | **决策1.5** 修付款页「请联系客服」死胡同：仅服务端读取（无 `NEXT_PUBLIC` 前缀），由 `src/lib/payment-info.ts::getSupportContact()` 渲染；★§20 **绝不虚构邮箱/微信/链接**，全缺即回退占位；SUPPORT_URL 若走第三方表单/工单系统，须与隐私政策一致（§6） |
 | `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET`（及未来 OAuth） | 🔑 预留 | **未配**（V1 未启用第三方登录） | OAuth 应用凭证 | 启用时走 secret |
 
 红线（SECURITY.md / 宪法 §20）：所有 🔑 只经环境变量注入，**绝不**写进代码、前端 bundle、日志、Git 或错误信息；日志对密钥仅记长度/掩码；`.env*` 已被 `.gitignore` 屏蔽（仅放行 `.env.example`），本清单中的尾号仅作人工核对用、非完整值。

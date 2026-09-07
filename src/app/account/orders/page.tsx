@@ -3,8 +3,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container, Card, CardContent, Badge, Alert, Button } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
-import { listOrdersForBuyer, type OrderView } from "@/server/orders";
+import { listOrdersForBuyer } from "@/server/orders";
 import { getCurrentUser } from "@/server/authz";
+import { deriveOrderDisplayState, ORDER_STATE_LABEL, ORDER_STATE_VARIANT } from "@/lib/order-status";
 
 /**
  * /account/orders — 我的订单（Phase 12 M3，购买闭环买家侧汇聚点，RSC）。
@@ -21,19 +22,6 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "我的订单",
   robots: { index: false, follow: false },
-};
-
-const STATUS_LABEL: Record<OrderView["status"], string> = {
-  PENDING: "待支付",
-  PAID: "已支付",
-  REFUNDED: "已退款",
-  CANCELED: "已取消",
-};
-const STATUS_VARIANT: Record<OrderView["status"], "warning" | "success" | "neutral"> = {
-  PENDING: "warning",
-  PAID: "success",
-  REFUNDED: "neutral",
-  CANCELED: "neutral",
 };
 
 function fmtDate(d: Date): string {
@@ -73,13 +61,15 @@ export default async function MyOrdersPage() {
         </Alert>
       ) : (
         <section className="flex flex-col gap-3">
-          {orders.map((o) => (
+          {orders.map((o) => {
+            const ds = deriveOrderDisplayState(o.status, o.paymentRef);
+            return (
             <Card key={o.id}>
               <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">{o.solutionTitle ?? "方案"}</span>
-                    <Badge variant={STATUS_VARIANT[o.status]}>{STATUS_LABEL[o.status]}</Badge>
+                    <Badge variant={ORDER_STATE_VARIANT[ds]}>{ORDER_STATE_LABEL[ds]}</Badge>
                   </div>
                   <span className="text-xs text-muted-foreground tabular-nums">
                     {o.amountDisplay} · 下单 {fmtDate(o.createdAt)} · <code className="font-mono">{o.id.slice(0, 8)}…</code>
@@ -92,12 +82,13 @@ export default async function MyOrdersPage() {
                     </Button>
                   ) : null}
                   <Button variant={o.status === "PENDING" ? "primary" : "secondary"} size="sm" href={`/orders/${o.id}`}>
-                    {o.status === "PENDING" ? "去支付" : "订单详情"}
+                    {o.status === "PENDING" ? (ds === "PROOF_SUBMITTED" ? "查看/更新凭证" : "去支付") : "订单详情"}
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </section>
       )}
     </Container>

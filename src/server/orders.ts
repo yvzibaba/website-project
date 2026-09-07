@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { Prisma, type ChangeAction, type Order } from "@prisma/client";
 import { CuidSchema, EmailSchema, BuyerTypeSchema } from "@/lib/validation";
+import { deriveOrderDisplayState } from "@/lib/order-status";
 
 /**
  * 订单数据层（Phase 12 M1，server-only）——「用户查看 → 购买 → 后台确认 → 解锁」闭环的可信底座。
@@ -45,6 +46,20 @@ export const OrderCreateSchema = z
   });
 export type OrderCreateInput = z.infer<typeof OrderCreateSchema>;
 
+/**
+ * 买家提交付款凭证（Phase 12 M4 过渡版）入参。只收一个自填的「付款凭证/交易流水摘要」文本——
+ * 例如「工商银行 尾号1234 于 09-07 转账 1999 元」或转账回执编号。**绝不接受金额/状态**：
+ * 订单金额早已由服务端快照锁定，凭证仅是给人工核对的线索，不改变任何财务事实。
+ */
+export const PaymentProofSchema = z.object({
+  paymentRef: z
+    .string()
+    .trim()
+    .min(1, "请填写付款凭证或交易流水信息")
+    .max(200, "凭证信息过长（限 200 字）"),
+});
+export type PaymentProofInput = z.infer<typeof PaymentProofSchema>;
+
 /* ─────────────────────────── 视图 / 结果类型 ─────────────────────────── */
 
 export interface OrderView {
@@ -60,6 +75,12 @@ export interface OrderView {
   buyerEmail: string | null;
   buyerName: string | null;
   userId: string | null;
+  /** 收款渠道标记（V1 人工提交凭证时写 "manual"；第三方网关留后）。 */
+  paymentProvider: string | null;
+  /** 买家自填的付款凭证/交易流水摘要（人工核对线索；不改变金额/状态等财务事实）。 */
+  paymentRef: string | null;
+  /** 派生展示标志：status=PENDING 且已回填非空 paymentRef → true（「已提交付款凭证」）。纯展示，不参与解锁判定。 */
+  proofSubmitted: boolean;
   paidAt: Date | null;
   createdAt: Date;
   version: number;
@@ -145,6 +166,8 @@ function toView(o: {
   buyerEmail: string | null;
   buyerName: string | null;
   userId: string | null;
+  paymentProvider: string | null;
+  paymentRef: string | null;
   paidAt: Date | null;
   createdAt: Date;
   version: number;
@@ -163,6 +186,10 @@ function toView(o: {
     buyerEmail: o.buyerEmail,
     buyerName: o.buyerName,
     userId: o.userId,
+    paymentProvider: o.paymentProvider,
+    paymentRef: o.paymentRef,
+    // 派生「已提交凭证」展示标志：统一走 order-status 的唯一口径，杜绝三页各自 if 漂移（宪法第 16 条）。
+    proofSubmitted: deriveOrderDisplayState(o.status, o.paymentRef) === "PROOF_SUBMITTED",
     paidAt: o.paidAt,
     createdAt: o.createdAt,
     version: o.version,
@@ -325,6 +352,77 @@ export async function cancelOrder(orderId: string, actor?: string): Promise<Orde
     if (mapped) return { ...mapped, orderId };
     const message = err instanceof Error ? err.message : String(err);
     log.error("cancelOrder failed", { error: message, orderId });
+    return { status: "error", orderId, error: message };
+  }
+}
+
+/* ─────────────────────────── 买家提交付款凭证（过渡版人工闭环） ─────────────────────────── */
+
+/**
+ * 买家提交付款凭证（Phase 12 M4，过渡版「站外转账 + 人工确认」闭环的中间步）。
+ *
+ * 语义：买家按订单页的收款说明完成线下/站外转账后，把「交易流水/凭证摘要」回填到订单，
+ * 让后台核账人员知道「这一单已有人声称付过、可去对账」。**这只是登记线索，不是收款事实**：
+ *   - status 仍为 PENDING（解锁只由后台 confirmPaid 触发，见 hasPaidEntitlement 只数 PAID）；
+ *   - 金额、币种、方案归属一律不动（本函数无任何写金额的入参，防篡改）；
+ *   - 复用闲置的 Order.paymentProvider（写 "manual"）+ paymentRef（存凭证摘要）——**零 schema 迁移**。
+ *
+ * 状态机：仅 PENDING 可提交/更新凭证（重复提交 = 覆盖刷新 paymentRef，状态不变，不产生新单）；
+ * PAID/REFUNDED/CANCELED 为终态，返回 blocked（已付款再提交无意义、已取消不可提交）。
+ * 本模块**不做属主/鉴权**——由上层路由（requireSameOriginActor + 属主核对）保证「谁在提交」；actor 仅写审计。
+ */
+export async function submitPaymentProof(
+  orderId: string,
+  input: unknown,
+  actor?: string,
+): Promise<OrderMutationResult> {
+  const idParsed = CuidSchema.safeParse(orderId);
+  if (!idParsed.success) return { status: "not_found", orderId };
+
+  const parsed = PaymentProofSchema.safeParse(input);
+  if (!parsed.success) return { status: "invalid", orderId, fieldErrors: toFieldErrors(parsed.error) };
+  const paymentRef = parsed.data.paymentRef;
+
+  const existing = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { solution: { select: { title: true } } },
+  });
+  if (!existing) return { status: "not_found", orderId };
+  if (existing.status !== "PENDING") {
+    return {
+      status: "blocked",
+      orderId,
+      fieldErrors: { status: [`订单当前为 ${existing.status}，无需或无法提交付款凭证`] },
+    };
+  }
+
+  try {
+    const updated = await prisma.$transaction(async (tx) => {
+      const o = await tx.order.update({
+        where: { id: orderId },
+        // 只写渠道标记 + 凭证摘要 + 版本自增；status/amount/currency 一概不碰。
+        data: { paymentProvider: "manual", paymentRef, version: { increment: 1 } },
+        include: { solution: { select: { title: true } } },
+      });
+      await tx.changeLog.create({
+        data: changeLogArgs(
+          orderId,
+          "UPDATE",
+          actor,
+          "买家提交付款凭证（PENDING 待人工确认，不改变状态/金额）",
+          { paymentRef: existing.paymentRef, status: "PENDING" },
+          { paymentRef, provider: "manual", status: "PENDING" },
+        ),
+      });
+      return o;
+    });
+    log.info("payment proof submitted", { orderId, actor: actor ?? null });
+    return { status: "ok", orderId, order: toView(updated) };
+  } catch (err) {
+    const mapped = mapPrismaWriteError(err);
+    if (mapped) return { ...mapped, orderId };
+    const message = err instanceof Error ? err.message : String(err);
+    log.error("submitPaymentProof failed", { error: message, orderId });
     return { status: "error", orderId, error: message };
   }
 }

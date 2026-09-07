@@ -3,8 +3,11 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Container, Card, CardContent, CardHeader, CardTitle, CardDescription, Badge, Alert, Button, Separator } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
+import { SubmitPaymentProofForm } from "@/components/orders/SubmitPaymentProofForm";
 import { getOrderById, type OrderView } from "@/server/orders";
 import { getCurrentUser } from "@/server/authz";
+import { deriveOrderDisplayState, ORDER_STATE_LABEL, ORDER_STATE_VARIANT } from "@/lib/order-status";
+import { getPaymentInfo, PAYMENT_UNCONFIGURED_LABEL } from "@/lib/payment-info";
 
 /**
  * /orders/[id] — 订单支付说明页（Phase 12 M3，购买闭环第二站，RSC）。
@@ -29,19 +32,6 @@ export const metadata: Metadata = {
 interface PageProps {
   params: Promise<{ id: string }>;
 }
-
-const STATUS_LABEL: Record<OrderView["status"], string> = {
-  PENDING: "待支付",
-  PAID: "已支付",
-  REFUNDED: "已退款",
-  CANCELED: "已取消",
-};
-const STATUS_VARIANT: Record<OrderView["status"], "warning" | "success" | "neutral"> = {
-  PENDING: "warning",
-  PAID: "success",
-  REFUNDED: "neutral",
-  CANCELED: "neutral",
-};
 
 function fmtDateTime(d: Date | null): string {
   if (!d) return "—";
@@ -81,6 +71,10 @@ export default async function OrderPaymentPage({ params }: PageProps) {
   if (!isOwner(order, user)) notFound();
 
   const paid = order.status === "PAID";
+  // 派生展示态（含「已提交付款凭证」），三处页共用同一映射，不在此各写 if。
+  const displayState = deriveOrderDisplayState(order.status, order.paymentRef);
+  // 人工收款信息：只透出运维在部署环境显式配置的 PAYMENT_*；未配置则页面显示占位，绝不虚构账户（宪法第 20 条）。
+  const payment = getPaymentInfo();
 
   return (
     <Container size="md" className="py-10 flex flex-col gap-6">
@@ -96,7 +90,7 @@ export default async function OrderPaymentPage({ params }: PageProps) {
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <CardTitle className="text-base">{order.solutionTitle ?? "方案"}</CardTitle>
-            <Badge variant={STATUS_VARIANT[order.status]}>{STATUS_LABEL[order.status]}</Badge>
+            <Badge variant={ORDER_STATE_VARIANT[displayState]}>{ORDER_STATE_LABEL[displayState]}</Badge>
           </div>
           <CardDescription className="font-mono text-xs">订单号 {order.id}</CardDescription>
         </CardHeader>
@@ -125,33 +119,56 @@ export default async function OrderPaymentPage({ params }: PageProps) {
             </div>
           ) : null}
         </>
-      ) : order.status === "CANCELED" ? (
-        <Alert variant="info" title="订单已取消">
-          该订单已取消，如仍需此方案可返回详情页重新下单。
+      ) : order.status === "CANCELED" || order.status === "REFUNDED" ? (
+        <Alert variant="info" title={order.status === "CANCELED" ? "订单已取消" : "订单已退款"}>
+          {order.status === "CANCELED"
+            ? "该订单已取消，如仍需此方案可返回详情页重新下单。"
+            : "该订单已退款。如仍需此方案，可返回详情页重新下单。"}
         </Alert>
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">如何完成支付（V1 站外收款）</CardTitle>
+            <CardTitle className="text-base">如何完成付款（人工收款）</CardTitle>
             <CardDescription>
-              当前版本未接入在线支付网关（见开发路线图），采用「线下/站外转账 + 后台人工确认」的最简闭环。
+              当前版本未接入在线支付网关（见开发路线图），采用「站外转账 + 后台人工确认」的最简闭环。请按下方说明付款，并回填付款凭证以便核对。
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
-            <ol className="flex flex-col gap-2">
-              <Step n={1}>
-                按应付金额 <strong>{order.amountDisplay}</strong> 汇款至平台对公/收款账户（联系方式见页面底部或站内公告）。
-              </Step>
-              <Step n={2}>
-                汇款备注请写明<strong>订单号</strong>（<code className="font-mono text-xs">{order.id}</code>）或本单联系邮箱，以便财务对账。
-              </Step>
-              <Step n={3}>
-                工作人员核到账后在后台把订单确认为「已支付」，<strong>本页与方案正文将自动解锁</strong>，无需你再次操作。
-              </Step>
-            </ol>
+          <CardContent className="flex flex-col gap-4 text-sm">
+            {payment.configured ? (
+              <div className="flex flex-col gap-2 rounded-md border border-border bg-muted/30 p-3">
+                {payment.payeeName ? <InfoRow label="收款人" value={payment.payeeName} /> : null}
+                {payment.account ? <InfoRow label="收款账户" value={payment.account} mono /> : null}
+                {payment.instruction ? (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-muted-foreground">付款说明</span>
+                    <p className="whitespace-pre-line text-foreground">{payment.instruction}</p>
+                  </div>
+                ) : null}
+                {payment.note ? <p className="whitespace-pre-line text-xs text-muted-foreground">{payment.note}</p> : null}
+              </div>
+            ) : (
+              <Alert variant="warning" title={PAYMENT_UNCONFIGURED_LABEL}>
+                平台尚未配置收款账户信息（环境变量 <code className="font-mono text-xs">PAYMENT_*</code>），暂时无法给出具体转账指引。
+                请联系客服，或待配置完成后回来按说明付款。你仍应先记录本单订单号以便对账。
+              </Alert>
+            )}
+
+            {displayState === "PROOF_SUBMITTED" ? (
+              <Alert variant="info" title="已提交付款凭证，等待核对">
+                你已提交如下凭证，工作人员核对到账后会自动确认并解锁正文，无需重复操作；如信息有误可在下方更新：
+                <span className="mt-1 block whitespace-pre-line rounded bg-muted px-2 py-1 font-mono text-xs">
+                  {order.paymentRef}
+                </span>
+              </Alert>
+            ) : null}
+
             <Separator />
+            <SubmitPaymentProofForm orderId={order.id} status={order.status} initialPaymentRef={order.paymentRef} />
+
             <p className="text-xs text-muted-foreground">
-              如长时间未解锁，请携带订单号联系客服核对。付款前请再次确认收款账户信息以防范诈骗。
+              应付金额 <strong>{order.amountDisplay}</strong>；汇款备注请写明<strong>订单号</strong>（
+              <code className="font-mono text-xs">{order.id}</code>）以便财务对账。提交凭证仅代表你已付款，实际到账与正文解锁
+              以工作人员核对确认为准。付款前请再次核实收款账户信息以防范诈骗。
             </p>
           </CardContent>
         </Card>
@@ -175,13 +192,11 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function Step({ n, children }: { n: number; children: React.ReactNode }) {
+function InfoRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <li className="flex gap-3">
-      <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums">
-        {n}
-      </span>
-      <span className="text-foreground">{children}</span>
-    </li>
+    <div className="flex items-baseline justify-between gap-4">
+      <span className="flex-none text-muted-foreground">{label}</span>
+      <span className={"text-right break-all " + (mono ? "font-mono" : "")}>{value}</span>
+    </div>
   );
 }

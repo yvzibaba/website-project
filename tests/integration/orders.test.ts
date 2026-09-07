@@ -4,6 +4,7 @@ import {
   createOrder,
   confirmOrderPaid,
   cancelOrder,
+  submitPaymentProof,
   getOrderById,
   listOrdersForBuyer,
   listOrdersForAdmin,
@@ -197,5 +198,77 @@ describeDb("order data layer (Neon)", () => {
     expect(one.status).toBe("found");
     const missing = await getOrderById("c".repeat(24));
     expect(missing.status).toBe("not_found");
+  });
+
+  // ───────────────── Phase 12 M4：买家提交付款凭证（零迁移，复用 paymentProvider/paymentRef） ─────────────────
+  it("submitPaymentProof：PENDING 回填凭证→paymentProvider=manual、paymentRef 落库、status 仍 PENDING、proofSubmitted=true、UPDATE 审计+版本自增", async () => {
+    const made = await createOrder({ solutionId, buyerEmail: `proof-${runId}@example.com` } as never);
+    track(made.orderId);
+    expect(made.order?.paymentRef).toBeNull();
+    expect(made.order?.proofSubmitted).toBe(false);
+
+    const res = await submitPaymentProof(made.orderId!, { paymentRef: "工行尾号1234 于 09-07 转账 ¥1999" }, "human:buyer");
+    expect(res.status).toBe("ok");
+    expect(res.order?.status).toBe("PENDING"); // 提交凭证绝不改状态
+    expect(res.order?.paymentProvider).toBe("manual");
+    expect(res.order?.paymentRef).toBe("工行尾号1234 于 09-07 转账 ¥1999");
+    expect(res.order?.proofSubmitted).toBe(true);
+    expect(res.order?.amount).toBe("1999.00"); // 金额纹丝不动
+    expect(res.order?.version).toBe(2);
+    expect(await countChanges(made.orderId!, "UPDATE")).toBe(1);
+  });
+
+  it("submitPaymentProof 入参校验：空/纯空白凭证 → invalid", async () => {
+    const made = await createOrder({ solutionId, buyerEmail: `proof-empty-${runId}@example.com` } as never);
+    track(made.orderId);
+    const blank = await submitPaymentProof(made.orderId!, { paymentRef: "   " });
+    expect(blank.status).toBe("invalid");
+    expect(blank.fieldErrors?.paymentRef).toBeDefined();
+    // 空提交不应把订单标成已提交
+    const after = await getOrderById(made.orderId!);
+    expect(after.data?.proofSubmitted).toBe(false);
+  });
+
+  it("重复提交凭证：覆盖刷新 paymentRef、仍 PENDING、不产生新单（幂等刷新，非报错）", async () => {
+    const made = await createOrder({ solutionId, buyerEmail: `proof-dup-${runId}@example.com` } as never);
+    track(made.orderId);
+    await submitPaymentProof(made.orderId!, { paymentRef: "第一版凭证" });
+    const second = await submitPaymentProof(made.orderId!, { paymentRef: "更正后的凭证" });
+    expect(second.status).toBe("ok");
+    expect(second.order?.paymentRef).toBe("更正后的凭证");
+    expect(second.order?.status).toBe("PENDING");
+    const rows = await prisma.order.count({ where: { solutionId, buyerEmail: `proof-dup-${runId}@example.com` } });
+    expect(rows).toBe(1);
+  });
+
+  it("提交凭证 ≠ 解锁：仅提交凭证 hasPaidEntitlement 仍 false；后台 confirm 后才 true（PAID）", async () => {
+    const email = `proof-unlock-${runId}@example.com`;
+    const made = await createOrder({ solutionId, buyerEmail: email } as never);
+    track(made.orderId);
+    await submitPaymentProof(made.orderId!, { paymentRef: "已转账，请核对" });
+    expect(await hasPaidEntitlement(solutionId, { email })).toBe(false); // 凭证不解锁
+    const confirmed = await confirmOrderPaid(made.orderId!, "human:admin");
+    expect(confirmed.status).toBe("ok");
+    expect(confirmed.order?.status).toBe("PAID");
+    expect(await hasPaidEntitlement(solutionId, { email })).toBe(true); // 确认后才解锁
+  });
+
+  it("终态不可提交凭证：PAID / CANCELED → blocked", async () => {
+    const paid = await createOrder({ solutionId, buyerEmail: `proof-paid-${runId}@example.com` } as never);
+    track(paid.orderId);
+    await confirmOrderPaid(paid.orderId!, "human:admin");
+    const onPaid = await submitPaymentProof(paid.orderId!, { paymentRef: "已付款" });
+    expect(onPaid.status).toBe("blocked");
+
+    const canceled = await createOrder({ solutionId, buyerEmail: `proof-cx-${runId}@example.com` } as never);
+    track(canceled.orderId);
+    await cancelOrder(canceled.orderId!, "human:admin");
+    const onCanceled = await submitPaymentProof(canceled.orderId!, { paymentRef: "随便写" });
+    expect(onCanceled.status).toBe("blocked");
+  });
+
+  it("不存在订单提交凭证 → not_found", async () => {
+    const res = await submitPaymentProof("c".repeat(24), { paymentRef: "x" });
+    expect(res.status).toBe("not_found");
   });
 });

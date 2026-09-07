@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page";
 import { AdminOrderActions } from "@/components/admin/AdminOrderActions";
 import { listOrdersForAdmin, type OrderView } from "@/server/orders";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
+import { deriveOrderDisplayState, ORDER_STATE_LABEL, ORDER_STATE_VARIANT } from "@/lib/order-status";
 
 /**
  * /admin/orders — 订单管理（Phase 12 M3，购买闭环的后台确认台，RSC）。
@@ -26,18 +27,9 @@ export const metadata: Metadata = {
 
 type OrderStatus = OrderView["status"];
 
-const STATUS_LABEL: Record<OrderStatus, string> = {
-  PENDING: "待支付",
-  PAID: "已支付",
-  REFUNDED: "已退款",
-  CANCELED: "已取消",
-};
-const STATUS_VARIANT: Record<OrderStatus, "warning" | "success" | "neutral"> = {
-  PENDING: "warning",
-  PAID: "success",
-  REFUNDED: "neutral",
-  CANCELED: "neutral",
-};
+// 过滤按 **DB 原始状态**（PENDING 涵盖「已提交凭证」子集——那是展示派生态，不是新的存储状态）。
+// 展示徽章则用 order-status 的派生态（含 PROOF_SUBMITTED），三处页共用同一映射（宪法第 16 条）。
+const VALID_DB_STATUSES: OrderStatus[] = ["PENDING", "PAID", "CANCELED", "REFUNDED"];
 const STATUS_FILTERS: (OrderStatus | "ALL")[] = ["ALL", "PENDING", "PAID", "CANCELED", "REFUNDED"];
 
 function first(v: string | string[] | undefined): string | undefined {
@@ -45,7 +37,7 @@ function first(v: string | string[] | undefined): string | undefined {
 }
 
 function asStatus(v: string | undefined): OrderStatus | undefined {
-  return v && v !== "ALL" && v in STATUS_LABEL ? (v as OrderStatus) : undefined;
+  return v && v !== "ALL" && VALID_DB_STATUSES.includes(v as OrderStatus) ? (v as OrderStatus) : undefined;
 }
 
 function fmtDateTime(d: Date | null): string {
@@ -106,7 +98,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                 (active ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:bg-muted")
               }
             >
-              {s === "ALL" ? "全部" : STATUS_LABEL[s]}
+              {s === "ALL" ? "全部" : ORDER_STATE_LABEL[s]}
             </Link>
           );
         })}
@@ -122,13 +114,15 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
         </Alert>
       ) : (
         <section className="flex flex-col gap-2">
-          {list.items.map((o) => (
+          {list.items.map((o) => {
+            const ds = deriveOrderDisplayState(o.status, o.paymentRef);
+            return (
             <Card key={o.id}>
               <CardContent className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">{o.solutionTitle ?? "方案"}</span>
-                    <Badge variant={STATUS_VARIANT[o.status]}>{STATUS_LABEL[o.status]}</Badge>
+                    <Badge variant={ORDER_STATE_VARIANT[ds]}>{ORDER_STATE_LABEL[ds]}</Badge>
                     <span className="text-sm font-semibold tabular-nums">{o.amountDisplay}</span>
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground tabular-nums">
@@ -139,6 +133,12 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                     {o.paidAt ? <span>支付 {fmtDateTime(o.paidAt)}</span> : null}
                     <span>v{o.version}</span>
                   </div>
+                  {ds === "PROOF_SUBMITTED" && o.paymentRef ? (
+                    <div className="mt-1 rounded border border-border bg-muted px-2 py-1 text-xs">
+                      <span className="font-medium">买家已提交付款凭证：</span>
+                      <span className="whitespace-pre-line">{o.paymentRef}</span>
+                    </div>
+                  ) : null}
                   <div className="text-[11px] text-muted-foreground">
                     <Link href={`/orders/${o.id}`} className="underline">
                       支付说明页预览
@@ -150,7 +150,8 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                 <AdminOrderActions orderId={o.id} status={o.status} />
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
 
           {/* 分页 */}
           <div className="mt-2 flex items-center justify-between text-sm">

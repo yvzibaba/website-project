@@ -13,6 +13,8 @@ import {
   regionFactsCalcRef,
   makeVerifiedFact,
   getRegionProvenance,
+  getRegionClauseFacts,
+  SHANXI_CLAUSE_FACTS,
   SHANXI_REGION_SOURCES,
   SHANXI_POLICY_SOURCES,
   NATIONAL_REGION_SOURCES,
@@ -21,6 +23,7 @@ import { getRegionPack } from "@/server/sandbox-regions";
 import { SANDBOX_PARAMS } from "@/server/sandbox-params";
 
 const knownKeys = new Set(SANDBOX_PARAMS.map((s) => s.key));
+const USABLE_HTTP_URL = /^https?:\/\/\S+$/;
 
 describe("sandbox-region-facts · 版本与契约", () => {
   it("版本语义化 + calcRef 溯源串", () => {
@@ -108,5 +111,78 @@ describe("sandbox-region-facts · getRegionProvenance（未知回落通用 · �
     const unknown = getRegionProvenance("no-such-province");
     expect(Object.keys(unknown.region ?? {})).toHaveLength(0);
     expect(unknown.policy ?? []).toHaveLength(0);
+  });
+});
+
+describe("阶段3A · 条款级 FACT 目录（SHANXI_CLAUSE_FACTS · 全部经 makeVerifiedFact 管道）", () => {
+  it("恰为 5 条（阶段2 高可信优先清单），id 唯一且钉桩", () => {
+    expect(SHANXI_CLAUSE_FACTS).toHaveLength(5);
+    const ids = SHANXI_CLAUSE_FACTS.map((f) => f.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).toEqual([
+      "shanxi-tou-2026-15",
+      "shanxi-tnd-4th-cycle",
+      "shanxi-charging-service-2023-134",
+      "shanxi-nev-truck-2026-52",
+      "shanxi-pv-resource-nmic",
+    ]);
+  });
+
+  it("每条 meta 均为非空 FACT：可点击 http(s) 原文 + 置信 [0,100] + asOf 时点 + sourceType（§20 诚实闸门）", () => {
+    for (const f of SHANXI_CLAUSE_FACTS) {
+      expect(f.meta).not.toBeNull();
+      const m = f.meta!;
+      expect(m.evidenceKind).toBe("FACT");
+      expect(typeof m.sourceUrl).toBe("string");
+      expect(USABLE_HTTP_URL.test(m.sourceUrl!)).toBe(true);
+      expect(typeof m.confidence).toBe("number");
+      expect(m.confidence!).toBeGreaterThanOrEqual(0);
+      expect(m.confidence!).toBeLessThanOrEqual(100);
+      expect(m.asOf ?? "").not.toBe("");
+      expect(m.sourceType ?? "").not.toBe("");
+    }
+  });
+
+  it("relatedKeys 非空且全部是 SANDBOX_PARAMS 已注册键（绝不含孤儿键）", () => {
+    for (const f of SHANXI_CLAUSE_FACTS) {
+      expect(f.relatedKeys.length).toBeGreaterThan(0);
+      for (const k of f.relatedKeys) expect(knownKeys.has(k)).toBe(true);
+    }
+  });
+
+  it("DATA_CONFLICT 原样保留（3 条冲突各带 key + 非空描述；禁折算的诚实口径写明）", () => {
+    const conflicts = SHANXI_CLAUSE_FACTS.filter((f) => f.dataConflict != null);
+    expect(conflicts.map((f) => f.id).sort()).toEqual([
+      "shanxi-pv-resource-nmic",
+      "shanxi-tnd-4th-cycle",
+      "shanxi-tou-2026-15",
+    ]);
+    for (const f of conflicts) {
+      expect(knownKeys.has(f.dataConflict!.key)).toBe(true);
+      expect(f.dataConflict!.description).toMatch(/DATA_CONFLICT/);
+      expect(f.dataConflict!.description.length).toBeGreaterThan(20);
+    }
+  });
+
+  it("getRegionClauseFacts：shanxi 返回同一目录；未知 id / 全国通用 → 空列表，永不裸抛", () => {
+    expect(getRegionClauseFacts("shanxi")).toBe(SHANXI_CLAUSE_FACTS);
+    expect(getRegionClauseFacts("national")).toHaveLength(0);
+    expect(getRegionClauseFacts("no-such-province")).toHaveLength(0);
+  });
+
+  it("★诚实护栏：条款升 FACT 后，逐值地区/政策来源仍必须全为 ASSUMPTION（条款≠数值，阶段3A 指令三）", () => {
+    const allMetas = [
+      ...Object.values(SHANXI_REGION_SOURCES),
+      ...SHANXI_POLICY_SOURCES.flatMap((m) => (m ? Object.values(m) : [])),
+    ];
+    for (const m of allMetas) {
+      expect(m.evidenceKind).toBe("ASSUMPTION");
+      expect(m.sourceUrl).toBeUndefined();
+    }
+    // 目录本身绝不给数值：条目结构里没有 value 字段可藏（类型级约束由编译器守，此处守运行时面）。
+    for (const f of SHANXI_CLAUSE_FACTS) {
+      expect(Object.keys(f)).not.toContain("value");
+      expect(Object.keys(f)).not.toContain("values");
+    }
   });
 });

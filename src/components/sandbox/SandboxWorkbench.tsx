@@ -58,6 +58,7 @@ import type { MetricCard, Tone } from "@/lib/sandbox-view";
 import { buildSandboxReport } from "@/lib/sandbox-report";
 import type { ChangedParamView } from "@/lib/sandbox-report";
 import { SandboxReportPanel } from "./SandboxReportPanel";
+import { SandboxRegionClauseFacts } from "./SandboxRegionClauseFacts";
 import { SandboxExplainPanel } from "./SandboxExplainPanel";
 import { SandboxSavePanel } from "./SandboxSavePanel";
 import { SandboxSolutionPanel } from "./SandboxSolutionPanel";
@@ -242,6 +243,8 @@ export function SandboxWorkbench() {
               {regionId !== DEFAULT_REGION_ID ? (
                 <p className="text-[11px] leading-tight text-zinc-500">{pack.summary}</p>
               ) : null}
+              {/* 阶段3A：已核实政策条款（FACT）展示条——条款≠数值，诚实边界随地区切换呈现 */}
+              <SandboxRegionClauseFacts regionId={regionId} />
             </div>
 
             {/* 选企业画像（R7 · §14 第 7 项：画像预设垫作参数起点、报告按侧重裁剪；用户仍可逐项覆写） */}

@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "purpose": "阶段3A 现实性回归：Small/Medium/Large 三组标准场景（固定时钟 2026-01-01，经 computeDemoScenario 纯函数链），锁定参数快照（userValues）+ 引擎版本 + calcRef + 关键经济结果；模型口径有意变化时须有意重录，不动历史黄金样本。",
+    "generatedAt": "2026-09-08",
+    "fixedNow": "2026-01-01T00:00:00.000Z",
+    "rounding": "金额 2 位小数；比率 6 位小数；不可得记 null。",
+    "reRecord": "npm 跑一次 scratch 生成器（见 tests/unit/sml-regen.test.ts 注释；该文件不入库），人工 diff 后提交。"
+  },
+  "scenarios": [
+    {
+      "id": "small",
+      "label": "小型车队（山西 · 20 车 · 光储初配）",
+      "state": {
+        "regionId": "shanxi",
+        "truckCount": 20,
+        "annualMileagePerTruck": 60000,
+        "energyPer100km": 120,
+        "pvCapacity": 200,
+        "storageEnergy": 200,
+        "chargerUnitPower": 240,
+        "elecPrice": 0.7
+      },
+      "touched": {
+        "truckCount": true,
+        "annualMileagePerTruck": true,
+        "energyPer100km": true,
+        "pvCapacity": true,
+        "storageEnergy": true,
+        "chargerUnitPower": true
+      },
+      "expect": {
+        "vmOk": true,
+        "calcOk": true,
+        "calcRef": "model@1.1.0",
+        "engineVersions": {
+          "model": "1.1.0",
+          "tech": "1.0.0",
+          "finance": "1.0.0",
+          "params": "tech@1.0.0",
+          "storage": "1.0.0"
+        },
+        "userValues": {
+          "project.trucksPerDay": 20,
+          "project.chargePerTruck": 205.7142857142857,
+          "project.pvCapacity": 200,
+          "project.storageEnergy": 200,
+          "project.storagePower": 100,
+          "project.chargerUnitPower": 240
+        },
+        "results": {
+          "npv": 1018842,
+          "irrOk": true,
+          "irr": 0.161913,
+          "roiOk": true,
+          "roi": 2.878213,
+          "simplePaybackYears": 5.76,
+          "discountedPaybackYears": 7.91,
+          "capexGross": 1920000,
+          "capexNet": 1728000,
+          "opexY1": 329400,
+          "revenueY1": 1429273,
+          "storageValueY1": 18073
+        }
+      }
+    },
+    {
+      "id": "medium",
+      "label": "中型车队（山西 · 60 车 · 光储标配）",
+      "state": {
+        "regionId": "shanxi",
+        "truckCount": 60,
+        "annualMileagePerTruck": 70000,
+        "energyPer100km": 125,
+        "pvCapacity": 1000,
+        "storageEnergy": 800,
+        "chargerUnitPower": 360,
+        "elecPrice": 0.7
+      },
+      "touched": {
+        "truckCount": true,
+        "annualMileagePerTruck": true,
+        "energyPer100km": true,
+        "pvCapacity": true,
+        "storageEnergy": true,
+        "chargerUnitPower": true
+      },
+      "expect": {
+        "vmOk": true,
+        "calcOk": true,
+        "calcRef": "model@1.1.0",
+        "engineVersions": {
+          "model": "1.1.0",
+          "tech": "1.0.0",
+          "finance": "1.0.0",
+          "params": "tech@1.0.0",
+          "storage": "1.0.0"
+        },
+        "userValues": {
+          "project.trucksPerDay": 60,
+          "project.chargePerTruck": 250,
+          "project.pvCapacity": 1000,
+          "project.storageEnergy": 800,
+          "project.storagePower": 400,
+          "project.chargerUnitPower": 360
+        },
+        "results": {
+          "npv": 11984997,
+          "irrOk": true,
+          "irr": 0.35175,
+          "roiOk": true,
+          "roi": 5.823843,
+          "simplePaybackYears": 2.9,
+          "discountedPaybackYears": 3.43,
+          "capexGross": 5980000,
+          "capexNet": 5382000,
+          "opexY1": 348600,
+          "revenueY1": 5217291,
+          "storageValueY1": 72291
+        }
+      }
+    },
+    {
+      "id": "large",
+      "label": "大型车队（全国通用 · 150 车 · 谈判电价）",
+      "state": {
+        "regionId": "national",
+        "truckCount": 150,
+        "annualMileagePerTruck": 80000,
+        "energyPer100km": 140,
+        "pvCapacity": 3000,
+        "storageEnergy": 2500,
+        "chargerUnitPower": 480,
+        "elecPrice": 0.55
+      },
+      "touched": {
+        "truckCount": true,
+        "annualMileagePerTruck": true,
+        "energyPer100km": true,
+        "pvCapacity": true,
+        "storageEnergy": true,
+        "chargerUnitPower": true,
+        "elecPrice": true
+      },
+      "expect": {
+        "vmOk": true,
+        "calcOk": true,
+        "calcRef": "model@1.1.0",
+        "engineVersions": {
+          "model": "1.1.0",
+          "tech": "1.0.0",
+          "finance": "1.0.0",
+          "params": "tech@1.0.0",
+          "storage": "1.0.0"
+        },
+        "userValues": {
+          "project.trucksPerDay": 150,
+          "project.chargePerTruck": 320,
+          "project.pvCapacity": 3000,
+          "project.storageEnergy": 2500,
+          "project.storagePower": 1250,
+          "project.chargerUnitPower": 480,
+          "region.elecPrice": 0.55
+        },
+        "results": {
+          "npv": 39108348,
+          "irrOk": true,
+          "irr": 0.394987,
+          "roiOk": true,
+          "roi": 6.545009,
+          "simplePaybackYears": 2.59,
+          "discountedPaybackYears": 3.01,
+          "capexGross": 15670000,
+          "capexNet": 14886500,
+          "opexY1": 399000,
+          "revenueY1": 16146136,
+          "storageValueY1": 186136
+        }
+      }
+    }
+  ]
+}

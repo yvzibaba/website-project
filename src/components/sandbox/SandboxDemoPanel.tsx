@@ -38,6 +38,7 @@ import type { Tone } from "@/lib/sandbox-view";
 import type { MetricCard } from "@/lib/sandbox-view";
 import { formatMoney } from "@/lib/sandbox-view";
 import { SandboxReportPanel } from "./SandboxReportPanel";
+import { SandboxRegionClauseFacts } from "./SandboxRegionClauseFacts";
 import { SandboxSavePanel } from "./SandboxSavePanel";
 import {
   BreakdownBar,
@@ -197,6 +198,8 @@ export function SandboxDemoPanel({ onOpenFull }: { onOpenFull?: () => void }) {
               {state.regionId !== DEFAULT_REGION_ID ? (
                 <p className="text-[11px] leading-tight text-zinc-500">{pack.summary}</p>
               ) : null}
+              {/* 阶段3A：已核实政策条款（FACT）展示条——条款≠数值，诚实边界随地区切换呈现 */}
+              <SandboxRegionClauseFacts regionId={state.regionId} />
             </div>
 
             <div className="flex items-center justify-between">

@@ -3,6 +3,19 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.63.0] - 2026-09-08 · 阶段3A「真实用户验证准备」：条款级 FACT 激活 + S/M/L 现实性回归 + 用户验证清单（**纯加性·经济口径零改动**·SANDBOX_REGION_FACTS_VERSION 1.0.0→1.1.0·逐值默认仍全 ASSUMPTION·MODEL_VERSION/黄金样本零触碰）
+
+- 原因：创始人阶段3A指令——为真实用户试用准备产品（优先级1：核验陌生用户使用链，只修 P0/P1），并只激活阶段2已具备可靠 sourceUrl 的高可信山西 FACT（优先级2：15号文分时电价/第四监管周期输配电价/134号/52号/气象局辐射区间，每条必须经既有 makeVerifiedFact + sourceUrl/evidenceKind/asOf/confidence 管道）；禁止填补 G1–G10 缺口、禁止折算三个口径冲突（作为 DATA_CONFLICT 原样保留）、禁止伪装逐时峰谷模型（R9.0 年度代理口径 + needsProfessionalReview 不变）、禁止修改历史黄金样本。
+- 内容：
+  - **`src/server/sandbox-region-facts.ts`**（1.0.0→1.1.0）：新增**条款级** `RegionClauseFact` + `SHANXI_CLAUSE_FACTS`（5 条，元数据全部经 `makeVerifiedFact(...)` 产出：可点击权威原文 + 置信 95/85/90/90/80 + asOf）+ `getRegionClauseFacts(regionId)`（未知 id 永不裸抛）。**诚实边界**：阶段2 的 5 条高可信数据均为政策条款/官方区间，沙盘逐值默认（电价 0.55/价差 0.7/小时数 1400/需量 44/地租 500）无一能被条款单独验证 → **逐值 `SHANXI_REGION_SOURCES`/`SHANXI_POLICY_SOURCES` 原样保持 ASSUMPTION**；15号文（浮动比例≠绝对价差·缺 G1）、第四周期（结构优惠≠绝对需量价·缺 G2）、气象局（辐射区间≠等效小时）三处标 `dataConflict`（DATA_CONFLICT），禁折算/平均/改公式。**零数值、零公式变更**。
+  - **`src/components/sandbox/SandboxRegionClauseFacts.tsx`**（新）：纯展示组件——选山西即在地区选择器旁列出 5 条已核实条款（文号/机关/生效/置信/「查看原文」链接/关联参数），明示「条款≠数值、取值仍 ASSUMPTION」；空目录渲染 null。挂载于 `SandboxDemoPanel` 与 `SandboxWorkbench` 两处地区选择块下（随地区切换显隐）。
+  - **`tests/unit/sandbox-region-facts.test.ts`**：新增 6 例门禁——恰 5 条且 id 钉桩；每条 meta 非空 FACT（usable http(s) URL/置信区间/asOf/sourceType）；relatedKeys ⊆ SANDBOX_PARAMS 已注册键；3 条 DATA_CONFLICT 键+描述钉桩；getRegionClauseFacts 回落口径；★诚实护栏（条款升 FACT 后逐值来源仍必须全 ASSUMPTION、目录结构无 value 字段可藏）。
+  - **`tests/fixtures/regression/scenarios-sml.json`** + **`tests/unit/sandbox-regression-scenarios.test.ts`**（新）：三组标准场景 Small（山西·20 车）/Medium（山西·60 车）/Large（全国·150 车·谈价 0.55）——固定时钟 2026-01-01 经 `computeDemoScenario` 纯函数链，锁定参数快照（userValues）+ engineVersions/calcRef + 关键结果（NPV/IRR/ROI/简单与折现回收期/毛净 CAPEX/首年 OPEX/首年收入/储能价值），金额 2 位、比率 6 位舍入。**新建回归黄金，既有历史黄金样本零触碰**；模型口径有意变化 → 先 CHANGELOG 记因再有意重录。
+  - **`docs/USER_VALIDATION_CHECKLIST.md`**（新）：最简用户验证清单——三类用户（U-S/U-M/U-L 对应三回归场景）× 8 指标（理解参数/完成首次运行/最常修改参数/最关心结果/最不可信结果/理解储能价值/理解IRR与Payback/愿意询价购买），含开场诚实话术、15 分钟任务脚本、P0/P1 判定与汇总三问；纯文档，无任何反馈系统代码。
+- 使用链核验（优先级1）：选择地区（双档面板均含 全国通用/山西）→ 改参数（示范 8 滑杆/工作台 40 参数，地区限幅收窄）→ 纯前端即时运行 → CAPEX（净/毛+构成）/OPEX/首年收入/NPV/IRR/ROI/回收期 指标卡与图表 → 龙卷风敏感性（11 参数含 spread）→ 确定性动态报告（REPORT_VERSION 1.1.0）→ 保存项目/情景 → 导出产业方案（DRAFT 挂来源关联）→ 方案详情页购买四态卡 → /api/orders 下单→人工付款凭证→后台确认。**代码级 P0/P1 阻塞未发现**（tsc/eslint/unit 1064/integration/build 全绿佐证）；唯一链路缺口为业务级且刻意保留：沙盘导出方案含占位假设、须后台人工替换数据并定价后方可对外售卖（诚实标注在案，属创始人裁决范围）。
+- 禁令遵守：未接任何新数值入模型（E3/E4/finance 原语/参数默认值/公式零改动）；G1–G10 维持待核实；三口径冲突未折算；R9.0 sigma+H_dis 年度代理口径与 needsProfessionalReview 未动；8760h/融资/支付/第二项目/其他行业/大规模 UI 重构均未做；未修改任何历史黄金样本。
+- 效果：陌生用户选山西即可看到「哪些官方条款已核实、可点击溯源、哪些数字仍是假设、冲突在哪」，信任链路显性化；S/M/L 回归场景为未来模型演进提供可重放的现实性基线；用户验证清单可直接打印用于第一批真实用户。
+
 ## [0.62.0] - 2026-09-08 · 阶段2「山西真实数据」：第一版山西区域数据候选层（**纯加性·NOT-WIRED·零模型接线**·14 条候选 + 10 条缺口·质量门禁 11/11 绿·MODEL_VERSION/TECH_VERSION/黄金样本零触碰）
 
 - 原因：创始人四阶段路线之阶段2指令——只做数据（搜索/核验/整理/录入数据层，五元组 value/sourceUrl/sourceDate/asOf/confidence + evidenceGrade/publisher/region/effectiveDate/notes），不改模型；建立 Shanxi Verified Data Candidate Set 供下一阶段人工审核升级 FACT；暂不修改任何默认参数（指令第九节）。

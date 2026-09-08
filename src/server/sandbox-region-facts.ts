@@ -22,8 +22,13 @@ import type { ValueSourceMeta } from "@/server/parameter-engine";
  *   （数值仍只在 `sandbox-regions.ts` 的 `values` 里，防双写漂移）。键合法性由 `tests/unit/sandbox-region-facts.test.ts` 守。
  */
 
-/** 地区来源编目版本（增删条目 / 换 FACT 须升版并记原因，宪法第 13 条）。 */
-export const SANDBOX_REGION_FACTS_VERSION = "1.0.0";
+/** 地区来源编目版本（增删条目 / 换 FACT 须升版并记原因，宪法第 13 条）。
+ *  1.1.0（阶段3A）：新增**条款级** `SHANXI_CLAUSE_FACTS`（5 条政策/资源条款 FACT，全部经 makeVerifiedFact
+ *   管道、带可点击权威原文）。⚠️ 诚实边界（§20 / 阶段3A 指令三、四）：条款是 FACT ≠ 模型数值是 FACT——
+ *   逐值 `SHANXI_REGION_SOURCES` / `SHANXI_POLICY_SOURCES` **仍全为 ASSUMPTION**（0.55/0.7/1400/44/500
+ *   等占位数值无一能被条款单独验证），三处口径冲突以 DATA_CONFLICT 原样保留、禁折算/平均/改公式。
+ */
+export const SANDBOX_REGION_FACTS_VERSION = "1.1.0";
 
 /** 溯源引用（供报告标注「这组地区来源是按哪版给的」，第 7/16 条）。 */
 export function regionFactsCalcRef(): string {
@@ -112,5 +117,143 @@ export function getRegionProvenance(regionId: string): RegionProvenance {
     case "national":
     default:
       return { region: NATIONAL_REGION_SOURCES, policy: NATIONAL_POLICY_SOURCES };
+  }
+}
+
+/* ─────────────────────────── 条款级 FACT 目录（阶段3A · 仅山西） ─────────────────────────── */
+
+/**
+ * 一条**条款级**已核实事实（阶段3A「只激活高可信山西 FACT」）。
+ *
+ * 为什么是"条款"而不是"数值"（§20 诚实边界 / 阶段3A 指令一、三、四）：
+ *   阶段2 核实到的 5 条高可信数据全部是**政策条款 / 官方区间**（S/A 级原文可点击），而沙盘里的
+ *   逐值默认（电价 0.55、价差 0.7、小时数 1400…）没有任何一条能被这些条款**单独**验证——
+ *   政策给的是相对浮动比例、模型要绝对价差（G1 缺平段基价）；辐射是区间、模型要等效小时（口径③）。
+ *   故本目录只声明「这些条款本身是真的、可点开核验」，**绝不给任何数值、绝不动 `values`**；
+ *   相关参数的取值仍是 ASSUMPTION，冲突原样保留（DATA_CONFLICT），等 G1/G2 人工补数后再议。
+ *
+ * 诚实闸门：`meta` 一律经 `makeVerifiedFact(...)` 产出（脏 URL → null → 单测红），置信度/时点
+ *   沿用阶段2 `docs/verified-data/shanxi-v1.json` 的五元组，不新增任何未经核实的声明。
+ */
+export interface RegionClauseFact {
+  /** 稳定标识（测试钉桩 / 反查用）。 */
+  id: string;
+  /** 条款标题（用户可见）。 */
+  title: string;
+  /** 发文文号（如有）。 */
+  docNo?: string;
+  /** 发布机关。 */
+  publisher: string;
+  /** 印发/发布日期（YYYY-MM-DD，展示用；可核时点用 asOf）。 */
+  publishedOn?: string;
+  /** 生效口径一句话（如「自 2026-05-01 起施行」「现行有效」）。 */
+  effectiveText: string;
+  /** 该条款与沙盘中哪些参数相关（只表"关联"以供展示，不改变这些参数的取值/证据类型）。 */
+  relatedKeys: readonly string[];
+  /** 逐值溯源元数据（evidenceKind=FACT + 可点击 sourceUrl），一律经 makeVerifiedFact 产出。 */
+  meta: ValueSourceMeta | null;
+  /** 已知口径冲突（DATA_CONFLICT）：条款口径 ≠ 模型口径，本阶段**禁折算/平均/改公式**，原样保留。 */
+  dataConflict?: { key: string; description: string };
+}
+
+/** 山西**条款级**已核实事实（顺序即 UI 展示顺序；元数据全部经 makeVerifiedFact 管道）。 */
+export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
+  {
+    id: "shanxi-tou-2026-15",
+    title: "山西电网分时电价机制（峰平谷/尖峰/深谷浮动比例 + 四季时段表）",
+    docNo: "晋发改商品发〔2026〕15号",
+    publisher: "山西省发展和改革委员会",
+    publishedOn: "2026-02-28",
+    effectiveText: "自 2026-05-01 起执行（四季时段表；峰=平×1.60、谷=平×0.45、尖峰=峰×1.20、深谷=谷×0.80）",
+    relatedKeys: ["region.peakValleySpread", "region.elecPrice"],
+    meta: makeVerifiedFact("https://fgw.shanxi.gov.cn/sxfgwzwgk/sxsfgwxxgk/xxgkml/tz/202602/t20260228_10069158.shtml", {
+      sourceType: "政府政策文件（S级）",
+      asOf: "2026-05-01",
+      confidence: 95,
+      note: "分时电价浮动比例与四季时段表为官方条款；未提供绝对平段基价（缺口 G1）。",
+    }),
+    dataConflict: {
+      key: "region.peakValleySpread",
+      description:
+        "DATA_CONFLICT：政策给「相对平段的浮动比例」（峰=平×1.60/谷=平×0.45），模型 spread 是全口径绝对价差（元/kWh）——缺平段基价（G1）不得折算，本阶段保留冲突、禁平均/禁改公式。",
+    },
+  },
+  {
+    id: "shanxi-tnd-4th-cycle",
+    title: "山西电网第四监管周期输配电价及有关事项（需量电费 90% 折扣、增量配电网充换电免容（需量）电费）",
+    publisher: "山西省发展改革委（依据国家发改委发改价格〔2026〕1077号）",
+    publishedOn: "2026 年",
+    effectiveText: "自 2026-08-01 起（第四监管周期；月用电量≥260kWh/kVA 需量电费打 9 折）",
+    relatedKeys: ["region.demandCharge"],
+    meta: makeVerifiedFact("https://mpower.in-en.com/html/power-2477102.shtml", {
+      sourceType: "权威行业转引（A级，另见山西晚报转载）",
+      asOf: "2026-08-01",
+      confidence: 85,
+      note: "结构性条款（折扣/免收）为真；绝对需量电价数值无官方文本（缺口 G2）。",
+    }),
+    dataConflict: {
+      key: "region.demandCharge",
+      description:
+        "DATA_CONFLICT：条款是结构性优惠（90% 折扣/免收），模型 demandCharge 是绝对需量电价（元/kW·月）——无官方价表文本（G2）不得折算，本阶段保留冲突。",
+    },
+  },
+  {
+    id: "shanxi-charging-service-2023-134",
+    title: "电动汽车充换电服务费实行市场调节价（服务费由经营者自主定价）",
+    docNo: "晋发改商品发〔2023〕134号",
+    publisher: "山西省发展和改革委员会",
+    publishedOn: "2023-05-11",
+    effectiveText: "现行有效（充电服务费不实行政府定价，由市场调节）",
+    relatedKeys: ["project.chargingPrice"],
+    meta: makeVerifiedFact("https://fgw.shanxi.gov.cn/sxfgwzwgk/sxsfgwxxgk/xxgkml/tz/202305/t20230511_8518805.shtml", {
+      sourceType: "政府政策文件（S级）",
+      asOf: "2026-09-08",
+      confidence: 90,
+      note: "为模型「充电服务价=用户可自定的经营决策」提供政策依据；不提供具体服务费数值。",
+    }),
+  },
+  {
+    id: "shanxi-nev-truck-2026-52",
+    title: "山西新能源（电动）重卡产业圈建设行动方案（11 部门联合印发）",
+    docNo: "交规划发〔2026〕52号",
+    publisher: "山西省交通运输厅等 11 部门",
+    publishedOn: "2026-06-12",
+    effectiveText: "现行有效（「2030 年前对实行两部制电价的集中式充换电设施用电免收需量（容量）电费」）",
+    relatedKeys: ["region.demandCharge"],
+    meta: makeVerifiedFact("https://myj.shanxi.gov.cn/ztzl/bwbd/xnyzk/202607/t20260716_10177998.shtml", {
+      sourceType: "政府专题原文（S级）",
+      asOf: "2026-09-08",
+      confidence: 90,
+      note: "免收需量电费条款为官方原文核实；属政策支持事实，不代表沙盘已按免收计价。",
+    }),
+  },
+  {
+    id: "shanxi-pv-resource-nmic",
+    title: "山西省太阳能资源年际公报（分区辐射量：山西北部 ≥6300、南部 5040–6300 MJ/m²·年）",
+    publisher: "山西省气象局（中国气象局公报）",
+    publishedOn: "2020 公报",
+    effectiveText: "气候区间口径（辐射量区间保留，不折算为单一数值）",
+    relatedKeys: ["region.pvEquivalentHours"],
+    meta: makeVerifiedFact("http://www.nmic.cn/site/article/id/41255.html", {
+      sourceType: "官方统计公报（S级）",
+      asOf: "2026-09-08",
+      confidence: 80,
+      note: "辐射区间为官方数据；等效利用小时为另一口径（2025 实际约 1170h，C 级转引）。",
+    }),
+    dataConflict: {
+      key: "region.pvEquivalentHours",
+      description:
+        "DATA_CONFLICT：官方给「年辐射量区间（MJ/m²·年）」，模型要「等效利用小时数」——辐射≠并网实际小时（2025 实际约 1170h 仅 C 级），区间保留、禁折算成单一 FACT。",
+    },
+  },
+];
+
+/** 取某地区的条款级事实；未知 id / 全国通用 → 空列表（绝不裸抛）。 */
+export function getRegionClauseFacts(regionId: string): readonly RegionClauseFact[] {
+  switch (regionId) {
+    case "shanxi":
+      return SHANXI_CLAUSE_FACTS;
+    default:
+      return [];
   }
 }

@@ -3,6 +3,17 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.62.0] - 2026-09-08 · 阶段2「山西真实数据」：第一版山西区域数据候选层（**纯加性·NOT-WIRED·零模型接线**·14 条候选 + 10 条缺口·质量门禁 11/11 绿·MODEL_VERSION/TECH_VERSION/黄金样本零触碰）
+
+- 原因：创始人四阶段路线之阶段2指令——只做数据（搜索/核验/整理/录入数据层，五元组 value/sourceUrl/sourceDate/asOf/confidence + evidenceGrade/publisher/region/effectiveDate/notes），不改模型；建立 Shanxi Verified Data Candidate Set 供下一阶段人工审核升级 FACT；暂不修改任何默认参数（指令第九节）。
+- 内容：
+  - **`docs/verified-data/shanxi-v1.json`**（新，机器可读数据层，git 版本化）：meta（NOT-WIRED 声明/来源分级刻度/升级规则）+ items[14] + gaps[10]。条目覆盖五类：电价 6（晋发改商品发〔2026〕15号峰平谷尖峰深谷四季时段表+浮动比例 峰=平×1.60/谷=平×0.45/尖峰=峰×1.20/深谷=谷×0.80；山西第四监管周期输配电价 2026-08-01 执行·需量 90% 折扣条款·增量配电网充换电设施 2030 年前免容需量电费；晋发改商品发〔2023〕134号充电服务费市场调节；交规划发〔2026〕52号"2030 年前两部制集中式充换电设施免收需量（容量）电费"经山西省民营经济发展局官网专题原文核实）、光伏资源 3（气象局 S 级分区辐射区间——山南北部最丰富≥6300 MJ/m²/南部很丰富 5040–6300；2025 年实际利用小时 1170h C 级转引 needs-human）、成本 3（组件 0.72–0.78 元/W、工商业分布式 EPC 2.03–3.56 元/W 多数 2.2–3.0、4h 储能系统设备 0.529–0.545 元/Wh——设备/EPC/系统口径严格分列不混 FACT）、政策 2（52号文量化目标：2030 渗透率 40%/160 万辆/充换电站 3000 个/汾渭平原短倒>80%；全国碳市场 CEA 92–100 元/tCO₂）。**充电设施成本 0 条 S/A 数据 → chargerCapex 维持 ASSUMPTION 记缺口 G3（禁止编造）**。
+  - **`docs/SHANXI_VERIFIED_DATA_CANDIDATES.md`**（新，人类可读汇编）：结论速览（S 级 6/A 级 2/B 级 5/C 级 2、可升 FACT 8 条、五类覆盖率 4/5）、来源优先级与置信度刻度、五类明细表、**三处口径冲突说明**（①政策浮动仅作用于电能量 vs 模型 spread 全口径绝对价差；②储能设备价 vs 模型总造价口径；③气象辐射理论区间 vs 并网实际小时）、缺口表 G1–G10、模型默认参数对比表（仅记录差异不改默认）。
+  - **`tests/unit/verified-data-schema.test.ts`**（新，质量门禁 11 例）：schema 必填/枚举、sourceUrl 与 parameter-engine `usableHttpUrl` 同口径（主源+次源全检）、日期逻辑（ISO/sourceDate≤今天/effective≥source−90d/expiry>effective）、过期必标 expired、地区枚举 16 项、重复检测（id 唯一 + paramRef×sourceUrl×数值内容三元组唯一——同文件支撑不同侧面不算重复）、单位枚举 18 项、诚实性（C/D 级禁止 canUpgradeToFact、needs-human 互斥）、缺口表完整性、关键政策锚点钉桩（15号文比例/52号文条款/1170h 防转录漂移）。
+  - 版本号 package.json + health 兜底 0.61.0→0.62.0。
+- 禁令遵守：不接正式模型默认值（JSON 未被 src/ import）、不重算黄金样本、不升 MODEL_VERSION/TECH_VERSION、不改模型公式/敏感性逻辑、不扩地区/行业、不做 8760h/融资模型/支付；无权威来源处一律保持 ASSUMPTION 并记缺口，未编造任何数据。
+- 效果：为后续"makeVerifiedFact 把沙盘入参落成带 sourceUrl 真 FACT"提供已核验的数据底座——电价政策框架（时段/比例/免容需量电费）已达 S/A 级可升级，绝对电价（平段基价/需量电价）与充电桩造价三类缺口明确列人工清单；下一阶段人工补 G1/G2 即可解锁电价三参数 FACT 闭环。
+
 ## [0.61.0] - 2026-09-08 · 阶段1「Spread 敏感性」（**SENSITIVITY_VERSION 1.2.0→1.3.0**·region.peakValleySpread 入默认扫描集±15%·纯加性·E3/E4/finance/参数默认值零改动·MODEL_VERSION 保持 1.1.0）
 
 - 原因：创始人批准四阶段路线并指令只执行阶段1——把 R9.0 已真实接入 E3b 储能套利腿的 `region.peakValleySpread` 纳入敏感性分析（即 R9.0 设计稿 §19 步骤 5 / 遗留②的预授权路径，`docs/STORAGE_VALUE_ENGINE_R9_0.md` 已预记"加入 DEFAULT_SENSITIVITY_PARAMS 是合理的下一步，需 SENSITIVITY_VERSION 1.2.0→1.3.0 并重录 tornado 黄金"）。旧排除理由（v0.58.0 P2-6"E 层未消费"）自 R9.0 起失效。

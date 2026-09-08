@@ -1,0 +1,447 @@
+{
+  "meta": {
+    "name": "Shanxi Verified Data Candidate Set（山西真实数据候选集）",
+    "version": "1.0.0",
+    "scope": "山西省（阶段2 第一批：电价 / 光伏资源 / 光伏储能设备成本 / 重卡充电设施成本 / 相关政策）",
+    "generatedAt": "2026-09-08",
+    "generatedBy": "QoderWork · 阶段2 山西真实数据",
+    "wiring": "NOT-WIRED（本文件仅为候选数据层，未被 src/ 任何模块 import，不参与模型计算，不改变任何默认参数）",
+    "disclaimer": "所有条目均为候选（candidate），升级 FACT 须经创始人人工复核；无权威来源的参数一律维持 ASSUMPTION，绝不编造。",
+    "gradeScale": {
+      "S": "政府部门/政府官网/官方政策文件/电网企业官方文件/监管机构/官方统计（原文或官方页面直链）",
+      "A": "权威行业机构/上市公司正式披露/正式行业报告（或部委级文件的权威转载，官方直链待补）",
+      "B": "专业媒体/专业数据库/行业价格指数（辅助级）",
+      "C": "普通媒体（仅作线索，不得升级 FACT）",
+      "D": "AI推断（本批未使用）"
+    },
+    "confidenceScale": "0-100 整数；S级现行有效原文 85-95，A级 70-85，B级 45-70，C级 ≤60",
+    "upgradeRule": "canUpgradeToFact=true 仅当 evidenceGrade ∈ {S,A} 且政策/数据现行有效且数值口径明确；升级前须按 gaps[] 补齐官方直链或人工核对"
+  },
+  "items": [
+    {
+      "id": "SX-ELEC-001",
+      "category": "electricity",
+      "paramRefs": ["region.peakValleySpread", "region.elecPrice"],
+      "name": "山西工商业分时电价峰平谷尖峰深谷时段划分（四季）",
+      "value": {
+        "kind": "structural",
+        "text": "春季(3-5月)：高峰6:00-8:00、17:00-24:00；低谷2:00-5:00、9:00-15:00。夏季(6-8月)：高峰6:00-8:00、18:00-24:00，尖峰18:00-21:00；低谷2:00-5:00、10:00-15:00。秋季(9-11月)：高峰6:00-8:00、17:00-24:00；低谷2:00-5:00、11:00-15:00。冬季(12月、1-2月)：高峰6:00-8:00、16:00-23:00，尖峰17:00-20:00；低谷2:00-5:00、10:00-15:00。深谷：春节/劳动节/国庆节期间13:00-15:00。"
+      },
+      "region": "山西省",
+      "publisher": "山西省发展和改革委员会",
+      "evidenceGrade": "S",
+      "sourceTitle": "《山西省发展和改革委员会关于进一步完善工商业用户分时电价政策的通知》（晋发改商品发〔2026〕15号）",
+      "sourceUrl": "https://fgw.shanxi.gov.cn/sxfgwzwgk/sxsfgwxxgk/xxgkml/tz/202602/t20260228_10069158.shtml",
+      "sourceDate": "2026-01-31",
+      "effectiveDate": "2026-05-01",
+      "asOf": "2026-09-08",
+      "confidence": 95,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "成文2026-01-31，官网发布2026-02-28，自2026-05-01起执行（现行有效，取代原全年统一时段）。适用对象=执行工商业电价的电网企业代理购电用户（电气化铁路牵引除外）；直接参与市场交易用户按电力市场规则执行。上传环节线损折价、系统运行费用折价、输配电价、政府性基金及附加不参与峰谷浮动。电网企业计量结算系统改造原则上2026-04-30前完成。对重卡充电站意义：夏季/冬季晚高峰有尖峰，深夜2:00-5:00为低谷（与重卡夜间充电窗口高度契合）。",
+      "secondarySources": [
+        {
+          "title": "晋城市能源局政策解读《5月1日起施行！山西省调整工商业用户分时电价执行范围》（2026-03-27）",
+          "url": "https://xxgk.jcgov.gov.cn/szfgzbm/jcsnyj/fdzdgknr_31618/zcjd_snyj/202603/t20260327_2334747.shtml"
+        }
+      ]
+    },
+    {
+      "id": "SX-ELEC-002",
+      "category": "electricity",
+      "paramRefs": ["region.peakValleySpread", "region.elecPrice"],
+      "name": "山西工商业分时电价浮动比例（峰/谷/尖峰/深谷 相对平段）",
+      "value": {
+        "kind": "structural",
+        "text": "高峰=平段×1.60（上浮60%）；低谷=平段×0.45（下浮55%）；尖峰=高峰×1.20（再上浮20%）；深谷=低谷×0.80（再下浮20%）。隐含峰谷价差=平段电价×1.15（仅电能量部分）。"
+      },
+      "region": "山西省",
+      "publisher": "山西省发展和改革委员会",
+      "evidenceGrade": "S",
+      "sourceTitle": "《山西省发展和改革委员会关于进一步完善工商业用户分时电价政策的通知》（晋发改商品发〔2026〕15号）",
+      "sourceUrl": "https://fgw.shanxi.gov.cn/sxfgwzwgk/sxsfgwxxgk/xxgkml/tz/202602/t20260228_10069158.shtml",
+      "sourceDate": "2026-01-31",
+      "effectiveDate": "2026-05-01",
+      "asOf": "2026-09-08",
+      "confidence": 95,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "口径提示（重要）：政策浮动仅作用于电能量部分（输配电价/系统运行费/基金附加不浮动），而沙盘模型 region.peakValleySpread=0.6 元/kWh 是含输配的全口径绝对价差——两者口径不同，接入前须把官方比例应用到电能量基价再折算绝对价差（见文档口径冲突①）。绝对价差还依赖平段基价（缺口G1）。"
+    },
+    {
+      "id": "SX-ELEC-003",
+      "category": "electricity",
+      "paramRefs": ["region.demandCharge", "region.elecPrice"],
+      "name": "山西电网第四监管周期输配电价及有关事项（需量90%折扣、增量配电网充换电设施免容需量电费、交叉补贴）",
+      "value": {
+        "kind": "structural",
+        "text": "①选择需量电价计费的两部制工商业用户，每月每千伏安用电量≥260千瓦时时，当月需量电价按核定标准的90%执行；②增量配电网经营区域内实行两部制电价的集中式充换电设施用电，2030年前免收容（需）量电费；③自备电厂自发自用电量承担政策性交叉补贴0.0214元/kWh（含税）；④依据国家发改委发改价格〔2026〕1077号执行。"
+      },
+      "region": "山西省",
+      "publisher": "山西省发展和改革委员会",
+      "evidenceGrade": "A",
+      "sourceTitle": "《关于山西电网第四监管周期输配电价及有关事项的通知》（成文2026-07-31）",
+      "sourceUrl": "https://mpower.in-en.com/html/power-2477102.shtml",
+      "sourceDate": "2026-07-31",
+      "effectiveDate": "2026-08-01",
+      "asOf": "2026-09-08",
+      "confidence": 85,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "自2026-08-01执行（现行）。证据为国际能源网全文转载+山西晚报（山西日报报业集团，2026-08-03）报道交叉印证；分电压等级电价表与容需量电价绝对值在官方附件PDF中（缺口G2须人工对照1077号文附件）。文档本身为部委/省发改委文件（实质S级），补官方直链后可升S。对模型意义：符合条件的集中式充换电设施 demandCharge 可为 0（当前默认40元/kW·月口径偏保守，不改默认）。",
+      "secondarySources": [
+        {
+          "title": "山西晚报《我省电网执行新一轮输配电价政策》（2026-08-03）",
+          "url": "https://m.sohu.com/a/1058042025_115635"
+        }
+      ]
+    },
+    {
+      "id": "SX-ELEC-004",
+      "category": "electricity",
+      "paramRefs": ["region.elecPrice"],
+      "name": "山西工商业单一制1-10千伏输配电价（第四监管周期）",
+      "value": {
+        "kind": "single",
+        "value": 0.1472,
+        "unit": "元/kWh"
+      },
+      "region": "山西省",
+      "publisher": "国家发展和改革委员会（1077号文附件表，北极星电力网转录分析）",
+      "evidenceGrade": "B",
+      "sourceTitle": "《山西输配电价 降了吗？》（北极星输配电网对第四监管周期输配电价表的转录分析）",
+      "sourceUrl": "http://shupeidian.bjx.com.cn/html/20260817/1508616.shtml",
+      "sourceDate": "2026-08-17",
+      "effectiveDate": "2026-08-01",
+      "asOf": "2026-08-01",
+      "confidence": 60,
+      "canUpgradeToFact": false,
+      "status": "candidate",
+      "notes": "第三监管周期同口径为0.1256元/kWh（三周期未变）。原文表格为图片，本值为媒体转录，须人工对照1077号文附件后才能升级FACT（缺口G2）。该值仅为输配环节，不含电能量与基金附加。"
+    },
+    {
+      "id": "SX-ELEC-005",
+      "category": "electricity",
+      "paramRefs": ["project.chargingPrice", "region.demandCharge"],
+      "name": "山西充换电服务费定价机制与充换电设施用电口径（服务费市场调节；集中式设施大工业输配电价）",
+      "value": {
+        "kind": "structural",
+        "text": "①电动汽车充换电服务费不在《山西省定价目录》范围，由市场调节，明码标价；②直接报装的经营性集中式充换电设施执行大工业输配电价，'2025年底前暂免收基本电费'（该时限条款已被国家层面'2030年前免收需量（容量）电费'框架接续，见SX-ELEC-006）；③党政机关/企事业单位/社会公共停车场充电设施执行一般工商业输配电价；④居民住宅小区充电设施可执行居民合表电价（直抄到户单表计量者可选居民峰谷电价）。"
+      },
+      "region": "山西省",
+      "publisher": "山西省发展和改革委员会",
+      "evidenceGrade": "S",
+      "sourceTitle": "《山西省发展和改革委员会关于电动汽车充换电服务费及用电价格有关事项的通知》（晋发改商品发〔2023〕134号）",
+      "sourceUrl": "https://fgw.shanxi.gov.cn/sxfgwzwgk/sxsfgwxxgk/xxgkml/tz/202305/t20230511_8518805.shtml",
+      "sourceDate": "2023-05-11",
+      "asOf": "2026-09-08",
+      "confidence": 90,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "现行有效（含'国家有新规定的按国家规定执行'衔接条款）。废止晋价商字〔2014〕366号、晋发改价格发〔2016〕466号。对模型意义：project.chargingPrice 中的服务费部分无政府定价（市场调节），官方不给出服务费数值——任何'典型服务费'都只能是ASSUMPTION或实地调研数据（缺口G10）。"
+    },
+    {
+      "id": "SX-ELEC-006",
+      "category": "electricity",
+      "paramRefs": ["region.demandCharge"],
+      "name": "国家11部门：2030年前两部制集中式充换电设施免收需量（容量）电费",
+      "value": {
+        "kind": "structural",
+        "text": "'2030年前对实行两部制电价的集中式充换电设施用电免收需量（容量）电费'；'引导电动重卡利用谷电降低补能成本'；'新（改）建的高速公路服务区同步建设重卡充换电设施或预留建设安装条件'。"
+      },
+      "region": "全国",
+      "publisher": "交通运输部、国家发展改革委、工业和信息化部等11部门（山西省民营经济发展局惠企政策解读专题原文摘录）",
+      "evidenceGrade": "S",
+      "sourceTitle": "《推动新能源重卡规模化应用实施方案》（交规划发〔2026〕52号）· 补能设施建设支持问答",
+      "sourceUrl": "https://myj.shanxi.gov.cn/ztzl/bwbd/xnyzk/202607/t20260716_10177998.shtml",
+      "sourceDate": "2026-06-12",
+      "asOf": "2026-09-08",
+      "confidence": 92,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "文号交规划发〔2026〕52号，2026-06-12印发（现行有效），经山西省民营经济发展局官网专题（2026-07-16）原文摘录核实。对模型意义：山西两部制集中式充换电项目 region.demandCharge 具备'免收'的政策依据（2030年前），但具体适用取决于报装口径（省级电网 vs 增量配电网）与结算细则，接入前须人工确认适用范围（关联缺口G2）。"
+    },
+    {
+      "id": "SX-SOL-001",
+      "category": "solar-resource",
+      "paramRefs": ["region.pvEquivalentHours"],
+      "name": "山西省太阳能资源分区年辐射量（气象局口径，区间保留）",
+      "value": {
+        "kind": "range",
+        "low": 3780,
+        "high": 6300,
+        "unit": "MJ/m²·年"
+      },
+      "region": "山西省",
+      "publisher": "中国气象局气象数据中心（中国气象数据网）",
+      "evidenceGrade": "S",
+      "sourceTitle": "《从数据看，我国哪里适合发展风能、太阳能？》（依据《2020年中国风能太阳能资源年景公报》与GB/T 31155《太阳能资源等级 总辐射》）",
+      "sourceUrl": "http://www.nmic.cn/site/article/id/41255.html",
+      "sourceDate": "2021-11-05",
+      "asOf": "2020-12-31",
+      "confidence": 80,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "分区区间：山西北部属'最丰富'（年辐射量≥6300 MJ/m²）；山西南部属'很丰富'（5040-6300 MJ/m²）；全省整体介于'丰富'与'最丰富'之间，低至3780 MJ/m²为全国等级下限保守覆盖。按kWh口径（2020年公报）：山西中北部1400-1750 kWh/m²·年，南部1050-1400 kWh/m²·年。⚠️辐射量≠光伏等效利用小时：并网等效小时还受系统效率/限电/消纳影响（见SX-SOL-002），接入时不得直接等同。数据时点2020年，更新年份公报见缺口G7。"
+    },
+    {
+      "id": "SX-SOL-002",
+      "category": "solar-resource",
+      "paramRefs": ["region.pvEquivalentHours"],
+      "name": "山西省光伏平均利用小时数（2025年实际）",
+      "value": {
+        "kind": "single",
+        "value": 1170,
+        "unit": "h"
+      },
+      "region": "山西省",
+      "publisher": "江苏现代能源微网（经新浪财经转载，原始统计机构未署名）",
+      "evidenceGrade": "C",
+      "sourceTitle": "《重磅！山西省电力装机情况及利用小时数发布》（新浪财经转载）",
+      "sourceUrl": "https://finance.sina.com.cn/roll/2026-02-07/doc-inhkxucr4495017.shtml",
+      "sourceDate": "2026-02-07",
+      "asOf": "2025-12-31",
+      "confidence": 55,
+      "canUpgradeToFact": false,
+      "status": "needs-human",
+      "notes": "2025年全省光伏平均利用小时1170h，同比减少108h（降幅超8.5%）；同源称山西整体光伏弃光限电率已超10%（市场多方调研口径）。转引链不透明（疑似源出山西省电力交易/调度口径年度数据），须人工溯源至官方（山西能源局/山西电力交易中心年报）后才能升级（缺口G7）。对照：模型默认 region.pvEquivalentHours=1200h 与该实际值接近但略高。"
+    },
+    {
+      "id": "SX-SOL-003",
+      "category": "solar-resource",
+      "paramRefs": [],
+      "name": "山西省光伏装机容量（2025年底，全省口径，背景数据）",
+      "value": {
+        "kind": "single",
+        "value": 4950.53,
+        "unit": "万千瓦"
+      },
+      "region": "山西省",
+      "publisher": "江苏现代能源微网（经新浪财经转载）",
+      "evidenceGrade": "C",
+      "sourceTitle": "同SX-SOL-002",
+      "sourceUrl": "https://finance.sina.com.cn/roll/2026-02-07/doc-inhkxucr4495017.shtml",
+      "sourceDate": "2026-02-07",
+      "asOf": "2025-12-31",
+      "confidence": 55,
+      "canUpgradeToFact": false,
+      "status": "candidate",
+      "notes": "全省口径太阳能装机4950.53万千瓦，占总装机30.16%；省调口径光伏3366.02万千瓦（28.31%）。背景数据：反映山西光伏供给增长与消纳压力，不直接进入模型计算。"
+    },
+    {
+      "id": "SX-COST-001",
+      "category": "cost-pv",
+      "paramRefs": ["tech.pvCapex"],
+      "name": "光伏组件市场价格（2026年6月，招标集采汇总）",
+      "value": {
+        "kind": "range",
+        "low": 0.72,
+        "high": 0.78,
+        "unit": "元/W"
+      },
+      "region": "全国",
+      "publisher": "坎德拉（candela.cn）'价格风向标'价格指数（2026年6月各期招标数据汇总）",
+      "evidenceGrade": "B",
+      "sourceTitle": "《6月光伏EPC、组件、支架、监理、运维等价格汇总》",
+      "sourceUrl": "https://www.candela.cn/53915-2/",
+      "sourceDate": "2026-07-15",
+      "asOf": "2026-06-30",
+      "confidence": 65,
+      "canUpgradeToFact": false,
+      "status": "candidate",
+      "notes": "全区间0.721-0.8298元/W（N型双面为主），主流集中0.72-0.78元/W；样本含中广核2026年度框架集采0.742-0.770元/W、广东能源集团集采0.721-0.739元/W等。口径=设备（组件）价格，不含EPC其他部分。行业价格指数非官方统计，仅作辅助。"
+    },
+    {
+      "id": "SX-COST-002",
+      "category": "cost-pv",
+      "paramRefs": ["tech.pvCapex", "tech.pvOm"],
+      "name": "工商业分布式光伏EPC总包价格（2026年6月，招标汇总）",
+      "value": {
+        "kind": "range",
+        "low": 2.03,
+        "high": 3.56,
+        "unit": "元/W"
+      },
+      "region": "全国",
+      "publisher": "坎德拉（candela.cn）'价格风向标'价格指数",
+      "evidenceGrade": "B",
+      "sourceTitle": "《6月光伏EPC、组件、支架、监理、运维等价格汇总》",
+      "sourceUrl": "https://www.candela.cn/53915-2/",
+      "sourceDate": "2026-07-15",
+      "asOf": "2026-06-30",
+      "confidence": 65,
+      "canUpgradeToFact": false,
+      "status": "candidate",
+      "notes": "工商业分布式EPC多数集中在2.2-3.0元/W（样本：金龙集团2.03、武汉2.20、安徽江淮2.31、上海华电2.64、长城汽车3.05等）；集中式EPC区间2.17-3.63元/W（部分含储能）。运维招标区间0.014-0.0554元/W·年（含山西能源0.0166元/W·年样本，对应 tech.pvOm≈16.6元/kWp·年，模型默认15元/kWp·年量级一致）。口径差异说明：模型 tech.pvCapex 默认3.5元/W（=全系统单位造价口径），当前市场主流2.2-3.0元/W 明显低于默认值——候选差异已记录，按纪律不改默认（见文档§四/§六）。"
+    },
+    {
+      "id": "SX-COST-003",
+      "category": "cost-storage",
+      "paramRefs": ["tech.storageCapex"],
+      "name": "磷酸铁锂储能系统设备采购中标价（4小时系统，2026年9月）",
+      "value": {
+        "kind": "range",
+        "low": 0.529,
+        "high": 0.545,
+        "unit": "元/Wh"
+      },
+      "region": "全国",
+      "publisher": "世纪储能（经新浪财经转载，源出中标候选人公示）",
+      "evidenceGrade": "B",
+      "sourceTitle": "《0.536元/Wh预中标！瑞源电气、远景、天诚同创入围1.2GWh储能系统设备采购》（河北交投晟德承德县300MW/1200MWh储能电站）",
+      "sourceUrl": "https://m.sohu.com/a/1071713897_122014422",
+      "sourceDate": "2026-09-04",
+      "asOf": "2026-09-03",
+      "confidence": 70,
+      "canUpgradeToFact": false,
+      "status": "candidate",
+      "notes": "4h磷酸铁锂系统：预中标0.536元/Wh（天津瑞源电气，64,260万元/1.2GWh），28家投标、10家报价，区间0.529-0.545元/Wh，平均0.538元/Wh。⚠️口径提示（重要）：此为储能系统设备采购价，不含EPC/土建/升压站/接入系统；沙盘模型 tech.storageCapex=1.3元/Wh 为含系统总造价口径——两者不可直接互换（见文档口径冲突②）。2026年行业普遍值（CNESA 2025年度数据发布等背景）显示系统均价已降至0.5元/Wh级。补中国招标投标公共服务平台公示直链后可升级。"
+    },
+    {
+      "id": "SX-POL-001",
+      "category": "policy",
+      "paramRefs": [],
+      "name": "《推动新能源重卡规模化应用实施方案》量化目标与支持框架（国家11部门）",
+      "value": {
+        "kind": "structural",
+        "text": "2030年新能源重卡渗透率达40%；保有量突破160万辆（占比约20%）；京津冀、汾渭平原等地区固定线路短倒运输电动化比例超80%；高速公路新能源重卡货运量占比达18%；支持引导建设重卡充换电站3000个左右；沿'5射4纵5横'重点路段建设零碳公路运输通道3万公里；新能源重卡定义=总质量12吨及以上重型载货汽车。"
+      },
+      "region": "全国",
+      "publisher": "交通运输部、国家发展改革委、工业和信息化部、公安部、自然资源部、生态环境部、中国人民银行、市场监管总局、金融监管总局、国家能源局、国家邮政局（共11部门）",
+      "evidenceGrade": "A",
+      "sourceTitle": "《推动新能源重卡规模化应用实施方案》（交规划发〔2026〕52号，2026-06-12印发）",
+      "sourceUrl": "https://www.ccement.com/news/content/61754863176135001.html",
+      "sourceDate": "2026-06-12",
+      "asOf": "2026-09-08",
+      "confidence": 85,
+      "canUpgradeToFact": true,
+      "status": "candidate",
+      "notes": "文号经山西省民营经济发展局官网专题（S级）原文摘录核实为'交规划发〔2026〕52号'；本文转载数值为水泥网等权威行业媒体一致转载，官方全文直链待补（缺口G6）。对模型意义：市场结构背景（汾渭平原含山西，短倒运输电动化>80%目标直接指向本沙盘目标场景），不直接改变任何计算参数。",
+      "secondarySources": [
+        {
+          "title": "山西省民营经济发展局《新能源重卡规模化应用惠企政策解读》专题",
+          "url": "https://myj.shanxi.gov.cn/ztzl/bwbd/xnyzk/"
+        },
+        {
+          "title": "中国铝业网《11部门发布〈推动新能源重卡规模化应用实施方案〉》（2026-06-23）",
+          "url": "https://news.cnal.com/enterprise/2026/06-23/1782196533665262.shtml"
+        }
+      ]
+    },
+    {
+      "id": "SX-POL-002",
+      "category": "policy",
+      "paramRefs": ["policy.carbonPrice"],
+      "name": "全国碳市场碳排放配额（CEA）价格（2026年8月-9月初）",
+      "value": {
+        "kind": "range",
+        "low": 92,
+        "high": 100,
+        "unit": "元/tCO₂"
+      },
+      "region": "全国",
+      "publisher": "上海环境能源交易所（数据源），碳交易网/同花顺/上证报转载",
+      "evidenceGrade": "B",
+      "sourceTitle": "《8月全国碳市场最高价100.00元/吨 最低价92.00元/吨》；《9月1日全国碳市场收盘价97.02元/吨 较前一日下跌0.90%》",
+      "sourceUrl": "https://m.sohu.com/a/1070023005_120988576",
+      "sourceDate": "2026-08-31",
+      "asOf": "2026-09-01",
+      "confidence": 65,
+      "canUpgradeToFact": false,
+      "status": "candidate",
+      "notes": "2026年8月CEA价格区间92.00-100.00元/吨；2026-09-01收盘97.02元/吨（碳交易网 www.tanjiaoyi.com/article-110519-1.html）。注意口径：全国碳市场配额价格为强制减排市场指标价，重卡充电项目的碳收益能否按此价格变现取决于CCER/绿电/碳普惠等具体机制——模型 policy.carbonPrice=80元/tCO₂ 默认与当前市场区间同量级，但机制衔接须人工评估。升级FACT须补上海环交所官网直链（缺口G6同类）。"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "title": "山西工商业平段电能量基价绝对值（代理购电/市场化交易）",
+      "status": "partially-found",
+      "detail": "官方代理购电价格公告以图片发布（北极星2026年6月汇总确认山西板块存在但为图片，无法提取文本）。缺平段基价 ⇒ 无法从政策比例（SX-ELEC-002）折算绝对峰谷价差。",
+      "impactParams": ["region.elecPrice", "region.peakValleySpread", "project.chargingPrice"],
+      "needHuman": true,
+      "suggestedAction": "人工打开国网山西电力官方95598/网上电网月度代理购电公告截图，或山西省发改委价格处页面，抄录工商业单一制/两部制平段电价。"
+    },
+    {
+      "id": "G2",
+      "title": "两部制容（需）量电价绝对值与分电压等级输配电价表（第四监管周期附件）",
+      "status": "not-found",
+      "detail": "《山西电网第四监管周期输配电价表》为1077号文附件PDF（转载链接已404），仅获单一制1-10kV=0.1472元/kWh（B级转录，SX-ELEC-004）。",
+      "impactParams": ["region.demandCharge", "region.elecPrice"],
+      "needHuman": true,
+      "suggestedAction": "人工下载国家发改委1077号文或山西省发改委通知附件PDF，抄录需量电价（元/kW·月）与各电压等级电价。"
+    },
+    {
+      "id": "G3",
+      "title": "重卡充电站/充电桩单位造价（tech.chargerCapex）",
+      "status": "not-found",
+      "detail": "未找到S/A级公开单值（公开招标多为打包EPC且口径不一；现有网络资料均为C级自媒体，按纪律不采信）。模型默认500元/kW维持ASSUMPTION。",
+      "impactParams": ["tech.chargerCapex"],
+      "needHuman": true,
+      "suggestedAction": "以山西省内实际重卡充电站EPC招标中标价（中国招标投标公共服务平台）为准；或由创始人提供在手项目报价。"
+    },
+    {
+      "id": "G4",
+      "title": "山西省现行充电设施建设/运营补贴文件",
+      "status": "partially-found",
+      "detail": "发现阳泉市盂县充换电设施补短板试点奖补资金1195万元（中央奖补，媒体转载）等市级线索，但省级现行统一补贴文件未定位，市与市差异大。",
+      "impactParams": ["policy.constructionSubsidy", "policy.operationSubsidy"],
+      "needHuman": true,
+      "suggestedAction": "人工逐市核实（重点关注太原/晋城/长治/运城），或暂以'无补贴'作为山西基线口径。"
+    },
+    {
+      "id": "G5",
+      "title": "山西电力现货/市场化交易电价水平",
+      "status": "not-found",
+      "detail": "直接参与市场交易的用户按山西电力市场规则执行（15号文），其真实购电成本与代理购电不同；现货均价数据未取得S/A级来源。",
+      "impactParams": ["region.elecPrice"],
+      "needHuman": true,
+      "suggestedAction": "从山西电力交易中心公开月报/年报取现货与中长期均价；或初期明确模型口径=代理购电用户。"
+    },
+    {
+      "id": "G6",
+      "title": "S级原文直链补充（交规划发〔2026〕52号 / 发改价格〔2026〕1077号 / 上海环交所碳价页）",
+      "status": "partially-found",
+      "detail": "52号文已有山西民营经济发展局S级专题页印证文号；1077号文与碳价仅有权威转载。",
+      "impactParams": [],
+      "needHuman": true,
+      "suggestedAction": "在交通运输部/国家发改委/上海环交所官网定位原文链接后，将对应条目证据升为S级直链。"
+    },
+    {
+      "id": "G7",
+      "title": "山西省现代年份（2024-2025）分地区太阳能资源与利用小时官方数据",
+      "status": "partially-found",
+      "detail": "气象局数据为2020年公报（SX-SOL-001）；2025年利用小时1170h仅有C级转引（SX-SOL-002）；缺山西北部/南部现代分市权威数据。",
+      "impactParams": ["region.pvEquivalentHours"],
+      "needHuman": true,
+      "suggestedAction": "人工溯源：山西省气候中心/中国气象局《2024-2025年风能太阳能资源年景公报》+山西能源局年度运行数据。"
+    },
+    {
+      "id": "G8",
+      "title": "储能EPC总包口径（含土建/并网）权威价格",
+      "status": "not-found",
+      "detail": "仅有4h系统设备采购价（SX-COST-003，0.529-0.545元/Wh）；与模型 tech.storageCapex=1.3元/Wh 的总造价口径无法直接对表。",
+      "impactParams": ["tech.storageCapex"],
+      "needHuman": true,
+      "suggestedAction": "取山西或邻近省份储能EPC中标价（公开招标平台），明确2h/4h、是否含升压站，建立'设备价→EPC价→模型口径'换算说明。"
+    },
+    {
+      "id": "G9",
+      "title": "山西新能源重卡地方配套（通行费优惠/购车补贴）现行文件",
+      "status": "not-found",
+      "detail": "网络出现'省下数十万通行费'等报道，但未定位到山西省交通运输厅等官方现行文件；不得据媒体报道记为FACT。",
+      "impactParams": [],
+      "needHuman": true,
+      "suggestedAction": "人工核查山西省交通运输厅/省发改委官网及52号文省级落地方案。"
+    },
+    {
+      "id": "G10",
+      "title": "山西充电服务费市场实际成交水平",
+      "status": "not-found",
+      "detail": "134号文明确服务费为市场调节价（无政府定价数值），实际典型水平（元/kWh）需市场调研；任何'典型值'只能ASSUMPTION。",
+      "impactParams": ["project.chargingPrice"],
+      "needHuman": true,
+      "suggestedAction": "实地调研山西重卡充电站挂牌价（电费+服务费拆分），或采信创始人提供的一手数据。"
+    }
+  ]
+}

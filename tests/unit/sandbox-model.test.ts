@@ -45,6 +45,14 @@ const NUMERIC: Record<string, number> = {
   "finance.inflation": 2,
   "finance.taxRate": 25,
   "finance.residualValue": 5,
+
+  // R9.0 Step 2 · storage-scoped SVE 键（hasStorage 时必填；值 = 参数目录默认）
+  "region.peakValleySpread": 0.6,
+  "tech.storagePeakLoadShare": 40,
+  "tech.storageSocMin": 10,
+  "tech.storageSocMax": 90,
+  "tech.storageDegradation": 2.5,
+  "tech.storageDischargeWindowHours": 2,
 };
 
 describe("sandbox-model · 版本与 calcRef", () => {
@@ -84,45 +92,135 @@ describe("computeEconomics · CAPEX/OPEX/收入 逐项手算（基线）", () =>
     expect(res.opexY1.gross).toBe(336300);
   });
 
-  it("E3 收入：充电5,250,000×0.9=4,725,000 + 补贴×0.05=262,500（首年无余电上网）", () => {
+  it("E3 收入：充电5,250,000×0.9=4,725,000 + 补贴×0.05=262,500 + Δ_sto=27,491（R9.0 SVE；首年无余电上网）", () => {
     if (!res.ok) return;
     expect(res.revenueY1.charging).toBe(4725000);
     expect(res.revenueY1.pvExport).toBe(0);
     expect(res.revenueY1.operationSubsidy).toBe(262500);
-    expect(res.revenueY1.gross).toBe(4987500);
+    expect(res.revenueY1.storageValue).toBe(27491);
+    expect(res.revenueY1.gross).toBe(5014991);
   });
 
-  it("E4 购电成本：下网5,093,106×0.7≈3,565,174；税前净=收入−购电−OPEX≈1,086,026", () => {
+  it("E4 购电成本：下网5,093,106×0.7≈3,565,174；税前净=收入−购电−OPEX≈1,113,517（含 Δ_sto 27,491）", () => {
     if (!res.ok) return;
     expect(res.energyCostY1).toBe(3565174);
-    expect(res.netCashFlowY1PreTax).toBe(1086026);
+    expect(res.netCashFlowY1PreTax).toBe(1113517);
   });
 
-  it("E5–E8 现金流：长度=life+1，flows[0]=−净CAPEX，flows[1]=税前净×(1−25%)", () => {
+  it("E5–E8 现金流：长度=life+1，flows[0]=−净CAPEX，flows[1]含Δ_sto税后≈835,138", () => {
     if (!res.ok) return;
     expect(res.annualCashFlow.length).toBe(NUMERIC["finance.projectLife"] + 1);
     expect(res.annualCashFlow[0]).toBe(-3524500);
-    expect(res.annualCashFlow[1]).toBe(814519); // round(1,086,025.8×0.75)
+    expect(res.annualCashFlow[1]).toBe(835138); // round(1,113,516.7×0.75)，含 Δ_sto
     // 全名义通胀 → 后续年税后净额单调上升
     expect(res.annualCashFlow[2]).toBeGreaterThan(res.annualCashFlow[1]);
   });
 
-  it("评价指标全程序算且数值合理：NPV>0 / IRR ok≈0.2376 / 回收期 / ROI≈4.0", () => {
+  it("评价指标全程序算且数值合理：NPV>0 / IRR ok≈0.2435 / 回收期 / ROI≈4.09（R9.0 重录）", () => {
     if (!res.ok) return;
     expect(res.metrics.npv).toBeGreaterThan(0);
-    expect(res.metrics.npv).toBeCloseTo(4277409, -1); // 容差到十位
+    expect(res.metrics.npv).toBeCloseTo(4448573, -1); // 容差到十位（R2.4 老黄金 4,277,409 + SVE 增量 ≈171,164）
     expect(res.metrics.irr.ok).toBe(true);
-    expect(res.metrics.irr.value).toBeCloseTo(0.2376, 3);
+    expect(res.metrics.irr.value).toBeCloseTo(0.2435, 3);
     expect(res.metrics.irr.signChanges).toBe(1);
-    expect(res.metrics.simplePaybackYears).toBeCloseTo(4.2, 1);
+    expect(res.metrics.simplePaybackYears).toBeCloseTo(4.1, 1);
     expect(res.metrics.discountedPaybackYears).toBeGreaterThan(res.metrics.simplePaybackYears!);
     expect(res.metrics.roi.ok).toBe(true);
     expect(res.metrics.roi.value).toBeGreaterThan(3);
   });
 
-  it("盈亏平衡充电单价 = (购电+OPEX)÷充电量 ≈ 0.7431", () => {
+  it("盈亏平衡充电单价 = (购电+OPEX)÷充电量 ≈ 0.7431（成本覆盖口径，刻意不含 Δ_sto，零 churn）", () => {
     if (!res.ok) return;
     expect(res.breakEvenChargingPriceY1).toBeCloseTo(0.7431, 3);
+  });
+});
+
+describe("R9.0 Step2 · SVE 接线锚定（手算链 + 零 churn 焊点）", () => {
+  /**
+   * 手算链（与 Step 1.5 离线实验、Step 1 单测、sandbox-storage-value.ts 三方对齐）：
+   *   SOC 窗口 w=(90−10)/100=0.8 → 容量界 E·w=320 < 功率界 P·H=200×2=400 → e_cycle=320（energy binding）
+   *   cycles = min(运营350, 寿命封顶6000/10=600) = 350 → D_max,1 = 320×350 = 112,000 kWh
+   *   p_valley = p − spread/2 = 0.7−0.3 = 0.4 → margin = p − p_valley/η = 0.7−0.4/0.88 ≈ 0.245455 元/kWh
+   *   消纳腿：PV 492,000 < 负荷 → Exp0=0 → M_pv=0（S1 互斥，诚实 0）
+   *   Δ_sto,1 = 112,000 × 0.245455 ≈ 27,490.909 → storageValue 27,491
+   */
+  it("y1 手算链：D_max=112,000 × margin≈0.245455 → Δ_sto=27,491、gross=5,014,991", () => {
+    const res = computeEconomics(NUMERIC);
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.revenueY1.storageValue).toBe(27491);
+    expect(res.revenueY1.gross).toBe(5014991);
+  });
+
+  it("★storage=0 零 churn 焊点：E1–E8 全套回到 R2.4 口径（SVE 从未被调用）", () => {
+    const noStorage = computeEconomics({ ...NUMERIC, "project.storageEnergy": 0 });
+    expect(noStorage.ok).toBe(true);
+    if (!noStorage.ok) return;
+    expect(noStorage.revenueY1.storageValue).toBe(0);
+    expect(noStorage.revenueY1.gross).toBe(4987500); // R2.4 老黄金
+    expect(noStorage.capex.net).toBe(3030500); // 3,190,000×0.95（无储能 CAPEX）
+    expect(noStorage.opexY1.gross).toBe(331500); // 7,500+0+24,000+300,000
+    expect(noStorage.netCashFlowY1PreTax).toBe(1090826);
+    expect(noStorage.annualCashFlow[1]).toBe(818119);
+    expect(noStorage.metrics.npv).toBe(4797756);
+  });
+
+  it("★spread=0 ⟹ 套利关断 ⟹ NPV 与 R2.4 老引擎黄金逐字节相等（4,277,409）", () => {
+    const s0 = computeEconomics({ ...NUMERIC, "region.peakValleySpread": 0 });
+    expect(s0.ok).toBe(true);
+    if (!s0.ok) return;
+    expect(s0.metrics.npv).toBe(4277409);
+    expect(s0.revenueY1.storageValue).toBe(0);
+  });
+
+  it("有储能却缺 SVE 键 → missing_econ_inputs 诚实列键；无储能缺同键 → 正常成功（scoping）", () => {
+    const partial: Record<string, number> = { ...NUMERIC };
+    delete partial["tech.storageSocMax"]; // 删掉一个 SVE 必需键模拟缺参
+    const missing = computeEconomics(partial);
+    expect(missing.ok).toBe(false);
+    if (missing.ok) return;
+    expect(missing.reason).toBe("missing_econ_inputs");
+    expect(missing.missingInputs).toContain("tech.storageSocMax");
+    const noStorageOk = computeEconomics({
+      ...partial,
+      "project.storageEnergy": 0,
+    });
+    expect(noStorageOk.ok).toBe(true);
+  });
+
+  it("spread 阶梯：0 → 0.6 → 1.0 → 1.5，NPV 严格单调增（margin = p(1−1/η)+spread/2η）", () => {
+    const npvAt = (spread: number) => {
+      const r = computeEconomics({ ...NUMERIC, "region.peakValleySpread": spread });
+      expect(r.ok).toBe(true);
+      return r.ok ? r.metrics.npv : NaN;
+    };
+    expect(npvAt(0)).toBeLessThan(npvAt(0.6));
+    expect(npvAt(0.6)).toBeLessThan(npvAt(1.0));
+    expect(npvAt(1.0)).toBeLessThan(npvAt(1.5));
+  });
+
+  it("电价耦合（R9.0 新语义）：elecPrice↑ → 套利 margin↓（∂margin/∂p=1−1/η<0）→ storageValue 下降", () => {
+    const hi = computeEconomics({ ...NUMERIC, "region.elecPrice": 1.2 });
+    expect(hi.ok).toBe(true);
+    if (!hi.ok) return;
+    expect(hi.revenueY1.storageValue).toBeLessThan(27491);
+  });
+
+  it("FLIP 情景（spread=1.0 + 储能造价 0.6 元/Wh）→ 储能 NPV 转正贡献（对应 Step 1.5 实验 FLIP-A）", () => {
+    const flip = computeEconomics({
+      ...NUMERIC,
+      "region.peakValleySpread": 1.0,
+      "tech.storageCapex": 0.6,
+    });
+    const flipZero = computeEconomics({
+      ...NUMERIC,
+      "region.peakValleySpread": 1.0,
+      "tech.storageCapex": 0.6,
+      "project.storageEnergy": 0,
+    });
+    expect(flip.ok && flipZero.ok).toBe(true);
+    if (!flip.ok || !flipZero.ok) return;
+    expect(flip.metrics.npv).toBeGreaterThan(flipZero.metrics.npv); // +70,889（引擎实测）
   });
 });
 

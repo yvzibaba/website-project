@@ -24,13 +24,13 @@ describe("sandbox-store · projectCalcToColumns（CalcResult → Decimal 汇总�
   it("基线成功结果 → calcStatus ok + 各汇总列定点字符串（golden，逐项对齐 R2 手算）", () => {
     const cols = projectCalcToColumns(BASELINE);
     expect(cols.calcStatus).toBe("ok");
-    expect(cols.calcRef).toBe("model@1.0.0");
-    // 净 CAPEX 3,524,500；NPV≈4,277,409；IRR 0.237553→23.7553%；折现回收 5.28 年；ROI 比值 4.0035
+    expect(cols.calcRef).toBe("model@1.1.0");
+    // R9.0 后基线含储能价值 Δ_sto=27,491（spread=0.6）：净 CAPEX 3,524,500；NPV≈4,448,573；IRR 24.3497%；折现回收 5.14 年；ROI 比值 4.0880
     expect(cols.capexNet).toBe("3524500.00");
-    expect(cols.npv).toBe("4277409.00");
-    expect(cols.irrPct).toBe("23.7553");
-    expect(cols.paybackYears).toBe("5.28");
-    expect(cols.roiRatio).toBe("4.0035");
+    expect(cols.npv).toBe("4448573.00");
+    expect(cols.irrPct).toBe("24.3497");
+    expect(cols.paybackYears).toBe("5.14");
+    expect(cols.roiRatio).toBe("4.0880");
   });
 
   it("汇总列字符串可精确回读为定点数（Decimal 防漂移的落库前提）", () => {

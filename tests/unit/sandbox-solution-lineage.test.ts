@@ -147,7 +147,7 @@ describe("sandbox-solution-lineage · ★反漂移（真引擎草案 ↔ 本层�
     expect(lin?.engineCalcRef).toMatch(/^model@/);
     expect(lin?.regionName).toBe("山西");
     expect(lin?.evidenceKind).toBe("ASSUMPTION");
-    // 基线 NPV 为正（黄金值 ≈ 4.28M）→ 非为负
+    // 基线 NPV 为正（R9.0 黄金值 ≈ 4.45M，含 Δ_sto=27,491）→ 非为负
     expect(lin?.npvNonPositive).toBe(false);
   });
 

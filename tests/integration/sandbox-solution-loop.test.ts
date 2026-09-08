@@ -132,7 +132,7 @@ describeDb("sandbox-solution-loop · 沙盘来源方案端到端商业闭环（N
     expect(post.data.status).toBe("PUBLISHED");
     expect(post.data.isFree).toBe(false);
     expect(post.data.needsProfessionalReview).toBe(true);
-    expect(post.data.financials.some((f) => f.calcRef === "model@1.0.0")).toBe(true);
+    expect(post.data.financials.some((f) => f.calcRef === "model@1.1.0")).toBe(true);
     const lineage = describeSandboxLineage(post.data.financials);
     expect(lineage).not.toBeNull();
     expect(lineage?.draftVersion).toMatch(/^\d+\.\d+\.\d+$/);

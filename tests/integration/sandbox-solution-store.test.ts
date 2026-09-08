@@ -144,7 +144,7 @@ describeDb("sandbox-solution-store · 草案→DRAFT Solution（Neon Postgres）
     expect(sol!.financials.length).toBe(draft.financials.length);
     const fin = sol!.financials[0];
     expect(Number(fin.capex)).toBeCloseTo(3524500, 0);
-    expect(fin.calcRef).toBe("model@1.0.0");
+    expect(fin.calcRef).toBe("model@1.1.0");
 
     // 关键未知落库 + unknownVariableCount 实时同步（addSolutionUnknown 内部）
     expect(sol!.unknowns.length).toBeGreaterThanOrEqual(1);

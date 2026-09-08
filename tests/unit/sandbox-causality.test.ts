@@ -1,9 +1,13 @@
 /**
  * 沙盘模型真实性 / 因果链回归测试（TASK 2 · 2026-09-08 夜）——
  * 用 `runSandboxModel` 沿 5 条轴（车队 / 里程-电耗 / 电价 / 光伏 / 储能）扫参，
- * 断言「参数变→物理结果变→经济结果变」且方向合理；把已知的**未接线参数**与
- * **储能货币化缺口**（详见 docs/MODEL_CAUSALITY_AUDIT_V1.md P1-1 / P1-2 / P1-3）
+ * 断言「参数变→物理结果变→经济结果变」且方向合理；把仍未接线的**假联动参数**
+ * （P1-1 / P1-3 / P2-6，详见 docs/MODEL_CAUSALITY_AUDIT_V1.md）
  * 用「结果不应当前会变而实际不变」的反向断言**钉住现状**，防止未来无意识回归。
+ *
+ * R9.0 Step 2（2026-09-08）更新：P1-2「储能只成本不货币化」已闭合（SVE 套利腿接入 E3b），
+ * 原 P1-2 钉桩改写为「基线参数下 NPV 仍随储能容量下降」的新现状钉桩 + 新增 spread/FLIP 因果块；
+ * region.peakValleySpread 从 P2-6 假联动清单移除。
  *
  * 设计原则：
  *   ① 纯函数离线，无 DB / 无时钟 / 无随机；
@@ -197,14 +201,16 @@ describe("TASK2 · 轴 C：电价 elecPrice 0.4 → 0.7 → 1.2", () => {
     expect(hi.energyCostY1).toBeGreaterThan(mid.energyCostY1);
   });
 
-  it("NPV 随电价**上升**（因自用绿电的机会成本上升，光伏替代价值↑，抵消下网成本↑）", () => {
-    // 基线含 500kWp PV 与 15000 kWh/日 负荷；电价↑ 时:
-    //   - 下网部分变贵（负向）
-    //   - 但 PV 自用的替代价值↑（正向，因为原本要用 0.4-1.2 元/kWh 买的电现在免费）
-    // 净方向取决于自用比例。当前默认 self 占比高，电价↑通常使项目更值。
-    // 关键：**不是常数**（用户能感知到因果），且方向可解释。
-    expect(new Set([lo.metrics.npv, mid.metrics.npv, hi.metrics.npv]).size).toBe(3);
-    expect(hi.metrics.npv).not.toBeCloseTo(lo.metrics.npv, 0);
+  it("NPV 随电价**下降**（成本端下网电量×p 单调涨；R9.0 后套利腿 Δ_arb 的 ∂/∂p = 1−1/η < 0 也反向）", () => {
+    // 三个收入项（充电价 / 上网价 / 补贴单价）都不随 p 变；唯一与 p 联动的收入是
+    // R9.0 储能套利腿：margin = p − p_valley/η = p(1−1/η) + spread/(2η)，p↑ 时套利空间反而收窄。
+    // 成本端 import×p 主导 → NPV 严格单调降（实测 0.4/0.7/1.2 → 15.50M / 4.45M / −17.48M）。
+    // 方向可解释、用户可感知因果；若未来接入逐时曲线导致方向翻转，本测试必须同步改写。
+    expect(mid.metrics.npv).toBeLessThan(lo.metrics.npv);
+    expect(hi.metrics.npv).toBeLessThan(mid.metrics.npv);
+    // 收入端同样严格降（唯一联动项 Δ_sto 随 p 缩水：32,073 → 27,491 → 19,855）
+    expect(mid.revenueY1.gross).toBeLessThan(lo.revenueY1.gross);
+    expect(hi.revenueY1.gross).toBeLessThan(mid.revenueY1.gross);
   });
 });
 
@@ -282,13 +288,14 @@ describe("TASK2 · 轴 E：储能 storageEnergy 0 → 400 → 2000 → 8000", ()
   });
 
   /**
-   * P1-2 钉桩：当前模型储能**只有成本没有货币化收益**（tech 层 storageThroughput 未回灌 E3/E4）。
-   * 结果：NPV 随储能容量**严格单调下降**。这不是期望行为（真实储能靠峰谷套利可正贡献），
-   * 而是 V1 已知缺陷。此断言确保：
-   *   ① 未来若无意"以为储能会正贡献"改了口径，本测试会立即失败暴露回归；
-   *   ② 一旦 R8.8b 创始人批准接入峰谷套利，此测试**必须同步改写**为"存在正 NPV 贡献"。
+   * P1-2 已闭合（R9.0 Step 2）：储能套利价值 Δ_sto∝E 已线性接入 E3b，本钉桩从
+   * 「储能只成本不货币化的缺陷」改写为「基线参数下的真实经济现状」：
+   * spread=0.6、capex=1.3 元/Wh 下，每 kWh 储能的边际套利收入现值 < 边际 CAPEX
+   * （Step 1.5 实验：NPV=0 需 spread≈1.568；回收期远超寿命），故 NPV 仍严格单调下降、
+   * E=0 端点最优——这是真实经济信号而非 bug。正向贡献场景由下方 FLIP 测试锚定。
+   * 此断言确保：基线经济口径被无意改动（如价差/造价默认值漂移翻转方向）时立即炸出。
    */
-  it("【P1-2 已知缺陷钉桩】NPV 随储能容量严格单调下降（V1 储能未货币化）", () => {
+  it("【R9.0 后现状钉桩】基线参数下 NPV 仍随储能容量严格单调下降（套利价值 < 边际 CAPEX，E=0 最优）", () => {
     expect(base.metrics.npv).toBeLessThan(zero.metrics.npv);
     expect(big.metrics.npv).toBeLessThan(base.metrics.npv);
     expect(huge.metrics.npv).toBeLessThan(big.metrics.npv);
@@ -322,9 +329,10 @@ describe("TASK2 · P1-3 假联动钉桩：gridCapacity 未参与功率约束", (
 });
 
 describe("TASK2 · P2-6 假联动钉桩：其余未接入 E 层的参数", () => {
+  // R9.0 Step 2：region.peakValleySpread 已接入 E3b 储能套利腿，从本清单移除，
+  // 其正联动因果改由下方 R9.0 块正向断言。
   const base = npvOf({});
   for (const key of [
-    "region.peakValleySpread",
     "region.demandCharge",
     "region.landRent",
     "policy.carbonPrice",
@@ -336,6 +344,31 @@ describe("TASK2 · P2-6 假联动钉桩：其余未接入 E 层的参数", () =>
       expect(npvOf({ [key]: 999 })).toBe(base);
     });
   }
+});
+
+describe("TASK2 · R9.0 SVE 接线因果（spread ↔ NPV 正联动 + FLIP 正贡献场景）", () => {
+  it("region.peakValleySpread 0 → 0.6 → 1.0 → 1.5 → NPV 严格单调增（旧 P2-6 钉桩解除）", () => {
+    // Δ_arb = σ·Imp0·(p − p_valley/η)，价差↑ → 谷价更低 → 单位套利空间变宽
+    const s0 = npvOf({ "region.peakValleySpread": 0 });
+    const s06 = npvOf({});
+    const s10 = npvOf({ "region.peakValleySpread": 1.0 });
+    const s15 = npvOf({ "region.peakValleySpread": 1.5 });
+    expect(s06).toBeGreaterThan(s0);
+    expect(s10).toBeGreaterThan(s06);
+    expect(s15).toBeGreaterThan(s10);
+  });
+
+  it("spread=0 → 套利腿关闭，NPV 精确回落到 R2.4 无储能价值基线 4,277,409（交叉验证焊点）", () => {
+    expect(npvOf({ "region.peakValleySpread": 0 })).toBe(4277409);
+  });
+
+  it("【FLIP】spread 1.0 + 储能单价 0.6 元/Wh → 储能 NPV 贡献转正（E=400 优于 E=0，P1-2 反例锚定）", () => {
+    // Step 1.5 翻转情景：capex 1.3→0.6 + spread 0.6→1.0 后边际收入现值超过边际 CAPEX
+    const flip0 = npvOf({ "region.peakValleySpread": 1.0, "tech.storageCapex": 0.6, "project.storageEnergy": 0 });
+    const flip400 = npvOf({ "region.peakValleySpread": 1.0, "tech.storageCapex": 0.6 });
+    expect(flip400).toBeGreaterThan(flip0);
+    expect(flip400 - flip0).toBeGreaterThan(5e4); // 实测 +70,889，摆幅须有经济意义
+  });
 });
 
 describe("TASK2 · 极端场景不崩：无 NaN / 无负能量 / 无 Infinite NPV", () => {

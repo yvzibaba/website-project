@@ -209,13 +209,13 @@ describe("TASK4 · 敏感性节：三情景都有、且摆幅数字互不相同�
 
 describe("TASK4 · 溯源节：三情景 calcRef/model 版本一致（内核不 bump），仅地区名等展示差异", () => {
   const prov = (c: DemoScenarioResult) => bulletsOf(c, "provenance");
-  it("calcRef/model/tech/finance 版本三情景完全一致（§13 只在口径变化时升版）", () => {
+  it("calcRef/model/tech/finance 版本三情景完全一致（映射层不自行 bump，版本只随引擎走）", () => {
     const p1 = prov(s1);
     const p2 = prov(s2);
     const p3 = prov(s3);
     expect(p2["计算引用 calcRef"]).toBe(p1["计算引用 calcRef"]);
     expect(p3["计算引用 calcRef"]).toBe(p1["计算引用 calcRef"]);
-    expect(p1["模型版本"]).toBe("1.0.0");
+    expect(p1["模型版本"]).toBe("1.1.0"); // R9.0 Step 2：接入 SVE 储能价值，模型层 1.0.0→1.1.0
     expect(p1["技术内核版本"]).toBe("1.0.0");
     expect(p1["财务内核版本"]).toBe("1.0.0");
   });
@@ -257,15 +257,17 @@ describe("TASK4 · 反假联动：改动某字段 → 报告该字段所在节�
     expect(execParagraphs(s1b)).not.toBe(execParagraphs(s1));
   });
 
-  it("只改 elecPrice → 首年收入不变、购电成本变、NPV 变（购电与收入解耦）", () => {
+  it("只改 elecPrice → 购电成本大涨、首年收入小幅下降（R9.0 套利腿反向耦合）、NPV 大跌", () => {
+    // R9.0 前：收入与 elecPrice 完全解耦；R9.0 后唯一联动是储能套利腿
+    // margin = p(1−1/η)+spread/(2η)，p↑ → Δ_sto 缩水 → 收入小幅下降（实测 501.50万 → 500.74万），
+    // 但成本端 import×p 主导，NPV 仍大跌（4.45M → −17.48M）。
     const p = computeDemoScenario({ ...defaultDemoState(), elecPrice: 1.2 }, { elecPrice: true }, NOW);
-    const b1 = bulletsOf(s1, "structure");
     const b2 = bulletsOf(p, "structure");
-    expect(b2["首年收入"]).toBe(b1["首年收入"]); // 收入不受 elecPrice 影响
-    // calc.energyCostY1 应显著不同
     if (s1.calc.ok && p.calc.ok) {
-      expect(p.calc.energyCostY1).toBeGreaterThan(s1.calc.energyCostY1);
+      expect(p.calc.energyCostY1).toBeGreaterThan(s1.calc.energyCostY1); // 成本大涨
+      expect(p.calc.revenueY1.gross).toBeLessThan(s1.calc.revenueY1.gross); // 收入小幅降（套利腿缩水）
     }
+    expect(b2["首年收入"]).not.toBe(bulletsOf(s1, "structure")["首年收入"]); // 报告读的是新数字
     expect(execParagraphs(p)).not.toBe(execParagraphs(s1)); // NPV/IRR 变
   });
 });

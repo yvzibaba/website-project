@@ -65,17 +65,17 @@ describeDb("sandbox-store 项目/情景/版本持久层（Neon Postgres）", () 
     const sc = project!.scenarios[0];
     expect(sc.isBaseline).toBe(true);
     expect(sc.calcStatus).toBe("ok");
-    expect(sc.calcRef).toBe("model@1.0.0");
-    // Decimal 汇总列（净 CAPEX / NPV / IRR% / 折现回收 / ROI）逐项对齐引擎
+    expect(sc.calcRef).toBe("model@1.1.0");
+    // Decimal 汇总列（净 CAPEX / NPV / IRR% / 折现回收 / ROI）逐项对齐引擎（R9.0：含 Δ_sto=27,491）
     expect(num(sc.capexNet)).toBeCloseTo(3524500, 0);
-    expect(num(sc.npv)).toBeCloseTo(4277409, 0);
-    expect(num(sc.irrPct)).toBeCloseTo(23.7553, 3);
-    expect(num(sc.paybackYears)).toBeCloseTo(5.28, 2);
-    expect(num(sc.roiRatio)).toBeCloseTo(4.0035, 3);
+    expect(num(sc.npv)).toBeCloseTo(4448573, 0);
+    expect(num(sc.irrPct)).toBeCloseTo(24.3497, 3);
+    expect(num(sc.paybackYears)).toBeCloseTo(5.14, 2);
+    expect(num(sc.roiRatio)).toBeCloseTo(4.0880, 3);
     // calcResult JSON 快照也真落库且带 needsProfessionalReview（§16）
     const snap = sc.calcResult as { needsProfessionalReview?: boolean; metrics?: { npv?: number } };
     expect(snap.needsProfessionalReview).toBe(true);
-    expect(num(snap.metrics?.npv)).toBeCloseTo(4277409, 0);
+    expect(num(snap.metrics?.npv)).toBeCloseTo(4448573, 0);
 
     // 一条 CREATE 审计
     const logs = await prisma.changeLog.findMany({

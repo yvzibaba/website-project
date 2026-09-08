@@ -41,10 +41,11 @@
   根因：V1 采用"年能量平衡法"，直接用 `trucksPerDay × chargePerTruck × operatingDays` 定义需求，`chargerUtilization` 语义上冗余（要么定义"日均服务重卡数"要么定义"桩利用率"，不能同时定义）。
   处置：**不改口径原则下不能接线**（会改 E3 收入 / E1 CAPEX 定义），故 TASK 2 显式加"利用率扰动 → NPV 不变"回归测试**把它作为已知缺陷钉住**；建议后续把该参数从面板摘除或降为 `editable:false` + 注明"V1 未接入 · 待 S1 逐时曲线"（**留给创始人**，属"改参数暴露面"的语义决定）。
 
-- **P1-2 · 「储能」只有成本没有收益，参数改动永远让 NPV 变差**
+- **P1-2 · 「储能」只有成本没有收益，参数改动永远让 NPV 变差** —— ✅ **已闭合（R9.0 Step 2，v0.59.0，2026-09-08）**
   `storageAnnualThroughput` 在 tech 层被算出（`annualDischargeThroughputKwh`），但 `sandbox-model.ts` 的 E3/E4 **完全没读它** —— 储能只在 CAPEX/OPEX 里出现，从不参与"削峰填谷套利的钱在财务/编排层结算"。文件头注释说"钱在 E 层结算"，实际**未在 E 层结算**。
   结果：拖动 `storageEnergy` → CAPEX↑ OPEX↑ → NPV↓；不存在"加储能 → 靠峰谷价差挣钱 → NPV↑"的因果。这既违反物理直觉（储能的核心经济意义就是套利），也违反 TASK 1「因果关系是否合理」的检验意图。
   处置：修复需引入 `region.peakValleySpread` 到 E3/E4 或新增峰谷套利现金流，属**改变经济口径 · 高风险** → 记 P1，**留给创始人**（对应 R8.8b 债务/DSCR/Equity IRR 同一批准闸口）。TASK 2 显式加"加储能 NPV 单调恶化"回归测试钉住当前行为，防止"以为储能会正贡献"的假象。
+  **闭合记录（2026-09-08）**：经创始人批准，SVE 储能套利价值 Δ_sto 已作为加性收入项接入 E3b（`storageValueDelta` 逐年结算，E4/财务原语零改动），`MODEL_VERSION` 1.0.0→1.1.0、`SANDBOX_PARAMS_VERSION` 1.1.0→1.2.0（+5 个 SVE ASSUMPTION 键），storage>0 黄金全仓重录、storage=0 零 churn、spread=0 与旧引擎逐字节交叉验证。设计口径/裁决/边界见 `docs/STORAGE_VALUE_ENGINE_R9_0.md` §十六·六。**注意**：基线参数（spread=0.6、capex=1.3 元/Wh）下 NPV 仍随储能容量严格单调下降——这是真实经济信号（套利价值 < 边际 CAPEX，NPV=0 需 spread≈1.568）而非缺陷复现；正向贡献场景已由 FLIP 测试锚定（spread 1.0 + capex 0.6 → +70,889）。原"加储能 NPV 单调恶化"钉桩改写为上述现状钉桩；消纳腿因 S1 年度平衡互斥恒为 0（已诚实标注，待分时立项）。
 
 - **P1-3 · 「并网报装容量」`project.gridCapacity` 未参与任何功率约束**
   声明 2000 kW，但 tech 层无功率上限校验：即便 `derived.chargerTotalPower`（桩总装机）大于并网容量，模型不会警告也不会裁剪。
@@ -68,8 +69,9 @@
 - **P2-5 · `trucksPerDay` 与 `chargePerTruck` 在派生网关上数学等价**
   敏感性里两者 ±X% 摆幅对 NPV 影响完全一样（都线性缩放 `dailyChargeEnergy`），会挤占 tornado 表格空间。已在 TASK 5 计划里通过"新增 `chargePerTruck` 作为里程×电耗的合并代理"来兑现"年里程"这一项需求。
 
-- **P2-6 · 政策过期与地区层 bounds 已在 parameter-engine 正确实现，但 `region.landRent / demandCharge / peakValleySpread / carbonPrice`、`finance.equityRatio / loanRate / project.includeStorage` 均未接入 E 层**
-  与 P1-1 同源，只是这些参数是 `pro` 档，普通用户看不到，故降为 P2。**留给创始人**（R8.8b 债务/DSCR 会接 `equityRatio`+`loanRate`；碳收益接 `carbonPrice`；需量电费接 `demandCharge`；峰谷套利接 `peakValleySpread`）。
+- **P2-6 · 政策过期与地区层 bounds 已在 parameter-engine 正确实现，但 `region.landRent / demandCharge / carbonPrice`、`finance.equityRatio / loanRate / project.includeStorage` 均未接入 E 层**
+  与 P1-1 同源，只是这些参数是 `pro` 档，普通用户看不到，故降为 P2。**留给创始人**（R8.8b 债务/DSCR 会接 `equityRatio`+`loanRate`；碳收益接 `carbonPrice`；需量电费接 `demandCharge`）。
+  **更新（R9.0 v0.59.0）**：`region.peakValleySpread` 已随储能套利腿接入 E3b 并从本清单移除；P2-6 反向钉桩测试同步删除该键，改由 causality R9.0 因果块正向断言（spread↑ ⟹ NPV 严格增）。
 
 ### P3（已声明的简化 / 不修）
 

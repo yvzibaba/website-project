@@ -7,8 +7,8 @@
  * 与 `sandbox-demo.test.ts` 的分工：
  *   现有 demo 测试覆盖**映射纯函数 + 分类器真值表 + 车队/光伏两个代表字段的端到端**；
  *   本测试**穷举 8 个可操作 headline 字段**，逐一跑四段链路，任何一段"该变而未变"即失败。
- *   已知例外：储能字段仅影响 CAPEX/OPEX 不影响货币化收益（详见 docs/MODEL_CAUSALITY_AUDIT_V1.md P1-2），
- *   故对 storageEnergy 断言「CAPEX/NPV 变」但**不**断言「revenue 变」，防未来无意误改。
+ *   R9.0 Step 2 更新：储能已接入 SVE 套利腿（P1-2 闭合），storageEnergy 现在也影响收入；
+ *   DEMO 映射层不含 spread 滑杆，套利腿按引擎默认 spread=0.6 结算。
  */
 import { describe, it, expect } from "vitest";
 import {
@@ -129,10 +129,9 @@ describe.each(PROBES)("TASK3 · 字段 $id 全链联动（映射→引擎→计�
 
   /**
    * ③ 经济/技术结果变。
-   * 已知 P1 例外：`storageEnergy` 只影响 CAPEX/OPEX 不影响收入；
-   * `elecPrice` 只影响购电成本不影响 CAPEX。
-   * 因此用「CAPEX 或 OPEX 或 Revenue 或 energyCost 至少一处变」的宽松判据；
-   * 若四处全等即为假联动，立刻失败。
+   * R9.0 后 storageEnergy 也影响收入（SVE 套利腿）；`elecPrice` 影响购电成本+套利腿反向。
+   * 因此保留「CAPEX 或 OPEX 或 Revenue 或 energyCost 或 NPV 至少一处变」的宽松判据；
+   * 若五处全等即为假联动，立刻失败。
    */
   it("③ 计算层至少一处经济结果变（CAPEX/OPEX/收入/购电成本/NPV 五者之一）", () => {
     const delta = {
@@ -218,11 +217,12 @@ describe("TASK3 · 假联动反查（若模型代码回归错误地把已接线�
   });
 
   /**
-   * P1-2 已知缺陷镜像（另处也钉了一模一样的断言，两处独立保护）：
-   * DEMO 拖动 storageEnergy → NPV 只会**下降**，永远不会因储能而正贡献。
-   * 一旦 R8.8b 接入峰谷套利 E 层结算，**此断言必须改写**，届时提醒审计者回来更新文档。
+   * P1-2 已闭合 · 现状镜像（R9.0 Step 2，与 causality 钉桩两处独立保护）：
+   * 储能套利价值已接入 E3b，但 DEMO 默认经济（spread=0.6、capex=1.3 元/Wh）下
+   * 每 kWh 边际套利收入现值 < 边际 CAPEX，NPV 仍**严格下降**——这是真实经济信号
+   * （NPV=0 需 spread≈1.568，见 Step 1.5 实验）。正向贡献场景由 causality FLIP 测试锚定。
    */
-  it("【P1-2 已知缺陷 · DEMO 镜像】storageEnergy 增加 → NPV 严格下降", () => {
+  it("【P1-2 已闭合 · 现状镜像】DEMO 默认经济下 storageEnergy 增加 → NPV 严格下降", () => {
     const zero = calcOk(
       computeDemoScenario({ ...defaultDemoState(), storageEnergy: 0 }, { storageEnergy: true }, NOW),
     );
@@ -238,8 +238,8 @@ describe("TASK3 · 假联动反查（若模型代码回归错误地把已接线�
 });
 
 describe("TASK3 · 默认零 churn 保护（映射层刻意不 bump 经济内核版本）", () => {
-  it("默认无改动 → calc 与 runSandboxModelBaseline() 深等 + MODEL_VERSION 仍 1.0.0", () => {
+  it("默认无改动 → calc 与 runSandboxModelBaseline() 深等 + MODEL_VERSION 跟随引擎 1.1.0", () => {
     expect(base.calc).toEqual(demoBaseline().calc);
-    expect(baseCalc.engineVersions.model).toBe("1.0.0");
+    expect(baseCalc.engineVersions.model).toBe("1.1.0");
   });
 });

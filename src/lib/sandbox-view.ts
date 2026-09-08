@@ -128,12 +128,13 @@ export function opexItems(opex: OpexBreakdownY1): NamedValue[] {
   ];
 }
 
-/** 首年收入分解。 */
+/** 首年收入分解（R9.0：储能价值 Δ_sto>0 时追加展示；0 时不出现，保持既有视图零 churn）。 */
 export function revenueItems(rev: RevenueBreakdownY1): NamedValue[] {
   return [
     { name: "充电收入", value: rev.charging },
     { name: "余电上网", value: rev.pvExport },
     { name: "运营补贴", value: rev.operationSubsidy },
+    ...(rev.storageValue > 0 ? [{ name: "储能价值(套利)", value: rev.storageValue }] : []),
   ];
 }
 

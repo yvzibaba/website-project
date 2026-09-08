@@ -47,7 +47,7 @@ function okCalc(over: Partial<CalcResultOk> = {}): CalcResultOk {
     needsProfessionalReview: true,
     capex: { pv: 3000000, storage: 400000, charger: 310000, gross: 3710000, constructionSubsidy: 185500, net: 3524500 },
     opexY1: { pv: 60000, storage: 40000, charger: 96000, depotFixed: 140300, gross: 336300 },
-    revenueY1: { charging: 4987500, pvExport: 0, operationSubsidy: 0, gross: 4987500 },
+    revenueY1: { charging: 4987500, pvExport: 0, operationSubsidy: 0, storageValue: 0, gross: 4987500 },
     energyCostY1: 3565174,
     netCashFlowY1PreTax: 1086026,
     annualCashFlow: [-3524500, 814519, 814519],

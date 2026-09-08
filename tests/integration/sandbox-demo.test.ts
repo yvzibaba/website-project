@@ -87,7 +87,7 @@ describeDb("R8.8a 示范项目模型 · 存版→重开一致（Neon Postgres）
     const sc = proj!.scenarios[0];
     expect(sc.isBaseline).toBe(true);
     expect(sc.calcStatus).toBe("ok");
-    expect(sc.calcRef).toBe("model@1.0.0");
+    expect(sc.calcRef).toBe("model@1.1.0");
 
     // (1) 重开一致：用**落库的 paramLayers** 回放喂引擎 → CalcResult 深等于客户端当初算的那份（§9 可复算）。
     const replayLayers = toEngineLayers(sc.paramLayers as StoredParamLayers);
@@ -147,12 +147,12 @@ describeDb("R8.8a 示范项目模型 · 存版→重开一致（Neon Postgres）
     if (!res.ok) return;
     projectIds.push(res.projectId);
     const sc = (await getProjectWithScenarios(res.projectId))!.scenarios[0];
-    // 数字焊自 sandbox-store 集成基线（全国通用、无覆写）：证明打开示范模型、什么都不改 == 既有基线。
+    // 数字焊自 sandbox-store 集成基线（全国通用、无覆写；R9.0 含 Δ_sto）：证明打开示范模型、什么都不改 == 引擎基线。
     expect(num(sc.capexNet)!).toBeCloseTo(3524500, 0);
-    expect(num(sc.npv)!).toBeCloseTo(4277409, 0);
-    expect(num(sc.irrPct)!).toBeCloseTo(23.7553, 3);
-    expect(num(sc.paybackYears)!).toBeCloseTo(5.28, 2);
-    expect(num(sc.roiRatio)!).toBeCloseTo(4.0035, 3);
+    expect(num(sc.npv)!).toBeCloseTo(4448573, 0);
+    expect(num(sc.irrPct)!).toBeCloseTo(24.3497, 3);
+    expect(num(sc.paybackYears)!).toBeCloseTo(5.14, 2);
+    expect(num(sc.roiRatio)!).toBeCloseTo(4.0880, 3);
     const snap = sc.calcResult as { needsProfessionalReview?: boolean };
     expect(snap.needsProfessionalReview).toBe(true);
   });

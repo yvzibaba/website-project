@@ -15,6 +15,16 @@
  *   E2 OPEX（元/年，随通胀逐年放大）= 光伏(装机×元/kWp·年) + 储能(容量×元/kWh·年) + 桩(桩数×元/台·年) + 电站固定运营成本。
  *   E3 收入（元/年）= 充电(电池侧年电量×综合充电单价) + 余电上网(上网量×上网电价) + 运营补贴(充电量×补贴元/kWh)。
  *      · 综合充电单价 `chargingPrice` 设为"电费+服务费合一、向重卡收取"的口径；据此与 E4 购电成本配对，避免重复计费。
+ *   E3b 储能价值增量 Δ_sto（元/年，R9.0 Step 2 接入）= SVE（sandbox-storage-value.ts）按当年平衡电量算出的
+ *      峰谷套利 Δ_arb + 光伏消纳 Δ_pv，**加性记入收入侧**。E4 保持"无储能扁平反事实"不变（Imp0×p），
+ *      两者之差恒等于真实成本差（I3 恒等式，sandbox-storage-value.ts 头注），故不重复计价。
+ *      · 年度代理口径（ISSUE-1/4 裁决）：p_valley = p − spread/2、margin = p − p_valley/η；σ 为"峰时可套利
+ *        下网电量比例"的年度代理而非逐时电量；消纳腿在当前年度平衡下恒为 0（Exp0>0 ⟺ Imp0=0 互斥），
+ *        属**已声明的 S1 接口缺口**——消纳价值需日内形态建模，与逐时电价同批立项。
+ *      · 价格随 E5 通胀先行放大后入参（margin 对价格线性齐次 → Δ_sto,y = inflFactor × 年1口径值）；
+ *        吞吐侧 D_max,y = min(E·w, P·H)·min(运营天数, 寿命封顶)·(1−δ_s)^(y−1) 随容量衰减。
+ *      · 新增 6 个 storage-scoped 参数（SOC 窗口/σ/δ_s/放电窗口/峰谷价差），仅在 hasStorage 时校验；
+ *        缺失 → missing_econ_inputs（诚实列键），非法 → SVE 安全归零 + note，绝不编造。
  *   E4 购电成本（元/年）= 下网电量×工商业电价（下网部分随通胀放大；自用光伏电量不产生现金购电成本，即光伏的价值来源）。
  *   E5 逐年：光伏量按衰减 (1−deg%)^(y−1) 递减→ 再平衡自用/上网/下网（唯一按"实际量"递减项）；
  *      所有名义单价（充电单价/上网电价/补贴/电价/OPEX）随 `inflation%` 同步放大（假设"实际价不变"，
@@ -23,7 +33,8 @@
  *   E7 期末残值 = 末年追加 `grossCapex×residualValue%`。
  *   E8 flows[0] = −净CAPEX，flows[y] = 第 y 年税后净现金流(+末年残值)；喂 npv/irr/payback/roi。折现率/期限取 finance 参数。
  *   ── 刻意留白（V1，标 needsProfessionalReview / 待 R6+ 精化）：无融资结构利息税盾、无流动资金、无敏感性内嵌（R2.3）、
- *      无逐时曲线（S1）、无 SOH/温度/弃电（S5）、无充电需求增长曲线、残值不再按通胀折算（E7 取名义常数）。
+ *      无逐时曲线（S1，故消纳腿恒 0）、无 SOH/温度/弃电（S5）、无充电需求增长曲线、残值不再按通胀折算（E7 取名义常数）。
+ *      R9.0 已接：储能峰谷套利价值（SVE 年度代理口径，E3b）；仍留白：消纳腿日内形态、逐时电价、E4 分时化。
  */
 import { resolveSandbox } from "@/server/sandbox-params";
 import { collectInputProvenance, type InputProvenance } from "@/server/parameter-engine";
@@ -34,6 +45,7 @@ import {
   annualEnergyBalance,
   TECH_VERSION,
 } from "@/server/sandbox-tech";
+import { storageValueDelta } from "@/server/sandbox-storage-value";
 import {
   npv,
   irr,
@@ -46,7 +58,7 @@ import {
 } from "@/server/sandbox-finance";
 
 /** 编排引擎版本（改经济口径须升版并记原因，宪法第 13 条）。 */
-export const MODEL_VERSION = "1.0.0";
+export const MODEL_VERSION = "1.1.0"; // 1.1.0：R9.0 Step 2 接入 SVE 储能价值 Δ_sto（E3b，加性收入项，E4/财务原语零改动）
 
 /** 溯源引用（组合各内核版本，供报告标注"这组数是按哪几版算的"，第 7/16 条）。 */
 export function modelCalcRef(): string {
@@ -84,6 +96,21 @@ const ECON_KEYS = {
 
 const ECON_REQUIRED: readonly string[] = Object.values(ECON_KEYS);
 
+/**
+ * R9.0 Step 2 · storage-scoped 经济键（SVE Δ_sto 所需，**刻意不进 ECON_REQUIRED**）：
+ * 只在 hasStorage 时校验——无储能场景不因缺这些键而失败（storage=0 零 churn 的前提），
+ * 有储能却缺键 → missing_econ_inputs 诚实列键（绝不猜默认收益）。
+ */
+const STORAGE_ECON_KEYS = {
+  socMinPct: "tech.storageSocMin", // SOC 下限 %
+  socMaxPct: "tech.storageSocMax", // SOC 上限 %
+  peakLoadSharePct: "tech.storagePeakLoadShare", // σ：峰时可套利下网电量比例 %
+  degradationPctPerYear: "tech.storageDegradation", // δ_s：储能年容量衰减 %/年
+  dischargeWindowHours: "tech.storageDischargeWindowHours", // H_dis：日均可放电时长 h/日
+  peakValleySpread: "region.peakValleySpread", // 峰谷价差 元/kWh（p_valley = p − spread/2）
+} as const;
+const STORAGE_ECON_REQUIRED: readonly string[] = Object.values(STORAGE_ECON_KEYS);
+
 export interface CapexBreakdown {
   pv: number;
   storage: number;
@@ -103,6 +130,8 @@ export interface RevenueBreakdownY1 {
   charging: number;
   pvExport: number;
   operationSubsidy: number;
+  /** R9.0 Step 2 · 储能价值增量 Δ_sto（SVE 年度代理口径，元/年；无储能恒 0）。 */
+  storageValue: number;
   gross: number;
 }
 
@@ -203,6 +232,19 @@ export function computeEconomics(
   const hasStorage =
     storageEnergy > 0 && storagePower > 0 && tech.storageIncluded;
 
+  // ── R9.0 E3b 前置：storage-scoped 键校验（仅 hasStorage 时；缺失诚实列键，绝不猜默认收益）──
+  // 刻意不进 ECON_REQUIRED：无储能场景不因缺这些键而失败（storage=0 零 churn 的前提）。
+  if (hasStorage) {
+    const missingSto = STORAGE_ECON_REQUIRED.filter((k) => numeric[k] == null);
+    if (missingSto.length > 0)
+      return baseErr("missing_econ_inputs", "缺少储能价值参数（SVE）", { missingInputs: missingSto });
+    const invalidSto = STORAGE_ECON_REQUIRED.filter(
+      (k) => numeric[k] != null && !Number.isFinite(numeric[k] as number),
+    );
+    if (invalidSto.length > 0)
+      return baseErr("invalid_econ_inputs", "储能价值参数含非法值（SVE）", { invalidInputs: invalidSto });
+  }
+
   // ── E1 CAPEX ──
   const pvCapex = pvCapacity * 1000 * g(ECON_KEYS.pvCapexPerW);
   const storageCapex = hasStorage ? storageEnergy * 1000 * g(ECON_KEYS.storageCapexPerWh) : 0;
@@ -223,7 +265,50 @@ export function computeEconomics(
   const revCharging = deliveredY1 * g(ECON_KEYS.chargingPrice);
   const revExport = tech.firstYear.pvExportY1Kwh * g(ECON_KEYS.feedInTariff);
   const revSubsidy = deliveredY1 * g(ECON_KEYS.operationSubsidyPerKwh);
-  const revenueY1 = revCharging + revExport + revSubsidy;
+
+  // ── R9.0 E3b：SVE 储能价值增量（单年纯函数编排；无储能恒 0 → storage=0 场景逐字节零 churn）──
+  // 价格按 E5 口径先行放大后入参（margin 对价格线性齐次 → Δ_sto,y = inflFactor × 年1口径值）；
+  // E4 保持"无储能扁平反事实"，Δ 加在收入侧（I3 恒等式：扁平成本差 ≡ Δ_sto，不重复计价）。
+  const sveZeroedReasons: string[] = [];
+  let sveY1PvLegZero = false; // y1 消纳腿为 0（S1 接口缺口诊断，供 notes 诚实透出）
+  const sveDeltaFor = (
+    yearIndex: number,
+    importKwh: number,
+    exportKwh: number,
+    inflFactor: number,
+  ): number => {
+    if (!hasStorage) return 0;
+    const sv = storageValueDelta({
+      storageEnergyKwh: storageEnergy,
+      storagePowerKw: storagePower,
+      socMinPct: g(STORAGE_ECON_KEYS.socMinPct),
+      socMaxPct: g(STORAGE_ECON_KEYS.socMaxPct),
+      dischargeWindowHours: g(STORAGE_ECON_KEYS.dischargeWindowHours),
+      operatingDays: numeric["project.operatingDays"] as number,
+      cycleLife: numeric["tech.storageCycleLife"] as number,
+      calendarLifeYears: numeric["tech.storageCalendarLife"] as number,
+      degradationPctPerYear: g(STORAGE_ECON_KEYS.degradationPctPerYear),
+      yearIndex,
+      etaFraction: (numeric["tech.storageRoundTripEff"] as number) / 100,
+      pvSurplusKwh: exportKwh,
+      gridImportKwh: importKwh,
+      peakLoadShareFraction: g(STORAGE_ECON_KEYS.peakLoadSharePct) / 100,
+      elecPriceYuanPerKwh: g(ECON_KEYS.elecPrice) * inflFactor,
+      spreadYuanPerKwh: g(STORAGE_ECON_KEYS.peakValleySpread) * inflFactor,
+      feedInYuanPerKwh: g(ECON_KEYS.feedInTariff) * inflFactor,
+    });
+    if (sv.included) {
+      if (yearIndex === 1 && sv.dPvYuan === 0) sveY1PvLegZero = true;
+      return sv.dStoYuan;
+    }
+    const rz = `第${yearIndex}年 ${sv.reason}`;
+    if (!sveZeroedReasons.includes(rz)) sveZeroedReasons.push(rz);
+    return 0;
+  };
+  // y1 Δ_sto：用 firstYear 能量（= y=1 平衡，衰减因子为 1）+ 通胀因子 1；主循环 y=1 与此恒等。
+  const deltaStoY1 = sveDeltaFor(1, tech.firstYear.gridImportY1Kwh, tech.firstYear.pvExportY1Kwh, 1);
+
+  const revenueY1 = revCharging + revExport + revSubsidy + deltaStoY1;
   const energyCostY1 = tech.firstYear.gridImportY1Kwh * g(ECON_KEYS.elecPrice);
   const netY1PreTax = revenueY1 - energyCostY1 - opexY1;
 
@@ -246,11 +331,13 @@ export function computeEconomics(
     const importY = bal ? bal.gridImportKwh : acLoad;
     const exportY = bal ? bal.pvExportKwh : 0;
     const inflFactor = (1 + infl) ** (y - 1); // E5 名义单价随通胀同步放大
+    const deltaStoY = sveDeltaFor(y, importY, exportY, inflFactor); // E3b：价格已含通胀，Δ 不再乘 inflFactor
     const revY =
       (deliveredY1 * g(ECON_KEYS.chargingPrice) +
         exportY * g(ECON_KEYS.feedInTariff) +
         deliveredY1 * g(ECON_KEYS.operationSubsidyPerKwh)) *
-      inflFactor;
+        inflFactor +
+      deltaStoY;
     const costY = (importY * g(ECON_KEYS.elecPrice) + opexY1) * inflFactor;
     let netY = revY - costY;
     if (netY > 0) netY *= 1 - tax; // E6 税后（无折旧抵税，简化）
@@ -278,6 +365,15 @@ export function computeEconomics(
   if (payD === null) notes.push("折现回收期超出计算期：分析期内未回本（不假设迟早回本）");
   if (!hasStorage && storageEnergy > 0)
     notes.push("储能键存在但技术层判定未纳入，储能相关 CAPEX/OPEX 按 0 计");
+  if (hasStorage && deltaStoY1 > 0)
+    notes.push(
+      `储能年价值增量 Δ_sto≈${round(deltaStoY1, 0)} 元（R9.0 SVE 年度代理口径：σ/SOC窗口/年衰减/放电窗口均为占位假设，非逐时峰谷模型，须专业复核）`,
+    );
+  if (sveY1PvLegZero)
+    notes.push(
+      "储能消纳腿为 0：年度能量平衡下光伏富余与下网电量互斥（S1 接口缺口，已声明留白），消纳价值需日内形态建模",
+    );
+  for (const rz of sveZeroedReasons) notes.push(`储能价值按 0 计（SVE 诚实归零）：${rz}`);
 
   return {
     ok: true,
@@ -310,6 +406,7 @@ export function computeEconomics(
       charging: round(revCharging, 0),
       pvExport: round(revExport, 0),
       operationSubsidy: round(revSubsidy, 0),
+      storageValue: round(deltaStoY1, 0),
       gross: round(revenueY1, 0),
     },
     energyCostY1: round(energyCostY1, 0),

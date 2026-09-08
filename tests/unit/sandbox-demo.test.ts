@@ -268,12 +268,12 @@ describe("sandbox-demo · 全曝光滑杆区间内网关值永不被引擎裁剪
   });
 });
 
-describe("sandbox-demo · 零churn：默认态经济结果与 R1–R7 基线逐字相等", () => {
+describe("sandbox-demo · 零churn：默认态经济结果与引擎基线逐字相等", () => {
   it("computeDemoScenario(默认, 无改动) 的 CalcResult 深等于 runSandboxModelBaseline()", () => {
     const c = demoBaseline();
     expect(c.calc).toEqual(runSandboxModelBaseline());
-    // 且不因示范项目而 bump 经济内核版本
-    expect(c.calc.ok && c.calc.engineVersions.model).toBe("1.0.0");
+    // 且不因示范项目而 bump 经济内核版本（版本只随引擎走，R9.0 起 1.1.0）
+    expect(c.calc.ok && c.calc.engineVersions.model).toBe("1.1.0");
   });
 
   it("示范项目结论恒标需专业人工确认（诚实边界不回退）", () => {

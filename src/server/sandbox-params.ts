@@ -30,7 +30,7 @@ import {
  */
 
 /** 参数模板版本（改结构/默认口径须升版并记录原因，宪法第 13 条）。 */
-export const SANDBOX_PARAMS_VERSION = "1.1.0"; // 1.1.0：新增 project.chargingPrice 收益端第一杠杆（供 R2.4 编排消费）
+export const SANDBOX_PARAMS_VERSION = "1.2.0"; // 1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
 
 /** 沙盘模板的稳定标识（供 R3 建项目时引用模板来源）。 */
 export const SANDBOX_DEPOT_TEMPLATE = "new-energy-heavy-truck-pv-storage-charging" as const;
@@ -124,6 +124,12 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("tech.storageCycleLife", "储能循环寿命", "technology", "pro", 6000, "次", { min: 2000, max: 12000 }),
   num("tech.storageCalendarLife", "储能日历寿命", "technology", "pro", 10, "年", { min: 5, max: 20 }),
   num("tech.storageOm", "储能年运维成本", "technology", "pro", 12, "元/kWh·年", { min: 0, max: 40 }),
+  // ── R9.0 Step 2 · SVE 储能价值五键（接入 sandbox-storage-value.ts，全为占位假设/年度代理口径）──
+  num("tech.storagePeakLoadShare", "峰时可套利下网电量比例σ", "technology", "pro", 40, "%", { min: 0, max: 100 }),
+  num("tech.storageSocMin", "储能 SOC 下限", "technology", "pro", 10, "%", { min: 0, max: 90 }),
+  num("tech.storageSocMax", "储能 SOC 上限", "technology", "pro", 90, "%", { min: 10, max: 100 }),
+  num("tech.storageDegradation", "储能年容量衰减", "technology", "pro", 2.5, "%/年", { min: 0, max: 10 }),
+  num("tech.storageDischargeWindowHours", "日均可放电时长窗口", "technology", "pro", 2, "h/日", { min: 0.5, max: 12 }),
   num("tech.chargerEfficiency", "充电桩效率", "technology", "pro", 94, "%", { min: 85, max: 99 }),
   num("tech.chargerCapex", "充电桩单位造价", "technology", "advanced", 500, "元/kW", { min: 200, max: 1500 }),
   num("tech.chargerOm", "单桩年运维成本", "technology", "pro", 3000, "元/台·年", { min: 0, max: 10000 }),

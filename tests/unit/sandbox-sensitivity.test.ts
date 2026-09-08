@@ -10,7 +10,7 @@ import {
   computeTornado,
   deriveRiskFlags,
 } from "../../src/server/sandbox-sensitivity";
-import { runSandboxModelBaseline, runSandboxModel } from "../../src/server/sandbox-model";
+import { runSandboxModelBaseline, runSandboxModel, type CalcResultOk } from "../../src/server/sandbox-model";
 
 describe("sandbox-sensitivity · 版本", () => {
   it("版本语义化、calcRef 携带版本", () => {
@@ -177,6 +177,92 @@ describe("TASK 5 · 创始人点名 5 项覆盖度", () => {
 
   it("默认扫描集规模≥5（覆盖创始人 5 项要求里可真实量化的 4 项 + 6 项其他主杠杆）", () => {
     expect(t.rows.length).toBeGreaterThanOrEqual(10);
+  });
+});
+
+/**
+ * 阶段1（R9.0 后续 · 2026-09-08 创始人批准）——`region.peakValleySpread` 敏感性解锁合理性
+ * （SENSITIVITY_VERSION 1.2.0→1.3.0，纯加性：E3/E4/finance/参数默认值零改动）。
+ *
+ * 验收：① spread 进默认扫描集、±15% 摆幅真实非零、方向为正（spread↑→套利空间↑→储能价值↑→NPV↑）；
+ *       ② TOP1 仍为综合充电单价（新行不挤占第一杠杆）；
+ *       ③ 低/中/高 spread（0.3 / 0.6 默认 / 1.0）下储能价值、NPV 严格单调增，IRR 单调增，
+ *          折现回收期严格单调减（先断言可解再比较，绝不静默跳过）；
+ *       ④ spread=0 → 储能价值诚实归零（套利腿 margin≤0 关闭 + 消纳腿 S1 年度互斥恒 0），
+ *          与 causality R9.0「spread=0 ⟺ 旧引擎 4,277,409」焊点互为印证。
+ */
+describe("阶段1 · spread 解锁合理性（SENSITIVITY_VERSION 1.3.0）", () => {
+  const t = computeTornado();
+  const spreadRow = t.rows.find((r) => r.key === "region.peakValleySpread");
+
+  it("默认扫描集含 region.peakValleySpread（±15%），摆幅真实非零且方向为正", () => {
+    expect(spreadRow).toBeDefined();
+    if (!spreadRow) return;
+    expect(spreadRow.deltaPct).toBe(15);
+    expect(spreadRow.swing).not.toBeNull();
+    expect(spreadRow.swing!).toBeGreaterThan(0); // spread↑ → NPV↑（储能套利价值腿）
+    expect(spreadRow.lowMetric!).toBeLessThan(spreadRow.highMetric!);
+    // 扰动端输入落在规格界内（±15% 于 [0,1.8] 不触边），非被裁剪的伪摆幅
+    expect(spreadRow.lowInput).toBeGreaterThan(0);
+    expect(spreadRow.highInput).toBeLessThan(1.8);
+  });
+
+  it("TOP1 仍是综合充电单价（spread 为第二梯队杠杆，不挤占收益第一杠杆）", () => {
+    expect(t.mostSensitiveKey).toBe("project.chargingPrice");
+  });
+
+  it("低/中/高 spread：储能价值与 NPV 严格单调增、IRR 单调增、折现回收期严格单调减", () => {
+    const at = (values: Record<string, number>): CalcResultOk => {
+      const r = runSandboxModel({ user: { values } });
+      if (!r.ok) throw new Error(`模型失败：${"reason" in r ? r.reason : "unknown"}`);
+      return r;
+    };
+    const low = at({ "region.peakValleySpread": 0.3 });
+    const mid = at({}); // 默认 0.6 元/kWh
+    const high = at({ "region.peakValleySpread": 1.0 });
+
+    // 储能价值（首年收入侧 Δ_sto）严格增
+    expect(mid.revenueY1.storageValue).toBeGreaterThan(low.revenueY1.storageValue);
+    expect(high.revenueY1.storageValue).toBeGreaterThan(mid.revenueY1.storageValue);
+    // NPV 严格增（与 causality R9.0 阶梯同向）
+    expect(mid.metrics.npv).toBeGreaterThan(low.metrics.npv);
+    expect(high.metrics.npv).toBeGreaterThan(mid.metrics.npv);
+    // IRR：先断言三点全部可解，再比较（防静默跳过造成假绿）。IrrResult.ok 为普通 boolean
+    // （非 discriminant union），须显式提取 value 再比较。
+    const irrLow = low.metrics.irr.ok ? low.metrics.irr.value : undefined;
+    const irrMid = mid.metrics.irr.ok ? mid.metrics.irr.value : undefined;
+    const irrHigh = high.metrics.irr.ok ? high.metrics.irr.value : undefined;
+    expect(typeof irrLow).toBe("number");
+    expect(typeof irrMid).toBe("number");
+    expect(typeof irrHigh).toBe("number");
+    if (irrLow != null && irrMid != null && irrHigh != null) {
+      expect(irrMid).toBeGreaterThan(irrLow);
+      expect(irrHigh).toBeGreaterThan(irrMid);
+    }
+    // 折现回收期严格减（回本更快）；先断言非 null 再比较
+    expect(low.metrics.discountedPaybackYears).not.toBeNull();
+    expect(mid.metrics.discountedPaybackYears).not.toBeNull();
+    expect(high.metrics.discountedPaybackYears).not.toBeNull();
+    if (
+      low.metrics.discountedPaybackYears != null &&
+      mid.metrics.discountedPaybackYears != null &&
+      high.metrics.discountedPaybackYears != null
+    ) {
+      expect(high.metrics.discountedPaybackYears).toBeLessThan(mid.metrics.discountedPaybackYears);
+      expect(mid.metrics.discountedPaybackYears).toBeLessThan(low.metrics.discountedPaybackYears);
+    }
+  });
+
+  it("spread=0 → 储能价值诚实归零（套利腿关闭，消纳腿 S1 年度互斥恒 0）", () => {
+    const r = runSandboxModel({ user: { values: { "region.peakValleySpread": 0 } } });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.revenueY1.storageValue).toBe(0);
+  });
+
+  it("默认集规模 ≥11（10 既有 + spread），确定性不破坏", () => {
+    expect(t.rows.length).toBeGreaterThanOrEqual(11);
+    expect(computeTornado()).toEqual(computeTornado());
   });
 });
 

@@ -523,8 +523,10 @@ export function SandboxWorkbench() {
 
               <div className="text-[11px] text-zinc-400">
                 溯源 {vm.calcRef} · 版本 model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} /
-                finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} ·
-                regions@{SANDBOX_REGIONS_VERSION} · profiles@{SANDBOX_PROFILES_VERSION} · 视图 v{vm.viewVersion}
+                finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} / storage@
+                {vm.engineVersions?.storage ?? "none"}
+                （历史快照无此键 = 储能内核接入前生成）· regions@{SANDBOX_REGIONS_VERSION} · profiles@
+                {SANDBOX_PROFILES_VERSION} · 视图 v{vm.viewVersion}
               </div>
             </>
           )}

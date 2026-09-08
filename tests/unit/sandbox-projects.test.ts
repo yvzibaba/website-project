@@ -226,14 +226,44 @@ describe("sandbox-projects · 读取（精简视图，不外泄快照/Decimal）
     expect(res.status).toBe("forbidden");
     expect(store.getProjectWithScenarios).not.toHaveBeenCalled();
   });
-  it("readVersions：STAFF 可读他人项目版本时间线", async () => {
+  it("readVersions：STAFF 可读他人项目版本时间线（含冻结摘要：model/storage 版本 + 冻结指标，缺 storage 键映射 none）", async () => {
     findScenario.mockResolvedValue({ id: "s1", projectId: "p1", project: { ownerId: "u-owner" } });
     (store.listScenarioVersions as ReturnType<typeof vi.fn>).mockResolvedValue([
-      { id: "v1", seq: 2, label: "L", note: null, calcRef: "model@1.0.0", savedBy: "human:x", createdAt: new Date("2026-05-01T00:00:00.000Z") },
+      {
+        id: "v1",
+        seq: 2,
+        label: "L",
+        note: null,
+        calcRef: "model@1.0.0",
+        savedBy: "human:x",
+        createdAt: new Date("2026-05-01T00:00:00.000Z"),
+        frozen: {
+          calcStatus: "ok",
+          capexNet: "111.11",
+          opexY1Gross: "22.22",
+          npv: "333.33",
+          irrPct: "5.0000",
+          paybackYears: "4.50",
+          roiRatio: "0.2500",
+          engineVersions: { model: "1.0.0", tech: "1.0.0", finance: "1.0.0", params: "1.1.0", storage: null },
+        },
+      },
     ]);
     const res = await readSandboxScenarioVersions("s1", { user: ADMIN });
     expect(res.status).toBe("ok");
     const versions = (res as { versions: Array<Record<string, unknown>> }).versions;
     expect(versions[0].createdAt).toBe("2026-05-01T00:00:00.000Z");
+    // 冻结策略（2026-09-08 裁决）：逐版本回显内核身份 + 冻结指标（原样提取，不重算）。
+    expect(versions[0].frozen).toEqual({
+      calcStatus: "ok",
+      modelVersion: "1.0.0",
+      storageModelVersion: "none", // 历史快照缺 storage 键 → 显式 "none"
+      capexNet: "111.11",
+      opexY1Gross: "22.22",
+      npv: "333.33",
+      irrPct: "5.0000",
+      paybackYears: "4.50",
+      roiRatio: "0.2500",
+    });
   });
 });

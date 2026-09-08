@@ -29,7 +29,7 @@ import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
 const log = logger.child({ module: "server/sandbox-store" });
 
 /** 持久层版本（改映射口径须升版并记原因，规则 13）。 */
-export const STORE_VERSION = "1.0.2"; // 1.0.2：createProject 加 regionId 外键安全护栏（§17 E2E 抓出：地区包代码塞进 Region FK 会 P2003→500）
+export const STORE_VERSION = "1.0.3"; // 1.0.3：内核升级冻结策略（创始人裁决 2026-09-08）——updateScenarioLayers 在内核身份变化时同事务自动把旧成功结果冻结为 ProjectVersion；新增冻结摘要读路径（纯提取不重算）。零 schema 变更，全复用既有版本结构
 
 /**
  * 落库的参数分层（去掉引擎注入项 `derived`——派生值注册在引擎里，不该持久化函数）。
@@ -131,6 +131,130 @@ function decimalStr(n: number | null | undefined, dp: number): string | null {
 /** JSON 快照归一：把 NaN/Infinity 折成 null（JSON 本无此值），保证落库结构确定可回读。 */
 function jsonSafe<T>(v: T): T {
   return JSON.parse(JSON.stringify(v)) as T;
+}
+
+/* ─────────── 冻结策略（创始人裁决 2026-09-08「历史项目"生成时模型版本"冻结策略」） ───────────
+ * 目标：模型升级后，历史结论绝不被静默覆盖；每个快照可回答「按哪几版内核算的」。
+ * 复用既有 ProjectVersion 不可变切片，不另建版本系统、不改 schema。
+ * ──────────────────────────────────────────────────────────────────────────────── */
+
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+/** 从 CalcResult（或其 JSON 快照）取 engineVersions 指纹；非对象/缺失 → undefined。 */
+function engineVersionsOf(calc: unknown): Record<string, unknown> | undefined {
+  if (isRecord(calc) && isRecord(calc.engineVersions)) return calc.engineVersions as Record<string, unknown>;
+  return undefined;
+}
+
+/**
+ * engineVersions 指纹：**键排序后**序列化。
+ * 必须与键序无关——Postgres jsonb 列不保留对象键序（读回时键被规范化重排），直接 stringify
+ * 会让「同内核」被误判为「指纹变化」，产生冗余冻结（E2E 实证）。值仅版本串，排序即唯一规范形。
+ */
+function engineVersionsFingerprint(ev: Record<string, unknown> | undefined): string {
+  if (!ev) return "";
+  return JSON.stringify(Object.keys(ev).sort().map((k) => [k, ev[k]]));
+}
+
+/**
+ * 判定「写新结果前是否必须先把旧结果冻结为不可变版本」（纯函数，离线单测）。
+ *
+ * 触发条件（任一成立，且旧结果为**成功**快照——失败快照不是结论，覆写无损失）：
+ *   1. calcRef 变化（如 model@1.0.0 → model@1.1.0，即模型升版后重算）；
+ *   2. engineVersions 指纹变化（含**没有** engineVersions 键的更老历史行——首次再编辑即受保护）。
+ * 同内核下的普通参数编辑 → 不冻结（version++ 就地覆盖正是 §4 命脉的日常路径）。
+ */
+export function shouldAutoFreezeVersion(input: {
+  oldCalcRef: string | null;
+  oldCalcResult: unknown;
+  nextCalcRef: string;
+  nextEngineVersions?: Record<string, unknown>;
+}): { freeze: boolean; why: string } {
+  const old = input.oldCalcResult;
+  if (!isRecord(old) || old.ok !== true) return { freeze: false, why: "旧结果缺失或非成功快照" };
+  const oldRef = typeof old.calcRef === "string" ? old.calcRef : input.oldCalcRef;
+  if (oldRef != null && oldRef !== input.nextCalcRef)
+    return { freeze: true, why: `calcRef ${oldRef} → ${input.nextCalcRef}` };
+  const oldEv = engineVersionsOf(old);
+  if (engineVersionsFingerprint(oldEv) !== engineVersionsFingerprint(input.nextEngineVersions))
+    return { freeze: true, why: "engineVersions 指纹变化（含历史行缺版本键）" };
+  return { freeze: false, why: "" };
+}
+
+function strOrNull(v: unknown): string | null {
+  return typeof v === "string" ? v : null;
+}
+
+/** 冻结版本的可展示摘要（全部从冻结 calcResult JSON **原样提取**，绝不重算——历史数字不变的承诺）。 */
+export interface FrozenVersionSummary {
+  calcStatus: string;
+  calcRef: string | null;
+  capexNet: string | null;
+  opexY1Gross: string | null;
+  npv: string | null;
+  irrPct: string | null;
+  paybackYears: string | null;
+  roiRatio: string | null;
+  engineVersions: {
+    model: string | null;
+    tech: string | null;
+    finance: string | null;
+    params: string | null;
+    /** 旧行缺键 → null（API 层映射 "none" = SVE 之前生成）。 */
+    storage: string | null;
+  };
+}
+
+function frozenNullSummary(
+  calcStatus: string,
+  calcRef: string | null,
+  engineVersions: FrozenVersionSummary["engineVersions"],
+): FrozenVersionSummary {
+  return {
+    calcStatus,
+    calcRef,
+    capexNet: null,
+    opexY1Gross: null,
+    npv: null,
+    irrPct: null,
+    paybackYears: null,
+    roiRatio: null,
+    engineVersions,
+  };
+}
+
+/**
+ * 把一条冻结 calcResult JSON 提炼为可展示摘要。成功快照复用 `projectCalcToColumns`
+ * （同一四舍五入/诚实 null 口径），另补 opexY1 与 engineVersions；形态损坏时诚实降级
+ * calcStatus="unreadable"，绝不抛错、绝不编数。
+ */
+export function frozenVersionSummary(calcResult: unknown): FrozenVersionSummary {
+  const ev: Record<string, unknown> = engineVersionsOf(calcResult) ?? {};
+  const engineVersions = {
+    model: strOrNull(ev.model),
+    tech: strOrNull(ev.tech),
+    finance: strOrNull(ev.finance),
+    params: strOrNull(ev.params),
+    storage: strOrNull(ev.storage),
+  };
+  if (!isRecord(calcResult)) return frozenNullSummary("unreadable", null, engineVersions);
+  if (calcResult.ok !== true) {
+    const status = typeof calcResult.reason === "string" ? calcResult.reason : "unreadable";
+    return frozenNullSummary(status, strOrNull(calcResult.calcRef), engineVersions);
+  }
+  try {
+    const cols = projectCalcToColumns(calcResult as unknown as CalcResult);
+    const opex = isRecord(calcResult.opexY1) ? calcResult.opexY1 : {};
+    return {
+      ...cols,
+      opexY1Gross: decimalStr(typeof opex.gross === "number" ? opex.gross : null, 2),
+      engineVersions,
+    };
+  } catch {
+    return frozenNullSummary("unreadable", strOrNull(calcResult.calcRef), engineVersions);
+  }
 }
 
 function changeLogArgs(
@@ -252,23 +376,83 @@ export async function createProject(input: CreateProjectInput): Promise<CreatePr
   }
 }
 
-/** 更新情景参数分层 → 现算重跑 → 回写快照与汇总列（version++）。§4 命脉的持久化落点。 */
+/** 更新情景参数分层 → 现算重跑 → 回写快照与汇总列（version++）。§4 命脉的持久化落点。
+ *
+ * 冻结策略（创始人裁决 2026-09-08）：写新结果前若检测到**计算内核身份变化**（shouldAutoFreezeVersion），
+ * 在**同一事务内**先把旧成功结果冻结为一条不可变 ProjectVersion（seq=max+1，ChangeLog 记原因），
+ * 再就地覆写当前态——历史结论绝不被新模型静默覆盖。同内核普通参数编辑照旧 version++、不产生冗余版本。
+ */
 export async function updateScenarioLayers(
   scenarioId: string,
   layers: StoredParamLayers,
   opts: { actor?: string | null } = {},
 ): Promise<
-  { ok: true; calcStatus: string; version: number } | { ok: false; reason: "not_found" | "error"; detail: string }
+  | { ok: true; calcStatus: string; version: number; frozenSeq?: number }
+  | { ok: false; reason: "not_found" | "error"; detail: string }
 > {
   const data = computeScenarioData(layers);
   try {
     const existing = await prisma.projectScenario.findUnique({
       where: { id: scenarioId },
-      select: { id: true, projectId: true, version: true },
+      select: {
+        id: true,
+        projectId: true,
+        version: true,
+        calcRef: true,
+        calcResult: true,
+        paramLayers: true,
+        paramSnapshot: true,
+      },
     });
     if (!existing) return { ok: false, reason: "not_found", detail: "情景不存在" };
 
+    const freeze = shouldAutoFreezeVersion({
+      oldCalcRef: existing.calcRef,
+      oldCalcResult: existing.calcResult,
+      nextCalcRef: data.calcRef,
+      nextEngineVersions: engineVersionsOf(data.calcResult),
+    });
+
     const updated = await prisma.$transaction(async (tx) => {
+      let frozenSeq: number | undefined;
+      if (freeze.freeze) {
+        const maxSeq = await tx.projectVersion.aggregate({
+          where: { scenarioId },
+          _max: { seq: true },
+        });
+        frozenSeq = (maxSeq._max.seq ?? 0) + 1;
+        await tx.projectVersion.create({
+          data: {
+            scenarioId,
+            projectId: existing.projectId,
+            seq: frozenSeq,
+            label: null,
+            note: `自动冻结（内核升级保护）：${freeze.why}`,
+            paramLayers: existing.paramLayers as object,
+            paramSnapshot: existing.paramSnapshot as object,
+            calcResult: (existing.calcResult ?? Prisma.DbNull) as Prisma.InputJsonValue,
+            calcRef: existing.calcRef,
+            needsProfessionalReview:
+              existing.calcResult &&
+              typeof existing.calcResult === "object" &&
+              "needsProfessionalReview" in (existing.calcResult as object)
+                ? Boolean((existing.calcResult as { needsProfessionalReview?: unknown }).needsProfessionalReview)
+                : true,
+            savedBy: opts.actor ?? null,
+          },
+          select: { seq: true },
+        });
+        await tx.changeLog.create({
+          data: changeLogArgs(
+            existing.projectId,
+            "UPDATE",
+            opts.actor ?? null,
+            `内核升级自动冻结旧结果为版本 v${frozenSeq}（${freeze.why}）`,
+            { calcRef: existing.calcRef },
+            { calcRef: data.calcRef, frozenSeq },
+          ),
+        });
+      }
       const s = await tx.projectScenario.update({
         where: { id: scenarioId },
         data: {
@@ -296,9 +480,14 @@ export async function updateScenarioLayers(
           { version: s.version, calcStatus: data.calcStatus },
         ),
       });
-      return s;
+      return { s, frozenSeq };
     });
-    return { ok: true, calcStatus: data.calcStatus, version: updated.version };
+    return {
+      ok: true,
+      calcStatus: data.calcStatus,
+      version: updated.s.version,
+      ...(updated.frozenSeq != null ? { frozenSeq: updated.frozenSeq } : {}),
+    };
   } catch (e) {
     return prismaErr(e, "updateScenarioLayers");
   }
@@ -411,13 +600,23 @@ export async function getProjectWithScenarios(projectId: string) {
   });
 }
 
-/** 读某情景的版本时间线（倒序）。 */
+/** 读某情景的版本时间线（倒序）。`frozen` 为该版本冻结结果的**原样提取**摘要（不重算，历史数字不变）。 */
 export async function listScenarioVersions(scenarioId: string) {
-  return prisma.projectVersion.findMany({
+  const rows = await prisma.projectVersion.findMany({
     where: { scenarioId },
     orderBy: { seq: "desc" },
-    select: { id: true, seq: true, label: true, note: true, calcRef: true, savedBy: true, createdAt: true },
+    select: {
+      id: true,
+      seq: true,
+      label: true,
+      note: true,
+      calcRef: true,
+      savedBy: true,
+      createdAt: true,
+      calcResult: true,
+    },
   });
+  return rows.map((r) => ({ ...r, frozen: frozenVersionSummary(r.calcResult) }));
 }
 
 /** Prisma 已知错误归一（不裸抛，指面对齐 case/solution-admin 口径）。 */

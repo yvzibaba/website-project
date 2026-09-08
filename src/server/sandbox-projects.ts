@@ -309,6 +309,19 @@ export async function readSandboxScenarioVersions(
       calcRef: v.calcRef,
       savedBy: v.savedBy,
       createdAt: v.createdAt.toISOString(),
+      // 冻结策略（2026-09-08 裁决）：逐版本回显「按哪几版内核算的」+ 冻结指标（原样提取，不重算）。
+      frozen: {
+        calcStatus: v.frozen.calcStatus,
+        modelVersion: v.frozen.engineVersions.model,
+        // 历史快照缺 storage 键 = SVE 之前生成 → 显式 "none"，绝不回填假值。
+        storageModelVersion: v.frozen.engineVersions.storage ?? "none",
+        capexNet: v.frozen.capexNet,
+        opexY1Gross: v.frozen.opexY1Gross,
+        npv: v.frozen.npv,
+        irrPct: v.frozen.irrPct,
+        paybackYears: v.frozen.paybackYears,
+        roiRatio: v.frozen.roiRatio,
+      },
     })),
   };
 }

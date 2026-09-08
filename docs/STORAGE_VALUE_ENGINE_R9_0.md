@@ -383,7 +383,7 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 
 **刻意不做（本批边界）**：
 
-- **敏感性扫描集未解锁 spread**（§19 步骤 5 延后）：`region.peakValleySpread` 现已真实联动，加入 `DEFAULT_SENSITIVITY_PARAMS` 是合理的下一步，但需 `SENSITIVITY_VERSION` 1.2.0→1.3.0 并重录 tornado 黄金——为避免与本次黄金重录混批，刻意留待下一小批，届时 founder 一并复审。
+- ~~**敏感性扫描集未解锁 spread**（§19 步骤 5 延后）~~ → **已于 2026-09-08 阶段1 收口（创始人批准"Spread 敏感性"，v0.61.0）**：`region.peakValleySpread` 加入 `DEFAULT_SENSITIVITY_PARAMS`（±15%，电价同族），`SENSITIVITY_VERSION` 1.2.0→**1.3.0**，E3/E4/finance/参数默认值零改动；敏感性黄金测试新增"spread 解锁合理性"块（默认集内/方向为正/TOP1 仍为充电单价 + 低/中/高 spread 0.3/0.6/1.0 下储能价值与 NPV 严格单调增、IRR 单调增、折现回收期严格单调减 + spread=0 储能价值诚实归零）。
 - 消纳腿（PV 富余）保持恒 0：S1 互斥缺口（年度确定性平衡下 Exp0>0⟺Imp0=0）已在 notes 与本档声明，分时切片/代理分解待立项（Step 1.5 报告 §S1）。
 - 融资模型（R8.8b 贷款/DSCR/Equity IRR）、逐时电价、E4 分时化：均未动。
 
@@ -428,3 +428,5 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 ---
 
 **Step 1 已于 2026-09-08 收口（四项裁决落档 §十六·五）；Step 2/3 已于同日依创始人「按照你的思路推荐继续完成项目」指令接入生产并收口（落档 §十六·六，v0.59.0）。`MODEL_VERSION` 1.1.0、`SANDBOX_PARAMS_VERSION` 1.2.0、storage>0 黄金全仓重录、storage=0 零 churn 焊点锚定、spread=0 与旧引擎逐字节交叉验证。遗留待创始人：①老项目重算版本戳策略（§16.5）；②敏感性扫描集解锁 spread（§19 步骤 5，需 SENSITIVITY_VERSION++）；③消纳腿分时建模（S1 接口缺口）。融资模型（R8.8b）、逐时电价、E4 分时化均未动。**
+
+> **后续进展（2026-09-08）**：遗留②已随**阶段1「Spread 敏感性」**收口（创始人批准，v0.61.0）——`SENSITIVITY_VERSION` 1.2.0→1.3.0，spread 入默认扫描集（±15%），低/中/高合理性验收全过，E3/E4/finance 零改动（见 §十六·六"刻意不做"块的销项记录与 CHANGELOG v0.61.0）。遗留①已由创始人批准"历史项目生成时模型版本冻结策略"并落地（v0.60.0，STORE_VERSION 1.0.3，零 schema 迁移）；遗留③消纳腿分时建模仍待立项。

@@ -19,8 +19,8 @@ import {
 import type { ResolveLayers } from "@/server/parameter-engine";
 import { runSandboxModel, runSandboxModelBaseline, type CalcResult } from "@/server/sandbox-model";
 
-/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。1.2.0（TASK 5 · 2026-09-08）：默认扫描集补 2 项——`tech.storageCapex`（储能 CAPEX）与 `project.chargePerTruck`（里程×电耗合并代理），兑现「电价/年里程/储能 CAPEX/光伏 CAPEX」四项主用户关切中此前缺席的两项；纯加性，既有排序逻辑不变。 */
-export const SENSITIVITY_VERSION = "1.2.0";
+/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。1.2.0（TASK 5 · 2026-09-08）：默认扫描集补 2 项——`tech.storageCapex`（储能 CAPEX）与 `project.chargePerTruck`（里程×电耗合并代理），兑现「电价/年里程/储能 CAPEX/光伏 CAPEX」四项主用户关切中此前缺席的两项；纯加性，既有排序逻辑不变。1.3.0（阶段1 · 2026-09-08 创始人批准）：默认扫描集解锁 `region.peakValleySpread`（±15%）——R9.0 已把它接入 E3b 储能套利腿（Δ_arb=σ·Imp0·(p−p_valley/η)），旧「P2-6 未消费」排除理由失效；基线 storage=400kWh>0 故摆幅真实非零；纯加性，E3/E4/finance 零改动。 */
+export const SENSITIVITY_VERSION = "1.3.0";
 export function sensitivityCalcRef(): string {
   return `sensitivity@${SENSITIVITY_VERSION}`;
 }
@@ -46,13 +46,18 @@ export interface SensitivityParam {
  * **未加入**的参数与理由（防"假联动"混入龙卷风）：
  *   · `project.chargerUtilization`——V1 未接入 E 层计算（P1-1），加进来 swing 恒为 0，误导读者；
  *   · `project.gridCapacity`——未参与功率约束（P1-3），同上；
- *   · `region.peakValleySpread` / `region.demandCharge` / `region.landRent` / `policy.carbonPrice` /
- *     `finance.equityRatio` / `finance.loanRate`——E 层未消费（P2-6），加了会显示"改了无反应"的伪敏感。
- *   一旦创始人批准接入 E 层，本注释过期，届时把对应键加入即可。
+ *   · `region.demandCharge` / `region.landRent` / `policy.carbonPrice` /
+ *     `finance.equityRatio` / `finance.loanRate`——E 层未消费（P2-6 剩余项），加了会显示"改了无反应"的伪敏感。
+ *
+ * **已解锁**（阶段1 · 2026-09-08 创始人批准，SENSITIVITY_VERSION 1.3.0）：
+ *   · `region.peakValleySpread`——R9.0 已接入 E3b 储能套利腿（Δ_arb=σ·Imp0·(p−p_valley/η)），
+ *     旧「P2-6 未消费」排除理由失效。基线储能 400kWh>0，±15% 扰动（0.51–0.69 元/kWh，
+ *     在 [0,1.8] 规格界内）产出真实非零摆幅；spread↑ → 套利空间变宽 → 储能价值↑ → NPV↑。
  */
 export const DEFAULT_SENSITIVITY_PARAMS: readonly SensitivityParam[] = [
   { key: "project.chargingPrice", deltaPct: 15 },
   { key: "region.elecPrice", deltaPct: 15 },
+  { key: "region.peakValleySpread", deltaPct: 15 }, // 峰谷价差（阶段1 解锁：E3b 储能套利腿真实消费）
   { key: "project.trucksPerDay", deltaPct: 20 },
   { key: "project.chargePerTruck", deltaPct: 20 }, // 里程×电耗合并代理
   { key: "project.pvCapacity", deltaPct: 20 },

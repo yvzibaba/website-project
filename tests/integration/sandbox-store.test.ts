@@ -256,3 +256,138 @@ describeDb("sandbox-store 项目/情景/版本持久层（Neon Postgres）", () 
 // 保证 StoredParamLayers 类型被使用（避免未用告警的同时锁定导出契约）。
 const _typeCheck: StoredParamLayers = {};
 void _typeCheck;
+
+/* ─────────── 冻结策略集成测试（创始人裁决 2026-09-08，STORE_VERSION 1.0.3，零 schema 变更） ───────────
+ * 覆盖验收 6 条：旧版本可查看（冻结数字原样提取）；新模型运行生成新版本（同事务自动冻结旧成功结果）；
+ * 旧版本数字不变（ProjectVersion 绝不就地改写）；新旧版本各自 model/storage 版本可辨（缺键=none）；
+ * 历史版本不被静默覆盖；重新打开项目可恢复旧版本（回滚重算语义不变）。
+ * ─────────────────────────────────────────────────────────────────────────────────────────────── */
+describeDb("sandbox-store 内核升级冻结策略（真连 Neon）", () => {
+  const runId = `sbxfz-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const projectIds: string[] = [];
+  const actor = `human:${runId}`;
+
+  afterAll(async () => {
+    if (projectIds.length > 0) {
+      await prisma.project.deleteMany({ where: { id: { in: projectIds } } }).catch(() => undefined);
+      await prisma.changeLog
+        .deleteMany({ where: { entityType: "Project", entityId: { in: projectIds } } })
+        .catch(() => undefined);
+    }
+    await prisma.project.deleteMany({ where: { name: { startsWith: runId } } }).catch(() => undefined);
+    await disconnectPrisma();
+  });
+
+  async function baselineScenarioOf(projectId: string) {
+    return prisma.projectScenario.findFirstOrThrow({ where: { projectId, isBaseline: true } });
+  }
+
+  it("同内核普通参数编辑 → 不自动冻结（version++ 就地覆盖仍是 §4 日常路径，不产生冗余版本）", async () => {
+    const created = await createProject({ name: `${runId}-same`, actor });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+    projectIds.push(created.projectId);
+    const sc = await baselineScenarioOf(created.projectId);
+
+    const res = await updateScenarioLayers(sc.id, {}, { actor });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.frozenSeq).toBeUndefined();
+
+    const versions = await listScenarioVersions(sc.id);
+    expect(versions).toHaveLength(0);
+  });
+
+  it("模型升级后重存（calcRef model@1.0.0 → 1.1.0）→ 旧 ok 结果自动冻结，数字逐字段不变、storage=none、可恢复", async () => {
+    const created = await createProject({ name: `${runId}-up`, actor });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+    projectIds.push(created.projectId);
+    const sc = await baselineScenarioOf(created.projectId);
+
+    // 把当前态改写成「1.0.0 旧模型产物」（模拟升级前的历史行：engineVersions 无 storage 键）。
+    const legacyResult = {
+      ok: true,
+      calcRef: "model@1.0.0",
+      engineVersions: { model: "1.0.0", tech: "1.0.0", finance: "1.0.0", params: "1.1.0" },
+      capex: { net: 111.11 },
+      opexY1: { gross: 22.22 },
+      metrics: {
+        npv: 333.33,
+        irr: { ok: true, value: 0.05 },
+        discountedPaybackYears: 4.5,
+        roi: { ok: true, value: 0.25 },
+      },
+      needsProfessionalReview: true,
+    };
+    await prisma.projectScenario.update({
+      where: { id: sc.id },
+      data: { calcRef: "model@1.0.0", calcResult: legacyResult },
+    });
+
+    // 新引擎（model@1.1.0）重算 → 必须先冻结旧结果再覆写。
+    const res = await updateScenarioLayers(sc.id, {}, { actor });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.frozenSeq).toBe(1);
+
+    // 版本时间线：冻结行可查看，摘要为原样提取（不重算）。
+    const versions = await listScenarioVersions(sc.id);
+    expect(versions).toHaveLength(1);
+    const v0 = versions[0];
+    expect(v0.seq).toBe(1);
+    expect(v0.calcRef).toBe("model@1.0.0");
+    expect(v0.note).toContain("自动冻结");
+    expect(v0.frozen.calcStatus).toBe("ok");
+    expect(v0.frozen.engineVersions.model).toBe("1.0.0");
+    expect(v0.frozen.engineVersions.storage).toBeNull(); // 旧模型行无 SVE 版本键 → API 层映射 "none"
+    expect(v0.frozen.capexNet).toBe("111.11");
+    expect(v0.frozen.opexY1Gross).toBe("22.22");
+    expect(v0.frozen.npv).toBe("333.33");
+    expect(v0.frozen.irrPct).toBe("5.0000");
+    expect(v0.frozen.paybackYears).toBe("4.50");
+    expect(v0.frozen.roiRatio).toBe("0.2500");
+
+    // 当前态已落新引擎结果（version++）。
+    const after = await prisma.projectScenario.findUniqueOrThrow({ where: { id: sc.id } });
+    expect(after.calcRef).toBe("model@1.1.0");
+    expect(after.version).toBe(sc.version + 1);
+
+    // 冻结行是独立快照，绝不因后续写入被就地改写。
+    const frozenRow = await prisma.projectVersion.findUniqueOrThrow({
+      where: { scenarioId_seq: { scenarioId: sc.id, seq: 1 } },
+    });
+    expect(frozenRow.calcRef).toBe("model@1.0.0");
+    expect((frozenRow.calcResult as { capex: { net: number } }).capex.net).toBe(111.11);
+
+    // 回滚仍可用（R6.3 重算语义）：恢复旧版本参数 → 当前态重算；同内核重存不产生新冻结。
+    const restored = await restoreScenarioFromVersion(sc.id, frozenRow.id, { actor });
+    expect(restored.ok).toBe(true);
+    const versionsAfterRestore = await listScenarioVersions(sc.id);
+    expect(versionsAfterRestore).toHaveLength(1);
+  });
+
+  it("同 calcRef 但 engineVersions 指纹变化（历史行缺 storage 键）→ 同样触发冻结（旧行受保护）", async () => {
+    const created = await createProject({ name: `${runId}-ev`, actor });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+    projectIds.push(created.projectId);
+    const sc = await baselineScenarioOf(created.projectId);
+
+    // 模拟「1.1.0 首日行」：calcRef 不变，但 engineVersions 没有 storage 键（本批部署前落库）。
+    const cur = await prisma.projectScenario.findUniqueOrThrow({ where: { id: sc.id } });
+    const stripped = JSON.parse(JSON.stringify(cur.calcResult ?? {})); // 深拷贝成可写 JSON（any，直喂 Prisma Json 列）
+    delete (stripped.engineVersions as Record<string, unknown> | undefined)?.storage;
+    await prisma.projectScenario.update({ where: { id: sc.id }, data: { calcResult: stripped } });
+
+    const res = await updateScenarioLayers(sc.id, {}, { actor });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.frozenSeq).toBe(1);
+
+    const versions = await listScenarioVersions(sc.id);
+    expect(versions).toHaveLength(1);
+    expect(versions[0].frozen.engineVersions.model).toBe("1.1.0");
+    expect(versions[0].frozen.engineVersions.storage).toBeNull();
+  });
+});

@@ -336,7 +336,7 @@ export function SandboxDemoPanel({ onOpenFull }: { onOpenFull?: () => void }) {
                 {vm.tornado ? <TornadoChart data={vm.tornado} base={tornado.baseValue} /> : null}
               </div>
               <div className="text-[11px] text-zinc-400">
-                溯源 {vm.calcRef} · model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} / finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} · 示范模型 demo@{DEMO_MODEL_VERSION}（映射层，不改经济内核）
+                溯源 {vm.calcRef} · model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} / finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} / storage@{vm.engineVersions?.storage ?? "none"} · 示范模型 demo@{DEMO_MODEL_VERSION}（映射层，不改经济内核）
               </div>
             </>
           )}

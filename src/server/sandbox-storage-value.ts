@@ -30,6 +30,15 @@
  *   纯函数：无 IO / 无时钟 / 无随机 / 无依赖（不 import 任何项目模块）。
  */
 
+/**
+ * 储能价值内核版本（冻结策略，创始人裁决 2026-09-08）：随 `sandbox-model.ts` 的 engineVersions 一起
+ * 落进每个 CalcResult 快照（`engineVersions.storage`），使「这组数按哪版储能内核算」可逐版本追溯。
+ * 1.0.0 = R9.0 Step 2/3 首次接入生产经济层的口径（年度代理：σ 套利 + S1 消纳腿诚实归零）。
+ * 历史快照天然缺该键 → 展示层映射为 "none"（SVE 之前生成），绝不回填假值。
+ * 仅元数据：不参与任何经济计算，升版不改变黄金数字。
+ */
+export const STORAGE_MODEL_VERSION = "1.0.0";
+
 /* ─────────────────────────── 1. 储能年吞吐（容量/功率双封顶 + 寿命 + 衰减） ─────────────────────────── */
 
 export interface StorageThroughputInput {

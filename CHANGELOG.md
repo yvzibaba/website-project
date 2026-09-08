@@ -3,6 +3,28 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.61.0] - 2026-09-08 · 阶段1「Spread 敏感性」（**SENSITIVITY_VERSION 1.2.0→1.3.0**·region.peakValleySpread 入默认扫描集±15%·纯加性·E3/E4/finance/参数默认值零改动·MODEL_VERSION 保持 1.1.0）
+
+- 原因：创始人批准四阶段路线并指令只执行阶段1——把 R9.0 已真实接入 E3b 储能套利腿的 `region.peakValleySpread` 纳入敏感性分析（即 R9.0 设计稿 §19 步骤 5 / 遗留②的预授权路径，`docs/STORAGE_VALUE_ENGINE_R9_0.md` 已预记"加入 DEFAULT_SENSITIVITY_PARAMS 是合理的下一步，需 SENSITIVITY_VERSION 1.2.0→1.3.0 并重录 tornado 黄金"）。旧排除理由（v0.58.0 P2-6"E 层未消费"）自 R9.0 起失效。
+- 内容：
+  - **`sandbox-sensitivity.ts`**：`DEFAULT_SENSITIVITY_PARAMS` 增 `{key:"region.peakValleySpread", deltaPct:15}`（电价同族、置于 elecPrice 后）；`SENSITIVITY_VERSION` 1.2.0→1.3.0；过期排除注释改写为"已解锁"记录（P2-6 剩余未消费键 demandCharge/landRent/carbonPrice/equityRatio/loanRate 仍诚实排除）。复用既有 OAT 龙卷风引擎，零引擎改动；基线 storage=400kWh>0、spread 规格 [0,1.8] 使 ±15%（0.51–0.69）扰动不触边界、摆幅真实非零。
+  - **`tests/unit/sandbox-sensitivity.test.ts`**：新增"阶段1 · spread 解锁合理性"验收块 5 例——①默认集含 spread、±15%、swing>0 且扰动端不触规格界；②TOP1 仍为 project.chargingPrice（新行不挤占第一杠杆）；③低/中/高 spread（0.3/0.6/1.0）下储能价值（revenueY1.storageValue）与 NPV **严格单调增**、IRR 单调增（先断言三点可解再比较，防静默假绿）、折现回收期**严格单调减**；④spread=0 → 储能价值诚实归零（与 causality「spread=0 ⟺ 旧引擎 4,277,409」焊点互证）；⑤默认集 ≥11 行 + 确定性深相等。
+  - **`docs/STORAGE_VALUE_ENGINE_R9_0.md`**：§十六·六"刻意不做"spread 销项 + 尾部遗留清单更新（②收口；①冻结策略已随 v0.60.0 落地；③消纳腿分时仍待立项）。
+- 禁令遵守：不改 E3/E4 口径、不动 finance 原语、不改参数默认值/规格、不加其他新变量、不动 8760h/支付/行业；既有黄金零破坏（全部结构性断言天然兼容新行）。
+- 效果：龙卷风图现在能回答"峰谷价差对项目收益有多大影响"——spread±15% 经储能套利腿传导为真实的 NPV/IRR/回收期摆幅，且方向可解释（价差↑→储能价值↑→NPV↑）；为阶段2（山西真实电价数据接入 spread/elecPrice）提供敏感性可视化基础。
+
+## [0.60.0] - 2026-09-08 · R9.0 后续决策①：历史项目「生成时模型版本」冻结策略（**STORE_VERSION 1.0.2→1.0.3**·零 schema 变更·纯持久化能力·经济口径零改动·MODEL_VERSION 保持 1.1.0）
+
+- 原因：创始人批准 R9.0 后续决策①——防止模型升级后历史项目在再次打开/再次计算时**悄悄改变历史结论**。要求每次生成结果保存 MODEL_VERSION / STORAGE_MODEL_VERSION / TECH_VERSION / SANDBOX_PARAMS_VERSION / 参数快照 / 结果快照 / 生成时间；历史版本只读冻结；新模型重算生成新版本、绝不覆盖旧结果。READ 结论：现有 `Project → ProjectScenario → ProjectVersion` 三层已满足绝大部分（calcResult JSON 已内嵌 engineVersions{model,tech,finance,params}、calcRef 即逐行模型身份、ProjectVersion 已冻结 paramLayers/paramSnapshot/calcResult/createdAt 且「绝不就地改写」）→ **直接复用、零迁移、不建重复版本系统**。本次禁令（储能经济公式/E3/E4/finance 原语/黄金样本/历史财务结果/8760h/支付/行业/敏感性/新 Agent）全部遵守，黄金数字零 churn。
+- 内容：
+  - **`sandbox-storage-value.ts`**：新增 `STORAGE_MODEL_VERSION = "1.0.0"` 导出（R9.0 首接生产经济层口径；仅元数据不参与计算）。历史快照天然缺键 → 展示层映射 `"none"`，绝不回填假值。
+  - **`sandbox-model.ts`**：`CalcResultOk.engineVersions` 加**可选** `storage?: string`（可选因旧快照合法缺键）；构造处写入 `storage: STORAGE_MODEL_VERSION`。经济结果逐字节不变（黄金全绿实证）。
+  - **`sandbox-store.ts`（STORE_VERSION 1.0.3）**：①新纯函数 `shouldAutoFreezeVersion`——旧结果为成功快照且（calcRef 变 ∨ engineVersions 指纹变，含历史行缺版本键）⇒ 冻结；同内核普通参数编辑照旧 version++ 不产生冗余版本；失败快照不是结论、覆写无损失不冻结。②`updateScenarioLayers` 检测到内核身份变化时**同一事务内**先把旧态冻结为 ProjectVersion（seq=max+1、note 记原因、ChangeLog 记 before/after calcRef）再就地覆写——原子性保证「冻结失败则写入整体回滚」。③新纯函数 `frozenVersionSummary` + `listScenarioVersions` 加性返回 `frozen` 摘要（复用 `projectCalcToColumns` 同一四舍五入口径，**原样提取绝不重算**；损坏 JSON 诚实降级 `unreadable`）。★E2E 抓出并修复：Postgres **jsonb 不保留对象键序**，指纹比较必须键排序后进行（`engineVersionsFingerprint`），否则同内核被误判冻结（已钉桩单测回归）。
+  - **`sandbox-projects.ts`**：版本时间线 API（GET versions）加性返回各版本 `frozen{calcStatus, modelVersion, storageModelVersion(缺省"none"), capexNet, opexY1Gross, npv, irrPct, paybackYears, roiRatio}`。
+  - **UI**（`SandboxWorkbench.tsx` / `SandboxDemoPanel.tsx`）：溯源行加 `storage@{…??"none"}`。
+- 测试：新增 `tests/unit/sandbox-store-freeze.test.ts`（判据表 + 冻结摘要 + jsonb 键序回归钉桩）；`tests/unit/sandbox-projects.test.ts` readVersions mock 补 frozen 摘要断言；`tests/integration/sandbox-store.test.ts` 新 describe 三例覆盖验收（同内核编辑不冻结 / model@1.0.0→1.1.0 升级自动冻结且冻结数字逐字段不变+storage=none+回滚可用 / 缺 storage 键的 1.1.0 首日行受指纹保护）。单元 58 文件 **1038/1038** 绿；integration sandbox-store **11/11** 绿；typecheck/lint 净。
+- 效果：旧项目（MODEL_VERSION=1.0.0、storage 缺键=none）原始 CAPEX/OPEX/NPV/IRR/ROI/回收期永久可查；新模型重算自动留档旧版本、新旧版本各自内核身份明确可辨；历史版本不可被静默覆盖（同事务原子冻结）；回滚语义保持 R6.3 重算哲学不变。
+
 ## [0.59.0] - 2026-09-08 · R9.0 Step 2/3：储能价值接入生产经济内核（P1-2 闭合·**MODEL_VERSION 1.0.0→1.1.0**·参数 1.1.0→1.2.0·黄金全仓重录·storage=0 逐字节零 churn·E4/财务原语零改动）
 
 - 原因：v0.58.0 审计 **P1-2**（储能只成本不收益，NPV 随容量严格降）→ R9.0 设计稿（`docs/STORAGE_VALUE_ENGINE_R9_0.md`）→ Step 1 纯函数收口（§十六·五四项裁决）→ Step 1.5 离线实验（三形态实证 / S1 互斥缺口 / 基线下 E=0 最优 / NPV=0 需 spread≈1.568）。创始人指令「按照你的思路推荐继续完成项目」授权接线；§16 五项裁决执行情况落档设计稿 **§十六·六**（4 项执行；**老项目版本戳策略仍留创始人**）。

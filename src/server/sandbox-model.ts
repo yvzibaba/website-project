@@ -45,7 +45,7 @@ import {
   annualEnergyBalance,
   TECH_VERSION,
 } from "@/server/sandbox-tech";
-import { storageValueDelta } from "@/server/sandbox-storage-value";
+import { storageValueDelta, STORAGE_MODEL_VERSION } from "@/server/sandbox-storage-value";
 import {
   npv,
   irr,
@@ -138,7 +138,9 @@ export interface RevenueBreakdownY1 {
 export interface CalcResultOk {
   ok: true;
   calcRef: string;
-  engineVersions: { model: string; tech: string; finance: string; params: string };
+  // storage（SVE 储能价值内核版本）为可选键：仅元数据、不参与计算；R9.0 之前的历史快照天然缺键
+  // （展示层映射 "none"），故不能设为必填，否则类型层面就否认了旧快照的合法形态。
+  engineVersions: { model: string; tech: string; finance: string; params: string; storage?: string };
   methodology: string;
   needsProfessionalReview: true;
   capex: CapexBreakdown;
@@ -383,6 +385,7 @@ export function computeEconomics(
       tech: TECH_VERSION,
       finance: FINANCE_VERSION,
       params: String(tech.calcRef),
+      storage: STORAGE_MODEL_VERSION, // 冻结策略（2026-09-08 裁决）：逐快照记录储能内核版本，仅元数据
     },
     methodology:
       "简化年度税后现金流沙盘（透明假设，非可研/财税级），CAPEX/OPEX/NPV/IRR/回收期均程序计算，须经专业人工确认",

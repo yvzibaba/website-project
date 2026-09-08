@@ -5,6 +5,9 @@ import { Container, Badge, Alert, Card, CardContent, CardHeader, CardTitle } fro
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { getPublicCaseById } from "@/server/cases";
 import type { CaseScores } from "@/server/scoring";
+import { getCurrentUser } from "@/server/authz";
+import { isFavorited } from "@/server/favorites";
+import { FavoriteButton } from "@/components/account/FavoriteButton";
 import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
 import { breadcrumbJsonLd, caseArticleJsonLd } from "@/lib/json-ld";
@@ -75,6 +78,10 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
   }
   const c = res.data;
 
+  // 收藏初始态（Phase 4 模块 C）：登录者查真实收藏态，游客渲染未收藏（点按提示登录）。
+  const user = await getCurrentUser();
+  const favorited = user ? await isFavorited(user.id, "CASE", c.id) : false;
+
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
       {/* 结构化数据（Phase 14 M2）：仅真实案例发 Article/Breadcrumb；DEMO 非真实研究产出，绝不发（宪法第 20 条，与页面 noindex 同口径）。 */}
@@ -116,11 +123,12 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
           />
         }
       >
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Link href={`/industries/${c.industrySlug}`}>
             <Badge variant="outline">{c.industryName}</Badge>
           </Link>
           {c.isDemo ? <Badge variant="warning">DEMO 数据</Badge> : null}
+          <FavoriteButton targetType="CASE" targetId={c.id} initialFavorited={favorited} />
         </div>
       </PageHeader>
 

@@ -150,8 +150,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  orders   Order[]
-  projects Project[]
+  orders    Order[]
+  projects  Project[]
+  favorites Favorite[]
+  feedbacks Feedback[]
 
   @@index([role])
 }
@@ -614,4 +616,41 @@ model ProjectVersion {
 
   @@unique([scenarioId, seq])
   @@index([projectId, createdAt])
+}
+
+// ----------------------------- 收藏 & 反馈（Phase 4 Module C） -----------------------------
+
+// 收藏：用户对案例/方案的「标记喜欢」。设计取舍：
+//  - targetType/targetId 存 **String 而非复合枚举/FK**（ModelCall 先例）：目标行被删时收藏降级为
+//    悬挂引用，读列表时跳过并诚实忽略（观测历史不因实体删除而级联丢失）， FK 只保留 userId。
+//  - @@unique(userId,targetType,targetId)：幂等——重复收藏走 upsert 不报错、不产生重复行。
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String // "CASE" | "SOLUTION"（server 层 zod 白名单约束，不建枚举，对齐 ModelCall 先例）
+  targetId   String // Case.id / Solution.id（无 FK：悬挂引用读侧跳过）
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, targetType, targetId])
+  @@index([userId, createdAt])
+  @@index([targetType, targetId])
+}
+
+// 反馈：公开表单（可匿名），后台人工阅读与标记处理。status 存 String（对齐 ProjectScenario.calcStatus 先例：
+// 状态机由 TS 层约束，不增 Prisma 枚举）。不做邮件通知/工单系统（宪法：更简单、更少依赖）。
+model Feedback {
+  id         String    @id @default(cuid())
+  userId     String? // 可匿名提交；登录则归因（同 Project.ownerId SetNull 模式：用户被删反馈保留）
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email      String? // 匿名用户留的联系方式（不验证可达性，仅记录）
+  kind       String // "BUG" | "SUGGESTION" | "QUESTION" | "OTHER"（server 层 zod 白名单）
+  message    String // ≤2000 字（server 层校验）
+  page       String? // 提交时所在页面路径（如 /solutions/xxx），便于定位
+  status     String    @default("OPEN") // OPEN | RESOLVED
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([userId])
 }

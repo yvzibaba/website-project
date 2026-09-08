@@ -47,6 +47,7 @@ import {
 } from "@/server/sandbox-regions";
 import {
   DEFAULT_PROFILE_ID,
+  SANDBOX_PROFILE_IDS,
   buildProfileLayers,
   getEnterpriseProfile,
   isProfileDefault,
@@ -109,11 +110,31 @@ function MetricTile({ card }: { card: MetricCard }) {
   );
 }
 
-export function SandboxWorkbench() {
-  const [overrides, setOverrides] = useState<Override>({});
+export function SandboxWorkbench({
+  initialProfileId,
+  initialProject,
+}: {
+  /** 可选初始画像（Phase 4 模块 E：/enterprise 画像卡经 /sandbox?profile=… 带入；非法 id 恒回落通用画像）。 */
+  initialProfileId?: string;
+  /** Phase 4 模块 B：从已保存项目还原（?project= 载入）——用户覆写 + 地区/画像 id + 项目名（仅提示用）。 */
+  initialProject?: {
+    overrides: Record<string, number | boolean>;
+    regionId?: string;
+    profileId?: string;
+    projectName?: string;
+  } | null;
+}) {
+  const [overrides, setOverrides] = useState<Override>(() => initialProject?.overrides ?? {});
   const [advanced, setAdvanced] = useState(false);
-  const [regionId, setRegionId] = useState<string>(DEFAULT_REGION_ID);
-  const [profileId, setProfileId] = useState<string>(DEFAULT_PROFILE_ID);
+  const [regionId, setRegionId] = useState<string>(() => {
+    const rid = initialProject?.regionId;
+    // 未知地区 id 诚实回落默认包（getRegionPack 对未知 id 回落 national，用 id 比对鉴别）。
+    return rid && getRegionPack(rid).id === rid ? rid : DEFAULT_REGION_ID;
+  });
+  const [profileId, setProfileId] = useState<string>(() => {
+    const pid = initialProject?.profileId ?? initialProfileId;
+    return pid && SANDBOX_PROFILE_IDS.includes(pid) ? pid : DEFAULT_PROFILE_ID;
+  });
   const [showReport, setShowReport] = useState(false);
   const [showExplain, setShowExplain] = useState(false);
   const [showSave, setShowSave] = useState(false);
@@ -128,6 +149,15 @@ export function SandboxWorkbench() {
   const layers = useMemo(
     () => buildProfileLayers(profileId, regionId, overrides),
     [profileId, regionId, overrides],
+  );
+  // Phase 4 模块 B：保存时随分层附带工作台还原信息（地区包 id + 画像 id），供 ?project= 重开时还原。
+  // 纯加性顶层键（引擎 toEngineLayers 只读 region/policy/user/now，不消费、不改写既有落库口径）。
+  const savedLayers = useMemo(
+    () => ({
+      ...(layers as unknown as Record<string, unknown>),
+      wb: { version: 1, regionId, profileId },
+    }),
+    [layers, regionId, profileId],
   );
   const pack = getRegionPack(regionId);
   const profile = getEnterpriseProfile(profileId);
@@ -205,6 +235,13 @@ export function SandboxWorkbench() {
         AI 解释 / 落库）已接通并经自动化冒烟实证，但仍<span className="font-medium">不得作为投资或并网决策依据</span>。
         选地区 / 选企业画像 / 拖动参数都会让技术 / 经济 / 图表 / 敏感性即时重算——这才是沙盘的命脉，而非页面数字游戏。
       </Alert>
+
+      {initialProject ? (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          已从项目「{initialProject.projectName ?? "未命名"}」载入参数（地区 / 画像 / 已改参数均按保存时快照还原）；
+          可继续修改，或「保存为项目」另存副本。
+        </p>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,320px)_1fr]">
         {/* ─────────── 左：参数控制台 ─────────── */}
@@ -538,7 +575,7 @@ export function SandboxWorkbench() {
           {showExplain && vm.ok ? <SandboxExplainPanel report={report} /> : null}
           {showSave ? (
             <SandboxSavePanel
-              layers={layers as unknown as Record<string, unknown>}
+              layers={savedLayers}
               regionId={regionId}
               regionName={pack.name}
               onSavedSource={setSavedSource}

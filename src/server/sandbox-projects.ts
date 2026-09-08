@@ -25,6 +25,7 @@ import {
   saveScenarioAsVersion,
   restoreScenarioFromVersion,
   getProjectWithScenarios,
+  listProjectsForOwner,
   listScenarioVersions,
   type StoredParamLayers,
 } from "@/server/sandbox-store";
@@ -80,6 +81,10 @@ export const saveVersionSchema = z.object({
 
 export const restoreVersionSchema = z.object({
   versionId: z.string().trim().min(1, "缺少 versionId"),
+});
+
+export const copyProjectSchema = z.object({
+  name: z.string().trim().min(1, "项目名称不能为空").max(200, "名称过长（≤200 字）").optional(),
 });
 
 /* ────────────────────────── 结果判别联合（对齐 api-guard.mutationResponse） ────────────────────────── */
@@ -275,6 +280,9 @@ export async function readSandboxProject(
   if (!access.ok) return access.result;
   const project = await getProjectWithScenarios(projectId);
   if (!project) return { status: "not_found", error: "项目不存在" };
+  // Phase 4 模块 B（沙盘 ?project= 载入）：基线情景的完整参数分层随视图下发（owner-or-staff 已门禁），
+  // 客户端据此还原滑杆 / 覆写与地区、画像。仅基线一份（非基线情景属后续增强），避免无谓的大 JSON。
+  const baseline = project.scenarios.find((s) => s.isBaseline) ?? project.scenarios[0] ?? null;
   return {
     status: "ok",
     project: {
@@ -286,9 +294,120 @@ export async function readSandboxProject(
       ownerId: project.ownerId,
       updatedAt: project.updatedAt.toISOString(),
       region: project.region ?? null,
+      baselineLayers: baseline?.paramLayers ?? null,
       scenarios: project.scenarios.map(toScenarioView),
     },
   };
+}
+
+/** 「我的项目」列表视图（只透出展示与摘要列，不外泄大 JSON）。 */
+export interface SandboxProjectListItem {
+  id: string;
+  name: string;
+  description: string | null;
+  status: string;
+  regionName: string | null;
+  createdAt: string;
+  updatedAt: string;
+  baseline: {
+    id: string;
+    name: string;
+    version: number;
+    calcStatus: string;
+    calcRef: string | null;
+    capexNet: number | null;
+    npv: number | null;
+    irrPct: number | null;
+    paybackYears: number | null;
+    roiRatio: number | null;
+    updatedAt: string;
+  } | null;
+}
+
+/** 列出当前会话用户自己的沙盘项目（「我的项目」列表页 / GET /api/sandbox/projects 共用）。 */
+export async function listSandboxProjects(
+  ctx: { user: SessionUser },
+): Promise<SandboxProjectResult<{ projects: SandboxProjectListItem[] }>> {
+  try {
+    const rows = await listProjectsForOwner(ctx.user.id);
+    return {
+      status: "ok",
+      projects: rows.map((p) => {
+        const b = p.scenarios[0] ?? null;
+        return {
+          id: p.id,
+          name: p.name,
+          description: p.description,
+          status: p.status,
+          regionName: p.region?.name ?? null,
+          createdAt: p.createdAt.toISOString(),
+          updatedAt: p.updatedAt.toISOString(),
+          baseline: b
+            ? {
+                id: b.id,
+                name: b.name,
+                version: b.version,
+                calcStatus: b.calcStatus,
+                calcRef: b.calcRef,
+                capexNet: num(b.capexNet),
+                npv: num(b.npv),
+                irrPct: num(b.irrPct),
+                paybackYears: num(b.paybackYears),
+                roiRatio: num(b.roiRatio),
+                updatedAt: b.updatedAt.toISOString(),
+              }
+            : null,
+        };
+      }),
+    };
+  } catch (err) {
+    log.error("listSandboxProjects failed", { err });
+    return { status: "error", error: "项目列表查询失败" };
+  }
+}
+
+/**
+ * 复制沙盘项目（Phase 4 模块 B，§四「复制」）：读源项目基线情景的参数分层 → 走 createProject
+ * **现算重跑**落库为新项目（新 id、独立版本线），绝不搬旧结果数字。owner 或 staff 可复制；
+ * 副本 ownerId 恒为当前会话用户（staff 复制他人的项目 → 副本归 staff 本人，杜绝越权写入他人空间）。
+ */
+export async function copySandboxProject(
+  projectId: string,
+  body: unknown,
+  ctx: { user: SessionUser },
+): Promise<SandboxProjectResult<{ projectId: string; scenarioId: string; name: string }>> {
+  const access = await accessByProjectId(projectId, ctx.user);
+  if (!access.ok) return access.result;
+  const parsed = copyProjectSchema.safeParse(body ?? {});
+  if (!parsed.success) return { status: "invalid", fieldErrors: zodFieldErrors(parsed.error) };
+
+  const src = await prisma.project.findUnique({
+    where: { id: projectId },
+    select: {
+      name: true,
+      description: true,
+      regionId: true,
+      scenarios: { where: { isBaseline: true }, select: { paramLayers: true } },
+    },
+  });
+  if (!src) return { status: "not_found", error: "项目不存在" };
+
+  const initialLayers = (src.scenarios[0]?.paramLayers ?? {}) as StoredParamLayers;
+  const newName = parsed.data.name?.trim() || `${src.name}（副本）`.slice(0, 200);
+  const res = await createProject({
+    name: newName,
+    description: src.description ?? undefined,
+    regionId: src.regionId,
+    ownerId: ctx.user.id,
+    initialLayers,
+    actor: actorOf(ctx.user),
+  });
+  if (res.ok) {
+    log.info("sandbox project copied", { from: projectId, to: res.projectId, userId: ctx.user.id });
+    return { status: "ok", projectId: res.projectId, scenarioId: res.scenarioId, name: newName };
+  }
+  if (res.reason === "invalid") return invalid(res.detail);
+  return { status: "error", error: res.detail };
 }
 
 /** 读某情景版本时间线（倒序）——须先过 owner-or-staff。 */

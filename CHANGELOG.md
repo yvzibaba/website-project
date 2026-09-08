@@ -3,6 +3,21 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.64.0] - 2026-09-08 · 阶段4「完整网站基础运营版」：公开链路/企业画像/我的项目/收藏反馈/用户中心五模块（**纯加性·经济口径零改动**·新增 Favorite/Feedback 两表加性迁移·MODEL_VERSION/黄金样本零触碰·四链路 smoke 全绿）
+
+- 原因：创始人阶段4指令——让陌生用户第一次进入网站后能自行理解产品、浏览案例、体验沙盘、注册登录、保存项目、查看方案并完成询价/人工购买，形成游客/登录用户/买家/管理员四条完整主链；允许一次性完成多个普通网站功能、优先复用现有代码、按模块实施每模块测试最后统一回归；法律/支付/真实收款/生产部署/密钥/融资模型/财务口径仍遇即停。
+- 内容（按模块）：
+  - **模块A 公开链路补齐**：首页 `/` 增决策沙盘免费体验入口（③.5 CTA）与企业服务入口（→/enterprise），六屏结构补齐；新增 **`/api/cases`** 公开只读案例列表（恒 includeDemo=false、slug 校验 400、limit≤12、DB 失败统一错误体）；新增 **`IndustryCaseList`** 客户端组件（行业详情页真实案例预览：SSR 骨架 + 浏览器端拉取 + 诚实空态），`/industries` 与 `/industries/[slug]` 接线。
+  - **模块E 企业画像页**：新增 **`/enterprise`** 静态页——六画像卡（复用 R7 `SANDBOX_PROFILES` 版本化纯数据）→ `?profile=` 带入沙盘按画像预设参数重算；诚实边界：完整企业 AI 诊断属 V1-B 不做不假装、画像预设全 ASSUMPTION（confidence≤50）、零引擎改动零落库。
+  - **模块B 我的项目**：新增 **`/account/projects`**（登录保护；列表含地区/摘要/NPV/IRR/回收期/更新时间 + 打开/复制）；`/api/sandbox/projects` 增 GET（本人项目 + 基线摘要列）；新增 **`/api/sandbox/projects/[id]/copy`** + `copySandboxProject` 编排——读源项目基线分层交 `createProject` 服务端**现算重跑**落库为新项目（新 id、独立版本线，副本 owner=当前会话用户，缺省名「源名（副本）」，owner-or-staff 资源级门禁）；新增 **`sandbox-project-restore.ts`** 纯解析（示范档项目还原 10 滑杆位+touched；工作台项目还原地区/画像/覆写，user 层与画像预设同值的键被扣除、画像默认归属不伪装）；`SandboxShell` 增 `?profile=`/`?project=` URL 进参（`useSyncExternalStore` 防 hydration mismatch、不用 useSearchParams 免挂 Suspense；载入失败诚实降级，401 跳登录携 callbackUrl 回原链接）。历史版本不被新模型静默覆盖沿用 v0.60.0 冻结策略，项目域零新迁移。
+  - **模块C 收藏+反馈**：Prisma **加性迁移** `20260908000000_add_favorite_feedback`——`Favorite`（@@unique(userId,targetType,targetId) 幂等、targetId 无 FK 悬挂读侧跳过〔ModelCall 先例〕、user FK Cascade）+ `Feedback`（kind 枚举字符串、message≤2000、status 默认 OPEN、user FK SetNull 匿名保留）；`src/server/favorites.ts`（存在性校验→not_found；upsert/deleteMany 幂等）+ `/api/favorites` POST/DELETE（CSRF+登录 401）；`src/server/feedback.ts` + `/api/feedback` POST（CSRF、匿名允许、userId 只取会话防冒名）+ `/api/admin/feedback` GET（STAFF 只读）+ `/api/admin/feedback/[id]/resolve` POST（requireStaffWrite，RESOLVED+resolvedAt 幂等）；UI：`FavoriteButton`（案例/方案详情 PageHeader）、`FavoriteRemoveButton`、`/account/favorites`、`FeedbackForm` + `/feedback` 公开页（含提交诚实话术）、`/admin/feedback` 处理页（状态过滤 + resolve）；layout footer 增「反馈」。
+  - **模块D 用户中心+全局体验+后台只读**：`/account` 重构为入口页（我的项目/我的收藏/我购买的方案/我的订单行卡）；新增 **`/account/solutions`**（listOrdersForBuyer 按 PAID 过滤→已解锁方案列表，缺页跳登录）；新增 **`global-error.tsx`**（自包含 html/body 最后防线错误边界，含 digest）；后台只读三件套 **`/admin/users`**（listUsersForAdmin：邮箱/role/订单数/项目数）、**`/admin/projects`**（listAllProjectsForAdmin：owner/地区/NPV/IRR/回收期/calcStatus，DB 失败降级提示条）、`/admin` 入口 StatCard 扩充；页面自鉴权 `requireRole` defense-in-depth。
+  - **测试**：新增 `tests/unit/favorites-feedback-schema.test.ts`（15 例 schema 契约门禁）+ `tests/unit/sandbox-project-restore.test.ts`（还原判别纯函数门禁）；单元 **62 文件 1079/1079 绿**；integration 全量 137 例中 134 绿，3 例红经诊断全部非产品缺陷——`scout-ingest` ①② 为 Neon 瞬断（单跑重跑 4/4 绿，与既有 P1001 抖动模式一致）、`db-smoke` 表数钉桩 22→**24** 过时（加性迁移合法新增两表，已更新钉桩并注释记因，重跑 5/5 绿）；tsc/lint 净。
+- 使用链核验（临时集成 smoke 脚本真实跑绿后即删不入库）：①游客链 首页→行业→案例→方案→沙盘→地区→参数→运行→指标/敏感性/报告；②登录链 注册→登录→保存项目→我的项目→打开/复制→方案→询价下单；③买家链 方案→购买→订单 PENDING→人工凭证→后台确认 PAID→hasPaidEntitlement 解锁→/account/solutions 出现；④管理员链 /admin 用户/项目/反馈只读+处理，USER 角色 API 403；另验 /industries/不存在slug、/cases/不存在id 返回**真 404**、未登录 /account/* 返回**真 307**。
+- 关键教训（Next.js 16 App Router）：根 `loading.tsx` 会把全部页面包进 Suspense 流式边界 → 动态页 `notFound()` 不再产生 404 状态码（软 404）；段级 `loading.tsx` 会把服务端 `redirect()` 软化成 200+客户端跳转。实验裁决：删除根级与 /account、/admin 段级 loading.tsx，Loading UX 由组件级 Skeleton/EmptyState/not-found/error/global-error 承担，保全「强服务端 307 登录重定向 + 真 404 状态码」契约。
+- 禁令遵守：E3/E4/finance 原语/储能公式/历史结果/黄金样本口径/8760h/贷款·DSCR·Equity IRR/预算反推/第二模型/其他行业完整模型/自动支付（人工凭证流原样）/大型新 Agent/技术栈 全零改动；新增两表不承载任何产业数值、无编造数据；支付/收款信息/密钥/生产部署未触碰；迁移纯加性、不回填不改既有列。
+- 效果：陌生人可自走「理解→体验→注册→保存→询价→人工付款→解锁」全流程无需创始人解释；后台具备用户/项目/反馈只读盘点与反馈闭环能力；收藏/反馈补齐用户侧留存与问题回传通道，为第一批真实用户试用提供完整基础运营版。
+
 ## [0.63.0] - 2026-09-08 · 阶段3A「真实用户验证准备」：条款级 FACT 激活 + S/M/L 现实性回归 + 用户验证清单（**纯加性·经济口径零改动**·SANDBOX_REGION_FACTS_VERSION 1.0.0→1.1.0·逐值默认仍全 ASSUMPTION·MODEL_VERSION/黄金样本零触碰）
 
 - 原因：创始人阶段3A指令——为真实用户试用准备产品（优先级1：核验陌生用户使用链，只修 P0/P1），并只激活阶段2已具备可靠 sourceUrl 的高可信山西 FACT（优先级2：15号文分时电价/第四监管周期输配电价/134号/52号/气象局辐射区间，每条必须经既有 makeVerifiedFact + sourceUrl/evidenceKind/asOf/confidence 管道）；禁止填补 G1–G10 缺口、禁止折算三个口径冲突（作为 DATA_CONFLICT 原样保留）、禁止伪装逐时峰谷模型（R9.0 年度代理口径 + needsProfessionalReview 不变）、禁止修改历史黄金样本。

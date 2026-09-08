@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Badge } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
+import { JsonLd } from "@/components/seo";
 import { INDUSTRIES, getIndustryCaseCounts } from "@/server/industries";
 import { seoMetadata } from "@/lib/site";
+import { breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/json-ld";
 
 /**
  * /industries — 行业列表页（V1-A，PRODUCT_SPEC §5）。
@@ -36,6 +38,22 @@ export default async function IndustriesPage() {
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
+      {/* 结构化数据（Phase 14 M2 口径延续）：行业列表页声明 CollectionPage 身份 + 面包屑。 */}
+      <JsonLd
+        id="ld-industries-collection"
+        data={collectionPageJsonLd({
+          name: "行业",
+          description: "按行业浏览全球产业案例与解决方案：新能源、工业制造、交通运输、农林牧渔、教育培训、房地产建筑。",
+          path: "/industries",
+        })}
+      />
+      <JsonLd
+        id="ld-industries-breadcrumb"
+        data={breadcrumbJsonLd([
+          { label: "首页", href: "/" },
+          { label: "行业" },
+        ])}
+      />
       <PageHeader
         title="行业"
         description="每天从全球六大产业发现高价值案例，经 AI 拆解、开源匹配与中国本土化重构，形成可购买、可实施的产业解决方案。"

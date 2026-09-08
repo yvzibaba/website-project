@@ -36,15 +36,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="zh-CN" className="h-full antialiased">
       <body className="flex min-h-full flex-col font-sans">
         <header className="border-b border-zinc-200 dark:border-zinc-800">
-          <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 sm:justify-between">
             <Link
               href="/"
               className="font-semibold tracking-tight hover:opacity-80"
             >
               产业案例引擎
             </Link>
-            <div className="flex items-center gap-4 text-sm">
-              <Link href="/industries" className="hover:underline">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm">
+              <Link href="/industries" className="hidden hover:underline md:inline">
                 行业
               </Link>
               <Link href="/cases" className="hover:underline">
@@ -56,16 +56,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/sandbox" className="hover:underline">
                 沙盘
               </Link>
-              <Link href="/search" className="hover:underline">
+              <Link href="/search" className="hidden hover:underline md:inline">
                 搜索
               </Link>
-              <Link href="/about" className="hover:underline">
+              <Link href="/about" className="hidden hover:underline md:inline">
                 关于
               </Link>
-              {/* 决策1.5 P1：主 header 增加「我的订单」锚点，让买家从任何页面都能直达订单闭环。
-                  游客点击会走 /account/orders → 由该页 redirect 携 callbackUrl 回跳登录（决策1.5 回跳已修复）。
-                  保持 layout 同步渲染，不引 auth()，静态页 prerender 不受影响。 */}
-              <Link href="/account/orders" className="hover:underline">
+              {/* 基础运营版：主导航补「我的项目」（沙盘项目列表）；游客点击走 /account/projects
+                  → 由该页 redirect 携 callbackUrl 回跳登录，与「我的订单」同一模式。
+                  开发用 /ui 与 /api/health 链接移出主导航（health 保留在页脚小字）。 */}
+              <Link href="/account/projects" className="hover:underline">
+                我的项目
+              </Link>
+              <Link href="/account/orders" className="hidden hover:underline sm:inline">
                 我的订单
               </Link>
               <Link href="/login" className="hover:underline">
@@ -76,20 +79,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 className="rounded-full border border-border px-3 py-1 transition-colors hover:border-ring"
               >
                 注册
-              </Link>
-              <Link
-                href="/ui"
-                className="font-mono text-xs text-zinc-500 hover:underline"
-                title="UI 组件库演示"
-              >
-                ui
-              </Link>
-              <Link
-                href="/api/health"
-                className="font-mono text-xs text-zinc-500 hover:underline"
-                title="健康检查 API"
-              >
-                health
               </Link>
             </div>
           </nav>
@@ -133,6 +122,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/account" className="hover:underline">
                 我的账号
               </Link>
+              <Link href="/account/projects" className="hover:underline">
+                我的项目
+              </Link>
+              {/* Phase 4 模块 C：公开反馈入口（游客可提交，后台人工处理）。 */}
+              <Link href="/feedback" className="hover:underline">
+                反馈
+              </Link>
               <a
                 href="https://github.com/yvzibaba/website-project"
                 className="hover:underline"
@@ -143,7 +139,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </a>
             </nav>
             <p className="text-center">
-              © 2026 产业案例引擎 · V1-A 开发中 · 隐私政策与服务条款为占位草稿，待法务审定后生效
+              © 2026 产业案例引擎 · V1-A 开发中 · 隐私政策与服务条款为占位草稿，待法务审定后生效 ·{" "}
+              <a href="/api/health" className="font-mono hover:underline">
+                health
+              </a>
             </p>
           </div>
         </footer>

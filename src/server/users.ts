@@ -118,3 +118,45 @@ export async function getProfileUserById(id: string): Promise<ProfileUser | null
     },
   });
 }
+
+/* ────────────────────────── 后台只读列表（Phase 4 模块 C） ────────────────────────── */
+
+export interface AdminUserListItem {
+  id: string;
+  email: string;
+  name: string | null;
+  role: "USER" | "REVIEWER" | "ADMIN";
+  emailVerified: Date | null;
+  createdAt: Date;
+  _count: { orders: number; projects: number };
+}
+
+/**
+ * 后台用户列表（createdAt 倒序，只读）：含订单/项目计数。刻意不含敏感字段（passwordHash 等）。
+ * 角色变更仍走 user:promote 脚本（不在后台开改角色入口——权限提升是高风险操作，须留创始人）。
+ * DB 失败 → { ok:false }，页面渲染提示条不崩溃。
+ */
+export async function listUsersForAdmin(
+  limit = 100,
+): Promise<{ ok: true; items: AdminUserListItem[] } | { ok: false; items: [] }> {
+  try {
+    const items = await prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: Math.min(Math.max(limit, 1), 200),
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        emailVerified: true,
+        createdAt: true,
+        _count: { select: { orders: true, projects: true } },
+      },
+    });
+    return { ok: true, items };
+  } catch (err) {
+    log.error("listUsersForAdmin failed", { err });
+    return { ok: false, items: [] };
+  }
+}
+

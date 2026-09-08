@@ -13,10 +13,11 @@ import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
  * 首页 `/`（V1-A，总控第 6 节 / PRODUCT_SPEC §6）。
  *
  * 明确不是"AI 聊天机器人"。六屏结构：
- *   ① 主视觉 + 两个入口（发现产业方案 / 分析我的企业[V1-B 未开放，诚实置灰]）+ 搜索框
+ *   ① 主视觉 + 主入口（案例 / 方案 / 沙盘 / 分析我的企业→/enterprise 基础画像）+ 搜索框
  *   ② 今日全球产业案例（六大行业每日精选；当前库空则诚实空态）
  *   ③ 今日产业解决方案（3 个精选；里程碑 2 起不种子方案，故当前空态）
- *   ④ 企业 AI 产业诊断（V1-B，文案 + 即将开放）
+ *   ③.5 决策沙盘入口（Phase 4 模块 A：免费体验 CTA）
+ *   ④ 企业 AI 产业诊断（基础画像已开放→/enterprise；V1-B 完整诊断仍诚实未开放）
  *   ⑤ 我们如何工作（六步工作流）
  *   ⑥ 六大行业入口
  *
@@ -104,17 +105,15 @@ export default async function Home() {
             <Button type="submit" variant="secondary">搜索</Button>
           </form>
 
-          {/* 两个主入口 */}
+          {/* 主入口（基础运营版）：案例 / 方案 / 沙盘 / 企业画像 各就各位——
+              原「发现产业方案」误链 /cases 已修正；沙盘入口补齐（总指令：首页须有沙盘入口）；
+              企业按钮从「置灰占位」激活为 /enterprise（Phase 4 模块 E：基础画像 → 沙盘重算；
+              完整 V1-B 诊断仍未开放，由 /enterprise 页首的边界声明诚实兜底）。 */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button href="/cases" variant="primary" size="lg">发现产业方案</Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              disabled
-              title="企业 AI 产业诊断属 V1-B 范围，尚未开放"
-            >
-              分析我的企业（即将开放）
-            </Button>
+            <Button href="/cases" variant="primary" size="lg">浏览产业案例</Button>
+            <Button href="/solutions" variant="secondary" size="lg">发现产业方案</Button>
+            <Button href="/sandbox" variant="secondary" size="lg">体验决策沙盘</Button>
+            <Button href="/enterprise" variant="secondary" size="lg">分析我的企业</Button>
           </div>
         </Container>
       </section>
@@ -198,18 +197,46 @@ export default async function Home() {
         </Container>
       </section>
 
-      {/* ④ 企业 AI 产业诊断（V1-B） */}
+      {/* ③.5 决策沙盘入口（基础运营版 · 总指令：首页必须有沙盘入口；纯静态导流，零计算） */}
+      <Container size="lg" className="py-12 flex flex-col gap-5">
+        <div className="flex flex-col gap-4 rounded-xl border border-border bg-background p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-xl font-semibold tracking-tight text-foreground">
+                新能源重卡 + 光伏 + 储能 + 充电 · 可视化决策沙盘
+              </h2>
+              <Badge variant="info">V1 试点 · 免费</Badge>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              选地区、改参数、即时重算：CAPEX / OPEX / 收入 / NPV / IRR / ROI / 回收期、龙卷风敏感性与确定性动态报告。
+              山西已核实政策条款可点击溯源；默认数字均为占位假设，结果需专业人工确认。
+            </p>
+          </div>
+          <Button href="/sandbox" variant="primary" size="lg" className="shrink-0">
+            进入沙盘 →
+          </Button>
+        </div>
+      </Container>
+
+      {/* ④ 企业服务：基础画像已开放（V1-B 完整诊断仍诚实未开放） */}
       <Container size="lg" className="py-12 flex flex-col gap-4">
         <div className="rounded-xl border border-border bg-background p-6 shadow-sm">
-          <Badge variant="info" className="mb-3">V1-B · 即将开放</Badge>
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <Badge variant="success">基础画像 · 已开放</Badge>
+            <Badge variant="info">V1-B 完整诊断 · 即将开放</Badge>
+          </div>
           <h2 className="text-xl font-semibold tracking-tight text-foreground">企业 AI 产业诊断</h2>
           <p className="mt-2 max-w-2xl text-base leading-7 text-muted-foreground">
             告诉 AI 你的企业有什么，AI 帮你寻找下一步可以做什么。基于企业画像与产业能力数据库，
             给出可落地的转型方向与方案适配建议。
           </p>
           <p className="mt-3 text-sm text-muted-foreground">
-            该能力属 V1-B 范围（企业画像 / 诊断 / 适配），将在 V1-A 的案例 → 方案 → 购买闭环跑通后开放。
+            现已开放基础能力：选择企业画像（车队 / 运营商 / 园区 / 公交 / 投资人）→ 带入决策沙盘按企业视角重算；
+            完整诊断（企业画像建档 / AI 诊断 / 方案适配）属 V1-B 范围，尚未开放。
           </p>
+          <div className="mt-4">
+            <Button href="/enterprise" variant="secondary">选择企业画像 →</Button>
+          </div>
         </div>
       </Container>
 

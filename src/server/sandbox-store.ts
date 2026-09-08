@@ -600,6 +600,82 @@ export async function getProjectWithScenarios(projectId: string) {
   });
 }
 
+/**
+ * 列出某 owner 的项目（按更新时间倒序，含基线情景摘要列）——供「我的项目」列表使用。
+ * 不含鉴权（调用方即 owner 会话；staff 治理另走后台只读页）。DB 错误由编排层 catch 归一。
+ */
+export async function listProjectsForOwner(ownerId: string, limit = 50) {
+  return prisma.project.findMany({
+    where: { ownerId },
+    orderBy: { updatedAt: "desc" },
+    take: limit,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      region: { select: { name: true } },
+      scenarios: {
+        where: { isBaseline: true },
+        select: {
+          id: true,
+          name: true,
+          version: true,
+          calcStatus: true,
+          calcRef: true,
+          capexNet: true,
+          npv: true,
+          irrPct: true,
+          paybackYears: true,
+          roiRatio: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
+}
+
+/**
+ * 后台只读项目列表（Phase 4 模块 C）：全量项目按更新时间倒序，含 owner 邮箱与基线情景摘要列。
+ * 与 listProjectsForOwner 同一 select 形状 + owner 归因，仅供 staff 后台治理页使用（不含鉴权，
+ * 调用方 requireRole；只读、绝不在此改任何项目数据）。DB 错误由编排层 catch 归一。
+ */
+export async function listAllProjectsForAdmin(limit = 100) {
+  return prisma.project.findMany({
+    orderBy: { updatedAt: "desc" },
+    take: limit,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      status: true,
+      ownerId: true,
+      owner: { select: { email: true } },
+      createdAt: true,
+      updatedAt: true,
+      region: { select: { name: true } },
+      scenarios: {
+        where: { isBaseline: true },
+        select: {
+          id: true,
+          name: true,
+          version: true,
+          calcStatus: true,
+          calcRef: true,
+          capexNet: true,
+          npv: true,
+          irrPct: true,
+          paybackYears: true,
+          roiRatio: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
+}
+
 /** 读某情景的版本时间线（倒序）。`frozen` 为该版本冻结结果的**原样提取**摘要（不重算，历史数字不变）。 */
 export async function listScenarioVersions(scenarioId: string) {
   const rows = await prisma.projectVersion.findMany({

@@ -70,9 +70,27 @@ export default async function AccountPage() {
           </div>
           <Separator />
           <div className="flex items-center justify-between gap-4">
+            <span className="text-muted-foreground">我的项目</span>
+            <Link href="/account/projects" className="font-medium text-primary hover:underline">
+              查看沙盘项目 →
+            </Link>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-muted-foreground">我的收藏</span>
+            <Link href="/account/favorites" className="font-medium text-primary hover:underline">
+              查看收藏的案例与方案 →
+            </Link>
+          </div>
+          <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">我的订单</span>
             <Link href="/account/orders" className="font-medium text-primary hover:underline">
               查看我的订单 →
+            </Link>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-muted-foreground">我购买的方案</span>
+            <Link href="/account/solutions" className="font-medium text-primary hover:underline">
+              查看已解锁正文 →
             </Link>
           </div>
           {hasRole(profile.role, STAFF_ROLES) ? (
@@ -95,7 +113,7 @@ export default async function AccountPage() {
         <CardHeader>
           <CardTitle className="text-base">即将开放</CardTitle>
           <CardDescription>
-            我的报告 / 企业画像 / 诊断记录（V1-B 企业适配）将在此汇聚。我的订单（购买闭环）已上线，可在上方查看。
+            我的报告 / 企业画像 / 诊断记录（V1-B 企业适配）将在此汇聚。我的订单、我的项目、我的收藏与我购买的方案已上线，可在上方进入。
           </CardDescription>
         </CardHeader>
       </Card>

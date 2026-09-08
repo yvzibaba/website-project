@@ -125,9 +125,16 @@ function OriginBadges({
   );
 }
 
-export function SandboxDemoPanel({ onOpenFull }: { onOpenFull?: () => void }) {
-  const [state, setState] = useState<DemoHeadlineState>(defaultDemoState());
-  const [touched, setTouched] = useState<DemoTouched>({});
+export function SandboxDemoPanel({
+  onOpenFull,
+  initial,
+}: {
+  onOpenFull?: () => void;
+  /** Phase 4 模块 B：从已保存项目还原的示范档状态（?project= 载入；缺省 = 全新默认态）。 */
+  initial?: { state: DemoHeadlineState; touched: DemoTouched } | null;
+}) {
+  const [state, setState] = useState<DemoHeadlineState>(() => initial?.state ?? defaultDemoState());
+  const [touched, setTouched] = useState<DemoTouched>(() => initial?.touched ?? {});
   const [showReport, setShowReport] = useState(false);
   const [showSave, setShowSave] = useState(false);
 
@@ -162,6 +169,12 @@ export function SandboxDemoPanel({ onOpenFull }: { onOpenFull?: () => void }) {
         图表、敏感性与动态报告同步变化。下方默认数字均为<span className="font-medium">占位假设（未经逐条核实）</span>，
         经济口径为透明简化 E1–E8，结果恒「需专业人工确认」，<span className="font-medium">不得作为投资或并网决策依据</span>。
       </Alert>
+
+      {initial ? (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          已从保存的项目还原示范档参数（滑杆位与改动标记）；可继续修改，或保存为新项目。
+        </p>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,340px)_1fr]">
         {/* ─────────── 左：10 参数简化控制台 ─────────── */}

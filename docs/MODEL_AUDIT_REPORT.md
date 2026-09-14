@@ -6,6 +6,12 @@
 > 实证方式：临时审计探针 `tests/unit/audit-probe-temp.test.ts`（独立复算 E1–E8 + 假联动实证 + 角点扫描 + 储能寿命 + 龙卷风呈现 + 信任边界，共 **64 项断言全绿**），跑完已按回收站纪律删除，不入库。所有结论均可复现。
 > 前置基线：本报告是 `docs/MODEL_CAUSALITY_AUDIT_V1.md`（2026-09-08 因果审计）的**深化与实证确认**，并对 R9.0（储能价值引擎 v0.59.0）之后的当前状态（v0.64.1）重新盘点。
 
+> **阶段4 处置进展补记（2026-09-14，随代码更新滚动维护）**：
+> - ✅ **F-2c（需量电价未计入）已接线** —— v0.65.0 经创始人批准"先接需量电价·口径A(装机×利用率)·V1不做削峰"，`region.demandCharge` 进入 E4 购电成本（需量费单列 `demandChargeY1`），MODEL_VERSION 1.1.0→1.2.0，黄金样本有意重录。详见 CHANGELOG [0.65.0]。
+> - ✅ **F-2a（chargerUtilization 假联动）已接线** —— 作为口径 A 计费需量的乘数（计费需量=装机总功率×利用率），同批解锁为真实敏感杠杆。
+> - ✅ **F-6/F-7 呈现层（龙卷风西方隐喻）已中国化** —— v0.64.3 B1-1：用户可见文案改「关键因素影响力排行」；扫描集已补 demandCharge/chargerUtilization（13 参数）。F-7 剩余项（feedInTariff/carbonPrice/loanRate 入扫描集）待批次3 余项。
+> - ⏳ **仍未处置**：F-1/F-1b（layers 未校验·FACT 可伪造，批次1 B1-5）、F-2h（includeStorage 布尔被忽略，批次2）、F-3（TRANSIT 画像矛盾，批次2）、F-2d/e/f/g（landRent/carbonPrice/equityRatio/loanRate 假联动，批次3 余项）、F-4（储能超日历寿命）、F-8（负谷价）、F-11（UI 硬编码）——均待创始人逐项放行。
+
 ---
 
 ## 0. 一句话结论

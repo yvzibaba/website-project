@@ -49,6 +49,9 @@ function okCalc(over: Partial<CalcResultOk> = {}): CalcResultOk {
     opexY1: { pv: 60000, storage: 40000, charger: 96000, depotFixed: 140300, gross: 336300 },
     revenueY1: { charging: 4987500, pvExport: 0, operationSubsidy: 0, storageValue: 0, gross: 4987500 },
     energyCostY1: 3565174,
+    // 阶段4：需量(基本)电费单列。此投影夹具取 0（表示"无需量费"情景），
+    // 使 netCashFlowY1PreTax = 收入 − 电量电费 − 运维 保持内部自洽；需量费条形由下方 override 用例专门验证。
+    demandChargeY1: 0,
     netCashFlowY1PreTax: 1086026,
     annualCashFlow: [-3524500, 814519, 814519],
     breakEvenChargingPriceY1: 0.7431,
@@ -177,12 +180,18 @@ describe("sandbox-view · 图表数据投影", () => {
     ]);
   });
 
-  it("year1MoneyComparison = 收入 / 购电成本 / 运维成本", () => {
+  it("year1MoneyComparison = 收入 / 电量电费 / 需量电费 / 运维成本（阶段4 需量费单列）", () => {
     expect(year1MoneyComparison(okCalc())).toEqual([
       { name: "收入", value: 4987500 },
-      { name: "购电成本", value: 3565174 },
+      { name: "电量电费", value: 3565174 },
+      { name: "需量电费", value: 0 },
       { name: "运维成本", value: 336300 },
     ]);
+    // 需量电费条形随 calc.demandChargeY1 走（口径 A 接入后为真实成本分量）
+    expect(year1MoneyComparison(okCalc({ demandChargeY1: 483840 }))[2]).toEqual({
+      name: "需量电费",
+      value: 483840,
+    });
   });
 
   it("energyBalanceItems = 自用 / 上网 / 下网", () => {

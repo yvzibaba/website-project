@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { ResolvedParameter } from "@/server/parameter-engine";
-import { runSandboxModelBaseline } from "@/server/sandbox-model";
+import { MODEL_VERSION, runSandboxModelBaseline } from "@/server/sandbox-model";
 import {
   DEMO_MODEL_VERSION,
   DEMO_OPERATING_DAYS,
@@ -272,8 +272,8 @@ describe("sandbox-demo · 零churn：默认态经济结果与引擎基线逐字�
   it("computeDemoScenario(默认, 无改动) 的 CalcResult 深等于 runSandboxModelBaseline()", () => {
     const c = demoBaseline();
     expect(c.calc).toEqual(runSandboxModelBaseline());
-    // 且不因示范项目而 bump 经济内核版本（版本只随引擎走，R9.0 起 1.1.0）
-    expect(c.calc.ok && c.calc.engineVersions.model).toBe("1.1.0");
+    // 且不因示范项目而 bump 经济内核版本（版本只随引擎走）
+    expect(c.calc.ok && c.calc.engineVersions.model).toBe(MODEL_VERSION);
   });
 
   it("示范项目结论恒标需专业人工确认（诚实边界不回退）", () => {

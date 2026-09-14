@@ -302,19 +302,19 @@ describe("TASK2 · 轴 E：储能 storageEnergy 0 → 400 → 2000 → 8000", ()
   });
 });
 
-describe("TASK2 · P1-1 假联动钉桩：chargerUtilization 未参与计算", () => {
+describe("TASK2 · P1-1 已接线：chargerUtilization 经需量费参与计算（阶段4 解除假联动）", () => {
   /**
-   * 「车辆利用率」滑块在面板上可拖，但 E1/E2/E3/E4 全未读取此键。拖动 → NPV 一点不变。
-   * 属**已声明的缺陷**（详见 docs/MODEL_CAUSALITY_AUDIT_V1.md P1-1）。
-   * 若未来接入 S1 逐时曲线或功率-能量重算，本测试**必须同步改写**为"NPV 应随利用率变化"。
+   * 「充电桩利用率」此前是**假联动**（面板可拖但 E 层不读，见 docs/MODEL_CAUSALITY_AUDIT_V1.md P1-1）。
+   * 阶段4 接入需量(基本)电费口径 A 后：计费需量 = 充电装机总功率 × 利用率，利用率↑ → 需量费↑ → 成本↑ → NPV↓。
+   * 故本测试从"三档 NPV 完全相同"**改写为"NPV 随利用率单调下降"**（原注释预告的同步改写已兑现）。
    */
   const a = npvOf({ "project.chargerUtilization": 5 });
   const b = npvOf({ "project.chargerUtilization": 35 });
   const c = npvOf({ "project.chargerUtilization": 90 });
 
-  it("当前：三档 NPV 完全相同（假联动的直接证据）", () => {
-    expect(a).toBe(b);
-    expect(b).toBe(c);
+  it("利用率 5% → 35% → 90%：NPV 严格单调下降（需量费随计费需量上升）", () => {
+    expect(a).toBeGreaterThan(b);
+    expect(b).toBeGreaterThan(c);
   });
 });
 
@@ -329,11 +329,10 @@ describe("TASK2 · P1-3 假联动钉桩：gridCapacity 未参与功率约束", (
 });
 
 describe("TASK2 · P2-6 假联动钉桩：其余未接入 E 层的参数", () => {
-  // R9.0 Step 2：region.peakValleySpread 已接入 E3b 储能套利腿，从本清单移除，
-  // 其正联动因果改由下方 R9.0 块正向断言。
+  // R9.0 Step 2：region.peakValleySpread 已接入 E3b 储能套利腿，从本清单移除；
+  // 阶段4：region.demandCharge 已接入 E4 需量(基本)电费口径 A，从本清单移除，其反向因果改由下方专块断言。
   const base = npvOf({});
   for (const key of [
-    "region.demandCharge",
     "region.landRent",
     "policy.carbonPrice",
     "finance.equityRatio",
@@ -344,6 +343,21 @@ describe("TASK2 · P2-6 假联动钉桩：其余未接入 E 层的参数", () =>
       expect(npvOf({ [key]: 999 })).toBe(base);
     });
   }
+});
+
+describe("TASK2 · 阶段4 接线因果：region.demandCharge ↔ NPV 反向联动（需量费口径 A）", () => {
+  it("需量电价 0 → 默认 → 上调：NPV 严格单调下降（需量费=计费需量×元/kW·月×12 计入成本侧）", () => {
+    const zero = npvOf({ "region.demandCharge": 0 });
+    const mid = npvOf({}); // 默认需量电价
+    const high = npvOf({ "region.demandCharge": 80 });
+    expect(zero).toBeGreaterThan(mid);
+    expect(mid).toBeGreaterThan(high);
+  });
+
+  it("需量电价归零 → NPV 回到无(基本)电费口径（与旧 R9.0 基线可交叉印证）", () => {
+    // demandCharge=0 时 E4 仅剩电量电费，经济口径回到接入需量费之前
+    expect(npvOf({ "region.demandCharge": 0 })).toBe(4448573); // R9.0 SVE 老黄金（model 1.1.0 口径）
+  });
 });
 
 describe("TASK2 · R9.0 SVE 接线因果（spread ↔ NPV 正联动 + FLIP 正贡献场景）", () => {
@@ -358,8 +372,11 @@ describe("TASK2 · R9.0 SVE 接线因果（spread ↔ NPV 正联动 + FLIP 正�
     expect(s15).toBeGreaterThan(s10);
   });
 
-  it("spread=0 → 套利腿关闭，NPV 精确回落到 R2.4 无储能价值基线 4,277,409（交叉验证焊点）", () => {
-    expect(npvOf({ "region.peakValleySpread": 0 })).toBe(4277409);
+  it("spread=0 → 套利腿关闭，storageValue 归零，NPV 精确回落到阶段4 无储能价值基线 795,417（含需量费口径的交叉焊点）", () => {
+    // 旧 R2.4/R9.0 焊点为 4,277,409（无需量费）；阶段4 接入需量(基本)电费后所有 NPV 下修，
+    // spread=0（套利关断）在 model@1.2.0 口径下精确为 795,417，仍作"引擎无意外漂移"的逐字节焊点。
+    expect(npvOf({ "region.peakValleySpread": 0 })).toBe(795417);
+    expect(npvOf({ "region.peakValleySpread": 0 })).toBeLessThan(npvOf({})); // 关断套利 → 低于含套利基线
   });
 
   it("【FLIP】spread 1.0 + 储能单价 0.6 元/Wh → 储能 NPV 贡献转正（E=400 优于 E=0，P1-2 反例锚定）", () => {

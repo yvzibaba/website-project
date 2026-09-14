@@ -238,6 +238,8 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
         { label: "毛 CAPEX", value: meta.capexGrossLabel },
         { label: "建设补贴抵扣", value: meta.subsidyLabel },
         { label: "首年运维 OPEX", value: meta.opexY1Label },
+        { label: "首年电量电费", value: meta.energyCostY1Label },
+        { label: "首年需量电费（基本电费·口径A）", value: meta.demandChargeY1Label },
         { label: "首年收入", value: meta.revenueY1Label },
         { label: "计算期", value: `${meta.projectLifeYears} 年` },
       ],

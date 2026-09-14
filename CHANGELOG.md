@@ -3,6 +3,32 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.65.0] - 2026-09-14 · 阶段4 批次3 首项：E4 购电成本接入需量(基本)电费口径 A（**经济口径实质变更·MODEL_VERSION 1.1.0→1.2.0·黄金样本有意重录**）
+
+- 原因：创始人裁决"先接需量电价"，并选定口径 **A：计费需量 = 充电装机总功率 × 充电桩利用率**、**V1 先不做储能削峰**（保守全额计需量费）。中国两部制工商业电价下，基本(需量)电费是重卡充电站的显著固定成本，此前 `region.demandCharge`/`project.chargerUtilization` 两键属"面板可拖但 E 层不读"的假联动（审计 P2-6 / P1-1），本版将其接入经济内核。
+- 引擎变更（`src/server/sandbox-model.ts`）：
+  - `MODEL_VERSION` **1.1.0 → 1.2.0**（口径变化须升版记因，宪法第13条）。
+  - `ECON_KEYS` 新增 `demandChargePerKwMonth: "region.demandCharge"`（元/kW·月）与 `chargerUtilizationPct: "project.chargerUtilization"`（%），二者进入 `ECON_REQUIRED`（缺失 → `missing_econ_inputs` 诚实列键，绝不猜默认）。
+  - `CalcResultOk` 新增独立字段 **`demandChargeY1: number`**（透明单列，不并入 `energyCostY1`，便于报告/图表分项呈现）。
+  - E4 口径：`计费需量 billedDemandKw = derived.chargerTotalPower × (chargerUtilization/100)`；`年需量费 demandChargeY1 = billedDemandKw × demandCharge × 12`；首年税前净现金流 `= 收入 − 电量电费 − 需量费 − OPEX`；逐年 `costY = (下网电量×电价 + 需量费 + OPEX) × 通胀因子`；盈亏平衡充电单价分母含需量费。基线：计费需量 2880×35%=1008 kW，需量费 1008×40×12=**483,840 元/年**。
+  - `notes` 恒定追加需量费透明说明（口径 A、保守全额、未建模削峰、须专业复核）。
+- 呈现/报告/敏感性联动：
+  - `src/lib/sandbox-view.ts`：`VIEW_VERSION` **1.0.0 → 1.1.0**；`year1MoneyComparison` 由 3 条（收入/购电成本/运维）拆为 **4 条（收入/电量电费/需量电费/运维成本）**；`meta` 新增 `energyCostY1Label`/`demandChargeY1Label`；盈亏平衡卡提示语改为"覆盖电量电费+需量电费+运维"。
+  - `src/lib/sandbox-report.ts`：投资结构节新增「首年电量电费」「首年需量电费（基本电费·口径A）」两行。
+  - `src/server/sandbox-sensitivity.ts`：`SENSITIVITY_VERSION` **1.3.0 → 1.4.0**；默认扫描集新增 `region.demandCharge`(±15%)、`project.chargerUtilization`(±20%) → 11 增至 **13 参数**；两键从"未接入"注释移入"已解锁(阶段4)"。最敏感因素仍为综合充电单价（swing 10,423,805），需量电价/利用率列第二梯队（elecPrice −7,738,756、chargerUtilization −1,392,797）。
+- 黄金样本有意重录（模型口径变化 → 测试红 → 记因后重录，**绝不顺手改数**）：
+  - `tests/unit/sandbox-model.test.ts`：NUMERIC 补 `region.demandCharge:40`/`project.chargerUtilization:35`；基线 netCashFlowY1PreTax 1,113,517→**629,677**、flows[1] 835,138→**472,258**、NPV 4,448,573→**966,581**、IRR 0.2435→**0.120059**、简单回收 4.1→**7.1**、盈亏平衡 0.7431→**0.8353**；无储能 churn 焊点 netCashFlow 606,986/flows[1] 455,239/NPV 1,315,764；spread=0 焊点 4,277,409→**795,417**（energyCostY1 3,565,174、收入 5,014,991、CAPEX/OPEX 分量逐字节不变——需量费只在成本侧单列）。
+  - `tests/fixtures/regression/scenarios-sml.json`：S/M/L 三情景 `calcRef`/`engineVersions.model` → 1.2.0；npv/irr/roi/回收期重录（small NPV 1,018,842→**−1,534,618**、回收期转 null；medium 11,984,997→**8,154,806**；large 39,108,348→**34,465,692**）；capex/opex/revenue/storageValue **逐字节不变**；`meta` 增 `reRecordedAt`/`reRecordReason`。
+  - `tests/unit/sandbox-store.test.ts`：基线落库列 npv 4448573.00→**966581.00**、irrPct 24.3497→**12.0059**、paybackYears 5.14→**10.63**、roiRatio 4.0880→**2.3074**、calcRef→model@1.2.0（capexNet 3524500.00 不变）。
+  - `tests/unit/sandbox-causality.test.ts`：chargerUtilization「假联动钉桩（三档 NPV 相同）」**改写为「真实杠杆：利用率 5%→35%→90% NPV 严格单调下降」**；`region.demandCharge` 从 P2-6 假联动清单移除，新增反向因果专块（需量电价 0→默认→80 NPV 单调降）+ 交叉焊点（demandCharge=0 → NPV 精确回落 **4,448,573** = 旧 R9.0 口径，验证"仅需量费一处改动"）；spread=0 焊点 4,277,409→795,417。
+  - `tests/unit/sandbox-sensitivity.test.ts`：chargerUtilization「不在扫描集·swing 恒 0」premise 反转为「已接入·swing<0」，并新增 demandCharge 在扫描集·swing<0 断言。
+  - `tests/unit/sandbox-view.test.ts`：year1MoneyComparison 断言改 4 条 + 新增 override 用例验证需量电费条形随 `demandChargeY1` 走。
+  - `sandbox-demo.test.ts` / `sandbox-demo-linkage.test.ts` / `sandbox-report-dynamic.test.ts`：硬编码 `"1.1.0"` 改为引用 `MODEL_VERSION` 常量（未来引擎升版不再脆断）。
+- **关键发现（诚实上报，待创始人复核）**：small 情景（20 车 · 240kW 桩）在保守全额需量费（未建模削峰）下 **NPV 转负（−1,534,618）、回收期不可得**——这是引擎如实反映"低利用率小型场站的基本电费压力"，非 bug，已恒标 `needsProfessionalReview`。建议复核三项默认是否符合山西实际：①充电桩利用率默认 35%（决定计费需量）②需量电价默认 40 元/kW·月 ③小型场站的桩容量映射是否偏大（20 车配 ~2112kW 装机 → 计费需量 ~739kW）。若默认偏保守可后续调 ASSUMPTION 默认值或接储能削峰（批次3 余项）。
+- 边界/未做：V1 未建模储能削峰降需量（保守全额计，已在 notes/报告标注）；**未新增 DB 列**（`demandChargeY1` 仅计算结果字段，不落库，无迁移）；F-2h `includeStorage` 布尔仍未接线（批次2）；碳价/融资腿(equityRatio/loanRate)/储能超日历寿命/负谷价仍属假联动或留白（批次3 余项，待逐项拍板）。
+- 验证：`npm run test:unit` **1081/1081 全绿**（62 文件）；`tsc --noEmit` exit 0；`eslint` exit 0；`package.json` 版本 **0.64.0 → 0.65.0**（实质经济口径变更，区别于 docs-only 不 bump 先例）。
+- 效果：两部制电价的基本(需量)电费首次进入投资决策现金流，充电利用率与需量电价从"拖了没反应"的假滑块变成真实敏感杠杆，报告/图表分项透明呈现电量电费 vs 需量电费。STOP 待创始人：批次3 余项（碳价/融资/储能寿命/负谷价）、批次2（includeStorage/TRANSIT）、批次4（三级沙盘 UI）逐项放行。
+
 ## [0.64.3] - 2026-09-14 · 阶段4 批次1 首项 B1-1：龙卷风西方隐喻 → 中国话「关键因素影响力排行」（**纯呈现文案·经济公式/版本/黄金样本零触碰**）
 
 - 原因：创始人裁决"中国极少龙卷风可以把这个删掉，合理结合中国的实际情况加入重要的影响参数"；批次1 放行范围经创始人选定为"先只改龙卷风文案"（B1-1），其余 B1-2~B1-5 暂缓待逐项过目。

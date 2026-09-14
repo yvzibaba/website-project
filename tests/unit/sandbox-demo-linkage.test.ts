@@ -18,7 +18,7 @@ import {
   type DemoHeadlineState,
   type DemoScenarioResult,
 } from "@/server/sandbox-demo";
-import type { CalcResultOk } from "@/server/sandbox-model";
+import { MODEL_VERSION, type CalcResultOk } from "@/server/sandbox-model";
 
 const NOW = new Date("2026-01-01T00:00:00.000Z");
 
@@ -238,8 +238,8 @@ describe("TASK3 · 假联动反查（若模型代码回归错误地把已接线�
 });
 
 describe("TASK3 · 默认零 churn 保护（映射层刻意不 bump 经济内核版本）", () => {
-  it("默认无改动 → calc 与 runSandboxModelBaseline() 深等 + MODEL_VERSION 跟随引擎 1.1.0", () => {
+  it("默认无改动 → calc 与 runSandboxModelBaseline() 深等 + MODEL_VERSION 跟随引擎（不自行 bump）", () => {
     expect(base.calc).toEqual(demoBaseline().calc);
-    expect(baseCalc.engineVersions.model).toBe("1.1.0");
+    expect(baseCalc.engineVersions.model).toBe(MODEL_VERSION);
   });
 });

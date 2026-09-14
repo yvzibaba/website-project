@@ -21,7 +21,7 @@ import type { TechFirstYearResult } from "@/server/sandbox-tech";
 import type { TornadoResult, TornadoRow } from "@/server/sandbox-sensitivity";
 
 /** 视图模型版本（呈现口径变化须升版记因，宪法第 13 条）。 */
-export const VIEW_VERSION = "1.0.0";
+export const VIEW_VERSION = "1.1.0"; // 1.1.0：首年钱流对比拆分「电量电费/需量电费」（配合 MODEL_VERSION 1.2.0 E4 需量费接入）；meta 增 demandChargeY1Label。纯加性呈现，无重算。
 
 /* ────────────────────────────── 中文格式化纯函数 ────────────────────────────── */
 
@@ -142,7 +142,8 @@ export function revenueItems(rev: RevenueBreakdownY1): NamedValue[] {
 export function year1MoneyComparison(calc: CalcResultOk): NamedValue[] {
   return [
     { name: "收入", value: calc.revenueY1.gross },
-    { name: "购电成本", value: calc.energyCostY1 },
+    { name: "电量电费", value: calc.energyCostY1 },
+    { name: "需量电费", value: calc.demandChargeY1 },
     { name: "运维成本", value: calc.opexY1.gross },
   ];
 }
@@ -252,7 +253,7 @@ export function summaryCards(calc: CalcResultOk, discountRate?: number): MetricC
     label: "盈亏平衡充电单价",
     value: calc.breakEvenChargingPriceY1 == null ? "—" : `${calc.breakEvenChargingPriceY1.toFixed(4)} 元/kWh`,
     tone: calc.breakEvenChargingPriceY1 == null ? "muted" : "muted",
-    hint: "首年覆盖购电+运维所需最低充电单价（简化口径，仅供参考）",
+    hint: "首年覆盖电量电费+需量电费+运维所需最低充电单价（简化口径，仅供参考）",
   };
 
   return [npvCard, irrCard, paybackCard, roiCard, beCard];
@@ -293,6 +294,10 @@ export interface SandboxViewModel {
     subsidyLabel: string;
     opexY1Label: string;
     revenueY1Label: string;
+    /** E4 电量电费首年标签（下网电量×工商业电价）。 */
+    energyCostY1Label: string;
+    /** E4 需量(基本)电费首年标签（MODEL_VERSION 1.2.0 接入）。 */
+    demandChargeY1Label: string;
     pvSelfConsumptionLabel: string;
     renewableFractionLabel: string;
   };
@@ -354,6 +359,8 @@ export function buildSandboxViewModel(input: ViewModelInput): SandboxViewModel {
       subsidyLabel: formatMoney(calc.capex.constructionSubsidy),
       opexY1Label: formatMoney(calc.opexY1.gross),
       revenueY1Label: formatMoney(calc.revenueY1.gross),
+      energyCostY1Label: formatMoney(calc.energyCostY1),
+      demandChargeY1Label: formatMoney(calc.demandChargeY1),
       pvSelfConsumptionLabel: tech ? formatPctRaw(tech.pvSelfConsumptionRatePct) : "—",
       renewableFractionLabel: tech ? formatPctRaw(tech.renewableFractionPct) : "—",
     },

@@ -162,17 +162,30 @@ describe("TASK 5 · 创始人点名 5 项覆盖度", () => {
   });
 
   /**
-   * 车辆利用率：**故意不在默认扫描集**。若有人误把它加入，会得到 swing=0 → 用户以为"这东西对结果零影响"
-   * 而非"这东西根本没接进模型"——即"假敏感"陷阱。此处显式验证：手动扫它，能得到"摆幅 0"的诚实结论。
+   * 车辆（充电桩）利用率：**阶段4 已从"假联动"升级为真实杠杆**。接入需量(基本)电费口径 A 后，
+   * 利用率↑ → 计费需量(=装机总功率×利用率)↑ → 年需量费↑ → 成本↑ → NPV↓，故 swing<0。
+   * 此前该键 swing 恒为 0（未接进 E 层），被刻意排除在默认扫描集外以防"假敏感"误导；
+   * 现已接线，纳入默认集（±20%）并验证方向为负、摆幅真实非零。
    */
-  it("project.chargerUtilization 不在默认扫描集（防假敏感），显式扫时 swing 恒为 0", () => {
-    expect(keys).not.toContain("project.chargerUtilization");
-    const custom = computeTornado({ params: [{ key: "project.chargerUtilization", deltaPct: 20 }] });
-    const r = custom.rows[0];
-    expect(r.swing).toBe(0);
-    // 摆幅 0 但 baseMetric 存在——证明"扰动执行了，只是 E 层未消费"，与"根本没扫"不同
-    expect(r.baseMetric).not.toBeNull();
-    expect(r.lowMetric).toBe(r.highMetric);
+  it("project.chargerUtilization 已接入需量费 → 在默认扫描集，swing 非零且为负（利用率↑→需量费↑→NPV↓）", () => {
+    expect(keys).toContain("project.chargerUtilization");
+    const r = t.rows.find((x) => x.key === "project.chargerUtilization")!;
+    expect(r.deltaPct).toBe(20);
+    expect(r.swing).not.toBeNull();
+    expect(r.swing!).toBeLessThan(0);
+    expect(r.lowMetric!).toBeGreaterThan(r.highMetric!); // 利用率低端 → NPV 更高
+  });
+
+  /**
+   * region.demandCharge（需量电价 元/kW·月）：阶段4 新增真实杠杆，纳入默认集（±15%）。
+   * 单价↑ → 需量费↑ → 成本↑ → NPV↓，故 swing<0。
+   */
+  it("region.demandCharge 在默认扫描集，swing 非零且为负（需量电价↑→NPV↓）", () => {
+    expect(keys).toContain("region.demandCharge");
+    const r = t.rows.find((x) => x.key === "region.demandCharge")!;
+    expect(r.deltaPct).toBe(15);
+    expect(r.swing).not.toBeNull();
+    expect(r.swing!).toBeLessThan(0);
   });
 
   it("默认扫描集规模≥5（覆盖创始人 5 项要求里可真实量化的 4 项 + 6 项其他主杠杆）", () => {

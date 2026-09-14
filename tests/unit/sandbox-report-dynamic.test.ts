@@ -23,6 +23,7 @@ import {
   type DemoHeadlineState,
   type DemoScenarioResult,
 } from "@/server/sandbox-demo";
+import { MODEL_VERSION } from "@/server/sandbox-model";
 
 const NOW = new Date("2026-01-01T00:00:00.000Z");
 
@@ -215,7 +216,7 @@ describe("TASK4 · 溯源节：三情景 calcRef/model 版本一致（内核不 
     const p3 = prov(s3);
     expect(p2["计算引用 calcRef"]).toBe(p1["计算引用 calcRef"]);
     expect(p3["计算引用 calcRef"]).toBe(p1["计算引用 calcRef"]);
-    expect(p1["模型版本"]).toBe("1.1.0"); // R9.0 Step 2：接入 SVE 储能价值，模型层 1.0.0→1.1.0
+    expect(p1["模型版本"]).toBe(MODEL_VERSION); // 报告溯源节的模型版本只随引擎走（映射层不自行 bump）
     expect(p1["技术内核版本"]).toBe("1.0.0");
     expect(p1["财务内核版本"]).toBe("1.0.0");
   });

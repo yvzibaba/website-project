@@ -46,6 +46,10 @@ const NUMERIC: Record<string, number> = {
   "finance.taxRate": 25,
   "finance.residualValue": 5,
 
+  // 阶段4 · 需量(基本)电费口径 A：计费需量 = 充电装机总功率 × 利用率；年需量费 = 计费需量 × 元/kW·月 × 12
+  "region.demandCharge": 40, // 元/kW·月
+  "project.chargerUtilization": 35, // %
+
   // R9.0 Step 2 · storage-scoped SVE 键（hasStorage 时必填；值 = 参数目录默认）
   "region.peakValleySpread": 0.6,
   "tech.storagePeakLoadShare": 40,
@@ -101,37 +105,38 @@ describe("computeEconomics · CAPEX/OPEX/收入 逐项手算（基线）", () =>
     expect(res.revenueY1.gross).toBe(5014991);
   });
 
-  it("E4 购电成本：下网5,093,106×0.7≈3,565,174；税前净=收入−购电−OPEX≈1,113,517（含 Δ_sto 27,491）", () => {
+  it("E4 购电成本：下网5,093,106×0.7≈3,565,174；需量(基本)电费=2880×35%×40×12=483,840；税前净=收入−电量电费−需量费−OPEX≈629,677", () => {
     if (!res.ok) return;
-    expect(res.energyCostY1).toBe(3565174);
-    expect(res.netCashFlowY1PreTax).toBe(1113517);
+    expect(res.energyCostY1).toBe(3565174); // 电量电费口径不变（需量费单列，不并入 energyCostY1）
+    expect(res.demandChargeY1).toBe(483840); // 口径 A：1008 kW × 40 元/kW·月 × 12
+    expect(res.netCashFlowY1PreTax).toBe(629677);
   });
 
-  it("E5–E8 现金流：长度=life+1，flows[0]=−净CAPEX，flows[1]含Δ_sto税后≈835,138", () => {
+  it("E5–E8 现金流：长度=life+1，flows[0]=−净CAPEX，flows[1]含Δ_sto税后+扣需量费≈472,258", () => {
     if (!res.ok) return;
     expect(res.annualCashFlow.length).toBe(NUMERIC["finance.projectLife"] + 1);
     expect(res.annualCashFlow[0]).toBe(-3524500);
-    expect(res.annualCashFlow[1]).toBe(835138); // round(1,113,516.7×0.75)，含 Δ_sto
+    expect(res.annualCashFlow[1]).toBe(472258); // round(629,677×0.75)，含 Δ_sto、扣需量费
     // 全名义通胀 → 后续年税后净额单调上升
     expect(res.annualCashFlow[2]).toBeGreaterThan(res.annualCashFlow[1]);
   });
 
-  it("评价指标全程序算且数值合理：NPV>0 / IRR ok≈0.2435 / 回收期 / ROI≈4.09（R9.0 重录）", () => {
+  it("评价指标全程序算且数值合理：NPV>0 / IRR ok≈0.1201 / 回收期 / ROI≈2.31（阶段4 接入需量费重录）", () => {
     if (!res.ok) return;
     expect(res.metrics.npv).toBeGreaterThan(0);
-    expect(res.metrics.npv).toBeCloseTo(4448573, -1); // 容差到十位（R2.4 老黄金 4,277,409 + SVE 增量 ≈171,164）
+    expect(res.metrics.npv).toBeCloseTo(966581, -1); // 阶段4：R9.0 老黄金 4,448,573 − 需量费现值 ≈ 3,481,992
     expect(res.metrics.irr.ok).toBe(true);
-    expect(res.metrics.irr.value).toBeCloseTo(0.2435, 3);
+    expect(res.metrics.irr.value).toBeCloseTo(0.120059, 4);
     expect(res.metrics.irr.signChanges).toBe(1);
-    expect(res.metrics.simplePaybackYears).toBeCloseTo(4.1, 1);
+    expect(res.metrics.simplePaybackYears).toBeCloseTo(7.1, 1);
     expect(res.metrics.discountedPaybackYears).toBeGreaterThan(res.metrics.simplePaybackYears!);
     expect(res.metrics.roi.ok).toBe(true);
-    expect(res.metrics.roi.value).toBeGreaterThan(3);
+    expect(res.metrics.roi.value).toBeGreaterThan(2);
   });
 
-  it("盈亏平衡充电单价 = (购电+OPEX)÷充电量 ≈ 0.7431（成本覆盖口径，刻意不含 Δ_sto，零 churn）", () => {
+  it("盈亏平衡充电单价 = (电量电费+需量费+OPEX)÷充电量 ≈ 0.8353（成本覆盖口径，刻意不含 Δ_sto）", () => {
     if (!res.ok) return;
-    expect(res.breakEvenChargingPriceY1).toBeCloseTo(0.7431, 3);
+    expect(res.breakEvenChargingPriceY1).toBeCloseTo(0.8353, 3);
   });
 });
 
@@ -152,24 +157,25 @@ describe("R9.0 Step2 · SVE 接线锚定（手算链 + 零 churn 焊点）", () 
     expect(res.revenueY1.gross).toBe(5014991);
   });
 
-  it("★storage=0 零 churn 焊点：E1–E8 全套回到 R2.4 口径（SVE 从未被调用）", () => {
+  it("★storage=0 零 churn 焊点：收入/CAPEX/OPEX 回到 R2.4 口径（SVE 从未被调用）；需量费仍在（不依赖储能）", () => {
     const noStorage = computeEconomics({ ...NUMERIC, "project.storageEnergy": 0 });
     expect(noStorage.ok).toBe(true);
     if (!noStorage.ok) return;
     expect(noStorage.revenueY1.storageValue).toBe(0);
-    expect(noStorage.revenueY1.gross).toBe(4987500); // R2.4 老黄金
+    expect(noStorage.revenueY1.gross).toBe(4987500); // R2.4 老黄金（收入侧不含需量费，零 churn）
     expect(noStorage.capex.net).toBe(3030500); // 3,190,000×0.95（无储能 CAPEX）
     expect(noStorage.opexY1.gross).toBe(331500); // 7,500+0+24,000+300,000
-    expect(noStorage.netCashFlowY1PreTax).toBe(1090826);
-    expect(noStorage.annualCashFlow[1]).toBe(818119);
-    expect(noStorage.metrics.npv).toBe(4797756);
+    expect(noStorage.demandChargeY1).toBe(483840); // 需量费按充电装机计，与储能无关 → 不变
+    expect(noStorage.netCashFlowY1PreTax).toBe(606986);
+    expect(noStorage.annualCashFlow[1]).toBe(455239);
+    expect(noStorage.metrics.npv).toBe(1315764);
   });
 
-  it("★spread=0 ⟹ 套利关断 ⟹ NPV 与 R2.4 老引擎黄金逐字节相等（4,277,409）", () => {
+  it("★spread=0 ⟹ 套利关断 ⟹ storageValue=0，NPV 仅受需量费影响（阶段4 重录 795,417）", () => {
     const s0 = computeEconomics({ ...NUMERIC, "region.peakValleySpread": 0 });
     expect(s0.ok).toBe(true);
     if (!s0.ok) return;
-    expect(s0.metrics.npv).toBe(4277409);
+    expect(s0.metrics.npv).toBe(795417);
     expect(s0.revenueY1.storageValue).toBe(0);
   });
 

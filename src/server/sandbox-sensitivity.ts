@@ -233,7 +233,7 @@ export function computeTornado(
 
   const top = rows.find((r) => r.swing != null);
   const notes: string[] = [];
-  if (baseValue == null) notes.push("基线目标指标不可得，龙卷风图各行摆幅多为 null，仅供参考");
+  if (baseValue == null) notes.push("基线目标指标不可得，关键因素影响力排行各行摆幅多为空值(null)，仅供参考");
 
   return {
     ok: true,

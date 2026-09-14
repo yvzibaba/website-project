@@ -275,7 +275,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
           ? `最敏感变量为「${vm.mostSensitiveLabel}」。`
           : "敏感性扫描未能定位最敏感变量。",
         top.length ? `按影响大小前列：${top.join("；")}。` : "",
-        "龙卷风图在报告页可视化各变量的正负摆动幅度，辅助判断应优先核实哪些假设。",
+        "「关键因素影响力排行」在报告页展示各因素上下浮动一档时对净现值的正负影响，辅助判断应优先核实哪些假设。",
       ].filter(Boolean),
     });
   }

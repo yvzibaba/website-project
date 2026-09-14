@@ -208,7 +208,7 @@ export default async function Home() {
               <Badge variant="info">V1 试点 · 免费</Badge>
             </div>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              选地区、改参数、即时重算：CAPEX / OPEX / 收入 / NPV / IRR / ROI / 回收期、龙卷风敏感性与确定性动态报告。
+              选地区、改参数、即时重算：CAPEX / OPEX / 收入 / NPV / IRR / ROI / 回收期、关键因素影响力排行与确定性动态报告。
               山西已核实政策条款可点击溯源；默认数字均为占位假设，结果需专业人工确认。
             </p>
           </div>

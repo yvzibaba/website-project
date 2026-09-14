@@ -145,8 +145,8 @@ export function Year1MoneyChart({ data }: { data: NamedValue[] }) {
 export function TornadoChart({ data, base }: { data: TornadoBar[]; base: number | null }) {
   return (
     <ChartCard
-      title="敏感性 · 龙卷风（对 NPV）"
-      desc="各关键参数在自身扰动区间内单独摆动后，NPV 相对基线的位移；条越长越敏感（基线锚定，§14 #8）。"
+      title="关键因素影响力排行（对净现值 NPV 的±影响）"
+      desc="把每个关键因素单独上下浮动一档，看净现值 NPV 会多赚或少赚多少；条越长，说明结果越受这个因素左右，越该优先把它核实清楚。"
       height={Math.max(260, data.length * 40)}
     >
       <ResponsiveContainer>

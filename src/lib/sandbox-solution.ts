@@ -264,7 +264,7 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
       .map((t, i) => `${i + 1}) ${t.label}（Δ%≈${t.deltaPct.toFixed(1)}%）`)
       .join("；");
     body.sensitivity =
-      `以 NPV 为指标的 one-at-a-time 龙卷风敏感性——最敏感变量：${vm.mostSensitiveLabel ?? "—"}。` +
+      `以净现值 NPV 为目标的逐项±摆动敏感性分析——影响最大的因素：${vm.mostSensitiveLabel ?? "—"}。` +
       `Top：${top}。（摆幅由引擎计算，此处仅择要。）`;
   }
 

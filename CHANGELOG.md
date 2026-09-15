@@ -3,6 +3,25 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.66.0] - 2026-09-15 · V1.1 批次 1.1：场站规模缩放链路（**DEMO_MODEL_VERSION 0.1.0→0.2.0·经济内核零触碰·SML 黄金有意重录**）
+
+- 原因：全库审计 P0-1——示范沙盘「场站不随车队缩放」：20 车与 150 车的桩数恒为 8 台（2880kW 装机），车辆规模→能源需求→设备配置链路断裂，用户改车队规模却看不到桩数/装机/CAPEX 变化，属"平均利用率冒充最大需量 + 静态设备配置"的双重失真。本批次在**映射层**（`sandbox-demo.ts`）建立缩放链路，40 参数经济内核零触碰。
+- 映射层变更（`src/server/sandbox-demo.ts`，DEMO_MODEL_VERSION **0.1.0 → 0.2.0**）：
+  - 新增纯函数 `requiredChargerCount(state)`：**建议桩数 = max(1, ⌈车队日充电总量 ÷ (单桩功率 × 补能窗口T)⌉)**；默认态 15000÷(360×6)=6.94→**7 台**（此前恒 8 台系引擎占位默认，从未随车队变过）。
+  - headline 8→**10** 项：新增「补能窗口 T（h/日，默认 6=DEMO_DEFAULT_CHARGE_WINDOW_HOURS，示例假设）」与「充电单价（电费+服务，默认 0.9=引擎系统默认，保零churn）」；`DemoHeadlineState`/`defaultDemoState`/`valueFor`/`deserializeDemoState` 同步（旧存档缺新字段诚实回落默认，零迁移）。
+  - `demoUserValues`：fleet 三件套/单桩功率/T 任一被触碰 → 自动垫入 `project.chargerCount = requiredChargerCount`；chargingPrice 被触碰 → 垫入 `project.chargingPrice`。**关键修复**：入参先 `{...defaultDemoState(), ...incoming}` 归一化——否则旧 fixture 裸 JSON 缺新字段致缩放静默失效（开发中实测抓到假绿）。
+  - 新增 `computeDemoWarnings` 约束告警：①桩数撞引擎上限 200 被裁剪 → danger（如实报"需更大单桩或分场站"）；②充电总装机 > 并网报装容量 `gridCapacity` → warning（诚实声明**模型未把并网约束计入成本**，僵尸参数首次被诚实使用）。`DemoOutputs` 新增 recommendedChargerCount/appliedChargerCount。
+- UI（`src/components/sandbox/SandboxDemoPanel.tsx`）：告警条渲染 + 计算结果区新增「充电桩数（建议→生效）」只读行。
+- 工程资产回收（审计 #18）：`tests/unit/sml-regen.test.ts` + `scripts/sml-regen.mjs` + `npm run regen:sml` 入库——SML 黄金重录脚本此前只存在于上一会话（丢失），现固化：输入(state/touched)零改动、仅重算期望值、打印新旧对照、`SML_REGEN_REASON` 强制记因。
+- 黄金样本有意重录（输入零改动，缩放生效 → 输出必变 → 记因后重录，**绝不顺手改数**）：`tests/fixtures/regression/scenarios-sml.json`
+  - **small**（20车·山西·240kW桩）：chargerCount 8→**3**（装机 1920→720kW）；NPV −1,534,618→**+699,786**、IRR −0.130775→0.162142、折现回收期 null→7.88、capexGross 1,920,000→1,320,000、opexY1 329,400→314,400；revenueY1 1,429,273 **逐字节不变**。small 转正**印证负载审计结论**：小型情景此前转负正是"桩不缩放×需量全额计"的人造失真。
+  - **medium**（60车）：chargerCount 7（2520kW）；NPV 8,154,806→**8,814,332**、capexGross 5,980,000→5,800,000、折现回收 4.54→4.2；revenue 不变。
+  - **large**（150车）：chargerCount 8→**17**——与《重卡充电负载审计》手算"150 车需 17 桩"精确吻合；NPV 34,465,692→**27,030,443**（CAPEX 诚实上浮 15,670,000→17,830,000、回收 3.33→4.38）；revenue 16,146,136 不变。
+  - 三情景 `calcRef` 全部保持 **model@1.2.0**——经济内核零触碰的反证。
+- 测试改写：`sandbox-demo.test.ts` 新增缩放链路专块 ~10 用例（公式焊点/触发规则/端到端 20vs150车 CAPEX>5×/两类告警/specs=10/序列化往返+旧存档回落）；`sandbox-demo-linkage.test.ts` 探针 7→9（T、chargingPrice 入联动网格，fleet/功率探针 affectedKeys +chargerCount）；`sandbox-report-dynamic.test.ts` S2/S3 补新字段。
+- 验证：`npm run test:unit` **1101 通过 + 1 跳过**（63 文件，跳过项=regen 守卫）；`tsc --noEmit` exit 0；`eslint` exit 0；`npm run build` 通过（路由清单无变化）；`package.json` **0.65.0 → 0.66.0**。
+- 效果：用户改车队规模/单桩功率/补能窗口 → 桩数、装机、CAPEX、NPV 全链真实联动，"8 台桩打到 150 辆车"的演示级欺骗消除；并网/桩数约束以告警显性化而非静默裁剪。边界：补能窗口 T=6h、默认利用率仍是 ASSUMPTION；需量电价 A/B/C 场景与计费基准（需用系数 Kc）留批次 1.2（涉 MODEL_VERSION 1.3.0）。
+
 ## [0.65.0] - 2026-09-14 · 阶段4 批次3 首项：E4 购电成本接入需量(基本)电费口径 A（**经济口径实质变更·MODEL_VERSION 1.1.0→1.2.0·黄金样本有意重录**）
 
 - 原因：创始人裁决"先接需量电价"，并选定口径 **A：计费需量 = 充电装机总功率 × 充电桩利用率**、**V1 先不做储能削峰**（保守全额计需量费）。中国两部制工商业电价下，基本(需量)电费是重卡充电站的显著固定成本，此前 `region.demandCharge`/`project.chargerUtilization` 两键属"面板可拖但 E 层不读"的假联动（审计 P2-6 / P1-1），本版将其接入经济内核。

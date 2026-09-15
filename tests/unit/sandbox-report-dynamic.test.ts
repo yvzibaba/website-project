@@ -37,6 +37,8 @@ const S2: DemoHeadlineState = {
   pvCapacity: 5000,
   storageEnergy: 2000,
   chargerUnitPower: 480,
+  chargeWindowHours: 6,
+  chargingPrice: 0.9,
   elecPrice: 1.0,
 };
 
@@ -48,6 +50,8 @@ const S3: DemoHeadlineState = {
   pvCapacity: 0,
   storageEnergy: 0,
   chargerUnitPower: 240,
+  chargeWindowHours: 6,
+  chargingPrice: 0.9,
   elecPrice: 0.55, // 与山西地区包默认一致（避免被 user 覆写生效与否干扰）
 };
 

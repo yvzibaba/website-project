@@ -6,7 +6,7 @@
  *
  * 与 `sandbox-demo.test.ts` 的分工：
  *   现有 demo 测试覆盖**映射纯函数 + 分类器真值表 + 车队/光伏两个代表字段的端到端**；
- *   本测试**穷举 8 个可操作 headline 字段**，逐一跑四段链路，任何一段"该变而未变"即失败。
+ *   本测试**穷举 9 个可操作数值 headline 字段**（V1.1 批次 1.1 起含补能窗口/充电单价），逐一跑四段链路，任何一段"该变而未变"即失败。
  *   R9.0 Step 2 更新：储能已接入 SVE 套利腿（P1-2 闭合），storageEnergy 现在也影响收入；
  *   DEMO 映射层不含 spread 滑杆，套利腿按引擎默认 spread=0.6 结算。
  */
@@ -57,17 +57,17 @@ const PROBES: FieldProbe[] = [
   {
     id: "truckCount",
     override: { truckCount: 200 },
-    affectedKeys: ["project.trucksPerDay"],
+    affectedKeys: ["project.trucksPerDay", "project.chargerCount"],
   },
   {
     id: "annualMileagePerTruck",
     override: { annualMileagePerTruck: 90000 },
-    affectedKeys: ["project.chargePerTruck", "derived.dailyChargeEnergy"],
+    affectedKeys: ["project.chargePerTruck", "derived.dailyChargeEnergy", "project.chargerCount"],
   },
   {
     id: "energyPer100km",
     override: { energyPer100km: 150 },
-    affectedKeys: ["project.chargePerTruck", "derived.dailyChargeEnergy"],
+    affectedKeys: ["project.chargePerTruck", "derived.dailyChargeEnergy", "project.chargerCount"],
   },
   {
     id: "pvCapacity",
@@ -82,7 +82,19 @@ const PROBES: FieldProbe[] = [
   {
     id: "chargerUnitPower",
     override: { chargerUnitPower: 600 },
-    affectedKeys: ["project.chargerUnitPower", "derived.chargerTotalPower"],
+    affectedKeys: ["project.chargerUnitPower", "derived.chargerTotalPower", "project.chargerCount"],
+  },
+  {
+    // V1.1 批次 1.1：补能窗口是桩数缩放链路的分母（T↑ → 需求桩数↓）。
+    id: "chargeWindowHours",
+    override: { chargeWindowHours: 3 },
+    affectedKeys: ["project.chargerCount", "derived.chargerTotalPower"],
+  },
+  {
+    // V1.1 批次 1.1：充电单价（收入第一杠杆）首次露出到 Level-1。
+    id: "chargingPrice",
+    override: { chargingPrice: 1.2 },
+    affectedKeys: ["project.chargingPrice"],
   },
   {
     id: "elecPrice",

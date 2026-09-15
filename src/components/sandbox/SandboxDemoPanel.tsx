@@ -140,7 +140,7 @@ export function SandboxDemoPanel({
 
   // 一次推演：映射层 → 既有引擎链 → 视图模型 + 动态报告（本组件零计算，全复用）。
   const scn = useMemo(() => computeDemoScenario(state, touched), [state, touched]);
-  const { vm, report, outputs, resolved, tornado } = scn;
+  const { vm, report, outputs, resolved, tornado, warnings } = scn;
   const pack = getRegionPack(state.regionId);
   const savedLayers = useMemo(
     () => serializeDemoLayers(scn) as unknown as Record<string, unknown>,
@@ -174,6 +174,17 @@ export function SandboxDemoPanel({
         <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
           已从保存的项目还原示范档参数（滑杆位与改动标记）；可继续修改，或保存为新项目。
         </p>
+      ) : null}
+
+      {/* V1.1 批次 1.1：工程约束告警（只提示不改数——把"隐性不可能"变"显性风险"） */}
+      {warnings.length > 0 ? (
+        <div className="flex flex-col gap-2">
+          {warnings.map((w) => (
+            <Alert key={w.id} variant={w.level === "danger" ? "danger" : "warning"}>
+              <div className="text-sm leading-relaxed">{w.text}</div>
+            </Alert>
+          ))}
+        </div>
       ) : null}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,340px)_1fr]">
@@ -293,6 +304,10 @@ export function SandboxDemoPanel({
                 <Row k="净投资（补贴后）" v={formatMoney(outputs.totalInvestmentNet)} />
                 <Row k="年充电量（车队口径）" v={`${outputs.annualChargeEnergyKwh.toLocaleString("zh-CN")} kWh`} />
                 <Row k="日充电总量" v={`${Math.round(outputs.dailyChargeEnergyKwh).toLocaleString("zh-CN")} kWh/日`} />
+                <Row
+                  k="充电桩数（建议→生效）"
+                  v={`${Number.isFinite(outputs.recommendedChargerCount) ? outputs.recommendedChargerCount.toLocaleString("zh-CN") : "—"} → ${(Number.isFinite(outputs.appliedChargerCount) ? outputs.appliedChargerCount : 0).toLocaleString("zh-CN")} 台`}
+                />
                 <Row k="充电总装机功率" v={`${Math.round(resolved.numeric["derived.chargerTotalPower"] ?? 0).toLocaleString("zh-CN")} kW`} />
                 <Row k="储能时长" v={`${(resolved.numeric["derived.storageDuration"] ?? 0).toFixed(2)} h`} />
               </dl>

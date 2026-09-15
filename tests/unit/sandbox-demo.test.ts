@@ -4,10 +4,12 @@ import { MODEL_VERSION, runSandboxModelBaseline } from "@/server/sandbox-model";
 import {
   DEMO_MODEL_VERSION,
   DEMO_OPERATING_DAYS,
+  DEMO_DEFAULT_CHARGE_WINDOW_HOURS,
   DEMO_HEADLINE_SPECS,
   defaultDemoState,
   fleetChargePerTruckDaily,
   fleetAnnualChargeEnergy,
+  requiredChargerCount,
   demoUserValues,
   classifyParameterOrigin,
   computeDemoScenario,
@@ -106,6 +108,88 @@ describe("sandbox-demo · demoUserValues：只垫'用户真动过'的字段", ()
   it("购电价格被触碰 → 垫 region.elecPrice；未触碰 → 不垫（保留地区/系统默认）", () => {
     expect(demoUserValues({ ...defaultDemoState(), elecPrice: 1.1 }, { elecPrice: true })["region.elecPrice"]).toBe(1.1);
     expect("region.elecPrice" in demoUserValues({ ...defaultDemoState(), elecPrice: 1.1 }, {})).toBe(false);
+  });
+});
+
+describe("sandbox-demo · V1.1 批次1.1 场站规模缩放链路（P0#1 修复：桩数随车队/功率/窗口变）", () => {
+  it("建议桩数公式焊点：默认 60车×250kWh ÷（360kW×6h）= 15000/2160 → ceil = 7", () => {
+    expect(requiredChargerCount(defaultDemoState())).toBe(7);
+  });
+
+  it("车队翻 2.5 倍（60→150 车）→ 建议桩数 7→18（不再是恒 8）", () => {
+    const small = requiredChargerCount({ ...defaultDemoState(), truckCount: 60 });
+    const big = requiredChargerCount({ ...defaultDemoState(), truckCount: 150 });
+    expect(small).toBe(7);
+    expect(big).toBe(18); // 150×250=37500 ÷ 2160 = 17.36 → 18
+  });
+
+  it("补能窗口 T↑ → 桩数↓（T=12h → 4 台）；单桩功率↑ → 桩数↓（960kW → 3 台）", () => {
+    expect(requiredChargerCount({ ...defaultDemoState(), chargeWindowHours: 12 })).toBe(4);
+    expect(requiredChargerCount({ ...defaultDemoState(), chargerUnitPower: 960 })).toBe(3);
+  });
+
+  it("非法入参诚实返回 NaN（T≤0 / 功率≤0）", () => {
+    expect(Number.isNaN(requiredChargerCount({ ...defaultDemoState(), chargeWindowHours: 0 }))).toBe(true);
+    expect(Number.isNaN(requiredChargerCount({ ...defaultDemoState(), chargerUnitPower: -1 }))).toBe(true);
+  });
+
+  it("fleet 被触碰 → userValues 同时垫入缩放桩数；仅动 pv 等与规模无关字段 → 不垫桩数", () => {
+    const v1 = demoUserValues({ ...defaultDemoState(), truckCount: 150 }, { truckCount: true });
+    expect(v1["project.chargerCount"]).toBe(18);
+    const v2 = demoUserValues({ ...defaultDemoState(), chargerUnitPower: 480 }, { chargerUnitPower: true });
+    expect(v2["project.chargerCount"]).toBe(6); // 15000/(480×6)=5.21→6
+    const v3 = demoUserValues({ ...defaultDemoState(), pvCapacity: 9999 }, { pvCapacity: true });
+    expect("project.chargerCount" in v3).toBe(false);
+    const v4 = demoUserValues({ ...defaultDemoState(), chargeWindowHours: 4 }, { chargeWindowHours: true });
+    expect(v4["project.chargerCount"]).toBe(11); // 15000/1440=10.42→11
+  });
+
+  it("端到端：20 车 vs 150 车 → 桩 CAPEX 与总装机显著不同（P0#1 的因果实证）", () => {
+    const s20 = computeDemoScenario({ ...defaultDemoState(), truckCount: 20 }, { truckCount: true }, NOW);
+    const s150 = computeDemoScenario({ ...defaultDemoState(), truckCount: 150 }, { truckCount: true }, NOW);
+    expect(s20.resolved.numeric["project.chargerCount"]).toBe(3); // 5000/2160=2.31→3
+    expect(s150.resolved.numeric["project.chargerCount"]).toBe(18);
+    expect(s150.resolved.numeric["derived.chargerTotalPower"]).toBe(18 * 360);
+    const capex20 = s20.calc.ok ? s20.calc.capex.charger : NaN;
+    const capex150 = s150.calc.ok ? s150.calc.capex.charger : NaN;
+    expect(capex150).toBeGreaterThan(capex20 * 5); // 6480kW vs 1080kW = 6×
+  });
+
+  it("warnings：装机超并网容量（默认 2520kW > 2000kW）即出 grid-capacity 提示；缺口超上限出 charger-cap", () => {
+    const c = computeDemoScenario({ ...defaultDemoState(), truckCount: 60 }, { truckCount: true }, NOW);
+    expect(c.warnings.some((w) => w.id === "grid-capacity")).toBe(true); // 2520 > 2000
+    const huge = computeDemoScenario(
+      { ...defaultDemoState(), truckCount: 500, chargerUnitPower: 60, chargeWindowHours: 2 },
+      { truckCount: true, chargerUnitPower: true, chargeWindowHours: true },
+      NOW,
+    );
+    expect(huge.warnings.some((w) => w.id === "charger-cap")).toBe(true);
+    expect(huge.warnings.find((w) => w.id === "charger-cap")?.level).toBe("danger");
+  });
+
+  it("headline 目录扩到 10 个可操作输入（地区 + 9 数值），新滑杆区间自洽", () => {
+    expect(DEMO_HEADLINE_SPECS.length).toBe(10);
+    expect(DEMO_HEADLINE_SPECS.some((s) => s.id === "chargeWindowHours")).toBe(true);
+    expect(DEMO_HEADLINE_SPECS.some((s) => s.id === "chargingPrice")).toBe(true);
+    expect(DEMO_DEFAULT_CHARGE_WINDOW_HOURS).toBe(6);
+  });
+
+  it("充电单价被触碰 → 垫 project.chargingPrice（收入第一杠杆首次露出 Level-1）", () => {
+    const v = demoUserValues({ ...defaultDemoState(), chargingPrice: 1.2 }, { chargingPrice: true });
+    expect(v["project.chargingPrice"]).toBe(1.2);
+  });
+
+  it("序列化往返保真新字段；旧档（无新字段）诚实回落默认（零迁移）", () => {
+    const state: DemoHeadlineState = { ...defaultDemoState(), chargeWindowHours: 8, chargingPrice: 1.1 };
+    const c = computeDemoScenario(state, { chargeWindowHours: true, chargingPrice: true }, NOW);
+    const round = deserializeDemoState(serializeDemoLayers(c));
+    expect(round!.state.chargeWindowHours).toBe(8);
+    expect(round!.state.chargingPrice).toBe(1.1);
+    const legacy = deserializeDemoState({
+      demo: { state: { regionId: "national", truckCount: 60, annualMileagePerTruck: 70000, energyPer100km: 125, pvCapacity: 500, storageEnergy: 400, chargerUnitPower: 360, elecPrice: 0.7 } },
+    });
+    expect(legacy!.state.chargeWindowHours).toBe(DEMO_DEFAULT_CHARGE_WINDOW_HOURS);
+    expect(legacy!.state.chargingPrice).toBe(0.9);
   });
 });
 

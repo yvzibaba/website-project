@@ -21,6 +21,16 @@
  *   **默认态刻意校准**：truckCount=60 / mileage=70000 / energyPer100km=125 → chargePerTruck=250、trucksPerDay=60，
  *     与 R1.2 全局默认**逐字相同**，故"打开示范模型、什么都不改"= 既有黄金基线（见 sandbox-demo.test 零churn断言）。
  *
+ * ── 场站规模缩放链路（V1.1 批次 1.1 · DEMO_MODEL_VERSION 0.2.0 的核心增量）──────────────
+ *   0.1.0 的已知欺骗：车队翻 N 倍，`project.chargerCount` 恒为引擎默认 8——桩 CAPEX/总装机/峰值/需量费
+ *   全不随规模变（审计 Top-20 #1，P0）。本版本建立 **车辆规模 → 能源需求 → 设备配置** 纯映射链路：
+ *       建议桩数 requiredChargerCount = ceil( 日充电总量 ÷ ( 单桩额定功率 × 补能窗口T ) )，下限 1。
+ *   车队三兄弟 / 单桩功率 / 补能窗口 任一被触碰即垫入 `project.chargerCount`；**未触碰任何这些字段时
+ *   仍不覆写**（零 churn 纪律不破：默认态 == 引擎基线逐字）。新增第 9/10 个 headline 输入
+ *   「补能窗口 T」（决定桩数配置）与「充电单价」（收入第一杠杆，引擎早已消费、Level-1 首次露出），
+ *   headline 恰为 **10 个**（地区 + 9 数值）。另产 `warnings`（建议桩数超模型带宽截断 / 装机超并网容量）——
+ *   把"隐性不可能"变"显性提示"，不改任何引擎数字。经济公式/`MODEL_VERSION` 依旧零触碰。
+ *
  * ── 诚实边界（宪法第 16/20 条 / R8.7 纪律，一律不得回退）────────────────────────────
  *   - 本层所有数值最终仍来自 R1.2「占位假设」参数目录：`CalcResult.needsProfessionalReview=true` 恒在，
  *     对外表述一律「沙盘推演 · 示例假设 · 待核实」，**不得作投资/并网决策依据**。
@@ -43,7 +53,8 @@ import { buildSandboxReport, type ChangedParamView, type SandboxReport } from "@
 /* ─────────────────────────── 版本与标识 ─────────────────────────── */
 
 /** 示范项目模型版本（映射口径/参数集变化须升版并记因，宪法第 13 条）。这是**映射层**版本，非经济内核 MODEL_VERSION（后者刻意不动）。 */
-export const DEMO_MODEL_VERSION = "0.1.0";
+// 0.2.0（V1.1 批次 1.1）：新增「场站规模缩放链路」——桩数随 车队/单桩功率/补能窗口 联动，headline 8→10（+补能窗口、+充电单价），新增 warnings 约束提示。经济内核零触碰。
+export const DEMO_MODEL_VERSION = "0.2.0";
 /** 示范项目模板标识（复用既有沙盘模板常量语义，供持久化 `paramLayers` 内嵌指针、零迁移回读）。 */
 export const DEMO_TEMPLATE_ID = "new-energy-heavy-truck-pv-storage-charging" as const;
 /** 示范项目预设标识（露出 headline 精简集）。 */
@@ -53,6 +64,8 @@ export const DEMO_MODEL_PRESET = "demo10" as const;
 export const DEMO_OPERATING_DAYS = 350;
 /** 示范项目储能时长约定（功率 = 容量 ÷ 该值；保证用户拖"储能容量"时储能仍参与计算，且默认落回引擎默认 200kW/400kWh）。 */
 export const DEMO_STORAGE_HOURS = 2;
+/** 默认补能窗口（小时）：车队日充电总量集中在 T 小时内补完所需桩数的分母。T=6h 为重卡夜间/班次集中补能的行业常见示例假设（ASSUMPTION，可调），默认态下不覆写引擎。 */
+export const DEMO_DEFAULT_CHARGE_WINDOW_HOURS = 6;
 
 /* ─────────────────────────── 分类器：参数来源认知标签（§7 展示层） ─────────────────────────── */
 
@@ -182,6 +195,8 @@ export type DemoFieldId =
   | "pvCapacity"
   | "storageEnergy"
   | "chargerUnitPower"
+  | "chargeWindowHours"
+  | "chargingPrice"
   | "elecPrice";
 
 /** 一条 headline 参数的展示规格（中文标签 / 单位 / 滑杆区间 / 映射说明 / 归属分组）。 */
@@ -202,15 +217,18 @@ export interface DemoHeadlineSpec {
  * 10 参数示范模型的 headline 目录（用户操作层）。`region`/`elecPrice` 属"外部数据"色彩，
  * fleet/pv/storage/charger 属"项目规模"，`项目总投资` 单列为计算结果（见 DEMO_OUTPUT_*）。
  * 注意：这里只声明**用户可见的精简集**，底层 40 参数目录（sandbox-params）一字未改、仍可展开。
+ * 0.2.0 起恰为 10 个可操作输入（地区 + 9 数值）：新增「补能窗口」（驱动桩数缩放）与「充电单价」（收入第一杠杆）。
  */
 export const DEMO_HEADLINE_SPECS: readonly DemoHeadlineSpec[] = [
   { id: "region", label: "项目地区", engineKey: "region.elecPrice", min: 0, max: 0, note: "选地区即载入该地区默认电价 / 光照 / 补贴（示例占位·待核实）。" },
-  { id: "truckCount", label: "重卡数量", unit: "辆", min: 1, max: 500, engineKey: "project.trucksPerDay", note: "车队规模；映射为「日均服务重卡数」（假定每车每日约充一次）。" },
+  { id: "truckCount", label: "重卡数量", unit: "辆", min: 1, max: 500, engineKey: "project.trucksPerDay", note: "车队规模；映射为「日均服务重卡数」（假定每车每日约充一次），并随补能窗口自动缩放充电桩数量。" },
   { id: "annualMileagePerTruck", label: "单车年运营里程", unit: "km/年", min: 30000, max: 100000, engineKey: "project.chargePerTruck", note: "与百公里电耗共同决定单车日均充电量。" },
   { id: "energyPer100km", label: "车辆百公里电耗", unit: "kWh/100km", min: 80, max: 160, engineKey: "project.chargePerTruck", note: "重卡典型区间 110–160；示例占位。" },
   { id: "pvCapacity", label: "光伏装机", unit: "kWp", min: 0, max: 20000, engineKey: "project.pvCapacity", note: "直接映射既有装机键。" },
   { id: "storageEnergy", label: "储能容量", unit: "kWh", min: 0, max: 8000, engineKey: "project.storageEnergy", note: `示范项目按 ${DEMO_STORAGE_HOURS} 小时系统联动储能功率（=容量÷${DEMO_STORAGE_HOURS}h）。` },
-  { id: "chargerUnitPower", label: "充电功率(单桩)", unit: "kW", min: 60, max: 960, engineKey: "project.chargerUnitPower", note: "映射单桩额定功率；桩数沿用高级参数默认。" },
+  { id: "chargerUnitPower", label: "充电功率(单桩)", unit: "kW", min: 60, max: 960, engineKey: "project.chargerUnitPower", note: "映射单桩额定功率；与补能窗口共同决定建议桩数（车多桩少→排队，桩多投资高）。" },
+  { id: "chargeWindowHours", label: "补能窗口", unit: "h/日", min: 2, max: 12, engineKey: "project.chargerCount", note: "车队日充电总量集中在 T 小时内补完（隐含同时率）；建议桩数 = 日充电总量 ÷（单桩功率 × T）向上取整。T=6h 为示例假设。" },
+  { id: "chargingPrice", label: "充电单价(电费+服务)", unit: "元/kWh", min: 0.3, max: 3.0, engineKey: "project.chargingPrice", note: "向车辆收取的综合单价，收入第一杠杆（敏感性中最敏感）。不改则取系统默认 0.9（示例假设）。" },
   { id: "elecPrice", label: "购电价格", unit: "元/kWh", min: 0.2, max: 1.5, engineKey: "region.elecPrice", note: "工商业综合电价；不改则取所选地区默认（外部数据）。" },
 ];
 
@@ -219,7 +237,7 @@ export const DEMO_HEADLINE_BY_ID: Record<DemoFieldId, DemoHeadlineSpec> = Object
   DEMO_HEADLINE_SPECS.map((s) => [s.id, s]),
 ) as Record<DemoFieldId, DemoHeadlineSpec>;
 
-/** 示范项目状态：8 个可操作 headline 输入（地区 + 7 数值），总投资为输出、贷款比例推迟。 */
+/** 示范项目状态：10 个可操作 headline 输入（地区 + 9 数值），总投资为输出、贷款比例推迟。 */
 export interface DemoHeadlineState {
   regionId: string;
   truckCount: number;
@@ -228,6 +246,8 @@ export interface DemoHeadlineState {
   pvCapacity: number; // kWp
   storageEnergy: number; // kWh
   chargerUnitPower: number; // kW
+  chargeWindowHours: number; // h/日（补能窗口，驱动桩数缩放）
+  chargingPrice: number; // 元/kWh（综合充电单价）
   elecPrice: number; // 元/kWh
 }
 
@@ -235,7 +255,8 @@ export interface DemoHeadlineState {
 export type DemoTouched = Partial<Record<DemoFieldId, boolean>>;
 
 /** 示范项目默认态：**刻意对齐 R1.2 全局默认**——fleet 三兄弟折算回 trucksPerDay=60×chargePerTruck=250，
- *  镜像字段各取其引擎默认，地区=全国通用（零覆写）。故默认态解析结果 == 既有基线（黄金样本焊死）。 */
+ *  镜像字段各取其引擎默认（chargingPrice=引擎默认 0.9；chargeWindowHours=6 仅参与映射、未触碰时不覆写桩数），
+ *  地区=全国通用（零覆写）。故默认态解析结果 == 既有基线（黄金样本焊死）。 */
 export function defaultDemoState(): DemoHeadlineState {
   return {
     regionId: DEFAULT_REGION_ID, // national：不覆写地区/政策 → 落回 R1.2 全局默认
@@ -245,6 +266,8 @@ export function defaultDemoState(): DemoHeadlineState {
     pvCapacity: 500,
     storageEnergy: 400,
     chargerUnitPower: 360,
+    chargeWindowHours: DEMO_DEFAULT_CHARGE_WINDOW_HOURS,
+    chargingPrice: 0.9,
     elecPrice: 0.7,
   };
 }
@@ -264,15 +287,38 @@ export function fleetAnnualChargeEnergy(state: DemoHeadlineState): number {
 }
 
 /**
+ * 纯映射（V1.1 批次 1.1 · 场站规模缩放链路核心）：**建议充电桩数**。
+ *   required = ceil( 日充电总量 ÷ ( 单桩额定功率 × 补能窗口T ) )，下限 1。
+ * 日充电总量 = trucksPerDay × chargePerTruck（车队口径恒可算，无需引擎回读）。
+ * 非有限入参 / T≤0 / 单桩功率≤0 → NaN（调用方负责诚实跳过覆写）。
+ * 注：这是映射层的**配置建议**（能量守恒的最低桩数），不改任何引擎公式；引擎照旧消费 `project.chargerCount`。
+ */
+export function requiredChargerCount(state: DemoHeadlineState): number {
+  const daily =
+    state.truckCount *
+    fleetChargePerTruckDaily(state.energyPer100km, state.annualMileagePerTruck);
+  const perChargerEnergy = state.chargerUnitPower * state.chargeWindowHours;
+  if (!Number.isFinite(daily) || !Number.isFinite(perChargerEnergy) || perChargerEnergy <= 0) {
+    return NaN;
+  }
+  return Math.max(1, Math.ceil(daily / perChargerEnergy));
+}
+
+/**
  * **映射层核心纯函数**：示范项目状态 → 现有 40 参数引擎的 user 覆写键值（不含地区/政策垫底层）。
  * 只翻译"用户真的动过"的字段（fleet 三兄弟任一被触碰则成对垫入 trucksPerDay+chargePerTruck，
  * 储能被触碰则联动 storagePower）；未动的字段不覆写 → 保留地区/系统默认、并被分类器如实归类。
+ * V1.1 批次 1.1 起：**车队三兄弟 / 单桩功率 / 补能窗口 任一被触碰 → 同步垫入缩放后的桩数**
+ * `project.chargerCount = requiredChargerCount(state)`（修复 0.1.0"车队翻倍桩数恒 8"的场站不缩放 P0）；
+ * 三者全未触碰时仍不覆写桩数 → 零 churn 默认态纪律不破。
  * 纯函数、无副作用，供单元黄金样本直接测死"改哪个键、值多少"。
  */
 export function demoUserValues(
-  state: DemoHeadlineState,
+  incoming: DemoHeadlineState,
   touched: DemoTouched = {},
 ): Record<string, number> {
+  // 归一化：0.2.0 之前的旧状态（fixture / 已存项目）缺新字段 → 诚实回落默认，而非 NaN 静默跳过缩放。
+  const state: DemoHeadlineState = { ...defaultDemoState(), ...incoming };
   const values: Record<string, number> = {};
 
   const fleetTouched =
@@ -297,7 +343,17 @@ export function demoUserValues(
 
   if (touched.chargerUnitPower === true) values["project.chargerUnitPower"] = state.chargerUnitPower;
 
+  if (touched.chargingPrice === true) values["project.chargingPrice"] = state.chargingPrice;
+
   if (touched.elecPrice === true) values["region.elecPrice"] = state.elecPrice;
+
+  // —— 场站规模缩放链路：能量需求（车队）或补能能力（单桩功率 × 窗口）任一变化 → 重配桩数 ——
+  const sizingTouched =
+    fleetTouched || touched.chargerUnitPower === true || touched.chargeWindowHours === true;
+  if (sizingTouched) {
+    const required = requiredChargerCount(state);
+    if (Number.isFinite(required)) values["project.chargerCount"] = required;
+  }
 
   return values;
 }
@@ -312,6 +368,47 @@ export interface DemoHeadlineInfo {
   origin: ParameterOriginInfo;
 }
 
+/** 工程约束告警（V1.1 批次 1.1）：只**提示**、不改任何引擎数字——把"隐性不可能"变"显性风险"。 */
+export interface DemoWarning {
+  id: "charger-cap" | "grid-capacity";
+  level: "warning" | "danger";
+  text: string;
+}
+
+/**
+ * 纯函数：按当前解析出的引擎生效值产约束告警。
+ *  ① charger-cap：建议桩数超出参数带宽上限被裁剪（如 500 车 × 60kW 桩 × T2h → 需要 ~1905 台 > 上限 200）。
+ *  ② grid-capacity：充电总装机功率超过并网报装容量（`project.gridCapacity` 当前**不进经济计算**——
+ *     僵尸参数的诚实用法：至少用来给用户发红牌提示，而非假装在算）。
+ * 无告警 → 空数组。绝不抛。
+ */
+export function computeDemoWarnings(
+  state: DemoHeadlineState,
+  resolved: ResolveResult,
+): DemoWarning[] {
+  const out: DemoWarning[] = [];
+  const required = requiredChargerCount(state);
+  const applied = resolved.numeric["project.chargerCount"];
+  const clamped = resolved.params["project.chargerCount"]?.clamped === true;
+  if (Number.isFinite(required) && Number.isFinite(applied) && (clamped || required > applied)) {
+    out.push({
+      id: "charger-cap",
+      level: "danger",
+      text: `按能量平衡约需 ${required} 台充电桩，但已按模型可配上限 ${applied} 台计算——供需缺口意味着排队/充电慢，请提高单桩功率、拉长补能窗口或分批错峰补能。`,
+    });
+  }
+  const totalPower = resolved.numeric["derived.chargerTotalPower"];
+  const grid = resolved.numeric["project.gridCapacity"];
+  if (Number.isFinite(totalPower) && Number.isFinite(grid) && totalPower > grid) {
+    out.push({
+      id: "grid-capacity",
+      level: "warning",
+      text: `充电总装机 ${Math.round(totalPower).toLocaleString("zh-CN")} kW 超过并网报装容量 ${Math.round(grid).toLocaleString("zh-CN")} kW：当前模型未把并网约束计入成本，现实中需增容报装（有费用与周期风险，需向供电部门核实）。`,
+    });
+  }
+  return out;
+}
+
 /** 示范项目的计算输出（总投资等"结果而非输入"，一律 CALCULATED 类，来自引擎不重算）。 */
 export interface DemoOutputs {
   totalInvestmentGross: number; // = calc.capex.gross（元）
@@ -319,6 +416,10 @@ export interface DemoOutputs {
   totalInvestmentNet: number; // = calc.capex.net（补贴后）
   annualChargeEnergyKwh: number; // 车队口径年充电量（展示用，纯输入算术）
   dailyChargeEnergyKwh: number; // 引擎派生网关值（应 ≈ 年充电量 ÷ 运营天数）
+  /** 映射层建议桩数（纯算术 ceil(日充电量÷(单桩功率×窗口))）；非有限输入 → NaN。 */
+  recommendedChargerCount: number;
+  /** 引擎实际生效桩数（可能被带宽裁剪）；供"建议→生效"并排展示。 */
+  appliedChargerCount: number;
 }
 
 export interface DemoScenarioResult {
@@ -338,6 +439,7 @@ export interface DemoScenarioResult {
   report: SandboxReport;
   headlines: DemoHeadlineInfo[];
   outputs: DemoOutputs;
+  warnings: DemoWarning[];
 }
 
 function fmtStateValue(spec: DemoHeadlineSpec, v: number): string {
@@ -351,10 +453,12 @@ function fmtStateValue(spec: DemoHeadlineSpec, v: number): string {
  * `now` 显式注入以离线测死政策过期分支（§6）；缺省取此刻（现行政策长期在效，UI 交互稳定）。
  */
 export function computeDemoScenario(
-  state: DemoHeadlineState,
+  incoming: DemoHeadlineState,
   touched: DemoTouched = {},
   now?: Date,
 ): DemoScenarioResult {
+  // 归一化：旧档/fixture 状态缺 0.2.0 新字段时回落默认（与 demoUserValues 同一语义）。
+  const state: DemoHeadlineState = { ...defaultDemoState(), ...incoming };
   const userValues = demoUserValues(state, touched);
   const layers = buildSandboxLayers(state.regionId, userValues, now);
   const resolved = resolveSandbox(layers);
@@ -390,6 +494,10 @@ export function computeDemoScenario(
         return state.storageEnergy;
       case "chargerUnitPower":
         return state.chargerUnitPower;
+      case "chargeWindowHours":
+        return state.chargeWindowHours;
+      case "chargingPrice":
+        return state.chargingPrice;
       case "elecPrice":
         return state.elecPrice;
       case "region":
@@ -462,7 +570,10 @@ export function computeDemoScenario(
     totalInvestmentNet: capexNet,
     annualChargeEnergyKwh: fleetAnnualChargeEnergy(state),
     dailyChargeEnergyKwh: resolved.numeric["derived.dailyChargeEnergy"] ?? NaN,
+    recommendedChargerCount: requiredChargerCount(state),
+    appliedChargerCount: resolved.numeric["project.chargerCount"] ?? NaN,
   };
+  const warnings = computeDemoWarnings(state, resolved);
 
   return {
     demoVersion: DEMO_MODEL_VERSION,
@@ -481,6 +592,7 @@ export function computeDemoScenario(
     report,
     headlines,
     outputs,
+    warnings,
   };
 }
 
@@ -532,6 +644,8 @@ export function deserializeDemoState(layers: unknown): {
       pvCapacity: numOr(s.pvCapacity, base.pvCapacity),
       storageEnergy: numOr(s.storageEnergy, base.storageEnergy),
       chargerUnitPower: numOr(s.chargerUnitPower, base.chargerUnitPower),
+      chargeWindowHours: numOr(s.chargeWindowHours, base.chargeWindowHours),
+      chargingPrice: numOr(s.chargingPrice, base.chargingPrice),
       elecPrice: numOr(s.elecPrice, base.elecPrice),
     },
     touched: demo.touched ?? {},

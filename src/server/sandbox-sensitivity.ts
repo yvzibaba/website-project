@@ -19,8 +19,8 @@ import {
 import type { ResolveLayers } from "@/server/parameter-engine";
 import { runSandboxModel, runSandboxModelBaseline, type CalcResult } from "@/server/sandbox-model";
 
-/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。1.2.0（TASK 5 · 2026-09-08）：默认扫描集补 2 项——`tech.storageCapex`（储能 CAPEX）与 `project.chargePerTruck`（里程×电耗合并代理），兑现「电价/年里程/储能 CAPEX/光伏 CAPEX」四项主用户关切中此前缺席的两项；纯加性，既有排序逻辑不变。1.3.0（阶段1 · 2026-09-08 创始人批准）：默认扫描集解锁 `region.peakValleySpread`（±15%）——R9.0 已把它接入 E3b 储能套利腿（Δ_arb=σ·Imp0·(p−p_valley/η)），旧「P2-6 未消费」排除理由失效；基线 storage=400kWh>0 故摆幅真实非零；纯加性，E3/E4/finance 零改动。1.4.0（阶段4 · 2026-09-14 创始人拍板需量电价口径 A）：默认扫描集补 `region.demandCharge`（±15%）与 `project.chargerUtilization`（±20%）——MODEL_VERSION 1.2.0 已把二者接入 E4 需量(基本)电费（计费需量=装机总功率×利用率），旧「P2-6 未消费/假联动」排除理由失效；纯加性扫描项，排序逻辑不变。 */
-export const SENSITIVITY_VERSION = "1.4.0";
+/** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。1.2.0（TASK 5 · 2026-09-08）：默认扫描集补 2 项——`tech.storageCapex`（储能 CAPEX）与 `project.chargePerTruck`（里程×电耗合并代理），兑现「电价/年里程/储能 CAPEX/光伏 CAPEX」四项主用户关切中此前缺席的两项；纯加性，既有排序逻辑不变。1.3.0（阶段1 · 2026-09-08 创始人批准）：默认扫描集解锁 `region.peakValleySpread`（±15%）——R9.0 已把它接入 E3b 储能套利腿（Δ_arb=σ·Imp0·(p−p_valley/η)），旧「P2-6 未消费」排除理由失效；基线 storage=400kWh>0 故摆幅真实非零；纯加性，E3/E4/finance 零改动。1.4.0（阶段4 · 2026-09-14 创始人拍板需量电价口径 A）：默认扫描集补 `region.demandCharge`（±15%）与 `project.chargerUtilization`（±20%）。1.5.0（V1.1 批次1.2 · MODEL 1.3.0 配套）：`project.chargerUtilization` 移出扫描集（E 层不再消费它计需量费，留集即伪敏感）；`project.demandKc`（±20%）入集承接计费需量杠杆；`region.demandCharge` 留集——主情景 A（免征，默认 0）下 ±% 扰动仍为 0、摆幅恒 0 属**诚实结果**（政策豁免即真无感），切 B/C 覆写后该行恢复真实摆幅。 */
+export const SENSITIVITY_VERSION = "1.5.0";
 export function sensitivityCalcRef(): string {
   return `sensitivity@${SENSITIVITY_VERSION}`;
 }
@@ -53,20 +53,21 @@ export interface SensitivityParam {
  *     旧「P2-6 未消费」排除理由失效。基线储能 400kWh>0，±15% 扰动（0.51–0.69 元/kWh，
  *     在 [0,1.8] 规格界内）产出真实非零摆幅；spread↑ → 套利空间变宽 → 储能价值↑ → NPV↑。
  *
- * **已解锁**（阶段4 · 2026-09-14 创始人拍板需量电价口径 A，SENSITIVITY_VERSION 1.4.0）：
- *   · `region.demandCharge`（需量电价，中国工商业电费大头）与 `project.chargerUtilization`（充电桩利用率）——
- *     MODEL_VERSION 1.2.0 已把二者接入 E4 需量(基本)电费：计费需量=充电装机总功率×利用率，年需量费=计费需量×demandCharge×12。
- *     旧「假联动/未消费」排除理由（审计 F-2a/F-2c）自此失效。基线 8×360=2880kW×35%=1008kW×40×12≈483,840 元/年，
- *     摆幅真实非零；demandCharge↑ 或 利用率↑ → 需量费↑ → NPV↓。
+ * **口径演进**（阶段4 · 1.4.0 曾解锁 `region.demandCharge` + `project.chargerUtilization`；
+ *   V1.1 批次1.2 · MODEL 1.3.0 起再修正，SENSITIVITY_VERSION 1.5.0）：
+ *   · E4 计费需量基准从「平均利用率」改为**需用系数 Kc**（`project.demandKc`，±20% 入集）——
+ *     平均利用率冒充最大需量属口径错位（审计 P0-3），`project.chargerUtilization` 自此移出扫描集（不留伪敏感）。
+ *   · `region.demandCharge` 留集：主情景 A（默认 0，2030 前集中式充换电免需量电费条款）下 ±15% 扰动仍为 0、
+ *     摆幅恒 0——这是**政策豁免的诚实呈现**，非假联动；B/C 对照组（覆写 40/44）下恢复真实负向摆幅。
  */
 export const DEFAULT_SENSITIVITY_PARAMS: readonly SensitivityParam[] = [
   { key: "project.chargingPrice", deltaPct: 15 },
   { key: "region.elecPrice", deltaPct: 15 },
-  { key: "region.demandCharge", deltaPct: 15 }, // 需量电价（阶段4 解锁：E4 需量电费真实消费）
+  { key: "region.demandCharge", deltaPct: 15 }, // 需量电价（1.5.0：主情景 A 恒 0 摆幅=政策诚实；B/C 覆写后真实）
   { key: "region.peakValleySpread", deltaPct: 15 }, // 峰谷价差（阶段1 解锁：E3b 储能套利腿真实消费）
   { key: "project.trucksPerDay", deltaPct: 20 },
   { key: "project.chargePerTruck", deltaPct: 20 }, // 里程×电耗合并代理
-  { key: "project.chargerUtilization", deltaPct: 20 }, // 充电桩利用率（阶段4 解锁：E4 计费需量=装机×利用率）
+  { key: "project.demandKc", deltaPct: 20 }, // 需用系数（1.5.0 入集：E4 计费需量=装机×Kc，B/C 场景真实杠杆）
   { key: "project.pvCapacity", deltaPct: 20 },
   { key: "tech.pvCapex", deltaPct: 20 },
   { key: "tech.storageCapex", deltaPct: 20 }, // 储能单位造价

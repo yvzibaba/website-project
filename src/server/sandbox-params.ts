@@ -30,7 +30,7 @@ import {
  */
 
 /** 参数模板版本（改结构/默认口径须升版并记录原因，宪法第 13 条）。 */
-export const SANDBOX_PARAMS_VERSION = "1.2.0"; // 1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
+export const SANDBOX_PARAMS_VERSION = "1.3.0"; // 1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
 
 /** 沙盘模板的稳定标识（供 R3 建项目时引用模板来源）。 */
 export const SANDBOX_DEPOT_TEMPLATE = "new-energy-heavy-truck-pv-storage-charging" as const;
@@ -78,7 +78,17 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("region.elecPrice", "工商业综合电价", "region", "basic", 0.7, "元/kWh", { min: 0.2, max: 2.0, confidence: 45 }),
   num("region.peakValleySpread", "峰谷价差", "region", "advanced", 0.6, "元/kWh", { min: 0, max: 1.8 }),
   num("region.pvEquivalentHours", "光伏年等效利用小时数", "region", "advanced", 1200, "h", { min: 800, max: 1900 }),
-  num("region.demandCharge", "需量(容量)电价", "region", "pro", 40, "元/kW·月", { min: 0, max: 80 }),
+  num("region.demandCharge", "需量(容量)电价", "region", "pro", 0, "元/kW·月", {
+    min: 0,
+    max: 80,
+    // V1.1 批次1.2 主情景口径 A：按「2030 年前对实行两部制电价的经营性集中式充换电设施用电
+    // 免收需量(容量)电费」条款取 0（山西 52 号文 S 级原文已核实，见 sandbox-region-facts；
+    // 全国同条款文号未逐条归档 → 目录默认仍标 ASSUMPTION + 强标注，不伪 FACT）。
+    // 不适用免征/免征到期 → B 普通工商业场景：本键覆写 40（全国）/44（山西名义工商业价）。
+    source:
+      "【占位假设·主情景=免征口径 A】默认 0 系按「2030 年前实行两部制电价的经营性集中式充换电设施免收需量(容量)电费」条款字面直传（山西 52 号文原文已核实，来源钉在 sandbox-region-facts；全国同条款文号待补归档，故目录默认不标 FACT）。非集中式/免征到期请覆写 40–44（B 对照组）或按报装容量全额计（C 压力测试，Kc=100）。",
+    confidence: 50,
+  }),
   num("region.landRent", "土地年租金", "region", "pro", 800, "元/亩·年", { min: 0, max: 5000 }),
 
   // ── 政策参数（R5 用 policy ValueLayer[] 覆写并带生效窗口；此处占位）──
@@ -98,6 +108,13 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("project.chargerUnitPower", "单桩额定功率", "project", "advanced", 360, "kW", { min: 60, max: 960 }),
   num("project.gridCapacity", "并网报装容量", "project", "pro", 2000, "kW", { min: 100, max: 20000 }),
   num("project.chargerUtilization", "充电桩平均利用率", "project", "advanced", 35, "%", { min: 5, max: 90 }),
+  // V1.1 批次1.2：计费需量的工程基准（需用系数 Kc）——取代「平均利用率冒充最大需量」的口径错位；
+  // chargerUtilization 回归利用率本义（E 层不再消费它计需量费）。C 保守高成本场景 = Kc 覆写 100（装机全额计）。
+  num("project.demandKc", "需用系数Kc(计费需量=装机×Kc)", "project", "pro", 70, "%", {
+    min: 10,
+    max: 100,
+    source: "【占位假设·待核实】典型场站需量/装机比经验带 40%–90%，V1 取 70% 作 B/C 对照组计费基准（主情景 A 免征下不产生费用）",
+  }),
   // 综合充电单价：向重卡收取的电费+服务费合一价（收益端第一杠杆，R2.4 编排据此算充电收入）。
   num("project.chargingPrice", "综合充电单价(含电费+服务)", "project", "basic", 0.9, "元/kWh", { min: 0.3, max: 3.0, confidence: 45 }),
   // 布尔开关：是否配储能——验证引擎对非数值参数的透传（不进 R2 数值快照）。

@@ -28,7 +28,7 @@ import type { ValueSourceMeta } from "@/server/parameter-engine";
  *   逐值 `SHANXI_REGION_SOURCES` / `SHANXI_POLICY_SOURCES` **仍全为 ASSUMPTION**（0.55/0.7/1400/44/500
  *   等占位数值无一能被条款单独验证），三处口径冲突以 DATA_CONFLICT 原样保留、禁折算/平均/改公式。
  */
-export const SANDBOX_REGION_FACTS_VERSION = "1.1.0";
+export const SANDBOX_REGION_FACTS_VERSION = "1.2.0"; // 1.2.0（V1.1 批次1.2）：SHANXI_REGION_SOURCES["region.demandCharge"] pending→FACT（值 0=52号文「免收」条款**字面直传**，非价表折算——「条款≠数值」护栏对该键的唯一显式例外，理由见文件内注记）；tnd-4th-cycle DATA_CONFLICT 更新为「免收分支已消解、90% 折扣仍禁折算」。1.1.0（阶段3A）：条款级 FACT 目录 5 条。
 
 /** 溯源引用（供报告标注「这组地区来源是按哪版给的」，第 7/16 条）。 */
 export function regionFactsCalcRef(): string {
@@ -78,14 +78,28 @@ export const NATIONAL_POLICY_SOURCES: readonly (Readonly<Record<string, ValueSou
 
 /**
  * 山西**地区层**逐值溯源（键须与 `sandbox-regions.ts` 的 `SHANXI_PACK.region.values` 对齐）。
- * 现全为 ASSUMPTION 占位（诚实基线，见文件头）。核实到权威原文后，把对应 `pending()` 换成
- * `makeVerifiedFact("https://…", { sourceType, asOf })` 即自动升 FACT 并贯通下游。
+ * 除 `region.demandCharge` 外全为 ASSUMPTION 占位（诚实基线，见文件头）。核实到权威原文后，把对应
+ * `pending()` 换成 `makeVerifiedFact("https://…", { sourceType, asOf })` 即自动升 FACT 并贯通下游。
+ *
+ * ★ 唯一例外（V1.1 批次1.2）：`region.demandCharge` = 0 已升 FACT——**这不是"条款折算成数值"**
+ *   （「条款≠数值」护栏仍然成立），而是条款本身直传的结果值：52号文原文「免收需量（容量）电费」
+ *   的字面执行就是 0 元/kW·月，无任何价表折算介入。90% 折扣那类**仍需官方价表才能落地绝对值**的
+ *   条款依旧禁折算、保持 ASSUMPTION（见下方 DATA_CONFLICT 更新）。
  */
 export const SHANXI_REGION_SOURCES: Readonly<Record<string, ValueSourceMeta>> = {
   "region.elecPrice": pending("工商业电价·待核（省发改委/电网目录销售电价）"),
   "region.peakValleySpread": pending("峰谷价差·待核（省发改委分时电价通知）"),
   "region.pvEquivalentHours": pending("光伏等效利用小时·待核（能源局/电网消纳公报）"),
-  "region.demandCharge": pending("需量(容量)电价·待核"),
+  "region.demandCharge":
+    makeVerifiedFact(
+      "https://myj.shanxi.gov.cn/ztzl/bwbd/xnyzk/202607/t20260716_10177998.shtml",
+      {
+        sourceType: "政府专题原文（S级·晋交规划发〔2026〕52号）",
+        asOf: "2026-09-08",
+        confidence: 90,
+        note: "「2030年前对实行两部制电价的集中式充换电设施用电免收需量（容量）电费」为官方原文；值 0=条款字面直传（免收），非价表折算。名义工商业需量价 44 元/kW·月 转 B 对照组覆写值（无官方价表文本，不挂 FACT）。",
+      },
+    ) ?? pending("需量(容量)电价·待核"),
   "region.landRent": pending("土地年租金·待核（工业用地基准地价）"),
 };
 
@@ -194,7 +208,7 @@ export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
     dataConflict: {
       key: "region.demandCharge",
       description:
-        "DATA_CONFLICT：条款是结构性优惠（90% 折扣/免收），模型 demandCharge 是绝对需量电价（元/kW·月）——无官方价表文本（G2）不得折算，本阶段保留冲突。",
+        "DATA_CONFLICT（部分消解·V1.1 批次1.2）：本条款的「免收」分支已按主情景 A 直传计价（demandCharge=0，见 shanxi-nev-truck-2026-52 逐值 FACT）；「90% 折扣」分支仍禁折算——折扣作用基数是官方绝对需量电价，无价表文本（G2）不得折成元/kW·月，残余冲突原样保留。",
     },
   },
   {
@@ -224,7 +238,7 @@ export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
       sourceType: "政府专题原文（S级）",
       asOf: "2026-09-08",
       confidence: 90,
-      note: "免收需量电费条款为官方原文核实；属政策支持事实，不代表沙盘已按免收计价。",
+      note: "免收需量电费条款为官方原文核实；自 V1.1 批次1.2 起沙盘主情景 A 已按免收计价（本条款即逐值 demandCharge=0 FACT 的来源）。",
     }),
   },
   {

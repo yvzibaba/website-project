@@ -2,7 +2,8 @@
  * 单元测试：R8.7「地区 / 政策逐值来源编目」`sandbox-region-facts`（纯函数 · 诚实基线 · 升级接缝）。
  *
  * 锁定（§16 单一真源 / §20 诚实绝不虚构来源）：
- *   - 现存每一条山西地区/政策来源**全为诚实 ASSUMPTION、不带 sourceUrl**（研发环境未逐条核实到可点击权威原文，绝不伪FACT）；
+ *   - 山西地区/政策逐值来源除**唯一「条款字面直传」例外 `region.demandCharge`=0（批次1.2）**外，
+ *     全为诚实 ASSUMPTION、不带 sourceUrl（未逐条核实到可点击权威原文，绝不伪FACT；例外被钉死为恰一条一键）；
  *   - 编目键须与 `sandbox-regions.ts` 里山西包实际覆写的 `values` 键**一一对齐**（防目录漂移，值与来源不双写）；
  *   - `makeVerifiedFact` 是升级 FACT 的唯一入口：只有合法 http(s) 链接才产出 FACT，脏输入一律 null（宁可误拒）；
  *   - `getRegionProvenance` 对未知 id 回落通用、绝不裸抛。
@@ -32,17 +33,33 @@ describe("sandbox-region-facts · 版本与契约", () => {
   });
 });
 
-describe("sandbox-region-facts · §20 诚实基线（现存条目全为待核实 ASSUMPTION）", () => {
-  it("★山西每一条地区/政策来源都是 ASSUMPTION、无 sourceUrl、note 带「待核」标注", () => {
-    const allMetas = [
-      ...Object.values(SHANXI_REGION_SOURCES),
-      ...SHANXI_POLICY_SOURCES.flatMap((m) => (m ? Object.values(m) : [])),
-    ];
-    expect(allMetas.length).toBeGreaterThan(0);
-    for (const m of allMetas) {
-      expect(m.evidenceKind).toBe("ASSUMPTION");
-      expect(m.sourceUrl).toBeUndefined();
-      expect(m.note ?? "").toMatch(/待核/);
+describe("sandbox-region-facts · §20 诚实基线（除唯一字面直传例外，全为待核实 ASSUMPTION）", () => {
+  /**
+   * V1.1 批次1.2 引入**唯一显式例外**：`region.demandCharge` 的 0 是「免收需量(容量)电费」条款的
+   * **字面直传结果值**（免收 ⇒ 0 元/kW·月），无任何价表折算介入，故可挂 FACT；
+   * 「条款≠数值」护栏对其余一切键（尤其 90% 折扣那类需官方价表才能落绝对值的条款）仍然绝对成立。
+   * 本测试把例外**钉死到恰这一条、这一键**——多一条 FACT 混进来都会当场炸。
+   */
+  const EXCEPTION_KEY = "region.demandCharge";
+
+  it("★例外恰一条：region.demandCharge = FACT + 可点击原文 + 字面直传注记；山西其余逐值来源全为 ASSUMPTION", () => {
+    const factEntries = Object.entries(SHANXI_REGION_SOURCES).filter(([, m]) => m.evidenceKind === "FACT");
+    expect(factEntries).toHaveLength(1); // 全目录唯一 FACT，钉死数量
+    expect(factEntries[0][0]).toBe(EXCEPTION_KEY);
+    const m = factEntries[0][1];
+    expect(USABLE_HTTP_URL.test(m.sourceUrl ?? "")).toBe(true);
+    expect(m.note ?? "").toMatch(/字面直传/); // 必须自证"非价表折算"，防例外被悄悄泛化
+    expect(m.confidence ?? 0).toBeLessThanOrEqual(90);
+
+    const others = [
+      ...Object.entries(SHANXI_REGION_SOURCES).filter(([k]) => k !== EXCEPTION_KEY),
+      ...SHANXI_POLICY_SOURCES.flatMap((mm) => (mm ? Object.entries(mm) : [])),
+    ].map(([, x]) => x);
+    expect(others.length).toBeGreaterThan(0);
+    for (const o of others) {
+      expect(o.evidenceKind).toBe("ASSUMPTION");
+      expect(o.sourceUrl).toBeUndefined();
+      expect(o.note ?? "").toMatch(/待核/);
     }
   });
 
@@ -170,13 +187,19 @@ describe("阶段3A · 条款级 FACT 目录（SHANXI_CLAUSE_FACTS · 全部经 m
     expect(getRegionClauseFacts("no-such-province")).toHaveLength(0);
   });
 
-  it("★诚实护栏：条款升 FACT 后，逐值地区/政策来源仍必须全为 ASSUMPTION（条款≠数值，阶段3A 指令三）", () => {
+  it("★诚实护栏：条款升 FACT 后，逐值来源仍除「字面直传」唯一例外全为 ASSUMPTION（条款≠数值，阶段3A 指令三 + 批次1.2 例外钉桩）", () => {
     const allMetas = [
-      ...Object.values(SHANXI_REGION_SOURCES),
-      ...SHANXI_POLICY_SOURCES.flatMap((m) => (m ? Object.values(m) : [])),
+      ...Object.entries(SHANXI_REGION_SOURCES),
+      ...SHANXI_POLICY_SOURCES.flatMap((m) => (m ? Object.entries(m) : [])),
     ];
-    for (const m of allMetas) {
-      expect(m.evidenceKind).toBe("ASSUMPTION");
+    const facts = allMetas.filter(([, m]) => m.evidenceKind === "FACT");
+    // 例外须"恰一条、恰该键、且为条款字面直传"三条件同时成立，否则视为护栏被泛化击穿。
+    expect(facts).toHaveLength(1);
+    expect(facts[0][0]).toBe("region.demandCharge");
+    expect(facts[0][1].note ?? "").toMatch(/字面直传/);
+    for (const [k, m] of allMetas) {
+      if (k === "region.demandCharge") continue;
+      expect(m.evidenceKind, `${k} 越例混入非直传 FACT`).toBe("ASSUMPTION");
       expect(m.sourceUrl).toBeUndefined();
     }
     // 目录本身绝不给数值：条目结构里没有 value 字段可藏（类型级约束由编译器守，此处守运行时面）。

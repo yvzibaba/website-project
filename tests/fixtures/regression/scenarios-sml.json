@@ -3,7 +3,7 @@
     "purpose": "阶段3A 现实性回归：Small/Medium/Large 三组标准场景（固定时钟 2026-01-01，经 computeDemoScenario 纯函数链），锁定参数快照（userValues）+ 引擎版本 + calcRef + 关键经济结果；模型口径有意变化时须有意重录，不动历史黄金样本。",
     "generatedAt": "2026-09-08",
     "reRecordedAt": "2026-09-15",
-    "reRecordReason": "阶段4·V1.1批次1.1 有意重录（DEMO_MODEL_VERSION 0.1.0→0.2.0，经济内核 MODEL_VERSION 1.2.0 逐字未动）：新增场站规模缩放链路——建议桩数=ceil(日充电总量÷(单桩功率×补能窗口6h))，三场景 userValues 新增 project.chargerCount（small 3台/medium 7台/large 17台，large 与 HEAVY_TRUCK_CHARGING_LOAD_AUDIT 手算17台吻合），桩 CAPEX/装机/需量费/电费随之联动，npv/irr/roi/回收期重录。修复审计 Top-20 #1（车队翻倍桩数恒8的P0欺骗）。",
+    "reRecordReason": "V1.1批次1.2 主情景A免征(demandCharge 0→默认)+Kc计费基准(MODEL 1.3.0)：需量费从三档基线移除，NPV回摆R9.0口径；calcRef model@1.3.0",
     "fixedNow": "2026-01-01T00:00:00.000Z",
     "rounding": "金额 2 位小数；比率 6 位小数；不可得记 null。",
     "reRecord": "npm run regen:sml（scripts/sml-regen.mjs → tests/unit/sml-regen.test.ts，置 SML_REGEN=1 写盘并打印新旧对照）；人工 diff 后提交。"
@@ -33,9 +33,9 @@
       "expect": {
         "vmOk": true,
         "calcOk": true,
-        "calcRef": "model@1.2.0",
+        "calcRef": "model@1.3.0",
         "engineVersions": {
-          "model": "1.2.0",
+          "model": "1.3.0",
           "tech": "1.0.0",
           "finance": "1.0.0",
           "params": "tech@1.0.0",
@@ -51,13 +51,13 @@
           "project.chargerCount": 3
         },
         "results": {
-          "npv": 699786,
+          "npv": 1657334,
           "irrOk": true,
-          "irr": 0.162142,
+          "irr": 0.259105,
           "roiOk": true,
-          "roi": 2.872356,
-          "simplePaybackYears": 5.74,
-          "discountedPaybackYears": 7.88,
+          "roi": 4.325003,
+          "simplePaybackYears": 3.88,
+          "discountedPaybackYears": 4.8,
           "capexGross": 1320000,
           "capexNet": 1188000,
           "opexY1": 314400,
@@ -90,9 +90,9 @@
       "expect": {
         "vmOk": true,
         "calcOk": true,
-        "calcRef": "model@1.2.0",
+        "calcRef": "model@1.3.0",
         "engineVersions": {
-          "model": "1.2.0",
+          "model": "1.3.0",
           "tech": "1.0.0",
           "finance": "1.0.0",
           "params": "tech@1.0.0",
@@ -108,13 +108,13 @@
           "project.chargerCount": 7
         },
         "results": {
-          "npv": 8814332,
+          "npv": 12165749,
           "irrOk": true,
-          "irr": 0.292416,
+          "irr": 0.363096,
           "roiOk": true,
-          "roi": 4.853204,
-          "simplePaybackYears": 3.46,
-          "discountedPaybackYears": 4.2,
+          "roi": 6.010313,
+          "simplePaybackYears": 2.82,
+          "discountedPaybackYears": 3.31,
           "capexGross": 5800000,
           "capexNet": 5220000,
           "opexY1": 345600,
@@ -148,9 +148,9 @@
       "expect": {
         "vmOk": true,
         "calcOk": true,
-        "calcRef": "model@1.2.0",
+        "calcRef": "model@1.3.0",
         "engineVersions": {
-          "model": "1.2.0",
+          "model": "1.3.0",
           "tech": "1.0.0",
           "finance": "1.0.0",
           "params": "tech@1.0.0",
@@ -167,13 +167,13 @@
           "project.chargerCount": 17
         },
         "results": {
-          "npv": 27030443,
+          "npv": 36896087,
           "irrOk": true,
-          "irr": 0.281693,
+          "irr": 0.346156,
           "roiOk": true,
-          "roi": 4.688118,
-          "simplePaybackYears": 3.59,
-          "discountedPaybackYears": 4.38,
+          "roi": 5.737821,
+          "simplePaybackYears": 2.95,
+          "discountedPaybackYears": 3.49,
           "capexGross": 17830000,
           "capexNet": 16938500,
           "opexY1": 426000,

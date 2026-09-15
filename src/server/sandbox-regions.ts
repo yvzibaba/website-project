@@ -30,7 +30,7 @@ import { SHANXI_REGION_SOURCES, SHANXI_POLICY_SOURCES } from "@/server/sandbox-r
  * 1.1.0（R8.7）：山西 region/policy 层挂上来自 `sandbox-region-facts` 的**逐值结构化溯源** `sources`
  *   （数值一字未改，现全为诚实 ASSUMPTION 占位；核实到权威原文后仅改编目即自动升 FACT 并贯通下游）。
  */
-export const SANDBOX_REGIONS_VERSION = "1.1.0";
+export const SANDBOX_REGIONS_VERSION = "1.2.0"; // 1.2.0（V1.1 批次1.2）：山西包 region.demandCharge 44→0（2030 前集中式充换电免需量电费条款直传，52号文 S 级已核实；44 名义价转 B 对照组覆写值）；1.1.0：见 R5/R8.7 史。
 
 /** 溯源引用（供报告标注「这组地区默认是按哪版给的」，第 7/16 条）。 */
 export function regionCalcRef(): string {
@@ -88,7 +88,9 @@ const SHANXI_PACK: SandboxRegionPack = {
       "region.elecPrice": 0.55,
       "region.peakValleySpread": 0.7,
       "region.pvEquivalentHours": 1400,
-      "region.demandCharge": 44,
+      // V1.1 批次1.2：主情景 A = 免征条款直传（「2030 年前…集中式充换电设施免收需量(容量)电费」，
+      // 山西交规划发〔2026〕52号 S 级原文已核实）→ 0；名义工商业需量价 44 元/kW·月 作 B 对照组覆写值保留于溯源注记。
+      "region.demandCharge": 0,
       "region.landRent": 500,
     },
     sources: SHANXI_REGION_SOURCES,

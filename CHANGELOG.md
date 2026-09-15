@@ -3,6 +3,28 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.67.0] - 2026-09-15 · V1.1 批次 1.2：需量电价 A/B/C 三场景 + 需用系数 Kc 计费基准（**经济口径实质变更·MODEL_VERSION 1.2.0→1.3.0·主情景 A 免征·黄金有意回摆重录**）
+
+- 原因：审计 P0-2/P0-3 双重口径错位——①阶段4 用「平均利用率冒充最大需量」计计费需量（工程上计费基准应是**需用系数 Kc**，利用率是时间均值概念，二者不可互换）；②把 40/44 元/kW·月名义需量价当集中式充电站主情景真实价，**违背已核实政策**：2030 年前对实行两部制电价的经营性集中式充换电设施用电**免收需量(容量)电费**（山西交规划发〔2026〕52号 S级原文核实；全国同条款存在但文号待补归档）。本版建立 **A/B/C 三场景**（纯参数覆写、**零代码分支**）：A 主情景免征（demandCharge=0，默认）、B 普通工商业对照（40 全国/44 山西名义价 × Kc 70%）、C 保守压力测试（Kc=100% 装机全额）。
+- 参数目录（`src/server/sandbox-params.ts`，SANDBOX_PARAMS_VERSION **1.2.0 → 1.3.0**）：
+  - 新增 `project.demandKc`「需用系数Kc(计费需量=装机×Kc)」默认 **70%**（区间 10–100，pro 层，【占位假设·待核实】典型场站需量/装机比经验带 40%–90%）。
+  - `region.demandCharge` 默认 **40 → 0**（主情景 A 免征口径；来源注记写明 52号文已核实、全国 URL 待补归档故目录默认仍 ASSUMPTION、B/C 覆写指引），confidence 50，**继续满足全目录诚实不变式**（【占位假设开头 + ≤50，`sandbox-params.test.ts` 守卫零改动通过）。
+  - `project.chargerUtilization` 保留（利用率本义），但 **E 层不再消费**。
+- 经济内核（`src/server/sandbox-model.ts`，MODEL_VERSION **1.2.0 → 1.3.0**）：
+  - `ECON_KEYS`：`chargerUtilizationPct` **移除**，换 `demandKcPct: "project.demandKc"`（随 `ECON_REQUIRED` 自动进必填集，缺失诚实 `missing_econ_inputs`）。
+  - E4 新公式：`billedDemandKw = derived.chargerTotalPower × Kc/100`；`demandChargeY1 = billedDemandKw × region.demandCharge × 12`（仍独立字段单列，不落库、无迁移）。
+  - `notes` 双分支透明说明：demandCharge=0 → 主情景 A 免征政策声明（52号文已核实/全国 URL 待补/切 B/C 指引/须专业复核）；>0 → B/C Kc 口径声明（计费需量 kW + 年费用 + 未建模削峰保守全额）。
+- 地区包/溯源（`sandbox-regions.ts` **1.1.0→1.2.0**；`sandbox-region-facts.ts` **1.1.0→1.2.0**）：山西包 `region.demandCharge` 44→**0**（条款直传，44 转 B 对照组覆写值留注记）；`SHANXI_REGION_SOURCES["region.demandCharge"]` 经 `makeVerifiedFact` 升 **FACT**（52号文政府专题原文 URL·S级·confidence 90）——**「条款≠数值」护栏的唯一显式例外**：0 是「免收」条款的**字面直传结果值**，无价表折算介入；第四周期「90% 折扣」分支仍禁折算（G2），DATA_CONFLICT 更新为「免收分支已消解、折扣分支残余冲突保留」。全国目录默认不挂 FACT（无归档 URL，绝不伪造）。
+- 敏感性（`sandbox-sensitivity.ts` **1.4.0 → 1.5.0**）：扫描集 13 参数不变，`project.chargerUtilization` **移出**（退出 E 层消费，防"恒 0 假柱子"），换入 `project.demandKc`(±20%)；`region.demandCharge`(±15%) 保留——主情景 A 下基线 0×(1±x)=0 → swing 恒 0 系**政策的如实呈现**（非 bug），真实负摆幅在 B@40/44 锚定情景（`layers`）上验证。
+- 黄金样本有意回摆重录（输入零改动、口径单点变更 → 输出必变 → 记因重录，**绝不顺手改数**）：
+  - 基线全局（`sandbox-model.test.ts` + `sandbox-store.test.ts`）：demandChargeY1 483,840→**0**；netCashFlowY1 629,677→**1,113,517**；flows[1] 472,258→**835,138**；NPV 966,581→**4,448,573**；IRR 12.0059%→**24.3497%**；简单回收 7.1→**4.1** 年；折现回收 10.63→**5.14** 年；ROI 2.3074→**4.0880**；盈亏平衡单价 0.8353→**0.7431**；spread=0 交叉焊点 795,417→**4,277,409**；无储能焊点 NPV 1,315,764→**4,797,756**（preTax 1,090,826 / flows[1] 818,119，引擎实测钉桩）。**demandCharge=0 使 1.3.0 与接入需量费前的 R9.0/model 1.1.0 数学期末相等——老黄金逐字回摆本身即"单点改动"的最强反证**。
+  - 新增 A/B/C 专块（6 用例）：B@40 费 **967,680**（2016 kW×40×12）、B@44 费 **1,064,448**（引擎实测；手算草稿曾误记 1,063,411，以复算 2016×528 钉桩）、C 全额 **1,382,400**（税前净 −268,883 如实转负）；场景排序恒 A>B>C；Kc 40→70→100 单调降；**利用率 5/35/90 三档在 B@44 下 NPV 逐字相等**（反向守卫口径错位不得回潮）。
+  - SML fixture（`npm run regen:sml` 记因重录）：small NPV 699,786→**1,657,334**（IRR 0.259105）、medium 8,814,332→**12,165,749**、large 27,030,443→**36,896,087**；三情景 calcRef→**model@1.3.0**；revenueY1/capex/opex **逐字节不变**（需量费单点在成本侧）。
+  - 因果/敏感性测试改写：`sandbox-causality.test.ts`（利用率专块反转为"逐字相等"、demandCharge 改显式 0→40→80、新增 demandKc 双向块含"A 免征下 Kc 怎么动都恒 0"、spread=0 焊点回摆）；`sandbox-sensitivity.test.ts`（util 出集+显式扫 swing=0 守卫、Kc 入集+A 恒 0/B@40 负摆幅、demandCharge A 恒 0/B@44 负摆幅）；`sandbox-region-facts.test.ts` 两处诚实护栏改写为「例外钉死：恰一条、恰该键、note 须含字面直传」防例外泛化。
+- 呈现（`src/lib/sandbox-report.ts` 纯文案）：§二行标签改「首年需量电费（基本电费·主情景 A 免征=0；B/C 按需用系数 Kc 计）」（B1-1 纯文本先例，不升 REPORT_VERSION）。
+- 验证：`npm run test:unit` **1110 通过 + 1 跳过**（63 文件，较上批 +9）；`tsc --noEmit` exit 0；`eslint` exit 0；`npm run build` 通过（路由清单无变化）；`package.json` **0.66.0 → 0.67.0**。
+- 效果/边界：主情景回到"政策上真实将要发生的事"（免征），沙盘不再用集中式充电站不适用的名义需量价压负 NPV（0.65.0 记录的小情景"转负"人造失真随 1.1+1.2 两批彻底消除）；B/C 场景让"免征到期/非集中式"压力测试一键可切换。Kc=70% 与 40/44 名义价均仍标 ASSUMPTION；全国免征条款 URL 归档缺口留人工；储能削峰降需量仍未建模（B 系列后续）。
+
 ## [0.66.0] - 2026-09-15 · V1.1 批次 1.1：场站规模缩放链路（**DEMO_MODEL_VERSION 0.1.0→0.2.0·经济内核零触碰·SML 黄金有意重录**）
 
 - 原因：全库审计 P0-1——示范沙盘「场站不随车队缩放」：20 车与 150 车的桩数恒为 8 台（2880kW 装机），车辆规模→能源需求→设备配置链路断裂，用户改车队规模却看不到桩数/装机/CAPEX 变化，属"平均利用率冒充最大需量 + 静态设备配置"的双重失真。本批次在**映射层**（`sandbox-demo.ts`）建立缩放链路，40 参数经济内核零触碰。

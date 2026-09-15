@@ -302,19 +302,19 @@ describe("TASK2 · 轴 E：储能 storageEnergy 0 → 400 → 2000 → 8000", ()
   });
 });
 
-describe("TASK2 · P1-1 已接线：chargerUtilization 经需量费参与计算（阶段4 解除假联动）", () => {
+describe("TASK2 · P1-1 口径再修正（批次1.2）：chargerUtilization 退出需量计费（假联动钉桩回归）", () => {
   /**
-   * 「充电桩利用率」此前是**假联动**（面板可拖但 E 层不读，见 docs/MODEL_CAUSALITY_AUDIT_V1.md P1-1）。
-   * 阶段4 接入需量(基本)电费口径 A 后：计费需量 = 充电装机总功率 × 利用率，利用率↑ → 需量费↑ → 成本↑ → NPV↓。
-   * 故本测试从"三档 NPV 完全相同"**改写为"NPV 随利用率单调下降"**（原注释预告的同步改写已兑现）。
+   * 阶段4 曾用「计费需量=装机×利用率」（口径 A），审计 P0-3 指出这是**用平均利用率冒充最大需量**的口径错位。
+   * V1.1 批次1.2 起 E 层计费基准改用需用系数 Kc（project.demandKc），chargerUtilization 回归利用率本义、
+   * E 层不再消费——本测试从"单调下降"**反向改写为"逐字相等"**（凡引用它的场景都该无响应，才是诚实守卫）。
    */
-  const a = npvOf({ "project.chargerUtilization": 5 });
-  const b = npvOf({ "project.chargerUtilization": 35 });
-  const c = npvOf({ "project.chargerUtilization": 90 });
+  const a = npvOf({ "region.demandCharge": 44, "project.chargerUtilization": 5 });
+  const b = npvOf({ "region.demandCharge": 44, "project.chargerUtilization": 35 });
+  const c = npvOf({ "region.demandCharge": 44, "project.chargerUtilization": 90 });
 
-  it("利用率 5% → 35% → 90%：NPV 严格单调下降（需量费随计费需量上升）", () => {
-    expect(a).toBeGreaterThan(b);
-    expect(b).toBeGreaterThan(c);
+  it("B 场景(44 元/kW·月)下利用率 5% → 35% → 90%：NPV 逐字相等（E 层不消费，计费只随 Kc）", () => {
+    expect(a).toBe(b);
+    expect(b).toBe(c);
   });
 });
 
@@ -345,18 +345,38 @@ describe("TASK2 · P2-6 假联动钉桩：其余未接入 E 层的参数", () =>
   }
 });
 
-describe("TASK2 · 阶段4 接线因果：region.demandCharge ↔ NPV 反向联动（需量费口径 A）", () => {
-  it("需量电价 0 → 默认 → 上调：NPV 严格单调下降（需量费=计费需量×元/kW·月×12 计入成本侧）", () => {
-    const zero = npvOf({ "region.demandCharge": 0 });
-    const mid = npvOf({}); // 默认需量电价
-    const high = npvOf({ "region.demandCharge": 80 });
+describe("TASK2 · 接线因果：region.demandCharge ↔ NPV 反向联动（批次1.2 起默认=主情景 A 免征 0）", () => {
+  it("需量电价 0 → 40 → 80：NPV 严格单调下降（需量费=装机×Kc×元/kW·月×12 计入成本侧）", () => {
+    const zero = npvOf({ "region.demandCharge": 0 }); // = 目录默认（A 主情景）
+    const mid = npvOf({ "region.demandCharge": 40 }); // B 对照（全国名义）
+    const high = npvOf({ "region.demandCharge": 80 }); // 高价压力
     expect(zero).toBeGreaterThan(mid);
     expect(mid).toBeGreaterThan(high);
   });
 
-  it("需量电价归零 → NPV 回到无(基本)电费口径（与旧 R9.0 基线可交叉印证）", () => {
-    // demandCharge=0 时 E4 仅剩电量电费，经济口径回到接入需量费之前
+  it("默认即免征 0 → NPV 逐字回摆无(基本)电费口径（与旧 R9.0 基线交叉印证·政策焊点）", () => {
+    // demandCharge=0 时 E4 仅剩电量电费，经济口径回到接入需量费之前（model 1.1.0 黄金）。
+    expect(npvOf({})).toBe(4448573);
     expect(npvOf({ "region.demandCharge": 0 })).toBe(4448573); // R9.0 SVE 老黄金（model 1.1.0 口径）
+  });
+});
+
+describe("TASK2 · 批次1.2 新接线：project.demandKc ↔ 需量费（B/C 场景下的计费基准）", () => {
+  it("B@40 下 Kc 40% → 70% → 100%：NPV 严格单调下降（计费需量=装机×Kc）", () => {
+    const lo = npvOf({ "region.demandCharge": 40, "project.demandKc": 40 });
+    const mid = npvOf({ "region.demandCharge": 40 }); // 默认 Kc=70
+    const hi = npvOf({ "region.demandCharge": 40, "project.demandKc": 100 }); // C 压力
+    expect(lo).toBeGreaterThan(mid);
+    expect(mid).toBeGreaterThan(hi);
+  });
+
+  it("A 免征下 Kc 怎么动费用都恒 0（价格闸门优先于系数——NPV 逐字不变）", () => {
+    const a = npvOf({ "project.demandKc": 20 });
+    const b = npvOf({ "project.demandKc": 70 });
+    const c = npvOf({ "project.demandKc": 100 });
+    expect(a).toBe(b);
+    expect(b).toBe(c);
+    expect(a).toBe(4448573);
   });
 });
 
@@ -372,10 +392,10 @@ describe("TASK2 · R9.0 SVE 接线因果（spread ↔ NPV 正联动 + FLIP 正�
     expect(s15).toBeGreaterThan(s10);
   });
 
-  it("spread=0 → 套利腿关闭，storageValue 归零，NPV 精确回落到阶段4 无储能价值基线 795,417（含需量费口径的交叉焊点）", () => {
-    // 旧 R2.4/R9.0 焊点为 4,277,409（无需量费）；阶段4 接入需量(基本)电费后所有 NPV 下修，
-    // spread=0（套利关断）在 model@1.2.0 口径下精确为 795,417，仍作"引擎无意外漂移"的逐字节焊点。
-    expect(npvOf({ "region.peakValleySpread": 0 })).toBe(795417);
+  it("spread=0 → 套利腿关闭，storageValue 归零，NPV 精确回落到 R9.0 无储能价值焊点 4,277,409（批次1.2 A 场景交叉焊点）", () => {
+    // 阶段4（口径 A·需量费 483,840 元/年）曾把该焊点压到 795,417；批次1.2 主情景 A 免征后
+    // E4 无需量费，逐字回摆 R9.0/model 1.1.0 老焊点 4,277,409——两个年代的黄金在此对齐，本身就是最强守卫。
+    expect(npvOf({ "region.peakValleySpread": 0 })).toBe(4277409);
     expect(npvOf({ "region.peakValleySpread": 0 })).toBeLessThan(npvOf({})); // 关断套利 → 低于含套利基线
   });
 

@@ -24,14 +24,15 @@ describe("sandbox-store · projectCalcToColumns（CalcResult → Decimal 汇总�
   it("基线成功结果 → calcStatus ok + 各汇总列定点字符串（golden，逐项对齐 R2 手算）", () => {
     const cols = projectCalcToColumns(BASELINE);
     expect(cols.calcStatus).toBe("ok");
-    expect(cols.calcRef).toBe("model@1.2.0");
-    // 阶段4 接入需量(基本)电费口径 A 后：净 CAPEX 3,524,500 不变（需量费属成本侧、不入 CAPEX）；
-    // NPV≈966,581；IRR 12.0059%；折现回收 10.63 年；ROI 比值 2.3074（需量费 483,840 元/年下修收益）
+    expect(cols.calcRef).toBe("model@1.3.0");
+    // V1.1 批次1.2 主情景 A（2030 前集中式充换电免需量电费，demandCharge=0）：E4 无需量费，
+    // 各列逐字回摆接入需量费前（model 1.1.0/R9.0）黄金——免征=数学期末相等，本身即最强口径守卫。
+    // 净 CAPEX 3,524,500 不待言（需量费属成本侧、不入 CAPEX）；NPV 4,448,573；IRR 24.3497%；折现回收 5.14 年；ROI 4.0880。
     expect(cols.capexNet).toBe("3524500.00");
-    expect(cols.npv).toBe("966581.00");
-    expect(cols.irrPct).toBe("12.0059");
-    expect(cols.paybackYears).toBe("10.63");
-    expect(cols.roiRatio).toBe("2.3074");
+    expect(cols.npv).toBe("4448573.00");
+    expect(cols.irrPct).toBe("24.3497");
+    expect(cols.paybackYears).toBe("5.14");
+    expect(cols.roiRatio).toBe("4.0880");
   });
 
   it("汇总列字符串可精确回读为定点数（Decimal 防漂移的落库前提）", () => {

@@ -126,9 +126,10 @@ describe("确定性", () => {
 /**
  * TASK 5 覆盖度确认（2026-09-08 夜）——创始人点名 5 项：电价 / 年里程 / 车辆利用率 / 储能 CAPEX / 光伏 CAPEX。
  * 前四项 已能真实扫到（年里程以 `chargePerTruck` 作合并代理，详见 docs/MODEL_CAUSALITY_AUDIT_V1.md P2-5）；
- * 第五项「车辆利用率」`chargerUtilization` V1 未接入 E 层（P1-1 假联动），
- * **不**塞进默认扫描集，避免"摆幅永远 0 的假柱子"污染龙卷风可读性；
- * 通过自定义 `params` 显式扫它，会得到 swing=0 且 notes 提示，本测试钉住这一诚实策略。
+ * 第五项「车辆利用率」`chargerUtilization`：阶段4 曾借"利用率冒充最大需量"口径短暂入集；V1.1 批次1.2
+ * 修正口径错位（审计 P0-3）后计费基准改用需用系数 Kc，该键退出 E 层消费与默认扫描集——
+ * **不**塞进默认集，避免"摆幅永远 0 的假柱子"污染龙卷风可读性；
+ * 通过自定义 `params` 显式扫它，会得到 swing=0，本测试钉住这一诚实策略。
  */
 describe("TASK 5 · 创始人点名 5 项覆盖度", () => {
   const t = computeTornado();
@@ -162,30 +163,46 @@ describe("TASK 5 · 创始人点名 5 项覆盖度", () => {
   });
 
   /**
-   * 车辆（充电桩）利用率：**阶段4 已从"假联动"升级为真实杠杆**。接入需量(基本)电费口径 A 后，
-   * 利用率↑ → 计费需量(=装机总功率×利用率)↑ → 年需量费↑ → 成本↑ → NPV↓，故 swing<0。
-   * 此前该键 swing 恒为 0（未接进 E 层），被刻意排除在默认扫描集外以防"假敏感"误导；
-   * 现已接线，纳入默认集（±20%）并验证方向为负、摆幅真实非零。
+   * 车辆（充电桩）利用率：**V1.1 批次1.2 口径再修正**——审计 P0-3 判定"平均利用率冒充最大需量"是口径错位，
+   * E 层计费基准改用需用系数 Kc（下块），chargerUtilization 回归利用率本义、不再被 E 层消费 →
+   * 重新移出默认扫描集（防"摆幅恒 0 的假柱子"），显式扫它得到 swing 逐字 0 即诚实守卫。
    */
-  it("project.chargerUtilization 已接入需量费 → 在默认扫描集，swing 非零且为负（利用率↑→需量费↑→NPV↓）", () => {
-    expect(keys).toContain("project.chargerUtilization");
-    const r = t.rows.find((x) => x.key === "project.chargerUtilization")!;
-    expect(r.deltaPct).toBe(20);
-    expect(r.swing).not.toBeNull();
-    expect(r.swing!).toBeLessThan(0);
-    expect(r.lowMetric!).toBeGreaterThan(r.highMetric!); // 利用率低端 → NPV 更高
+  it("project.chargerUtilization 已退出扫描集与 E 层计费（批次1.2）；显式扫描 swing 恒 0（诚实假柱子守卫）", () => {
+    expect(keys).not.toContain("project.chargerUtilization");
+    const explicit = computeTornado({ params: [{ key: "project.chargerUtilization", deltaPct: 20 }] });
+    const r = explicit.rows.find((x) => x.key === "project.chargerUtilization")!;
+    expect(r.swing).toBe(0); // 三档扰动 NPV 逐字相等（B1-2 因果专块反向印证）
   });
 
   /**
-   * region.demandCharge（需量电价 元/kW·月）：阶段4 新增真实杠杆，纳入默认集（±15%）。
-   * 单价↑ → 需量费↑ → 成本↑ → NPV↓，故 swing<0。
+   * project.demandKc（需用系数）：批次1.2 新杠杆，±20% 入默认集。主情景 A（免征）下基线 0 费
+   * → ±% 扰动恒 0；B 对照（覆写 40 元/kW·月）锚定扫描即产出真实负摆幅（Kc↑→计费需量↑→NPV↓）。
    */
-  it("region.demandCharge 在默认扫描集，swing 非零且为负（需量电价↑→NPV↓）", () => {
+  it("project.demandKc 在默认扫描集（±20%）；A 场景 swing 恒 0（价格闸门），B@40 场景 swing<0（真实杠杆）", () => {
+    expect(keys).toContain("project.demandKc");
+    const kcA = t.rows.find((x) => x.key === "project.demandKc")!;
+    expect(kcA.deltaPct).toBe(20);
+    expect(kcA.swing).toBe(0); // 0×(1±20%)=0：免征下系数怎么扫都不产生费用——政策事实非 bug
+    const tB = computeTornado({ layers: { user: { values: { "region.demandCharge": 40 } } } });
+    const kcB = tB.rows.find((x) => x.key === "project.demandKc")!;
+    expect(kcB.swing).not.toBeNull();
+    expect(kcB.swing!).toBeLessThan(0);
+  });
+
+  /**
+   * region.demandCharge（需量电价 元/kW·月）：保留默认集（±15%）。批次1.2 起目录默认=主情景 A 免征 0，
+   * ±% 扰动 0 恒为 0（swing=0 是政策的如实呈现）；真实负摆幅须在 B 对照情景（锚定 layers）上验证。
+   */
+  it("region.demandCharge 在默认扫描集（±15%）；A 场景 swing 恒 0（免征如实），B@44 场景 swing<0（电价↑→NPV↓）", () => {
     expect(keys).toContain("region.demandCharge");
     const r = t.rows.find((x) => x.key === "region.demandCharge")!;
     expect(r.deltaPct).toBe(15);
-    expect(r.swing).not.toBeNull();
-    expect(r.swing!).toBeLessThan(0);
+    expect(r.swing).toBe(0); // 主情景免征：0 元/kW·月 ±15% 仍是 0——诚实呈现，不造假摆幅
+    const tB = computeTornado({ layers: { user: { values: { "region.demandCharge": 44 } } } });
+    const rB = tB.rows.find((x) => x.key === "region.demandCharge")!;
+    expect(rB.swing).not.toBeNull();
+    expect(rB.swing!).toBeLessThan(0);
+    expect(rB.lowMetric!).toBeGreaterThan(rB.highMetric!); // 低端(37.4)→费用更低→NPV 更高
   });
 
   it("默认扫描集规模≥5（覆盖创始人 5 项要求里可真实量化的 4 项 + 6 项其他主杠杆）", () => {

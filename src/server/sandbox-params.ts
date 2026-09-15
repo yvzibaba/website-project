@@ -30,7 +30,7 @@ import {
  */
 
 /** 参数模板版本（改结构/默认口径须升版并记录原因，宪法第 13 条）。 */
-export const SANDBOX_PARAMS_VERSION = "1.4.0"; // 1.4.0（V1.1 批次1.3）：新增 `inactive/inactiveReason` 未启用标注（6 僵尸键收起至「未启用·即将支持」，方案 §3.1d——gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization；includeStorage 留给 1.4 真接线不标）；`region.demandCharge`/`project.demandKc` exposure pro→advanced（真参数反向错配修正，B/C 对照组在工作台可实际切换）。1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
+export const SANDBOX_PARAMS_VERSION = "1.5.0"; // 1.5.0（V1.1 批次1.4）：`project.includeStorage` 假开关转正——编排层把布尔以 0/1 门控注入经济快照，`hasStorage` 真门控储能整腿（MODEL 1.4.0·审计 F-2h）；派生 `derived.storageDuration` 名实修正为「储能满功率放电时长」。1.4.0（V1.1 批次1.3）：新增 `inactive/inactiveReason` 未启用标注（6 僵尸键收起至「未启用·即将支持」，方案 §3.1d——gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization；includeStorage 留给 1.4 真接线不标）；`region.demandCharge`/`project.demandKc` exposure pro→advanced（真参数反向错配修正，B/C 对照组在工作台可实际切换）。1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
 
 /** 沙盘模板的稳定标识（供 R3 建项目时引用模板来源）。 */
 export const SANDBOX_DEPOT_TEMPLATE = "new-energy-heavy-truck-pv-storage-charging" as const;
@@ -141,7 +141,8 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   }),
   // 综合充电单价：向重卡收取的电费+服务费合一价（收益端第一杠杆，R2.4 编排据此算充电收入）。
   num("project.chargingPrice", "综合充电单价(含电费+服务)", "project", "basic", 0.9, "元/kWh", { min: 0.3, max: 3.0, confidence: 45 }),
-  // 布尔开关：是否配储能——验证引擎对非数值参数的透传（不进 R2 数值快照）。
+  // 布尔开关：是否配储能。**V1.1 批次1.4 起真接线**（F-2h）：编排层注入 0/1 门控，置 0 → 储能
+  // CAPEX/OPEX/SVE 套利整腿归零（MODEL_VERSION 1.4.0）；不进 resolve 层 numeric 快照的契约不变。
   {
     key: "project.includeStorage",
     label: "是否配置储能",
@@ -208,7 +209,7 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
     derived: true,
     dependsOn: ["project.chargerCount", "project.chargerUnitPower"],
   }),
-  num("derived.storageDuration", "储能时长(=容量÷功率)", "project", "advanced", 2, "h", {
+  num("derived.storageDuration", "储能满功率放电时长(=容量÷功率)", "project", "advanced", 2, "h", {
     editable: false,
     derived: true,
     dependsOn: ["project.storageEnergy", "project.storagePower"],

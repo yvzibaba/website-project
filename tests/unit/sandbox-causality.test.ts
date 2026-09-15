@@ -380,6 +380,29 @@ describe("TASK2 · 批次1.2 新接线：project.demandKc ↔ 需量费（B/C �
   });
 });
 
+describe("TASK2 · 批次1.4 真接线：project.includeStorage ↔ 储能整腿（假开关转正·审计 F-2h）", () => {
+  /**
+   * 批次 1.4 前该开关是**假开关**（E 层无人消费，关了照样算储能）。MODEL 1.4.0 起编排层以
+   * 0/1 门控注入经济快照：置 0 → 储能 CAPEX/OPEX/SVE 套利整腿归零。本块是「真杠杆」正向钉桩
+   * + 反向守卫（若将来有人把门控改回假开关，off==on 立即炸出）。
+   */
+  it("开关=关 → NPV 逐字等于「容量物理置 0」的轴 E 端点（两条路径同一口径）", () => {
+    const off = npvOf({ "project.includeStorage": 0 });
+    const zeroCapacity = npvOf({ "project.storageEnergy": 0 });
+    expect(off).toBe(zeroCapacity);
+    expect(off).toBe(4797756); // R9.0 无储能焊点（引擎实测）
+  });
+
+  it("开关开/关 NPV 严格分离，默认（缺省覆写）保持基线 4,448,573（向后兼容）", () => {
+    const on = npvOf({ "project.includeStorage": 1 });
+    const off = npvOf({ "project.includeStorage": 0 });
+    const dflt = npvOf({});
+    expect(on).toBe(dflt);
+    expect(dflt).toBe(4448573);
+    expect(off).toBeGreaterThan(dflt); // 基线参数下储能边际为负（轴 E 现状），关反而更优——方向由经济事实决定，非 bug
+  });
+});
+
 describe("TASK2 · R9.0 SVE 接线因果（spread ↔ NPV 正联动 + FLIP 正贡献场景）", () => {
   it("region.peakValleySpread 0 → 0.6 → 1.0 → 1.5 → NPV 严格单调增（旧 P2-6 钉桩解除）", () => {
     // Δ_arb = σ·Imp0·(p − p_valley/η)，价差↑ → 谷价更低 → 单位套利空间变宽

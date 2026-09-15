@@ -310,7 +310,7 @@ export function SandboxDemoPanel({
                   v={`${Number.isFinite(outputs.recommendedChargerCount) ? outputs.recommendedChargerCount.toLocaleString("zh-CN") : "—"} → ${(Number.isFinite(outputs.appliedChargerCount) ? outputs.appliedChargerCount : 0).toLocaleString("zh-CN")} 台`}
                 />
                 <Row k="充电总装机功率" v={`${Math.round(resolved.numeric["derived.chargerTotalPower"] ?? 0).toLocaleString("zh-CN")} kW`} />
-                <Row k="储能时长" v={`${(resolved.numeric["derived.storageDuration"] ?? 0).toFixed(2)} h`} />
+                <Row k="储能满功率放电时长" v={`${(resolved.numeric["derived.storageDuration"] ?? 0).toFixed(2)} h`} />
               </dl>
             </div>
 

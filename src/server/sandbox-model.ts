@@ -65,7 +65,7 @@ import {
 } from "@/server/sandbox-finance";
 
 /** 编排引擎版本（改经济口径须升版并记原因，宪法第 13 条）。 */
-export const MODEL_VERSION = "1.3.0"; // 1.3.0（V1.1 批次1.2 · 2026-09-15 创始人放行 V1.1 方案）：E4 计费需量基准改用**需用系数 Kc**（project.demandKc，取代 1.2.0 用平均利用率冒充最大需量的口径错位·审计 P0-3）；主情景切到 **A 政策免征**（region.demandCharge 默认 0，2030 前集中式充换电免需量电费条款），B/C 为参数覆写对照组——零代码分支。基线黄金回摆至接入需量费前的 R9.0 口径值（demandCharge=0 数学期末端相等），B/C 场景手算焊点新增。1.2.0：E4 接入需量(基本)电费（口径 A=充电装机总功率×利用率×demandCharge×12），2026-09-14 创始人拍板。
+export const MODEL_VERSION = "1.4.0"; // 1.4.0（V1.1 批次1.4 · 2026-09-16 放行方案 Phase1）：**F-2h includeStorage 布尔真接线**——hasStorage 增门控 `&& project.includeStorage≠0`（编排层把布尔以 0/1 门控值注入经济快照消费，resolve 层 numeric 契约不变）；开关置 0 → 储能 CAPEX/OPEX/SVE 套利价值整腿归零，终结「关了储能照样算储能」假开关（审计 F-2h P1）。基线默认=开 → 既有黄金数值**逐字节不变**（仅 calcRef 版本滚动 + 无开关键的纯函数调用按目录默认=开处理，向后兼容）。1.3.0（V1.1 批次1.2）：E4 计费需量基准改用**需用系数 Kc**（project.demandKc，取代 1.2.0 用平均利用率冒充最大需量的口径错位·审计 P0-3）；主情景切到 **A 政策免征**（region.demandCharge 默认 0，2030 前集中式充换电免需量电费条款），B/C 为参数覆写对照组——零代码分支。基线黄金回摆至接入需量费前的 R9.0 口径值（demandCharge=0 数学期末端相等），B/C 场景手算焊点新增。1.2.0：E4 接入需量(基本)电费（口径 A），2026-09-14 创始人拍板。
 
 /** 溯源引用（组合各内核版本，供报告标注"这组数是按哪几版算的"，第 7/16 条）。 */
 export function modelCalcRef(): string {
@@ -247,8 +247,11 @@ export function computeEconomics(
   const pvCapacity = numeric["project.pvCapacity"] as number;
   const storageEnergy = numeric["project.storageEnergy"] as number;
   const storagePower = numeric["project.storagePower"] as number;
+  // V1.1 批次1.4（F-2h）：用户可见的「是否配置储能」布尔门控。快照缺该键 = 目录默认（开），
+  // 纯函数既有单测/历史快照向后兼容；编排层 runSandboxModel 恒注入显式 0/1（单一真源）。
+  const includeStorageOn = numeric["project.includeStorage"] !== 0;
   const hasStorage =
-    storageEnergy > 0 && storagePower > 0 && tech.storageIncluded;
+    storageEnergy > 0 && storagePower > 0 && tech.storageIncluded && includeStorageOn;
 
   // ── R9.0 E3b 前置：storage-scoped 键校验（仅 hasStorage 时；缺失诚实列键，绝不猜默认收益）──
   // 刻意不进 ECON_REQUIRED：无储能场景不因缺这些键而失败（storage=0 零 churn 的前提）。
@@ -397,7 +400,11 @@ export function computeEconomics(
   if (rate < 0) notes.push("折现率为负，NPV 口径异常，谨慎解读");
   if (!irrVal.ok) notes.push(`IRR 无法给出（${irrVal.reason}）：不编造比率，看 NPV/回收期`);
   if (payD === null) notes.push("折现回收期超出计算期：分析期内未回本（不假设迟早回本）");
-  if (!hasStorage && storageEnergy > 0)
+  if (!includeStorageOn && storageEnergy > 0)
+    notes.push(
+      "「是否配置储能」开关=关：储能 CAPEX/OPEX 与储能套利价值整腿按 0 计；储能功率/容量参数仅保留为设备规格占位，不代表已投资",
+    );
+  else if (!hasStorage && storageEnergy > 0)
     notes.push("储能键存在但技术层判定未纳入，储能相关 CAPEX/OPEX 按 0 计");
   if (hasStorage && deltaStoY1 > 0)
     notes.push(
@@ -466,7 +473,13 @@ export function computeEconomics(
  */
 export function runSandboxModel(layers: Omit<ResolveLayers, "derived"> = {}): CalcResult {
   const resolved = resolveSandbox(layers);
-  const econ = computeEconomics(resolved.numeric);
+  // V1.1 批次1.4（F-2h）：布尔开关在**编排接缝**升为 0/1 门控值注进经济快照——
+  // resolveParameters 的 numeric 契约不变（布尔不进数值快照，参数层测试逐字保绿），
+  // 但经济内核按「一切关键变量皆参数」从同一份解析真源取值，绝不在 UI/编排里私改数。
+  const econNumeric: Record<string, number | undefined> = { ...resolved.numeric };
+  const flag = resolved.params["project.includeStorage"]?.value;
+  if (flag !== undefined) econNumeric["project.includeStorage"] = flag === false || Number(flag) === 0 ? 0 : 1;
+  const econ = computeEconomics(econNumeric);
   if (econ.ok) {
     econ.engineVersions.params = `${econ.engineVersions.params}`; // 保持 tech calcRef 溯源（tech@x）
     // R8.7：把解析层的逐值溯源（含可选 sourceUrl）挂回结果，补上「numeric 快照丢弃来源」这一缺口。

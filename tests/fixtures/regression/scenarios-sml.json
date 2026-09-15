@@ -3,7 +3,7 @@
     "purpose": "阶段3A 现实性回归：Small/Medium/Large 三组标准场景（固定时钟 2026-01-01，经 computeDemoScenario 纯函数链），锁定参数快照（userValues）+ 引擎版本 + calcRef + 关键经济结果；模型口径有意变化时须有意重录，不动历史黄金样本。",
     "generatedAt": "2026-09-08",
     "reRecordedAt": "2026-09-15",
-    "reRecordReason": "V1.1批次1.2 主情景A免征(demandCharge 0→默认)+Kc计费基准(MODEL 1.3.0)：需量费从三档基线移除，NPV回摆R9.0口径；calcRef model@1.3.0",
+    "reRecordReason": "TODO：重录原因未注入（SML_REGEN_REASON 缺省）——提交前必须手工补写，含新旧值与版本依据",
     "fixedNow": "2026-01-01T00:00:00.000Z",
     "rounding": "金额 2 位小数；比率 6 位小数；不可得记 null。",
     "reRecord": "npm run regen:sml（scripts/sml-regen.mjs → tests/unit/sml-regen.test.ts，置 SML_REGEN=1 写盘并打印新旧对照）；人工 diff 后提交。"
@@ -33,9 +33,9 @@
       "expect": {
         "vmOk": true,
         "calcOk": true,
-        "calcRef": "model@1.3.0",
+        "calcRef": "model@1.4.0",
         "engineVersions": {
-          "model": "1.3.0",
+          "model": "1.4.0",
           "tech": "1.0.0",
           "finance": "1.0.0",
           "params": "tech@1.0.0",
@@ -90,9 +90,9 @@
       "expect": {
         "vmOk": true,
         "calcOk": true,
-        "calcRef": "model@1.3.0",
+        "calcRef": "model@1.4.0",
         "engineVersions": {
-          "model": "1.3.0",
+          "model": "1.4.0",
           "tech": "1.0.0",
           "finance": "1.0.0",
           "params": "tech@1.0.0",
@@ -148,9 +148,9 @@
       "expect": {
         "vmOk": true,
         "calcOk": true,
-        "calcRef": "model@1.3.0",
+        "calcRef": "model@1.4.0",
         "engineVersions": {
-          "model": "1.3.0",
+          "model": "1.4.0",
           "tech": "1.0.0",
           "finance": "1.0.0",
           "params": "tech@1.0.0",

@@ -3,6 +3,20 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.69.0] - 2026-09-16 · V1.1 批次 1.4：includeStorage 假开关真接线（F-2h）+ storageDuration 名实修正（**经济内核门控补全·MODEL_VERSION 1.3.0→1.4.0·基线黄金逐字节零 churn·仅 calcRef 版本滚动**）
+
+- 原因：全库审计 **F-2h（P1）**——「是否配置储能」开关在册可切、参数注释亦宣称控制储能取舍，但 `computeEconomics` 的 `hasStorage` 只查 `storageEnergy>0 && storagePower>0 && tech.storageIncluded`，**从未读取该布尔**：用户关掉开关，储能 CAPEX/OPEX/套利价值照样入账，属「关了照样算」的假联动（与批次 1.3 六僵尸键同族，故 1.3 刻意不标 inactive、留此转正）。附带派生键 `derived.storageDuration` 名实修正：「储能时长」易误读为循环/服务时长，实为**满功率放电时长（容量÷功率）**。
+- 接线设计（`src/server/sandbox-model.ts`，MODEL_VERSION **1.3.0 → 1.4.0**）：
+  - **编排层注入，resolve 层契约零改动**：`runSandboxModel` 把解析终值 `project.includeStorage`（number|boolean 双语义）归一为 **0/1 门控值注入经济快照的副本**（`econNumeric = { ...resolved.numeric }`）——`sandbox-params.test.ts` 钉死的「布尔不进 numeric 快照」契约原样保绿。
+  - **E 层真门控**：`hasStorage = storageEnergy>0 && storagePower>0 && tech.storageIncluded && numeric["project.includeStorage"] !== 0`；置 0 → 储能 CAPEX/OPEX/SVE 套利价值**整腿归零**（复用既有 hasStorage 分支，无新代码路径）。
+  - **向后兼容**：纯函数直调**缺该键** = `!== 0` 为真 = 目录默认（开）→ 基线/历史黄金数值**逐字节不变**，仅 calcRef 版本滚动；技术层 `annualEnergyBalance` 与储能无关（S1 年度平衡 self=min(pv,load)），TECH_VERSION 不动。
+  - 诚实注记分支：开关关而容量>0 → notes 增「储能 CAPEX/OPEX 与储能套利价值整腿按 0 计；功率/容量参数仅保留为设备规格占位，不代表已投资」。
+- 参数目录（`src/server/sandbox-params.ts`，SANDBOX_PARAMS_VERSION **1.4.0 → 1.5.0**）：includeStorage 注记改「批次1.4 起真接线」；`derived.storageDuration` label →「储能满功率放电时长(=容量÷功率)」；呈现层同步（`SandboxDemoPanel.tsx` 只读行标签、`SandboxWorkbench.tsx` 头注）。
+- 测试（+6 用例）：`sandbox-model.test.ts` 新增批次 1.4 describe **4 用例**——开关=关（用户覆写 0 与布尔 false 双路径）NPV **逐字复现无储能焊点 4,797,756** + 储能三腿归零 + 注记在位；computeEconomics 直调门控键=0 与 storageEnergy=0 **数值逐字相等**（E 层门控本体）；★缺键=默认开 → 基线 4,448,573 逐字节不变（向后兼容钉桩）+ 显式 1 亦然。`sandbox-causality.test.ts` 新增**真杠杆正向钉桩**（off==零容量端点、off/on 严格分离、默认保持基线；若门控被改回假开关立即炸出）+ `expect(off > dflt)` 方向注明「基线参数下储能边际为负（轴 E 现状），关反而更优系经济事实非 bug」。`sandbox-params.test.ts` includeStorage inactive 契约措辞转正；`sandbox-store.test.ts` calcRef → `model@1.4.0`。
+- 黄金重录（`npm run regen:sml` 记因）：三情景 **calcRef model@1.3.0→model@1.4.0 之外逐字节零变化**（small 1,657,334 / medium 12,165,749 / large 36,896,087 及全部 IRR/ROI/回收/CAPEX/OPEX/收入分项原样）——「默认=开」设计意图的反证：**版本滚、数值不滚**。
+- 验证：`npm run test:unit` **1122 通过 + 1 跳过**（63 文件，+6 净新增）；`tsc --noEmit` exit 0；`eslint` exit 0；`npm run build` 通过（路由清单无变化）；`package.json` **0.68.0 → 0.69.0**。
+- 效果：参数面板最后一个「假装在算」的开关转正——储能取舍自此有真实经济后果，与轴 E 容量端点殊途同归；storageDuration 名实相符。边界：储能**替代收益**（需量管理/延长并网容量）仍未建模（SVE 仅峰谷套利腿），开关的 B/C 需量场景交互（关储能后 Kc 口径是否随削峰变化）留待真实用户验证反馈；R8.8b 贷款/DSCR 腿仍待创始人拍板。
+
 ## [0.68.0] - 2026-09-16 · V1.1 批次 1.3：僵尸参数「未启用」收起 + 全投资口径明示（**呈现/参数目录变更·经济内核零触碰·MODEL_VERSION 保持 1.3.0·黄金样本零改动**）
 
 - 原因：全库审计 P1/P2——①六个参数键面板可拖（或注册在册）但**内核不消费**（gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization），属"假装在算"的诚实性负债；其中 chargerUtilization 自 1.3.0 起连最后一点计算后果都没有了。②同时存在**反向错配**：真参数 `region.demandCharge`/`project.demandKc` 卡在 pro 档，而工作台根本不渲染 pro 层滑块——B/C 对照组用户实际切不了。③全部回报指标实为**全投资（无杠杆）口径**（尚无贷款现金流/DSCR/股权 IRR），但界面/报告从未向用户言明，投资人画像下极易被误读为股权回报。方案 §3.1d 裁决：**收起 ≠ 删除**——集中进默认折叠的「未启用·即将支持」区并逐键给出原因。

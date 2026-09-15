@@ -191,7 +191,7 @@ describe("sandbox-params · V1.1 批次1.3：inactive 未启用标注（方案 �
     }
   });
 
-  it("includeStorage 刻意**不标** inactive（假开关留批次 1.4 真接线，届时摘除或转正）", () => {
+  it("includeStorage **不标** inactive（批次 1.4 已真接线转正·MODEL 1.4.0 真杠杆，永远是活参数）", () => {
     const spec = SANDBOX_PARAMS.find((s) => s.key === "project.includeStorage");
     expect(spec).toBeDefined();
     expect(spec!.inactive ?? false).toBe(false);

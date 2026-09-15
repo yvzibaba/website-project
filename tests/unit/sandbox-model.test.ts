@@ -300,6 +300,55 @@ describe("V1.1 批次1.2 · 需量电价 A/B/C 三场景（计费需量=装机×
   });
 });
 
+describe("V1.1 批次1.4 · includeStorage 真接线（F-2h：假开关转正·MODEL 1.4.0）", () => {
+  /**
+   * 编排层把布尔以 0/1 门控值注入经济快照副本（resolve 层「布尔不进 numeric」契约不变）；
+   * computeEconomics 消费 `project.includeStorage !== 0`：置 0 → 储能 CAPEX/OPEX/SVE 套利整腿归零。
+   * 向后兼容：纯函数直调**无该键** = 按目录默认（开）处理 → 既有黄金数值逐字节不变。
+   */
+  it("开关=关（runSandboxModel 用户覆写）→ 逐字复现无储能焊点 NPV 4,797,756 + 储能三腿归零 + 诚实注记", () => {
+    const off = runSandboxModel({ user: { values: { "project.includeStorage": 0 } } });
+    expect(off.ok).toBe(true);
+    if (!off.ok) return;
+    expect(off.metrics.npv).toBe(4797756); // == 容量/功率物理置 0 的 R9.0 无储能焊点（开关真门控铁证）
+    expect(off.capex.storage).toBe(0);
+    expect(off.opexY1.storage).toBe(0);
+    expect(off.revenueY1.storageValue).toBe(0);
+    expect(off.notes.some((n) => n.includes("「是否配置储能」开关=关"))).toBe(true);
+    // 容量/功率仍在（设备规格占位），却不再「关了照样算储能」
+    expect(off.energyCostY1).toBeGreaterThan(0); // 充电负荷照算，只砍储能腿
+  });
+
+  it("computeEconomics 直调：门控键=0 → 与 storageEnergy=0 数值逐字相等（E 层门控本体）", () => {
+    const off = computeEconomics({ ...NUMERIC, "project.includeStorage": 0 });
+    const zero = computeEconomics({ ...NUMERIC, "project.storageEnergy": 0 });
+    expect(off.ok && zero.ok).toBe(true);
+    if (!off.ok || !zero.ok) return;
+    expect(off.metrics.npv).toBe(zero.metrics.npv);
+    expect(off.capex.storage).toBe(0);
+    expect(off.revenueY1.storageValue).toBe(0);
+  });
+
+  it("★向后兼容：快照缺该键 = 目录默认（开）→ 基线黄金 4,448,573 逐字节不变；显式 1 亦然", () => {
+    const noKey = computeEconomics(NUMERIC); // 历史纯函数调用方（批次1.4 前快照无此键）
+    const on = computeEconomics({ ...NUMERIC, "project.includeStorage": 1 });
+    expect(noKey.ok && on.ok).toBe(true);
+    if (!noKey.ok || !on.ok) return;
+    expect(noKey.metrics.npv).toBe(4448573); // 基线原值，零 churn
+    expect(on.metrics.npv).toBe(4448573);
+    expect(on.notes.some((n) => n.includes("开关=关"))).toBe(false);
+  });
+
+  it("布尔 false 覆写经编排层同样落 0（值语义 number|boolean 双兼容）", () => {
+    const off = runSandboxModel({
+      user: { values: { "project.includeStorage": false as unknown as number } },
+    });
+    expect(off.ok).toBe(true);
+    if (!off.ok) return;
+    expect(off.metrics.npv).toBe(4797756);
+  });
+});
+
 describe("★§4 命脉：改滑块 → 经济结果整链重算", () => {
   const base = runSandboxModelBaseline();
   it("调高综合充电单价 → 净现金流与 NPV 上升", () => {

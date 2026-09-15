@@ -21,7 +21,7 @@ import type { TechFirstYearResult } from "@/server/sandbox-tech";
 import type { TornadoResult, TornadoRow } from "@/server/sandbox-sensitivity";
 
 /** 视图模型版本（呈现口径变化须升版记因，宪法第 13 条）。 */
-export const VIEW_VERSION = "1.1.0"; // 1.1.0：首年钱流对比拆分「电量电费/需量电费」（配合 MODEL_VERSION 1.2.0 E4 需量费接入）；meta 增 demandChargeY1Label。纯加性呈现，无重算。
+export const VIEW_VERSION = "1.2.0"; // 1.2.0（V1.1 批次1.3）：四张回报指标卡 hint 明示「全投资（无杠杆）口径 ≠ 股权融资回报」（P5 融资腿接线前的诚实口径声明）。纯呈现文案，无重算、不动经济内核。1.1.0：首年钱流对比拆分「电量电费/需量电费」（配合 MODEL_VERSION 1.2.0 E4 需量费接入）；meta 增 demandChargeY1Label。纯加性呈现，无重算。
 
 /* ────────────────────────────── 中文格式化纯函数 ────────────────────────────── */
 
@@ -206,16 +206,21 @@ export interface MetricCard {
 }
 
 /** 从 CalcResult 抽出四张核心指标卡 + 盈亏平衡单价（全部程序算，LLM 不参与，§7）。
- *  `discountRate`（小数）可选，仅用于 IRR 卡的着色分档（≥折现率绿、<折现率黄），不改任何数值。 */
+ *  `discountRate`（小数）可选，仅用于 IRR 卡的着色分档（≥折现率绿、<折现率黄），不改任何数值。
+ *  V1.1 批次1.3：各卡 hint 明示**全投资（无杠杆）口径**——本视图尚无贷款现金流/DSCR/股权 IRR，
+ *  这些回报数字 ≠ 股权融资回报（P5 融资腿接线前必须让用户看见这一边界）。 */
 export function summaryCards(calc: CalcResultOk, discountRate?: number): MetricCard[] {
   const m = calc.metrics;
+  const KANJING = "全投资（无杠杆）口径，≠股权回报";
+  /** 把口径声明并进既有 hint（保留原文案语义，测试按 toContain 断言）。 */
+  const withKanjing = (base?: string) => (base ? `${base}；${KANJING}` : KANJING);
 
   const npvCard: MetricCard = {
     key: "npv",
     label: "净现值 NPV",
     value: formatMoney(m.npv),
     tone: bad(m.npv) ? "muted" : m.npv >= 0 ? "pos" : "neg",
-    hint: bad(m.npv) ? "折现率/现金流异常，算不出" : m.npv < 0 ? "按此参数集项目净值为负" : undefined,
+    hint: bad(m.npv) ? withKanjing("折现率/现金流异常，算不出") : m.npv < 0 ? withKanjing("按此参数集项目净值为负") : KANJING,
   };
 
   let irrValue = "—";
@@ -225,9 +230,10 @@ export function summaryCards(calc: CalcResultOk, discountRate?: number): MetricC
     irrValue = formatPct(m.irr.value);
     const beatsDiscount = discountRate == null || m.irr.value >= discountRate;
     irrTone = beatsDiscount ? "pos" : "warn";
-    if (m.irr.multipleRootsPossible) irrHint = "现金流符号多次变化，可能存在多个 IRR 根，谨慎解读";
+    irrHint = KANJING;
+    if (m.irr.multipleRootsPossible) irrHint = withKanjing("现金流符号多次变化，可能存在多个 IRR 根，谨慎解读");
   } else {
-    irrHint = `算不出（${m.irr.reason ?? "unknown"}）`;
+    irrHint = withKanjing(`算不出（${m.irr.reason ?? "unknown"}）`);
   }
   const irrCard: MetricCard = { key: "irr", label: "内部收益率 IRR", value: irrValue, tone: irrTone, hint: irrHint };
 
@@ -237,7 +243,7 @@ export function summaryCards(calc: CalcResultOk, discountRate?: number): MetricC
     label: "动态回收期",
     value: formatYears(pb),
     tone: pb === null ? "neg" : bad(pb) ? "muted" : "pos",
-    hint: m.simplePaybackYears != null ? `静态回收约 ${m.simplePaybackYears.toFixed(2)} 年` : undefined,
+    hint: withKanjing(m.simplePaybackYears != null ? `静态回收约 ${m.simplePaybackYears.toFixed(2)} 年` : undefined),
   };
 
   const roiCard: MetricCard = {
@@ -245,7 +251,7 @@ export function summaryCards(calc: CalcResultOk, discountRate?: number): MetricC
     label: "投资回报率 ROI",
     value: roiValue(m.roi),
     tone: m.roi.ok ? "pos" : "muted",
-    hint: m.roi.ok ? undefined : `算不出（${m.roi.reason ?? "unknown"}）`,
+    hint: withKanjing(m.roi.ok ? undefined : `算不出（${m.roi.reason ?? "unknown"}）`),
   };
 
   const beCard: MetricCard = {

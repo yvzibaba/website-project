@@ -3,6 +3,21 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.68.0] - 2026-09-16 · V1.1 批次 1.3：僵尸参数「未启用」收起 + 全投资口径明示（**呈现/参数目录变更·经济内核零触碰·MODEL_VERSION 保持 1.3.0·黄金样本零改动**）
+
+- 原因：全库审计 P1/P2——①六个参数键面板可拖（或注册在册）但**内核不消费**（gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization），属"假装在算"的诚实性负债；其中 chargerUtilization 自 1.3.0 起连最后一点计算后果都没有了。②同时存在**反向错配**：真参数 `region.demandCharge`/`project.demandKc` 卡在 pro 档，而工作台根本不渲染 pro 层滑块——B/C 对照组用户实际切不了。③全部回报指标实为**全投资（无杠杆）口径**（尚无贷款现金流/DSCR/股权 IRR），但界面/报告从未向用户言明，投资人画像下极易被误读为股权回报。方案 §3.1d 裁决：**收起 ≠ 删除**——集中进默认折叠的「未启用·即将支持」区并逐键给出原因。
+- 参数引擎（`src/server/parameter-engine.ts`，纯加性）：`ParameterSpec` 接口 + Zod schema 新增 `inactive?: boolean`（缺省 false）与 `inactiveReason?: string`——**仅呈现层元数据**，不进数值快照、不改解析语义（schema 不补字段会静默剥离，接口与 Zod 两处同加）。
+- 参数目录（`src/server/sandbox-params.ts`，SANDBOX_PARAMS_VERSION **1.3.0 → 1.4.0**）：
+  - 6 键标注 `inactive: true` + 用户可读中文原因：gridCapacity（并网容量未计入成本/约束，仅示范超限告警引用）、landRent（单项并入「电站年固定运营成本」）、carbonPrice（碳收益未接入现金流）、equityRatio/loanRate（全投资口径下无贷款腿，P5 融资腿·须人工确认默认值）、chargerUtilization（需量计费已改 Kc，滑块零计算后果）。
+  - **includeStorage 刻意不标**——假开关留批次 1.4 真接线（F-2h）后摘除或转正。
+  - 反向错配修正：`region.demandCharge`、`project.demandKc` exposure **pro → advanced**（工作台高级区实际可切 B/C 场景）。
+  - 画像目录（sandbox-profiles.ts）**纯注释**说明预设中 chargerUtilization 25/55/20、equityRatio 40 指向未启用键、零计算后果（不删预设、不升版，`sandbox-profiles.test.ts` 钉桩逐字通过）。
+- 工作台 UI（`src/components/sandbox/SandboxWorkbench.tsx`）：滑块过滤加 `&& !s.inactive`；参数区下方新增默认折叠 `<details>`「未启用 · 即将支持（N 项参数目前不参与计算）」，逐键列 label+单位+原因（复用 Badge 体系）；顶部警示 Alert 增「全部回报指标（NPV/IRR/回收期/ROI）为全投资（无杠杆）口径，≠ 股权融资回报」。
+- 口径明示（纯文案·三处）：`src/lib/sandbox-view.ts` **VIEW_VERSION 1.1.0 → 1.2.0**——npv/irr/payback/roi 四卡 hint 并入「全投资（无杠杆）口径，≠股权回报」（既有文案语义保留，测试 toContain 断言不碎；**卡片数恒 5** 钉桩不碰；盈亏平衡卡不动）；`src/lib/sandbox-report.ts` BASE_DISCLAIMERS 追加第三条同义声明 + 执行摘要「核心结论」句内嵌口径括注；`SandboxDemoPanel.tsx` 顶部 Alert 同句。
+- 测试（`tests/unit/sandbox-params.test.ts` 新增 describe 6 用例）：未启用键集合=**恰这 6 个**（多标/漏标都红）；每键必须带非空中文原因；includeStorage 未标（1.4 契约）；10 个活参数（demandCharge/demandKc/operationSubsidy/feedInTariff/constructionSubsidy/peakValleySpread/pvOm/storageOm/discountRate/taxRate）**绝不误标**；demandCharge/demandKc exposure=advanced；★**行为反证**——逐一覆写 6 个 inactive 键 → `runSandboxModel` NPV **逐字节不变**（"未启用"名副其实）。
+- 验证：`npm run test:unit` **1116 通过 + 1 跳过**（63 文件，+6 净新增，其余黄金/快照/溯源套件零改动通过 = 内核零触碰反证）；`tsc --noEmit` exit 0；`eslint --max-warnings=0` exit 0；`npm run build` 通过（路由清单无变化）；`package.json` **0.67.0 → 0.68.0**。
+- 效果：参数面板不再提供"拖了没反应"的假滑块，六个僵尸键以**可解释的诚实折叠区**透明存在（用户看得见"即将支持"而非以为在算）；B/C 需量场景在工作台高级区真正可切；全投资口径在指标卡、动态报告、两个面板共四处显性声明，股权回报误读风险封堵在呈现层。边界：融资腿接线（P5）后须摘除 equityRatio/loanRate 的 inactive 标注并改口径声明；includeStorage 假开关 1.4 见。
+
 ## [0.67.0] - 2026-09-15 · V1.1 批次 1.2：需量电价 A/B/C 三场景 + 需用系数 Kc 计费基准（**经济口径实质变更·MODEL_VERSION 1.2.0→1.3.0·主情景 A 免征·黄金有意回摆重录**）
 
 - 原因：审计 P0-2/P0-3 双重口径错位——①阶段4 用「平均利用率冒充最大需量」计计费需量（工程上计费基准应是**需用系数 Kc**，利用率是时间均值概念，二者不可互换）；②把 40/44 元/kW·月名义需量价当集中式充电站主情景真实价，**违背已核实政策**：2030 年前对实行两部制电价的经营性集中式充换电设施用电**免收需量(容量)电费**（山西交规划发〔2026〕52号 S级原文核实；全国同条款存在但文号待补归档）。本版建立 **A/B/C 三场景**（纯参数覆写、**零代码分支**）：A 主情景免征（demandCharge=0，默认）、B 普通工商业对照（40 全国/44 山西名义价 × Kc 70%）、C 保守压力测试（Kc=100% 装机全额）。

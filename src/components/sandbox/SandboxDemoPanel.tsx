@@ -168,6 +168,7 @@ export function SandboxDemoPanel({
         这里只露出最关键的几个参数，改任一项即调用既有沙盘引擎**整链重算**——技术能耗、经济评价（NPV/IRR/回收期/ROI）、
         图表、敏感性与动态报告同步变化。下方默认数字均为<span className="font-medium">占位假设（未经逐条核实）</span>，
         经济口径为透明简化 E1–E8，结果恒「需专业人工确认」，<span className="font-medium">不得作为投资或并网决策依据</span>。
+        全部回报指标（NPV / IRR / 回收期 / ROI）为<span className="font-medium">全投资（无杠杆）口径，≠ 股权融资回报</span>。
       </Alert>
 
       {initial ? (

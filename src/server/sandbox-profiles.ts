@@ -28,6 +28,11 @@
  *
  * 命名与键：只使用 `@/server/sandbox-params` 里**已注册的键**（`project.*` / `finance.*` 等），不新增参数、
  *   只给画像层的取值偏好与决策侧重，避免与参数模板漂移（第 16 条单一真源）。
+ *
+ * 📌 V1.1 批次1.3 备注（纯注释·不升版·不改预设值）：部分画像预设指向的参数已被 params@1.4.0
+ *   标为 `inactive`（如 `project.chargerUtilization` 25/55/20、`finance.equityRatio` 40）——这些值
+ *   **不产生任何计算后果**（内核不消费），仅保留该画像的"本意刻画"作运营参考；UI 已把这些滑块收起进
+ *   「未启用·即将支持」区，画像切换不会再给它们安排可拖控件。待对应腿接线（如 P5 融资腿）后再启用。
  */
 import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
 import { getRegionPack, buildSandboxLayers } from "@/server/sandbox-regions";

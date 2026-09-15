@@ -97,6 +97,14 @@ export interface ParameterSpec {
   dependsOn?: string[];
   /** true = 该键由注册表计算，defaultValue 仅作兜底占位。 */
   derived?: boolean;
+  /**
+   * V1.1 批次1.3：true = 该参数**当前未被经济/技术内核消费**（僵尸/假联动/待接线）。
+   * UI 须把它从可拖滑块中收起、进「未启用」区并给出 `inactiveReason`——诚实优先于"假装在算"。
+   * 仅呈现层元数据：不进数值快照、不改解析语义（接线后由后续批次摘除标注）。
+   */
+  inactive?: boolean;
+  /** 未启用的原因（用户可读中文，如"模型尚未把并网容量计入成本，接线批次见 CHANGELOG"）。 */
+  inactiveReason?: string;
 }
 
 /** 参数定义 Zod schema（入站即校验，防脏定义静默污染解析）。 */
@@ -117,6 +125,9 @@ export const ParameterSpecSchema = z
     evidenceKind: EvidenceTypeSchema.default("ASSUMPTION"),
     dependsOn: z.array(z.string()).optional(),
     derived: z.boolean().optional().default(false),
+    // V1.1 批次1.3：未启用标注（纯呈现层元数据，加法·向后兼容；缺省 false=在用）。
+    inactive: z.boolean().optional().default(false),
+    inactiveReason: z.string().optional(),
   })
   .superRefine((s, ctx) => {
     if (s.min != null && s.max != null && s.min > s.max) {

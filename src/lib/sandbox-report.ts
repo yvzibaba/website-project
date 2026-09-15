@@ -141,6 +141,7 @@ function buildProfileSection(vm: SandboxViewModel, profile: SandboxEnterprisePro
 const BASE_DISCLAIMERS = [
   "本报告全部数字由**确定性计算引擎**（参数分层 → 技术能耗 → 经济编排 → 财务评价）程序算出，AI 不参与算数，只负责解释。",
   "入参默认均为**占位假设**（经济口径为透明简化的 E1–E8，非可研/财税级），结论**需专业人工确认**。",
+  "全部回报指标（NPV / IRR / 回收期 / ROI）为**全投资（无杠杆）口径**，未包含贷款现金流、DSCR 与股权 IRR，**≠ 股权融资回报**（融资口径需另行测算并专业复核）。",
 ];
 
 const E2E_DISCLAIMER =
@@ -210,7 +211,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
   // 执行摘要
   const execParagraphs = [
     `${changedDesc}。`,
-    `核心结论：净现值 NPV ${npv}，内部收益率 IRR ${irr}` +
+    `核心结论（全投资·无杠杆口径，≠股权融资回报）：净现值 NPV ${npv}，内部收益率 IRR ${irr}` +
       (discountRatePct != null ? `（折现率口径 ${discountRatePct}%）` : "") +
       `，动态回收期 ${payback}，投资回报率 ROI ${roi}。盈亏平衡充电单价 ${breakeven}。`,
     verdict,

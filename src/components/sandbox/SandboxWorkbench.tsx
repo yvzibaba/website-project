@@ -183,9 +183,12 @@ export function SandboxWorkbench({
     [calc, tech, tornado, discountRate],
   );
 
+  // V1.1 批次1.3：`inactive` 僵尸/未接线参数从可拖滑块中收起（诚实：不给"假装在算"的假滑块），
+  // 但仍集中列在下方「未启用·即将支持」折叠区并给出原因——收起 ≠ 删除。
   const editable = SANDBOX_PARAMS.filter(
-    (s) => s.editable && !s.derived && (s.exposure === "basic" || (advanced && s.exposure === "advanced")),
+    (s) => s.editable && !s.derived && !s.inactive && (s.exposure === "basic" || (advanced && s.exposure === "advanced")),
   );
+  const inactiveSpecs = SANDBOX_PARAMS.filter((s) => s.inactive);
   const derivedView = SANDBOX_PARAMS.filter((s) => s.derived).map((s) => ({
     spec: s,
     value: resolved.params[s.key]?.value ?? s.defaultValue,
@@ -233,6 +236,7 @@ export function SandboxWorkbench({
         下方全部默认数字（含企业画像预设）都是<span className="font-medium">占位假设（未经逐条核实）</span>
         ，经济口径为透明简化的 E1–E8 而非可研级，结果恒「需专业人工确认」；§17 端到端主链（报告 /
         AI 解释 / 落库）已接通并经自动化冒烟实证，但仍<span className="font-medium">不得作为投资或并网决策依据</span>。
+        <span className="font-medium">全部回报指标（NPV / IRR / 回收期 / ROI）为全投资（无杠杆）口径，≠ 股权融资回报。</span>
         选地区 / 选企业画像 / 拖动参数都会让技术 / 经济 / 图表 / 敏感性即时重算——这才是沙盘的命脉，而非页面数字游戏。
       </Alert>
 
@@ -468,6 +472,32 @@ export function SandboxWorkbench({
                 </div>
               );
             })}
+
+            {inactiveSpecs.length ? (
+              <details className="mt-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3">
+                <summary className="cursor-pointer text-xs font-medium text-zinc-500">
+                  未启用 · 即将支持（{inactiveSpecs.length} 项参数目前不参与计算）
+                </summary>
+                <ul className="mt-2 flex list-none flex-col gap-2">
+                  {inactiveSpecs.map((s) => (
+                    <li key={s.key} className="text-[11px] leading-snug text-zinc-500">
+                      <span className="flex items-center gap-1.5">
+                        <Badge variant="neutral" className="shrink-0 text-[10px]">
+                          未启用
+                        </Badge>
+                        <span className="font-medium text-zinc-600">
+                          {s.label}
+                          {s.unit ? <span className="text-zinc-400">（{s.unit}）</span> : null}
+                        </span>
+                      </span>
+                      <span className="mt-0.5 block pl-0.5 text-zinc-400">
+                        {s.inactiveReason ?? "未接线：该参数目前不参与任何计算"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : null}
 
             <div className="mt-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3">
               <div className="mb-2 text-xs font-medium text-zinc-500">派生量（随上游即时重算，只读）</div>

@@ -30,7 +30,7 @@ import {
  */
 
 /** 参数模板版本（改结构/默认口径须升版并记录原因，宪法第 13 条）。 */
-export const SANDBOX_PARAMS_VERSION = "1.3.0"; // 1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
+export const SANDBOX_PARAMS_VERSION = "1.4.0"; // 1.4.0（V1.1 批次1.3）：新增 `inactive/inactiveReason` 未启用标注（6 僵尸键收起至「未启用·即将支持」，方案 §3.1d——gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization；includeStorage 留给 1.4 真接线不标）；`region.demandCharge`/`project.demandKc` exposure pro→advanced（真参数反向错配修正，B/C 对照组在工作台可实际切换）。1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
 
 /** 沙盘模板的稳定标识（供 R3 建项目时引用模板来源）。 */
 export const SANDBOX_DEPOT_TEMPLATE = "new-energy-heavy-truck-pv-storage-charging" as const;
@@ -78,7 +78,7 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("region.elecPrice", "工商业综合电价", "region", "basic", 0.7, "元/kWh", { min: 0.2, max: 2.0, confidence: 45 }),
   num("region.peakValleySpread", "峰谷价差", "region", "advanced", 0.6, "元/kWh", { min: 0, max: 1.8 }),
   num("region.pvEquivalentHours", "光伏年等效利用小时数", "region", "advanced", 1200, "h", { min: 800, max: 1900 }),
-  num("region.demandCharge", "需量(容量)电价", "region", "pro", 0, "元/kW·月", {
+  num("region.demandCharge", "需量(容量)电价", "region", "advanced", 0, "元/kW·月", {
     min: 0,
     max: 80,
     // V1.1 批次1.2 主情景口径 A：按「2030 年前对实行两部制电价的经营性集中式充换电设施用电
@@ -89,13 +89,25 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
       "【占位假设·主情景=免征口径 A】默认 0 系按「2030 年前实行两部制电价的经营性集中式充换电设施免收需量(容量)电费」条款字面直传（山西 52 号文原文已核实，来源钉在 sandbox-region-facts；全国同条款文号待补归档，故目录默认不标 FACT）。非集中式/免征到期请覆写 40–44（B 对照组）或按报装容量全额计（C 压力测试，Kc=100）。",
     confidence: 50,
   }),
-  num("region.landRent", "土地年租金", "region", "pro", 800, "元/亩·年", { min: 0, max: 5000 }),
+  // 批次1.3 未启用标注：E 层成本侧的固定开销走「电站年固定运营成本」，本键尚无计算后果（审计 P2-6）。
+  num("region.landRent", "土地年租金", "region", "pro", 800, "元/亩·年", {
+    min: 0,
+    max: 5000,
+    inactive: true,
+    inactiveReason: "未启用：土地租金目前并入「电站年固定运营成本」整体估算，此单项暂不参与计算",
+  }),
 
   // ── 政策参数（R5 用 policy ValueLayer[] 覆写并带生效窗口；此处占位）──
   num("policy.constructionSubsidy", "建设补贴占总投资", "policy", "advanced", 5, "%", { min: 0, max: 30 }),
   num("policy.operationSubsidy", "充电量运营补贴", "policy", "advanced", 0.05, "元/kWh", { min: 0, max: 0.5 }),
   num("policy.feedInTariff", "余电上网电价", "policy", "pro", 0.35, "元/kWh", { min: 0, max: 0.6 }),
-  num("policy.carbonPrice", "碳价", "policy", "pro", 80, "元/tCO₂", { min: 0, max: 500 }),
+  // 批次1.3 未启用标注：碳收益从未接入现金流（审计假联动清单），接线前诚实收起。
+  num("policy.carbonPrice", "碳价", "policy", "pro", 80, "元/tCO₂", {
+    min: 0,
+    max: 500,
+    inactive: true,
+    inactiveReason: "未接线：碳收益未计入现金流，此价格滑块目前不产生任何计算结果",
+  }),
 
   // ── 项目参数（用户按自己项目直接设定，沙盘的核心滑块）──
   num("project.trucksPerDay", "日均服务重卡数", "project", "basic", 60, "辆/日", { min: 1, max: 1000, confidence: 45 }),
@@ -106,11 +118,23 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("project.storageEnergy", "储能额定容量", "project", "advanced", 400, "kWh", { min: 0, max: 20000 }),
   num("project.chargerCount", "充电桩数量", "project", "basic", 8, "台", { min: 1, max: 200, confidence: 45 }),
   num("project.chargerUnitPower", "单桩额定功率", "project", "advanced", 360, "kW", { min: 60, max: 960 }),
-  num("project.gridCapacity", "并网报装容量", "project", "pro", 2000, "kW", { min: 100, max: 20000 }),
-  num("project.chargerUtilization", "充电桩平均利用率", "project", "advanced", 35, "%", { min: 5, max: 90 }),
+  // 批次1.3 未启用标注：并网容量尚未计入模型成本/约束（仅示范沙盘「装机超报装容量」超限告警诚实引用它）。
+  num("project.gridCapacity", "并网报装容量", "project", "pro", 2000, "kW", {
+    min: 100,
+    max: 20000,
+    inactive: true,
+    inactiveReason: "未接线：并网容量尚未计入模型成本/约束（仅示范沙盘超限告警使用），接线方案设计中",
+  }),
+  // 批次1.3 未启用标注：1.3.0 起计费需量改用需用系数 Kc，本滑块不再参与任何计算（回归利用率本义，仅运营参考）。
+  num("project.chargerUtilization", "充电桩平均利用率", "project", "advanced", 35, "%", {
+    min: 5,
+    max: 90,
+    inactive: true,
+    inactiveReason: "口径修正：需量计费已改用需用系数Kc（1.3.0起），本利用率滑块不参与任何计算，仅作运营参考",
+  }),
   // V1.1 批次1.2：计费需量的工程基准（需用系数 Kc）——取代「平均利用率冒充最大需量」的口径错位；
   // chargerUtilization 回归利用率本义（E 层不再消费它计需量费）。C 保守高成本场景 = Kc 覆写 100（装机全额计）。
-  num("project.demandKc", "需用系数Kc(计费需量=装机×Kc)", "project", "pro", 70, "%", {
+  num("project.demandKc", "需用系数Kc(计费需量=装机×Kc)", "project", "advanced", 70, "%", {
     min: 10,
     max: 100,
     source: "【占位假设·待核实】典型场站需量/装机比经验带 40%–90%，V1 取 70% 作 B/C 对照组计费基准（主情景 A 免征下不产生费用）",
@@ -157,8 +181,20 @@ export const SANDBOX_PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("finance.projectLife", "项目计算期", "finance", "advanced", 15, "年", { min: 5, max: 30, confidence: 45 }),
   num("finance.inflation", "成本年通胀率", "finance", "pro", 2, "%/年", { min: -5, max: 15 }),
   num("finance.taxRate", "企业所得税率", "finance", "pro", 25, "%", { min: 0, max: 35 }),
-  num("finance.equityRatio", "资本金占比", "finance", "pro", 30, "%", { min: 20, max: 100 }),
-  num("finance.loanRate", "长期贷款利率", "finance", "pro", 4.5, "%", { min: 0, max: 15 }),
+  // 批次1.3 未启用标注：现全指标为**全投资（无杠杆）口径**，尚无贷款现金流/DSCR/股权 IRR；
+  // 融资腿（P5）接线前，这两键不产生计算后果（审计 P2 假联动清单项）。
+  num("finance.equityRatio", "资本金占比", "finance", "pro", 30, "%", {
+    min: 20,
+    max: 100,
+    inactive: true,
+    inactiveReason: "未接线：当前指标为全投资（无杠杆）口径，尚无贷款现金流/DSCR/股权IRR（融资腿批次·须人工确认默认值）",
+  }),
+  num("finance.loanRate", "长期贷款利率", "finance", "pro", 4.5, "%", {
+    min: 0,
+    max: 15,
+    inactive: true,
+    inactiveReason: "未接线：当前指标为全投资（无杠杆）口径，尚无贷款现金流/DSCR/股权IRR（融资腿批次·须人工确认默认值）",
+  }),
   num("finance.residualValue", "期末残值率", "finance", "pro", 5, "%", { min: 0, max: 30 }),
 
   // ── 派生的结构性输入（纯输入算术；示范 §4「改参数→下游计算值重算」；对用户只读）──

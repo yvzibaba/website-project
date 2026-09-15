@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { filterByExposure } from "@/server/parameter-engine";
+import { runSandboxModel } from "@/server/sandbox-model";
 import {
   SANDBOX_PARAMS_VERSION,
   SANDBOX_PARAMS,
@@ -162,5 +163,81 @@ describe("resolveSandbox · §4 命脉：改上游参数 → 派生值重算（�
     expect(basic).toContain("project.pvCapacity");
     expect(basic).toContain("region.elecPrice");
     expect(basic).not.toContain("finance.discountRate");
+  });
+});
+
+/* ─────────────── V1.1 批次1.3 · 未启用（inactive）标注与全投资口径 ─────────────── */
+
+describe("sandbox-params · V1.1 批次1.3：inactive 未启用标注（方案 §3.1d）", () => {
+  /** 本批次钉死的未启用键全集——增减须显式改这里（防僵尸键悄悄回潮，也防误伤活参数）。 */
+  const INACTIVE_SET = [
+    "project.gridCapacity",
+    "region.landRent",
+    "policy.carbonPrice",
+    "finance.equityRatio",
+    "finance.loanRate",
+    "project.chargerUtilization",
+  ].sort();
+
+  it("未启用键集合 = 恰这 6 个（多标/漏标都红）", () => {
+    const keys = SANDBOX_PARAMS.filter((s) => s.inactive).map((s) => s.key).sort();
+    expect(keys).toEqual(INACTIVE_SET);
+  });
+
+  it("每个未启用键都带用户可读的中文原因（诚实：收起必须解释为什么）", () => {
+    for (const s of SANDBOX_PARAMS.filter((x) => x.inactive)) {
+      expect(typeof s.inactiveReason, `${s.key} 须有 inactiveReason`).toBe("string");
+      expect((s.inactiveReason ?? "").length, `${s.key} 原因不能为空`).toBeGreaterThan(4);
+    }
+  });
+
+  it("includeStorage 刻意**不标** inactive（假开关留批次 1.4 真接线，届时摘除或转正）", () => {
+    const spec = SANDBOX_PARAMS.find((s) => s.key === "project.includeStorage");
+    expect(spec).toBeDefined();
+    expect(spec!.inactive ?? false).toBe(false);
+  });
+
+  it("活参数绝不被误标：已被内核消费的键全部在用", () => {
+    const LIVE = [
+      "region.demandCharge", // E4 需量费价格闸门（1.2.0 起被消费）
+      "project.demandKc", // E4 计费需量基准（1.3.0 起被消费）
+      "policy.operationSubsidy", // 收入侧运营补贴
+      "policy.feedInTariff", // 余电上网收入
+      "policy.constructionSubsidy", // CAPEX 补贴
+      "region.peakValleySpread", // SVE 储能价值
+      "tech.pvOm", // OPEX
+      "tech.storageOm", // OPEX
+      "finance.discountRate", // NPV 折现
+      "finance.taxRate", // 税后现金流
+    ];
+    for (const k of LIVE) {
+      const s = SANDBOX_PARAMS.find((x) => x.key === k);
+      expect(s, `键 ${k} 应存在`).toBeDefined();
+      expect(s!.inactive ?? false, `活参数 ${k} 不得被标 inactive`).toBe(false);
+    }
+  });
+
+  it("反向错配修正：region.demandCharge / project.demandKc exposure 升 advanced（B/C 对照组工作台可切）", () => {
+    expect(SANDBOX_PARAMS.find((s) => s.key === "region.demandCharge")!.exposure).toBe("advanced");
+    expect(SANDBOX_PARAMS.find((s) => s.key === "project.demandKc")!.exposure).toBe("advanced");
+  });
+
+  it("★行为反证：覆写任一 inactive 键 → NPV 逐字节不变（「未启用」= 对经济输出零影响，名副其实）", () => {
+    const base = runSandboxModel({});
+    expect(base.ok).toBe(true);
+    if (!base.ok) return; // 上一行已红，这里只为 TS 收窄
+    const probes: Record<string, number> = {
+      "project.gridCapacity": 5000,
+      "region.landRent": 2000,
+      "policy.carbonPrice": 300,
+      "finance.equityRatio": 60,
+      "finance.loanRate": 9,
+      "project.chargerUtilization": 80,
+    };
+    for (const [key, probe] of Object.entries(probes)) {
+      const r = runSandboxModel({ user: { values: { [key]: probe } } });
+      expect(r.ok, `${key} 覆写后仍应算得通`).toBe(true);
+      if (r.ok) expect(r.metrics.npv, `inactive 键 ${key} 不应改变 NPV`).toBe(base.metrics.npv);
+    }
   });
 });

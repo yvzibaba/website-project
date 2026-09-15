@@ -120,9 +120,9 @@ export default async function CasesPage({ searchParams }: PageProps) {
       </PageHeader>
 
       {includeDemo ? (
-        <Alert variant="warning" title="DEMO 数据视图">
-          当前展示的是标注为【DEMO】的示例案例，仅用于开发期验证页面渲染，
-          <strong>不是真实研究成果</strong>。去掉网址中的 <code>?demo=1</code> 即回到只显示真实数据的默认视图。
+        <Alert variant="warning" title="示例（DEMO）数据视图">
+          当前展示的是标注为【DEMO】的示例案例，仅用于开发验证，
+          <strong>不是真实研究成果</strong>。清除网址中的 demo 参数即可回到只显示真实数据的视图。
         </Alert>
       ) : null}
 
@@ -177,8 +177,8 @@ export default async function CasesPage({ searchParams }: PageProps) {
           title={includeDemo ? "暂无案例（含 DEMO）" : "暂无已发布的深度案例"}
           description={
             includeDemo
-              ? "连 DEMO 数据都没有。请先运行 npm run db:seed 插入示例案例。"
-              : "每日流水线（60 候选 → 20 重点 → 10 深度 → 3 方案 → 1 精品）将自动发现并填充。开发期可加 ?demo=1 查看【DEMO】示例数据。"
+              ? "连示例（DEMO）数据都没有：开发环境请先执行数据种子脚本插入示例案例。"
+              : "案例库正在通过每日精选、AI 拆解与人工审核逐步充实，当前还没有已发布的案例。"
           }
         />
       ) : null}

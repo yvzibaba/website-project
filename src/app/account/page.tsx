@@ -62,7 +62,7 @@ export default async function AccountPage() {
         <CardContent className="flex flex-col gap-3 text-sm">
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">邮箱验证</span>
-            <span>{profile.emailVerified ? "已验证" : "未验证（V1-A 暂不强制）"}</span>
+            <span>{profile.emailVerified ? "已验证" : "未验证（当前阶段暂不强制）"}</span>
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">注册时间</span>
@@ -113,7 +113,7 @@ export default async function AccountPage() {
         <CardHeader>
           <CardTitle className="text-base">即将开放</CardTitle>
           <CardDescription>
-            我的报告 / 企业画像 / 诊断记录（V1-B 企业适配）将在此汇聚。我的订单、我的项目、我的收藏与我购买的方案已上线，可在上方进入。
+            我的报告 / 企业画像 / 诊断记录（企业适配 · 规划中）将在此汇聚。我的订单、我的项目、我的收藏与我购买的方案已上线，可在上方进入。
           </CardDescription>
         </CardHeader>
       </Card>

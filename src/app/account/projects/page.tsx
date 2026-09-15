@@ -158,9 +158,9 @@ export default async function AccountProjectsPage() {
             <ProjectCard key={p.id} p={p} />
           ))}
           <p className="text-[11px] leading-5 text-muted-foreground">
-            诚实说明：卡片中的 NPV / IRR / 回收期 / ROI 为保存时服务端引擎**现算落库**的基线情景摘要，
+            诚实说明：卡片中的 NPV / IRR / 回收期 / ROI 为保存时服务端引擎<strong>现算落库</strong>的基线情景摘要，
             重开项目以参数快照重算为准；内核升级时旧结果会自动冻结为历史版本，绝不被静默覆盖。
-            全部数字继承「占位假设 + 需专业人工确认」边界。
+            全部数字继承「示例参数·未经核实 + 需专业人工确认」边界。
           </p>
         </div>
       )}

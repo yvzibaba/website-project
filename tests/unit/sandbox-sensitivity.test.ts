@@ -94,11 +94,11 @@ describe("诚实降级（第 20 条）", () => {
 });
 
 describe("deriveRiskFlags · 高风险标记（§16）", () => {
-  it("健康基线：恒 needsProfessionalReview + 含'简化'与'占位假设'两条基础理由", () => {
+  it("健康基线：恒 needsProfessionalReview + 含'简化'与'示例参数'两条基础理由（V1.1 P3：占位假设→示例参数措辞随动）", () => {
     const { needsProfessionalReview, flags } = deriveRiskFlags(runSandboxModelBaseline());
     expect(needsProfessionalReview).toBe(true);
     expect(flags.some((f) => f.includes("简化"))).toBe(true);
-    expect(flags.some((f) => f.includes("占位假设"))).toBe(true);
+    expect(flags.some((f) => f.includes("示例参数"))).toBe(true);
     // 基线 NPV>0 且 IRR 可解 → 不应出现亏损/无解告警
     expect(flags.some((f) => f.includes("NPV<0"))).toBe(false);
   });

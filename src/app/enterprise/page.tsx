@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   ...seoMetadata({
     title: "企业服务 · 基础画像",
     description:
-      "选择企业画像并带入决策沙盘，按企业视角重算经济性与回收期（完整企业 AI 诊断属 V1-B，即将开放）。",
+      "选择企业画像并带入决策沙盘，按企业视角重算经济性与回收期（完整企业 AI 诊断规划中，即将开放）。",
     path: "/enterprise",
   }),
 };
@@ -63,11 +63,11 @@ export default function EnterprisePage() {
         description="告诉平台你是哪类企业，用企业视角重算同一套确定性模型：先选画像，再进沙盘改成你的真实条件。"
         breadcrumb={<Breadcrumb items={[{ label: "首页", href: "/" }, { label: "企业服务" }]} />}
       >
-        <Badge variant="info">基础能力 · V1</Badge>
+        <Badge variant="info">基础能力 · 已开放</Badge>
       </PageHeader>
 
       <Alert variant="info" title="与「完整企业 AI 诊断」的边界">
-        完整的企业画像建档、AI 诊断与方案适配属 <strong>V1-B 范围，尚未开放</strong>。
+        完整的企业画像建档、AI 诊断与方案适配<strong>尚在规划中，未开放</strong>。
         本页当前提供的是基础能力：选择企业画像 → 带入决策沙盘按企业视角重算。
         页面不收集任何企业信息，不出具诊断结论。
       </Alert>
@@ -122,8 +122,8 @@ export default function EnterprisePage() {
           ))}
         </ul>
         <p className="text-xs leading-5 text-muted-foreground">
-          诚实标注：全部画像预设均为<strong>示例占位假设</strong>（evidenceKind=ASSUMPTION，置信度 ≤50，
-          来源带【示例·待核实】），只提供「这类企业常见量级」的起点，未经逐项核实，绝不当事实使用。
+          诚实标注：全部画像预设均为<strong>示例参数</strong>（来源标注【示例·待核实】，未经逐项核实），
+          只提供「这类企业常见量级」的起点，绝不当事实使用。
           你可以在沙盘中逐项改写为真实条件；涉及投资决策的结论<strong>需专业人工确认</strong>。
           画像预设的展示与选择也可在沙盘工作台内随时切换。
         </p>

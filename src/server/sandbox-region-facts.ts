@@ -28,7 +28,7 @@ import type { ValueSourceMeta } from "@/server/parameter-engine";
  *   逐值 `SHANXI_REGION_SOURCES` / `SHANXI_POLICY_SOURCES` **仍全为 ASSUMPTION**（0.55/0.7/1400/44/500
  *   等占位数值无一能被条款单独验证），三处口径冲突以 DATA_CONFLICT 原样保留、禁折算/平均/改公式。
  */
-export const SANDBOX_REGION_FACTS_VERSION = "1.2.0"; // 1.2.0（V1.1 批次1.2）：SHANXI_REGION_SOURCES["region.demandCharge"] pending→FACT（值 0=52号文「免收」条款**字面直传**，非价表折算——「条款≠数值」护栏对该键的唯一显式例外，理由见文件内注记）；tnd-4th-cycle DATA_CONFLICT 更新为「免收分支已消解、90% 折扣仍禁折算」。1.1.0（阶段3A）：条款级 FACT 目录 5 条。
+export const SANDBOX_REGION_FACTS_VERSION = "1.2.1"; // 1.2.1（V1.1 P3 黑话清洗）：三条面向用户渲染的 dataConflict.description 人话化（去掉 G1/G2/批次号/内部编号等黑话，保留 DATA_CONFLICT 诚实标记）；键、值、结构零改动，仅文案。1.2.0（V1.1 批次1.2）：SHANXI_REGION_SOURCES["region.demandCharge"] pending→FACT（值 0=52号文「免收」条款**字面直传**，非价表折算——「条款≠数值」护栏对该键的唯一显式例外，理由见文件内注记）；tnd-4th-cycle DATA_CONFLICT 更新为「免收分支已消解、90% 折扣仍禁折算」。1.1.0（阶段3A）：条款级 FACT 目录 5 条。
 
 /** 溯源引用（供报告标注「这组地区来源是按哪版给的」，第 7/16 条）。 */
 export function regionFactsCalcRef(): string {
@@ -189,7 +189,7 @@ export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
     dataConflict: {
       key: "region.peakValleySpread",
       description:
-        "DATA_CONFLICT：政策给「相对平段的浮动比例」（峰=平×1.60/谷=平×0.45），模型 spread 是全口径绝对价差（元/kWh）——缺平段基价（G1）不得折算，本阶段保留冲突、禁平均/禁改公式。",
+        "DATA_CONFLICT（数据冲突，原样保留）：政策只规定相对平段电价的浮动比例（峰 = 平 × 1.60、谷 = 平 × 0.45），而模型需要的是全口径的绝对峰谷价差（元/kWh）——平段基价尚未核实，不得由比例直接折算，待官方价表核实后再落数。",
     },
   },
   {
@@ -208,7 +208,7 @@ export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
     dataConflict: {
       key: "region.demandCharge",
       description:
-        "DATA_CONFLICT（部分消解·V1.1 批次1.2）：本条款的「免收」分支已按主情景 A 直传计价（demandCharge=0，见 shanxi-nev-truck-2026-52 逐值 FACT）；「90% 折扣」分支仍禁折算——折扣作用基数是官方绝对需量电价，无价表文本（G2）不得折成元/kW·月，残余冲突原样保留。",
+        "DATA_CONFLICT（数据冲突，部分消解）：条款中「免收需量（容量）电费」这一分支已按字面直接计入主情景（需量电费按 0 计）；「需量电费打 9 折」的分支暂时不能折算成具体金额——折扣作用的官方绝对需量电价尚未核实，此部分冲突原样保留、待核实后再启用。",
     },
   },
   {
@@ -257,7 +257,7 @@ export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
     dataConflict: {
       key: "region.pvEquivalentHours",
       description:
-        "DATA_CONFLICT：官方给「年辐射量区间（MJ/m²·年）」，模型要「等效利用小时数」——辐射≠并网实际小时（2025 实际约 1170h 仅 C 级），区间保留、禁折算成单一 FACT。",
+        "DATA_CONFLICT（数据冲突，原样保留）：官方口径给出的是年太阳辐射量区间（MJ/m²·年），而模型需要的是等效利用小时数——辐射量不等于实际并网发电量（2025 年山西实际约 1170 小时，来源可靠性一般），因此保留区间、不折算成单一已核实数值。",
     },
   },
 ];

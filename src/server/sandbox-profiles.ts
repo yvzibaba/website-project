@@ -117,7 +117,7 @@ const FLEET_PROFILE: SandboxEnterpriseProfile = {
   id: "fleet",
   name: "物流 / 重卡车队运营商",
   summary: "自有车队自用为主，夜间集中补电、充电按内部成本结算，最在意回收期与总回报。",
-  note: "车队画像预设均为示例占位假设（confidence≤50），非经核事实，须专业人工确认后方可用于决策。",
+  note: "车队画像预设参数均为未经核实的示例值（可信度≤50），非经核事实，须专业人工确认后方可用于决策。",
   presetValues: {
     "project.trucksPerDay": 150,
     "project.chargePerTruck": 280,
@@ -143,7 +143,7 @@ const OPERATOR_PROFILE: SandboxEnterpriseProfile = {
   id: "operator",
   name: "第三方充电运营商",
   summary: "面向公众经营，靠充电服务费差价盈利，高利用率、追求 IRR / ROI 与快速扩张回报。",
-  note: "运营商画像预设均为示例占位假设（confidence≤50），非经核事实，须专业人工确认后方可用于决策。",
+  note: "运营商画像预设参数均为未经核实的示例值（可信度≤50），非经核事实，须专业人工确认后方可用于决策。",
   presetValues: {
     "project.trucksPerDay": 200,
     "project.chargerCount": 20,
@@ -169,7 +169,7 @@ const PARK_PROFILE: SandboxEnterpriseProfile = {
   id: "park",
   name: "产业园区 / 工商业业主",
   summary: "屋顶光伏自发自用 + 配套充电，核心是对冲电价、提升绿电渗透，看重长期净现值。",
-  note: "园区业主画像预设均为示例占位假设（confidence≤50），非经核事实，须专业人工确认后方可用于决策。",
+  note: "园区业主画像预设参数均为未经核实的示例值（可信度≤50），非经核事实，须专业人工确认后方可用于决策。",
   presetValues: {
     "project.pvCapacity": 2000, // 大量屋顶资源，光伏装机偏高
     "project.trucksPerDay": 40,
@@ -195,7 +195,7 @@ const TRANSIT_PROFILE: SandboxEnterpriseProfile = {
   id: "transit",
   name: "公交 / 市政集团",
   summary: "定点定线、夜间谷电集中充电，规模大但利用率低，低息长期资金、可接受较长回收并兼顾绿色指标。",
-  note: "市政公交画像预设均为示例占位假设（confidence≤50），非经核事实，须专业人工确认后方可用于决策。",
+  note: "市政公交画像预设参数均为未经核实的示例值（可信度≤50），非经核事实，须专业人工确认后方可用于决策。",
   presetValues: {
     "project.trucksPerDay": 120,
     "project.chargePerTruck": 300, // 大型公交电池容量更大
@@ -221,7 +221,7 @@ const INVESTOR_PROFILE: SandboxEnterpriseProfile = {
   id: "investor",
   name: "财务投资人 / 基金",
   summary: "不直接运营，只评估回报与风险；高折现率、短计算期，紧盯 IRR / NPV 与盈亏平衡安全垫。",
-  note: "投资人画像预设均为示例占位假设（confidence≤50），非经核事实，须专业人工确认后方可用于决策。",
+  note: "投资人画像预设参数均为未经核实的示例值（可信度≤50），非经核事实，须专业人工确认后方可用于决策。",
   presetValues: {
     "finance.discountRate": 15, // 股权回报门槛高
     "finance.projectLife": 8, // 基金存续期短，看重早期回收

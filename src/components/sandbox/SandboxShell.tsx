@@ -113,13 +113,13 @@ export function SandboxShell() {
           active={mode === "demo"}
           onClick={() => setUserMode("demo")}
           label="示范项目模型"
-          hint="只露核心参数，改一项即整链重算"
+          hint="只露核心参数，改一项即全链路联动重算"
         />
         <ModeTab
           active={mode === "full"}
           onClick={() => setUserMode("full")}
           label="完整参数工作台"
-          hint="40 参数全量（R1–R7 主链）"
+          hint="40 余项参数全量精调（专业模式）"
         />
       </div>
 

@@ -105,7 +105,7 @@ export function IndustryCaseList({ slug, industryName }: { slug: string; industr
       <>
         <EmptyState
           title={`「${industryName}」暂无已发布的深度案例`}
-          description="每日流水线（60 候选 → 20 重点 → 10 深度 → 3 方案 → 1 精品）将自动发现并填充。当前为诚实空态，未预置任何示例数据。"
+          description="案例经每日自动发现、筛选与人工审核后逐步发布。当前还没有已发布的案例（未预置任何示例数据）。"
         />
         <div className="flex justify-center">
           <Button variant="secondary" href="/sandbox">

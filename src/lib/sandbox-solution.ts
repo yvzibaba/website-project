@@ -35,7 +35,7 @@ import { SANDBOX_PROFILES_VERSION } from "@/server/sandbox-profiles";
  *   并在存在**可核验来源 FACT 输入**时把首条（按 key 稳定序）的 http(s) 链接搬到 `financial.sourceUrl`，
  *   以喂 R8.5 升级写路径；`evidenceGrade` 仍诚实保持 ASSUMPTION（只要还有任一入参是占位假设，聚合结果即不升 FACT）。
  */
-export const SANDBOX_SOLUTION_VERSION = "1.1.0";
+export const SANDBOX_SOLUTION_VERSION = "1.1.1"; // 1.1.1（V1.1 P3 黑话清洗）：草案正文/未知项/财务注记/发布阻塞的买家可见文案人话化（占位假设→示例参数·未经核实、去 §16/§20/E1–E8/ASSUMPTION 枚举直印/caseId 外键等黑话）；结构、字段、计算口径零改动。
 
 /** 溯源引用：把草案钉到「方案生成口径版本」（与各区段引擎 calcRef 并列，供发布后审计）。 */
 export function sandboxSolutionCalcRef(): string {
@@ -270,20 +270,20 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
 
   // 风险分析 + 实施条件（诚实：占位假设 + 需专业确认）
   body.riskAnalysis =
-    "本方案所有入参均为【示例·待核实】占位假设（电价/光照/补贴/设备造价/利用率等），" +
-    "经济口径为 E1–E8 透明简化模型、非可研级；结论默认『需专业人工确认』，不得作为投资/并网决策依据。" +
+    "本方案所有入参均为【示例·待核实】的示例参数、未经逐项核实（电价/光照/补贴/设备造价/利用率等），" +
+    "经济口径为透明简化的年度模型、非可研级；结论默认『需专业人工确认』，不得作为投资/并网决策依据。" +
     (bad(c.metrics.npv) || c.metrics.npv < 0
       ? " 按当前参数 NPV 为非正，商业发布前须重点复核。"
       : "");
   body.implementationConditions =
-    "落地前须以来源可追溯的真实地区电价、光照/等效小时、补贴与上网政策、设备与土建造价、车队补能负荷等数据替换占位假设并复核。";
+    "落地前须以来源可追溯的真实地区电价、光照/等效小时、补贴与上网政策、设备与土建造价、车队补能负荷等数据替换示例参数并复核。";
 
   // 关键未知（结构化 + 叙述）
   const unknowns: DraftUnknown[] = [
     {
       name: "全部技术与经济入参",
-      impact: "均为示例占位假设（ASSUMPTION·置信≤50），任一偏离真实值都会改变 CAPEX/OPEX/现金流与 NPV/IRR/回收期。",
-      howToResolve: "接入来源可追溯的真实地区/设备/负荷数据（R5 地区包落库 + 人工核实），逐项把 ASSUMPTION 升级为 FACT 并留 sourceUrl。",
+      impact: "均为示例参数·未经核实（可信度≤50），任一偏离真实值都会改变 CAPEX/OPEX/现金流与 NPV/IRR/回收期。",
+      howToResolve: "接入来源可追溯的真实地区/设备/负荷数据并人工逐项核实，把每个数值从「示例」升级为「已核实事实」、留存可点击来源链接。",
       severity: 90,
     },
   ];
@@ -298,8 +298,8 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
   body.unknowns = unknowns.map((u) => `${u.name}：${u.impact ?? ""}`);
 
   body.nextActions = [
-    "用真实地区电价/光照/补贴/造价/负荷数据替换占位假设并重跑引擎",
-    "由专业人员复核经济性与技术假设（§16 高风险领域）",
+    "用真实地区电价/光照/补贴/造价/负荷数据替换示例参数并重跑引擎",
+    "由专业人员复核经济性与技术假设（电力/新能源属高风险领域）",
     "为方案挂靠一个可引用的案例（Case），并设定对外价格",
     "复核通过后走发布守卫上架，接入查看→购买闭环",
   ];
@@ -315,7 +315,7 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
     `方案生成口径 ${solutionCalcRef}。${provenanceTail}`;
   body.aiAnnotations =
     "本方案的每一个数字均由确定性程序模型计算并经视图模型格式化呈现；画像与（若接入的）AI 解释仅做侧重裁剪与自然语言解读，" +
-    "不新增、不改写任何数字。证据等级：ASSUMPTION（示例·待核实）。";
+    "不新增、不改写任何数字。证据等级：示例·待核实。";
 
   /* —— 财务条目：Decimal 串一律等于 calc 原值（搬运非重算），负/算不出即省略 —— */
   const financial: DraftFinancial = {
@@ -338,7 +338,7 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
       solutionCalcRef,
       engineVersions,
     },
-    note: "全部为示例占位假设下的计算结果，Decimal 串直接搬运引擎值，未二次换算；为负或算不出的指标已省略并登记于关键未知/阻塞项。",
+    note: "全部为示例参数（未经核实）下的计算结果，数字直接搬运引擎值、未二次换算；为负或算不出的指标已省略并登记于关键未知/阻塞项。",
   };
   // R8.7：仅在确有可核验 FACT 来源时，把逐输入溯源 + 代表链接搬进行级数据，喂 R8.5 升级写路径。
   // （诚实基线 factCount=0 → 整段不触发，既有黄金草案逐字不变。）
@@ -346,8 +346,8 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
     financial.assumptions = { ...(financial.assumptions ?? {}), inputProvenance, factInputCount: factCount };
     if (representativeFactUrl) financial.sourceUrl = representativeFactUrl;
     financial.note =
-      `${financial.note ?? ""} 另有 ${factCount} 项入参带可核验来源链接（逐输入见 assumptions.inputProvenance、代表见 sourceUrl），` +
-      "其余仍为示例假设，须逐项核实后方可整体升为事实（§20）；本行 evidenceKind 暂留 ASSUMPTION。";
+      `${financial.note ?? ""} 另有 ${factCount} 项入参带可核验来源链接（逐项溯源见 assumptions.inputProvenance、代表链接见 sourceUrl），` +
+      "其余仍为示例参数，须逐项核实后方可整体升为已核实事实；本行证据等级暂留「示例·待核实」。";
   }
   // ROI 引擎给比值 → roiPct 需要百分数（×100），仅非负可入 Decimal 字段。
   if (c.metrics.roi.ok && typeof c.metrics.roi.value === "number" && c.metrics.roi.value >= 0) {
@@ -365,10 +365,10 @@ export function buildSandboxSolutionDraft(input: SandboxSolutionInput): SandboxS
   /* —— 发布阻塞项：机器可校验，把「尚不可售卖」钉成产物（§16 / 总控）—— */
   const publishBlockers: string[] = [
     factCount === 0
-      ? "入参均为【示例·待核实】占位假设（ASSUMPTION），须以来源可追溯的真实数据替换并复核后方可对外发布/售卖"
-      : `部分入参（${factCount} 项）已接可核验来源链接，但仍有其余入参为示例假设，须全部替换为可追溯真实数据并复核后方可对外发布/售卖`,
-    "沙盘方案须挂靠一个已存在的案例（Case.caseId 必填外键）才能进入发布/购买闭环——当前草案未附 caseId",
-    "需专业人工确认（§16：经济与技术假设属高风险领域，AI 只解读、人做关键决策）",
+      ? "入参均为【示例·待核实】的示例参数，须以来源可追溯的真实数据替换并复核后方可对外发布/售卖"
+      : `部分入参（${factCount} 项）已接可核验来源链接，但仍有其余入参为示例参数，须全部替换为可追溯真实数据并复核后方可对外发布/售卖`,
+    "沙盘方案须挂靠一个已存在的产业案例才能进入发布/购买闭环——当前草案尚未挂靠案例",
+    "需专业人工确认：经济与技术假设属高风险领域（电力/新能源），AI 只做解读，关键决策由人做出",
   ];
   if (!price || price.trim() === "") {
     publishBlockers.splice(1, 0, "尚未设定对外价格（发布上架前必填）");

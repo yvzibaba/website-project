@@ -358,7 +358,7 @@ export function SandboxSavePanel({
         ) : null}
 
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] leading-snug text-amber-800">
-          落库数字由确定性引擎按输入现算，全部继承「占位假设 + 需专业人工确认」；未核实前不得作为投资 / 并网决策依据。
+          落库数字由确定性引擎按输入现算，全部继承「示例参数·未经核实 + 需专业人工确认」；未核实前不得作为投资 / 并网决策依据。
         </div>
       </CardContent>
     </Card>

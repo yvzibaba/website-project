@@ -33,7 +33,7 @@ import {
 
 export const metadata: Metadata = {
   title: "UI 组件库",
-  description: "产业案例引擎基础 UI 组件演示（Phase 4 里程碑 3）。",
+  description: "光储充投资决策沙盘基础 UI 组件演示（开发内部页）。",
   robots: { index: false, follow: false },
 };
 
@@ -102,13 +102,13 @@ export default function UiPage() {
         <h2 className="text-lg font-semibold">Alert 提示条</h2>
         <div className="flex flex-col gap-3">
           <Alert variant="info" title="信息">
-            案例评分由程序计算，非模型口算（宪法第 7 条）。
+            案例评分由程序计算，非模型口算。
           </Alert>
           <Alert variant="success" title="审核通过">
-            方案已通过 QA Agent 检查，可以发布。
+            方案已通过质量复核，可以发布。
           </Alert>
           <Alert variant="warning" title="需要专业人工确认">
-            本方案涉及电力/能源高风险领域，落地前须由持证工程师复核（宪法第 21 条）。
+            本方案涉及电力/能源高风险领域，落地前须由持证工程师复核。
           </Alert>
           <Alert variant="danger" title="许可证风险">
             匹配到的开源模块为 AGPL，商用需人工复核许可证。

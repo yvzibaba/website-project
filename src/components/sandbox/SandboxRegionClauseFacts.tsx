@@ -24,10 +24,10 @@ export function SandboxRegionClauseFacts({ regionId }: { regionId: string }) {
     <div className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-3">
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant="outline" className="text-[10px] text-emerald-700">
-          已核实政策条款 · FACT
+          已核实政策条款
         </Badge>
         <span className="text-[11px] leading-snug text-zinc-600">
-          以下条款经权威原文核验、可点击溯源；沙盘中相关数值仍为占位假设，条款≠数值。
+          以下条款经权威原文核验、可点击溯源；沙盘中相关数值仍为示例参数（未经核实），「条款已核实」不等于「数值已核实」。
         </span>
       </div>
       <ul className="mt-2 flex flex-col gap-2">
@@ -54,7 +54,7 @@ export function SandboxRegionClauseFacts({ regionId }: { regionId: string }) {
             ) : null}
             {f.relatedKeys.length ? (
               <div className="mt-1 text-[10px] leading-snug text-zinc-400">
-                关联参数：{f.relatedKeys.join("、")}（取值仍为 ASSUMPTION）
+                关联参数：{f.relatedKeys.join("、")}（取值仍为示例·待核实）
               </div>
             ) : null}
             {f.dataConflict ? (

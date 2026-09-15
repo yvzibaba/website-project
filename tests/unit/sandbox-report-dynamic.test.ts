@@ -238,16 +238,17 @@ describe("TASK4 · 免责声明与「关键假设」文本三情景完全一致�
   /**
    * 注意：假设节段落里含 `vm.notes` 原样透出，notes 会随情景变化（例如 S3 触发"未检测到有效储能"提示）。
    * 这**不是**口径漂移而是**引擎诚实输出差异**，正是要看到"报告读的是当前结果"的证据。
-   * 因此这里只校验"占位假设"这条基础注记在三情景都出现，不断言整段字符串相等。
+   * 因此这里只校验"示例参数·未经核实"这条基础注记在三情景都出现，不断言整段字符串相等。
+   * （V1.1 P3 黑话清洗：原钉「占位假设」，生产措辞人话化后随动。）
    */
-  it("三组都包含'占位假设'与'需专业人工确认'两条基础口径（防报告框架被参数改动误删）", () => {
+  it("三组都包含'示例参数·未经核实'与'需专业人工确认'两条基础口径（防报告框架被参数改动误删）", () => {
     const assumptions = (c: DemoScenarioResult) => (section(c, "assumptions")?.paragraphs ?? []).join("\n");
     for (const c of [s1, s2, s3]) {
       const t = assumptions(c);
-      expect(t).toContain("占位假设");
+      expect(t).toContain("示例参数");
     }
     for (const c of [s1, s2, s3]) {
-      expect(c.report.disclaimers.join("|")).toContain("占位假设");
+      expect(c.report.disclaimers.join("|")).toContain("示例参数");
       expect(c.report.disclaimers.join("|")).toContain("专业人工确认");
     }
   });

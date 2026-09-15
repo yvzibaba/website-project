@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "登录",
-  description: "登录你的产业案例引擎账号。",
+  description: "登录你的光储充投资决策沙盘账号。",
   robots: { index: false, follow: false },
 };
 

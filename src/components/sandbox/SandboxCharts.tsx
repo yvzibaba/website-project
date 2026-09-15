@@ -69,7 +69,7 @@ export function CashFlowChart({ data }: { data: CashFlowPoint[] }) {
   return (
     <ChartCard
       title="逐年净现金流与累计回收"
-      desc="第 0 年为净 CAPEX 投入；累计线自下穿越 0 轴处即动态回收期（全部程序算，§7）。"
+      desc="第 0 年为净 CAPEX 投入；累计线自下穿越 0 轴处即动态回收期（全部由程序计算）。"
     >
       <ResponsiveContainer>
         <ComposedChart data={data} margin={{ top: 8, right: 16, bottom: 4, left: 4 }}>

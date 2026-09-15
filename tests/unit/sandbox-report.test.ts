@@ -83,14 +83,14 @@ describe("sandbox-report · 单一真源（数字=视图模型输出，不重算
   });
 });
 
-describe("sandbox-report · 诚实边界（§16/§17/§20）", () => {
-  it("成功报告也恒带「需专业人工确认」+ 程序算非 LLM + §17 E2E 免责", () => {
+describe("sandbox-report · 诚实边界（§16/§17/§20 契约，用户文案已人话化）", () => {
+  it("成功报告也恒带「需专业人工确认」+ 程序算非 LLM + 端到端未通免责（V1.1 P3：§17 黑话改由人话整句钉住）", () => {
     const vm = okViewModel();
     const rep = buildSandboxReport({ vm, regionName: "山西" });
     const all = rep.disclaimers.join("\n");
     expect(all).toContain("程序算");
     expect(all).toContain("需专业人工确认");
-    expect(all).toContain("§17");
+    expect(all).toContain("不得单独作为投资或并网决策依据");
     const risk = rep.sections.find((s) => s.key === "risk");
     expect((risk?.paragraphs ?? []).join("\n")).toContain("复核");
   });
@@ -107,8 +107,8 @@ describe("sandbox-report · 诚实边界（§16/§17/§20）", () => {
     expect(rep.sections.find((s) => s.key === "exec")).toBeUndefined();
     expect(rep.sections.find((s) => s.key === "structure")).toBeUndefined();
     expect(rep.needsProfessionalReview).toBe(true);
-    // 免责仍恒在
-    expect(rep.disclaimers.join("\n")).toContain("§17");
+    // 免责仍恒在（V1.1 P3：人话整句替代 §17 黑话 token）
+    expect(rep.disclaimers.join("\n")).toContain("不得单独作为投资或并网决策依据");
   });
 });
 

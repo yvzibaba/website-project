@@ -232,12 +232,11 @@ export function SandboxWorkbench({
   return (
     <div className="flex flex-col gap-6">
       <Alert variant="warning">
-        <strong>这是「产业项目可视化决策沙盘」演示（V1）。</strong>
-        下方全部默认数字（含企业画像预设）都是<span className="font-medium">占位假设（未经逐条核实）</span>
-        ，经济口径为透明简化的 E1–E8 而非可研级，结果恒「需专业人工确认」；§17 端到端主链（报告 /
-        AI 解释 / 落库）已接通并经自动化冒烟实证，但仍<span className="font-medium">不得作为投资或并网决策依据</span>。
+        <strong>这是决策沙盘：屏幕上每个数字都是示例条件下的推演结果。</strong>
+        下方全部默认数值（含企业画像预设）均为<span className="font-medium">示例参数 · 未经逐条核实</span>
+        ，经济模型为透明简化的年度口径、非可研级，结果<span className="font-medium">需专业人工确认，不得作为投资或并网决策依据</span>。
         <span className="font-medium">全部回报指标（NPV / IRR / 回收期 / ROI）为全投资（无杠杆）口径，≠ 股权融资回报。</span>
-        选地区 / 选企业画像 / 拖动参数都会让技术 / 经济 / 图表 / 敏感性即时重算——这才是沙盘的命脉，而非页面数字游戏。
+        选地区、选企业画像、拖动任何参数，右侧的技术、经济、图表、敏感性结论都会即时联动重算——不是页面数字游戏。
       </Alert>
 
       {initialProject ? (
@@ -253,7 +252,7 @@ export function SandboxWorkbench({
           <CardHeader>
             <CardTitle className="text-base">参数控制台</CardTitle>
             <CardDescription>
-              先选地区载入默认电价 / 光照 / 补贴（§6），再选企业画像裁剪预设起点（§14 #7），改任一项右侧全链即时重算。
+              先选地区载入默认电价 / 光照 / 补贴，再选企业画像裁剪预设起点，改任一项右侧全链即时重算。
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
@@ -591,13 +590,16 @@ export function SandboxWorkbench({
                 </Card>
               ) : null}
 
-              <div className="text-[11px] text-zinc-400">
-                溯源 {vm.calcRef} · 版本 model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} /
-                finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} / storage@
-                {vm.engineVersions?.storage ?? "none"}
-                （历史快照无此键 = 储能内核接入前生成）· regions@{SANDBOX_REGIONS_VERSION} · profiles@
-                {SANDBOX_PROFILES_VERSION} · 视图 v{vm.viewVersion}
-              </div>
+              <details className="text-[11px] text-zinc-400">
+                <summary className="cursor-pointer select-none">计算口径与溯源（引擎版本 · 供复核）</summary>
+                <p className="mt-1 leading-5">
+                  溯源 {vm.calcRef} · 版本 model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} /
+                  finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} / storage@
+                  {vm.engineVersions?.storage ?? "none"}
+                  （历史快照无此键 = 储能内核接入前生成）· regions@{SANDBOX_REGIONS_VERSION} · profiles@
+                  {SANDBOX_PROFILES_VERSION} · 视图 v{vm.viewVersion}
+                </p>
+              </details>
             </>
           )}
 

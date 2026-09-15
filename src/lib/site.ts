@@ -25,12 +25,12 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000"
 ).replace(/\/+$/, "");
 
-/** 站点名（OpenGraph siteName / 结构化数据 publisher 用）。 */
-export const SITE_NAME = "产业案例与解决方案引擎";
+/** 站点名（OpenGraph siteName / 结构化数据 publisher 用；V1.1 批次 P3 品牌口径统一，方案 §3.2）。 */
+export const SITE_NAME = "光储充投资决策沙盘";
 
 /** 站点默认描述（首页/OG 兜底）。 */
 export const SITE_DESCRIPTION =
-  "AI 驱动的产业案例研究与解决方案生成引擎：发现全球产业案例、拆解商业模式与技术、匹配开源能力、中国本土化重构，形成可购买、可实施的产业解决方案。";
+  "新能源重卡光储充项目的投资决策软件：拖动参数即时重算投资额、回收期、NPV/IRR 与最敏感变量，输出带口径与来源声明的确定性报告；并附产业案例库与可实施的解决方案库。";
 
 /**
  * 是否为「可被公开索引」的生产站点。

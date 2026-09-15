@@ -3,7 +3,7 @@
  *
  * 关键锁定（§7/§8/§16/§20）：
  *   - 草案财务 Decimal 串**逐字等于** `CalcResult` 原值（搬运非重算）；正文金额/百分比串**逐字取自视图模型卡片**。
- *   - 恒 `evidenceGrade="ASSUMPTION"`·`needsProfessionalReview=true`·带发布阻塞项（占位假设 / 未附 caseId / 需人工确认 / 未定价）；
+ *   - 恒 `evidenceGrade="ASSUMPTION"`·`needsProfessionalReview=true`·带发布阻塞项（示例参数未核实 / 未挂靠产业案例 / 需人工确认 / 未定价）；
  *   - 失败情景只回诚实错误、**绝不产出可售的方案正文/财务**；
  *   - 负 NPV 被点名进风险与阻塞项（不粉饰）；喂真实引擎输出端到端证 §7「程序算」与 §16「区分假设、高风险须人工确认」。
  *
@@ -60,10 +60,10 @@ describe("sandbox-solution · 版本与契约（R8.1）", () => {
     expect(d.currency).toBe("CNY");
     expect(d.provenance.calcRef).toMatch(/^model@/);
     expect(d.publishBlockers.length).toBeGreaterThanOrEqual(3);
-    // 三类固有阻塞恒在：占位假设 / caseId 外键 / 需专业人工确认
+    // 三类固有阻塞恒在：示例参数未核实 / 未挂靠产业案例 / 需专业人工确认（V1.1 P3 文案人话化，断言随生产措辞更新）
     const all = d.publishBlockers.join("\n");
-    expect(all).toContain("占位假设");
-    expect(all).toContain("caseId");
+    expect(all).toContain("示例参数");
+    expect(all).toContain("案例");
     expect(all).toContain("需专业人工确认");
   });
 });
@@ -163,8 +163,8 @@ describe("sandbox-solution · §16/§20 诚实边界", () => {
     if (!dPriced.ok) return;
     expect(dPriced.price).toBe("1999.00");
     expect(dPriced.publishBlockers.join("\n")).not.toContain("尚未设定对外价格");
-    // 仍固有阻塞在（占位/caseId/人工确认）——定价不解除它们
-    expect(dPriced.publishBlockers.join("\n")).toContain("caseId");
+    // 仍固有阻塞在（示例参数/未挂靠案例/人工确认）——定价不解除它们
+    expect(dPriced.publishBlockers.join("\n")).toContain("产业案例");
   });
 });
 
@@ -235,7 +235,7 @@ describe("sandbox-solution · R8.7 逐输入溯源与 sourceUrl 填充（喂 R8.
     // 诚实措辞：正文溯源与发布阻塞点出「部分入参已接可核验来源」。
     expect(String(d.body.sources)).toContain("已带可核验来源链接");
     expect(d.publishBlockers.join("\n")).toContain("已接可核验来源链接");
-    // 关键：只要仍有占位假设，聚合证据等级不得升 FACT（§20）。
+    // 关键：只要仍有示例参数（未核实入参），聚合证据等级不得升 FACT（§20）。
     expect(d.evidenceGrade).toBe("ASSUMPTION");
     expect(a.evidenceKind).toBe("ASSUMPTION");
   });

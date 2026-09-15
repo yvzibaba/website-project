@@ -22,7 +22,7 @@ import type { SandboxViewModel } from "@/lib/sandbox-view";
 import type { ProfileFocusTag, SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
 
 /** 报告口径版本（叙述结构 / 择要规则变化须升版记因，宪法第 13 条）。 */
-export const REPORT_VERSION = "1.1.0"; // 1.1.0：新增可选「企业个性化视角」节（R7 · 依画像裁剪，只重排既有指标卡值、绝不重算）
+export const REPORT_VERSION = "1.1.1"; // 1.1.1（V1.1 P3 黑话清洗）：免责/假设/风险分节文案人话化（去 §17/E1–E8/S1/S5/E7/占位假设 黑话与泄漏的 ** 星号；「占位假设」→「示例参数·未经核实」），分节结构与择要规则零改动。1.1.0：新增可选「企业个性化视角」节（R7 · 依画像裁剪，只重排既有指标卡值、绝不重算）
 
 /* ────────────────────────────── 类型 ────────────────────────────── */
 
@@ -125,7 +125,7 @@ function buildProfileSection(vm: SandboxViewModel, profile: SandboxEnterprisePro
     paragraphs.push(`此外，这类企业通常还侧重：${focus.join("；")}。`);
   }
   paragraphs.push(
-    `企业画像「${profile.name}」的默认参数为示例占位假设（非经核事实）：${profile.note} 换画像即换一组预设起点，但方案数字仍全部由确定性引擎现算、不随画像口径改动。`,
+    `企业画像「${profile.name}」的默认参数为示例参数·未经核实（非经核事实）：${profile.note} 换画像即换一组预设起点，但方案数字仍全部由确定性引擎现算、不随画像口径改动。`,
   );
 
   return {
@@ -139,13 +139,13 @@ function buildProfileSection(vm: SandboxViewModel, profile: SandboxEnterprisePro
 /* ────────────────────────────── 报告装配 ────────────────────────────── */
 
 const BASE_DISCLAIMERS = [
-  "本报告全部数字由**确定性计算引擎**（参数分层 → 技术能耗 → 经济编排 → 财务评价）程序算出，AI 不参与算数，只负责解释。",
-  "入参默认均为**占位假设**（经济口径为透明简化的 E1–E8，非可研/财税级），结论**需专业人工确认**。",
-  "全部回报指标（NPV / IRR / 回收期 / ROI）为**全投资（无杠杆）口径**，未包含贷款现金流、DSCR 与股权 IRR，**≠ 股权融资回报**（融资口径需另行测算并专业复核）。",
+  "本报告全部数字由确定性计算引擎（参数分层 → 技术能耗 → 经济编排 → 财务评价）程序算出，AI 不参与算数，只负责解释。",
+  "入参默认均为示例参数·未经核实（经济口径为透明简化的年度模型，非可研/财税级），结论需专业人工确认。",
+  "全部回报指标（NPV / IRR / 回收期 / ROI）为全投资（无杠杆）口径，未包含贷款现金流、偿债能力与股权融资回报，不等于股权融资回报（融资口径需另行测算并专业复核）。",
 ];
 
 const E2E_DISCLAIMER =
-  "§17 端到端主链（选地区→改参数→跑→技术/经济/风险/敏感性→AI 解释→个性化方案）尚在建，本报告为其中「技术/经济/风险/敏感性 + 动态报告」环节的确定性产物，**不得单独作为投资或并网决策依据**。";
+  "本报告是沙盘主流程（选地区→改参数→计算→技术/经济/风险/敏感性→动态报告）的确定性产物，该链路仍在持续完善中，本报告不得单独作为投资或并网决策依据。";
 
 /** 生成结构化报告。`vm.ok=false` 时只回诚实错误 + 免责，绝不编造结论。 */
 export function buildSandboxReport(input: ReportInput): SandboxReport {
@@ -291,7 +291,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
     paragraphs: [
       "以下为本模型显式声明的简化口径与假设，任何一项偏离都需重算：",
       ...(vm.notes ?? []),
-      "所有入参默认均为【示例·待核实】占位假设，须经可追溯来源替换后方可用于真实决策。",
+      "所有入参默认均为【示例·待核实】的示例参数，须经可追溯来源替换并核实后方可用于真实决策。",
     ],
     // notes 已在 paragraphs 原样透出
   });
@@ -303,7 +303,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
     kind: "list",
     paragraphs: [
       "本沙盘结论属高风险领域，须由具备产业、财务、电力专业背景的人员复核后方可采信或对外发布。",
-      "V1 经济口径未内嵌融资结构利息税盾、流动资金、逐时负荷曲线（S1）、电池 SOH/温度/弃电（S5）与充电需求增长曲线；残值取名义常数（E7）。",
+      "当前经济口径未包含：融资结构的利息与税盾影响、流动资金占用、逐时负荷曲线、电池寿命状态（SOH）/温度/弃电的细化，以及充电需求增长曲线；设备残值取名义常数。",
       E2E_DISCLAIMER,
     ],
   });

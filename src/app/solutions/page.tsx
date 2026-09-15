@@ -108,9 +108,9 @@ export default async function SolutionsPage({ searchParams }: PageProps) {
       </PageHeader>
 
       {includeDemo ? (
-        <Alert variant="warning" title="DEMO 数据视图">
-          已开启 DEMO 视图，但按创始人裁决里程碑 2 <strong>不种子任何方案</strong>（方案涉及定价与购买闭环，
-          须由真实多角色流水线产出并经人工审核发布）。故此列表仍为空。
+        <Alert variant="warning" title="示例（DEMO）数据视图">
+          方案涉及定价与购买闭环，必须由真实研究流程产出并经人工审核后才能发布，
+          因此<strong>不提供示例方案数据</strong>，此列表仍为空。
         </Alert>
       ) : null}
 
@@ -163,7 +163,7 @@ export default async function SolutionsPage({ searchParams }: PageProps) {
         <EmptyState
           icon="📦"
           title="暂无已发布的产业解决方案"
-          description="方案由每日流水线（60 候选 → 20 重点 → 10 深度 → 3 方案 → 1 精品）经技术匹配、开源许可证检查、中国本土化重构与多角色质量门禁（Research → Bull → Bear → Judge → QA）生成，须人工审核后方可发布。当前尚未有方案发布。"
+          description="方案须先有真实研究产出：技术匹配、开源许可证检查、本土化重构与多角度交叉论证，再经人工审核后才会发布。当前还没有已发布的方案。"
           action={
             <Link href="/cases" className="rounded-full border border-border px-4 py-2 text-sm transition-colors hover:border-ring">
               先浏览产业案例

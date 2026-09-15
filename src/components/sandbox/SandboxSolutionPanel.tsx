@@ -160,7 +160,7 @@ export function SandboxSolutionPanel({
       return;
     }
     if (!caseId) {
-      setError("请先从下拉里选择一个真实存在的案例（Solution.caseId 是必填外键，不能凭空创建）。");
+      setError("请先从下拉里选择一个真实存在的案例（方案必须挂在一个已有案例下，不能凭空创建）。");
       return;
     }
     setBusy(true);
@@ -225,8 +225,8 @@ export function SandboxSolutionPanel({
             <CardTitle className="text-base">导出产业方案（进「案例 → 方案 → 购买」闭环）</CardTitle>
             <CardDescription>
               把当前沙盘结果（地区 / 画像 / 参数下的确定性经济与技术结论）导出成一条
-              <span className="font-medium"> DRAFT 产业方案</span>，挂到你在下方选定的真实案例上。
-              数字全部由引擎现算、逐字搬运，导出后仍需人工补真实数据、定价并经发布守卫方可上架售卖。
+              <span className="font-medium"> 草稿产业方案</span>，挂到你在下方选定的真实案例上。
+              数字全部由引擎现算、逐字搬运，导出后仍需人工补真实数据、定价并经人工审核发布后方可上架售卖。
             </CardDescription>
           </div>
           <Badge variant="outline" className="text-[10px]">
@@ -247,7 +247,7 @@ export function SandboxSolutionPanel({
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-zinc-500" htmlFor="sbx-sol-case">
-                  挂靠的真实案例（必填 · Solution.caseId 外键）
+                  挂靠的真实案例（必填 · 方案须挂在一个已有案例下）
                 </label>
                 <Button
                   type="button"
@@ -291,7 +291,7 @@ export function SandboxSolutionPanel({
                   ) : (
                     <div className="flex items-center gap-2">
                       <p className="text-[11px] leading-snug text-zinc-500">
-                        导出前需挂靠一个真实存在的案例（Solution.caseId 是必填外键，不能凭空创建）。
+                        导出前需挂靠一个真实存在的案例（方案必须挂在已有案例下，不能凭空创建）。
                       </p>
                       <Button
                         type="button"
@@ -356,7 +356,7 @@ export function SandboxSolutionPanel({
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto]">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-zinc-500" htmlFor="sbx-sol-price">
-                  拟定价格（可选，十进制正数；未定价仍可存为 DRAFT，但不能发布上架）
+                  拟定价格（可选，十进制正数；未定价仍可存为草稿，但不能发布上架）
                 </label>
                 <Input
                   id="sbx-sol-price"
@@ -406,7 +406,7 @@ export function SandboxSolutionPanel({
             {/* 发布阻塞清单（机器可校验，如实回显「还差这些才能发布」） */}
             {draftOk.publishBlockers.length > 0 ? (
               <div className="flex flex-col gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
-                <div className="text-xs font-medium text-amber-800">发布前须解除的阻塞项（存 DRAFT 不受影响）：</div>
+                <div className="text-xs font-medium text-amber-800">发布前须解除的阻塞项（存为草稿不受影响）：</div>
                 <ul className="flex list-disc flex-col gap-0.5 pl-4 text-[11px] leading-snug text-amber-800">
                   {draftOk.publishBlockers.map((b, i) => (
                     <li key={i}>{b}</li>
@@ -416,7 +416,7 @@ export function SandboxSolutionPanel({
             ) : null}
 
             <Button type="button" size="sm" onClick={exportSolution} disabled={!canExport}>
-              {busy ? "导出中…" : "导出并保存为方案（DRAFT）"}
+              {busy ? "导出中…" : "导出并保存为方案（草稿）"}
             </Button>
           </>
         )}
@@ -449,7 +449,7 @@ export function SandboxSolutionPanel({
         {result ? (
           <div className="flex flex-col gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="success">已存为 DRAFT 方案</Badge>
+              <Badge variant="success">已存为草稿方案</Badge>
               <span className="text-xs text-emerald-700">
                 财务条目 {result.financialCount ?? 0} · 关键未知 {result.unknownCount ?? 0}
               </span>
@@ -469,14 +469,14 @@ export function SandboxSolutionPanel({
               </ul>
             ) : null}
             <p className="text-[11px] leading-snug text-emerald-700/90">
-              提示：方案当前是草稿、含占位假设，尚不可对外售卖；请在后台以来源可追溯的真实数据替换、定价并
-              经发布守卫（高风险领域须专业人工确认）后再上架，接入「查看 → 购买」闭环。
+              提示：方案当前是草稿、入参为未经核实的示例数据，尚不可对外售卖；请在后台以来源可追溯的真实数据替换、定价并
+              经人工审核发布（高风险领域须专业人工确认）后再上架，接入「查看 → 购买」闭环。
             </p>
           </div>
         ) : null}
 
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] leading-snug text-amber-800">
-          导出的每一个数字均由确定性引擎现算、逐字搬运（面板与桥均不重算），全部继承「占位假设 + 需专业人工确认」；
+          导出的每一个数字均由确定性引擎现算、逐字搬运（面板与桥均不重算），全部继承「示例参数·未经核实 + 需专业人工确认」；
           「是否挂靠哪个案例、价格定多少、何时发布」属商业 / 法律责任，始终由人裁决（AI 只做劳动）。
         </div>
       </CardContent>

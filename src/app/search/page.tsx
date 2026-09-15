@@ -124,9 +124,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
       </nav>
 
       {includeDemo ? (
-        <Alert variant="warning" title="DEMO 数据视图">
-          当前结果可能包含标注为【DEMO】的示例数据，仅用于开发期验证，<strong>不是真实研究成果</strong>。
-          去掉网址中的 <code>?demo=1</code> 即回到只显示真实数据的默认视图。
+        <Alert variant="warning" title="示例（DEMO）数据视图">
+          当前结果可能包含标注为【DEMO】的示例数据，仅用于开发验证，<strong>不是真实研究成果</strong>。
+          清除网址中的 demo 参数即可回到只显示真实数据的视图。
         </Alert>
       ) : null}
 
@@ -157,7 +157,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
             description={
               includeDemo
                 ? "试试更短或更宽泛的关键词，或切换行业筛选。"
-                : "试试更宽泛的关键词。真实案例与方案由每日流水线逐步填充；开发期可加 ?demo=1 查看【DEMO】示例数据。"
+                : "试试更宽泛的关键词。真实案例与方案正在通过每日精选与人工审核逐步充实。"
             }
           />
         ) : (
@@ -196,7 +196,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               total={result.solutions.total}
               shown={result.solutions.items.length}
               viewAllHref={`/solutions${qs(common)}`}
-              empty="没有匹配的方案（方案由每日流水线经多角色质量门禁 + 人工审核后发布）。"
+              empty="没有匹配的方案（方案经交叉论证与人工审核后才会发布）。"
             >
               {result.solutions.items.map((s) => (
                 <li key={s.id}>

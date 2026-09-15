@@ -120,7 +120,7 @@ export default async function AdminProjectsPage() {
             </div>
             <p className="mt-3 text-[11px] text-muted-foreground">
               共 {items.length} 个项目（最多展示最近更新 100）。NPV/IRR/回收期为基线情景落库快照（Decimal 精确列），
-              全部继承「占位假设 + 需专业人工确认」边界，不作投资依据。
+              全部继承「示例参数·未经核实 + 需专业人工确认」边界，不作投资依据。
             </p>
           </CardContent>
         </Card>

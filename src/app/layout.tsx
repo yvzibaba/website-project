@@ -6,8 +6,8 @@ import { SITE_DESCRIPTION, SITE_URL, isIndexable } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "产业案例与解决方案引擎",
-    template: "%s · 产业案例引擎",
+    default: "光储充投资决策沙盘",
+    template: "%s · 光储充投资决策沙盘",
   },
   description: SITE_DESCRIPTION,
   robots: isIndexable()
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               href="/"
               className="font-semibold tracking-tight hover:opacity-80"
             >
-              产业案例引擎
+              光储充投资决策沙盘
             </Link>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm">
               <Link href="/industries" className="hidden hover:underline md:inline">
@@ -139,7 +139,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </a>
             </nav>
             <p className="text-center">
-              © 2026 产业案例引擎 · V1-A 开发中 · 隐私政策与服务条款为占位草稿，待法务审定后生效 ·{" "}
+              © 2026 光储充投资决策沙盘 · 全部示例参数未经逐条核实，计算结论需专业人工确认，不构成投资建议 ·{" "}
               <a href="/api/health" className="font-mono hover:underline">
                 health
               </a>

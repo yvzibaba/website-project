@@ -133,9 +133,9 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
       </PageHeader>
 
       {c.isDemo ? (
-        <Alert variant="warning" title="这是 DEMO 示例数据">
-          本案例由开发种子脚本插入，<strong>不是真实产业案例研究</strong>，仅用于验证页面渲染。
-          真实案例将由每日流水线发现、拆解并经质量门禁后发布。
+        <Alert variant="warning" title="这是示例（DEMO）数据">
+          本案例为开发验证用的示例数据，<strong>不是真实产业案例研究</strong>。
+          真实案例经线索筛选、AI 拆解与人工审核后发布。
         </Alert>
       ) : null}
 
@@ -209,12 +209,12 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">证据与判断分层</h2>
         <p className="text-xs text-muted-foreground">
-          依据宪法第 6 条，每条结论标注「类型（事实 / 假设 / 推断 / 预测）+ 来源等级（总控 §11 的 S/A/B/C/D）+ 可信度」，
-          避免把推断包装成事实。等级只作权威度参考标注，v1 不并入可信度打分。
+          每条结论都标注「类型（事实 / 假设 / 推断 / 预测）+ 来源权威等级（S/A/B/C/D）+ 可信度」，
+          避免把推断包装成事实。等级只作权威度参考标注，当前不并入可信度打分。
         </p>
         {c.evidences.some((ev) => ev.grade === "D") ? (
           <Alert variant="warning" title="存在 AI 推断 / 待验证来源（D 级）">
-            依据总控 §11，来源仅为 D 级（AI 推断）的信息<strong>不得表述为已确认事实</strong>，须待补充 S/A/B 级来源后复核。
+            来源仅为 D 级（AI 推断）的信息<strong>不得表述为已确认事实</strong>，须待补充 S/A/B 级权威来源后复核。
             {c.evidences.some((ev) => ev.grade === "D" && ev.type === "FACT") ? (
               <> 当前有被标为「事实」的结论仅由 D 级来源支撑，请特别留意。</>
             ) : null}
@@ -267,8 +267,8 @@ export default async function CaseDetailPage({ params, searchParams }: PageProps
           </p>
         ) : (
           <p className="text-muted-foreground">
-            本案例暂无已发布的产业解决方案。方案由每日流水线经技术匹配、开源许可检查、中国本土化重构与
-            多角色质量门禁（Research → Bull → Bear → Judge → QA）后生成，需人工审核发布。
+            本案例暂无已发布的产业解决方案。方案需经技术匹配、开源许可检查、本土化重构与多角度交叉论证后生成，
+            并经人工审核才会发布。
           </p>
         )}
       </section>
@@ -317,7 +317,7 @@ function ScoreBreakdownCard({ scores }: { scores: CaseScores | null }) {
         <CardContent>
           <p className="text-sm text-muted-foreground">
             该案例暂未录入 / 复算评分拆解。机会评分与证据可信度<strong>必须可复算、可追溯</strong>
-            （宪法第 7 条），因此在补录 10 维度评分输入之前，此处不展示任何推算结果，避免把猜测包装成结论。
+            ，因此在补录 10 维度评分输入之前，此处不展示任何推算结果，避免把猜测包装成结论。
           </p>
         </CardContent>
       </Card>
@@ -406,7 +406,7 @@ function ScoreBreakdownCard({ scores }: { scores: CaseScores | null }) {
         </div>
 
         <Alert variant="info" title="综合评分 ≠ 项目一定成功">
-          评分只表达「机会相对优先级 + 证据强度」（总控 §10 / 宪法第 9 条），不构成任何投资结论。
+          评分只表达「机会相对优先级 + 证据强度」，不构成任何投资结论。
           高机会分若伴随低证据可信度或多项关键未知变量，须先补充事实证据再决策。
         </Alert>
       </CardContent>

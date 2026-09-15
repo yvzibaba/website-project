@@ -3,6 +3,16 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.70.0] - 2026-09-16 · V1.1 Phase 3：定位与呈现重构（首页三屏 + 全站公开文案「黑话清洗」，**纯文案/样式/路由内容·经济内核零触碰·MODEL/TECH/PARAMS/SENSITIVITY/PROFILES/VIEW 版本全不动**）
+
+- 原因：方案 §4 Phase 3（#7 #8 #9 #15）——公开界面长期泄漏内部口径（宪法/总控条款号、研究流水线角色名 Bull/Bear/Judge/QA、漏斗数 60→20→10→3→1、批次号、Δ_sto/E1–E8/S1/S5/G1/G2 编号、"占位假设/整链重算/发布守卫/流水线"黑话、DRAFT/ASSUMPTION 枚举直印），普通买家读不懂且显故弄玄虚；首页信息架构未立「定位三屏」。裁决边界：**管理后台（src/app/admin、src/components/admin）与服务端内部注释保留黑话**（工作人员工具），只清洗用户可见层；数据层诚实不变式（params 来源【占位假设前缀、DATA_CONFLICT 标记、字面直传/待核注记、开关=关钉桩）逐字不碰。
+- 首页三屏重写（`src/app/page.tsx` + `src/lib/site.ts` + `layout.tsx` 品牌语）：定位→证据→行动三屏人话叙事；路由副作用——首页由动态转**静态预渲染**（build 路由表 `/` = ○）。
+- 公开页/组件逐文件清洗（36 文件，白名单≈方案清单）：`cases/page`、`cases/[id]`、`solutions/page`、`solutions/[id]`（34 分节保留为领域词，去 Solution.body/总控 §3/角色名/条款号）、`search`、`about`（角色名→"正面论证、反面质疑、居中裁决、质量复核"）、`ui` 示例文案、`enterprise`、`login/register/account/account-projects`、`IndustryCaseList`（漏斗数→"每日自动发现、筛选与人工审核"）、`EmptyState` 示例注释同步、`SandboxWorkbench/DemoPanel`（整链重算→整体联动重算；版本页脚移入 `<details>`「关于」折叠）、`SandboxShell` hint、`SandboxSavePanel/SolutionPanel/SandboxRegionClauseFacts`（DRAFT→草稿、caseId 外键→须挂已有案例、发布守卫→人工审核发布、占位假设→示例参数·未经核实）、`SandboxCharts`。
+- 服务端/库层**渲染文案**人话化（口径与数值零改动）：`sandbox-region-facts.ts` **1.2.0→1.2.1**（三条 dataConflict.description 去 G1/G2/批次号；键、值、DATA_CONFLICT 标记原样）；`sandbox-report.ts` **REPORT_VERSION 1.1.0→1.1.1**（免责/假设/风险分节去 §17/E1–E8/** 星号泄漏；"占位假设"→"示例参数·未经核实"）；`sandbox-solution.ts` **SANDBOX_SOLUTION_VERSION 1.1.0→1.1.1**（草案正文/未知项/财务注记/发布阻塞买家文案；结构、字段、计算口径零改动）；`sandbox-model.ts` 六处 notes 人话化（免征依据/需量计费/税/储能门控/Δ_sto→"储能年价值增量"/光伏消纳留白——公式不动、calcRef 不滚）；`sandbox-profiles.ts` 五画像 note 与 `sandbox-sensitivity.ts` 风险旗标同义换词（版本不动）。
+- 测试随动（**断言跟生产措辞走，诚实契约不降级**，各记原因）：`sandbox-solution.test`（阻塞词 占位假设→示例参数、caseId→产业案例）；`sandbox-report.test`（§17 token 钉→人话整句「不得单独作为投资或并网决策依据」；L199 三元正则 /占位假设|人工确认|待核实/ 不动）；`sandbox-report-dynamic.test`（基础口径钉 占位假设→示例参数）；`sandbox-sensitivity.test`（风险旗标钉 占位假设→示例参数）。**新增** `tests/unit/de-jargon-guard.test.ts`：剥注释后仅提取「会渲染的字符串」（引号/无插值模板/JSX 文本），扫 `src/app`+`src/components`（排除 admin 与 api 路由），26 组禁用 token 命中即红；变异自测（注入 Bull/Bear 串→红→还原→绿）。已知边界：案例详情页仍直印证据枚举（FACT/ASSUMPTION 等，属数据展示层），guard 注明留待后续专项清洗再纳入禁用。
+- 验证：`npm run test:unit` **1124 通过 + 1 跳过**（64 文件，净 +2 guard 用例）；`tsc --noEmit` exit 0；`eslint src tests --max-warnings=0` exit 0；`npm run build` 通过（`/` 动态→静态 ○，余路由清单不变）；黄金/SML/溯源套件零重录（引擎数值与 calcRef 零变动的反证）；`package.json` **0.69.0 → 0.70.0**。
+- 效果：公开界面第一遍「说人话」——买家、游客路径不再被内部黑话劝退；黑话回流自此有守卫测试兜底。边界：管理后台与内部文档保留黑话属刻意设计；证据枚举展示层、P4 商业转化（买家导出 requireStaffWrite 断裂）为下一批次。
+
 ## [0.69.0] - 2026-09-16 · V1.1 批次 1.4：includeStorage 假开关真接线（F-2h）+ storageDuration 名实修正（**经济内核门控补全·MODEL_VERSION 1.3.0→1.4.0·基线黄金逐字节零 churn·仅 calcRef 版本滚动**）
 
 - 原因：全库审计 **F-2h（P1）**——「是否配置储能」开关在册可切、参数注释亦宣称控制储能取舍，但 `computeEconomics` 的 `hasStorage` 只查 `storageEnergy>0 && storagePower>0 && tech.storageIncluded`，**从未读取该布尔**：用户关掉开关，储能 CAPEX/OPEX/套利价值照样入账，属「关了照样算」的假联动（与批次 1.3 六僵尸键同族，故 1.3 刻意不标 inactive、留此转正）。附带派生键 `derived.storageDuration` 名实修正：「储能时长」易误读为循环/服务时长，实为**满功率放电时长（容量÷功率）**。

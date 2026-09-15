@@ -1,306 +1,185 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container, Badge, Button, Input, Alert } from "@/components/ui";
-import { EmptyState } from "@/components/page";
+import { Container, Badge, Button } from "@/components/ui";
 import { JsonLd } from "@/components/seo";
-import { INDUSTRIES } from "@/server/industries";
-import { listPublicCases } from "@/server/cases";
-import { listPublishedSolutions } from "@/server/solutions";
 import { seoMetadata } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
 
 /**
- * 首页 `/`（V1-A，总控第 6 节 / PRODUCT_SPEC §6）。
+ * 首页 `/`（V1.1 批次 P3 · 三屏定位首页，方案 §3.2）。
  *
- * 明确不是"AI 聊天机器人"。六屏结构：
- *   ① 主视觉 + 主入口（案例 / 方案 / 沙盘 / 分析我的企业→/enterprise 基础画像）+ 搜索框
- *   ② 今日全球产业案例（六大行业每日精选；当前库空则诚实空态）
- *   ③ 今日产业解决方案（3 个精选；里程碑 2 起不种子方案，故当前空态）
- *   ③.5 决策沙盘入口（Phase 4 模块 A：免费体验 CTA）
- *   ④ 企业 AI 产业诊断（基础画像已开放→/enterprise；V1-B 完整诊断仍诚实未开放）
- *   ⑤ 我们如何工作（六步工作流）
- *   ⑥ 六大行业入口
+ * 定位从「产业案例引擎」门户收敛为**光储充投资决策软件**的着陆页，三屏：
+ *   ① 一句话价值 + 主 CTA「免费算一个项目」（直达 /sandbox 一级沙盘，免登录）
+ *   ② 三个真实商业问题卡（值不值得建 / 银行看什么 / 什么最怕），各配沙盘结果示例（示意数据·明确标注）
+ *   ③ 真实案例验证区（诚实空态，不编造案例）+ 次级入口条（案例库 / 方案库 / 企业画像 / 行业）
  *
- * force-dynamic：案例/方案计数与最新条目须实时。DB 不可达时相关区块降级为提示而非崩溃。
- * 首页展示真实数据（includeDemo=false）——DEMO 仅用于 /cases?demo=1 的开发验证，不在首页出现。
+ * 示意数据取自沙盘当前示例参数的真实引擎输出（黄金样本口径，逐项可复算），并显式声明
+ * 「示例参数 · 未经逐条核实 · 非真实项目结果」——与全库诚实纪律一致，绝不虚构项目业绩。
+ *
+ * 渲染方式：新版首页无任何数据库查询，纯静态预渲染（原 force-dynamic 随三屏重写移除）。
  */
 
-export const dynamic = "force-dynamic";
+/** 一句话定位（对外统一口径，方案 §3.2）。 */
+export const HOME_TAGLINE = "新能源重卡光储充项目的投资决策软件";
+export const HOME_VALUE_LINE = "3 分钟算清：投多少、几年回本、最怕什么";
 
 export const metadata: Metadata = {
   title: {
-    default: "产业案例与解决方案引擎 · 发现全球产业机会",
-    template: "%s · 产业案例与解决方案引擎",
+    default: "光储充投资决策沙盘 · 3 分钟算清投多少、几年回本、最怕什么",
+    template: "%s · 光储充投资决策沙盘",
   },
   description:
-    "发现全球产业机会，把成功案例重新变成你的解决方案：AI 拆解全球产业案例、匹配开源技术、中国本土化重构，形成可购买、可实施的产业解决方案。",
+    "面向新能源重卡光储充项目的投资决策软件：拖动参数即时重算投资额、回收期、NPV/IRR 与最敏感变量，输出带口径与溯源声明的确定性报告。示例参数未经核实，结论需专业人工确认。",
   ...seoMetadata({
-    title: "产业案例与解决方案引擎 · 发现全球产业机会",
+    title: "光储充投资决策沙盘 · 3 分钟算清投多少、几年回本、最怕什么",
     description:
-      "发现全球产业机会，把成功案例重新变成你的解决方案：AI 拆解全球产业案例、匹配开源技术、中国本土化重构，形成可购买、可实施的产业解决方案。",
+      "面向新能源重卡光储充项目的投资决策软件：拖动参数即时重算投资额、回收期、NPV/IRR 与最敏感变量，输出带口径与溯源声明的确定性报告。示例参数未经核实，结论需专业人工确认。",
     path: "/",
   }),
 };
 
-/** 六步工作流（总控第 6 节第五部分 / about 页一致口径）。 */
-const WORKFLOW = [
-  { step: "全球案例", desc: "每日从六大产业发现高价值真实案例" },
-  { step: "AI 拆解", desc: "拆解商业模式、技术能力与关键数字" },
-  { step: "开源技术匹配", desc: "在 GitHub / 开源生态中匹配可复用能力" },
-  { step: "中国本土化重构", desc: "结合本土供应链、政策与成本重构方案" },
-  { step: "产业解决方案", desc: "形成含成本/收益/风险/未知变量的方案" },
-  { step: "企业验证与项目", desc: "企业适配、真实验证，发现项目机会" },
+/**
+ * ② 三问卡的示意数据 = 沙盘当前示例参数（车队 60 台 / 桩 8×360kW / 光伏 500kWp / 储能 200kW/400kWh，
+ * 山西·需量免征主情景）的引擎输出，与回归黄金逐字同源（tests/unit/sandbox-model.test.ts、
+ * tests/unit/sandbox-store.test.ts 钉桩：NPV 4,448,573 / IRR 24.35% / 折现回收 5.14 年 /
+ * 净投资 3,524,500 / 盈亏平衡充电单价 0.7431 元/kWh）。**展示前四舍五入到口语精度，并标「示意数据」。**
+ */
+const QUESTION_CARDS = [
+  {
+    q: "这个场站值不值得建？",
+    a: "给出净现值与内部收益率：示例参数下 15 年净现值约 +445 万元、IRR 约 24%，屏幕上每个数字都随滑块即时重算。",
+    mock: [
+      { k: "净投资", v: "约 352 万元" },
+      { k: "净现值 NPV", v: "约 +445 万元" },
+      { k: "内部收益率 IRR", v: "约 24%" },
+      { k: "折现回收期", v: "约 5.1 年" },
+    ],
+  },
+  {
+    q: "银行 / 合伙人会看哪些指标？",
+    a: "报告一键生成：投资构成、成本收入拆解、回收期、盈亏平衡充电单价与全部口径声明——先按全投资（无杠杆）口径算清，贷款视角（还本付息覆盖）在规划中。",
+    mock: [
+      { k: "盈亏平衡充电单价", v: "约 0.74 元/kWh" },
+      { k: "当前充电单价", v: "0.90 元/kWh" },
+      { k: "动态报告", v: "改参数即整份重写" },
+      { k: "口径与溯源", v: "逐条写进报告" },
+    ],
+  },
+  {
+    q: "哪个变量最怕动？",
+    a: "关键因素影响力排行自动生成：电价、充电单价、利用率……谁最能左右回本，一眼看出该先核实哪个数。",
+    mock: [
+      { k: "敏感性排行", v: "自动按影响幅度排序" },
+      { k: "龙卷风图", v: "每个变量拉多长一眼见" },
+      { k: "政策场景", v: "需量电费 免征/征收 一键切换" },
+      { k: "每个输入", v: "标注 示例·待核实" },
+    ],
+  },
 ] as const;
 
-export default async function Home() {
-  // 首页只展示真实数据（不含 DEMO）；两类查询并行，DB 失败各自降级。
-  const [cases, solutions] = await Promise.all([
-    listPublicCases({
-      offset: 0,
-      limit: 6,
-      page: 1,
-      pageSize: 6,
-      sortBy: "discoveredAt",
-      sortOrder: "desc",
-      includeDemo: false,
-    }),
-    listPublishedSolutions({
-      offset: 0,
-      limit: 3,
-      page: 1,
-      pageSize: 3,
-      sortBy: "publishedAt",
-      sortOrder: "desc",
-      includeDemo: false,
-    }),
-  ]);
-
+export default function Home() {
   return (
     <div className="flex flex-col">
-      {/* 站点级结构化数据（Phase 14 M2）：声明 Organization / WebSite 身份。纯加性、不涉及任何内容结论。 */}
+      {/* 站点级结构化数据：Organization / WebSite 身份声明（纯加性，不含内容结论）。 */}
       <JsonLd id="ld-organization" data={organizationJsonLd()} />
       <JsonLd id="ld-website" data={websiteJsonLd()} />
-      {/* ① 主视觉 */}
+
+      {/* ── 屏① 价值句 + 主 CTA ─────────────────────────────────────── */}
       <section className="border-b border-border bg-muted/30">
-        <Container size="lg" className="py-16 flex flex-col gap-6">
-          <Badge variant="primary" className="w-fit">V1-A · 案例 → 方案 → 购买 最小闭环</Badge>
+        <Container size="lg" className="py-20 flex flex-col items-start gap-5">
+          <Badge variant="primary" className="w-fit">免费 · 无需注册 · 3 分钟出结果</Badge>
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            发现全球产业机会，把成功案例重新变成你的解决方案。
+            {HOME_TAGLINE}
           </h1>
-          <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
-            我们把全球真实产业案例经 AI 拆解、开源技术匹配与中国本土化重构，
-            形成可购买、可实施、含成本/收益/风险与关键未知变量的产业解决方案。
+          <p className="max-w-2xl text-xl leading-8 text-muted-foreground sm:text-2xl">
+            {HOME_VALUE_LINE}
           </p>
-
-          {/* 搜索入口 */}
-          <form method="get" action="/search" role="search" className="flex max-w-xl gap-2 pt-1">
-            <Input
-              type="search"
-              name="q"
-              placeholder="搜索产业案例或方案，如：沼气、储能、视觉质检…"
-              aria-label="搜索关键词"
-              maxLength={100}
-              className="flex-1 bg-background"
-            />
-            <Button type="submit" variant="secondary">搜索</Button>
-          </form>
-
-          {/* 主入口（基础运营版）：案例 / 方案 / 沙盘 / 企业画像 各就各位——
-              原「发现产业方案」误链 /cases 已修正；沙盘入口补齐（总指令：首页须有沙盘入口）；
-              企业按钮从「置灰占位」激活为 /enterprise（Phase 4 模块 E：基础画像 → 沙盘重算；
-              完整 V1-B 诊断仍未开放，由 /enterprise 页首的边界声明诚实兜底）。 */}
+          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+            车队规模、桩配置、光伏储能、电价与政策补贴……全部做成滑块；每次拖动都由计算引擎
+            即时重算投资与回报，并生成一份带口径、假设与来源声明的报告。所有默认参数为
+            示例值（未经逐条核实），结论需专业人工确认——它是帮你把问题问全的工具，不是替你拍板的顾问。
+          </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button href="/cases" variant="primary" size="lg">浏览产业案例</Button>
-            <Button href="/solutions" variant="secondary" size="lg">发现产业方案</Button>
-            <Button href="/sandbox" variant="secondary" size="lg">体验决策沙盘</Button>
-            <Button href="/enterprise" variant="secondary" size="lg">分析我的企业</Button>
+            <Button href="/sandbox" variant="primary" size="lg">免费算一个项目 →</Button>
+            <Button href="/enterprise" variant="secondary" size="lg">先选我的企业类型</Button>
           </div>
         </Container>
       </section>
 
-      {/* ② 今日全球产业案例 */}
-      <Container size="lg" className="py-12 flex flex-col gap-5">
-        <SectionHead
-          title="今日全球产业案例"
-          desc="六大产业每日精选、经 AI 深度拆解的真实案例，免费查看。"
-          moreHref="/cases"
-          moreLabel="浏览全部案例"
-        />
-        {!cases.ok ? (
-          <Alert variant="warning" title="案例暂不可用">数据库可能正在冷启动或不可达，请稍后重试。</Alert>
-        ) : cases.items.length === 0 ? (
-          <EmptyState
-            title="暂无公开案例"
-            description="真实案例由每日流水线（60 候选 → 20 重点 → 10 深度 → 3 方案 → 1 精品）自动发现并填充，当前尚未有公开案例。"
-          />
-        ) : (
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {cases.items.map((c) => (
-              <li key={c.id}>
-                <Link href={`/cases/${c.id}`} className="group block h-full">
-                  <article className="flex h-full flex-col gap-2 rounded-lg border border-border bg-background p-4 shadow-sm transition-all group-hover:border-ring group-hover:shadow-md">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline" compact>{c.industryName}</Badge>
-                      {typeof c.opportunityScore === "number" ? (
-                        <span className="ml-auto text-xs text-muted-foreground">
-                          机会评分 <strong className="text-foreground tabular-nums">{c.opportunityScore}</strong>
-                        </span>
-                      ) : null}
+      {/* ── 屏② 三个真实商业问题（示意数据卡）──────────────────────── */}
+      <section className="border-b border-border">
+        <Container size="lg" className="py-14 flex flex-col gap-6">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground">投资决策要回答的三个问题</h2>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              下面每张小卡是沙盘的真实输出样式（示例参数下由计算引擎生成，非任何已建项目的业绩）。
+            </p>
+          </div>
+          <ul className="grid gap-4 lg:grid-cols-3">
+            {QUESTION_CARDS.map((c) => (
+              <li key={c.q} className="flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+                <div className="flex flex-col gap-2 p-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-base font-semibold leading-6 text-foreground">{c.q}</h3>
+                    <Badge variant="neutral" compact className="shrink-0">示意数据</Badge>
+                  </div>
+                  <p className="text-sm leading-6 text-muted-foreground">{c.a}</p>
+                </div>
+                <dl className="mt-auto grid grid-cols-2 gap-x-4 gap-y-2 border-t border-border bg-muted/30 px-5 py-4">
+                  {c.mock.map((m) => (
+                    <div key={m.k} className="flex flex-col">
+                      <dt className="text-xs text-muted-foreground">{m.k}</dt>
+                      <dd className="text-sm font-semibold text-foreground tabular-nums">{m.v}</dd>
                     </div>
-                    <h3 className="text-base font-semibold leading-6 text-foreground group-hover:text-primary">{c.title}</h3>
-                    {c.summary ? <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">{c.summary}</p> : null}
-                  </article>
-                </Link>
+                  ))}
+                </dl>
               </li>
             ))}
           </ul>
-        )}
-      </Container>
-
-      {/* ③ 今日产业解决方案 */}
-      <section className="border-y border-border bg-muted/20">
-        <Container size="lg" className="py-12 flex flex-col gap-5">
-          <SectionHead
-            title="今日产业解决方案"
-            desc="可购买、可实施、可定制的方案，含成本/收益模型、ROI、回收期、风险与关键未知变量。"
-            moreHref="/solutions"
-            moreLabel="浏览全部方案"
-          />
-          {!solutions.ok ? (
-            <Alert variant="warning" title="方案暂不可用">数据库可能正在冷启动或不可达，请稍后重试。</Alert>
-          ) : solutions.items.length === 0 ? (
-            <EmptyState
-              icon="📦"
-              title="暂无已发布的产业解决方案"
-              description="方案须由每日流水线经技术匹配、开源许可证检查、中国本土化重构与多角色质量门禁（Research → Bull → Bear → Judge → QA）生成，并经人工审核后方可发布。当前尚未有方案发布。"
-            />
-          ) : (
-            <ul className="grid gap-3 sm:grid-cols-3">
-              {solutions.items.map((s) => (
-                <li key={s.id}>
-                  <Link href={`/solutions/${s.id}`} className="group block h-full">
-                    <article className="flex h-full flex-col gap-2 rounded-lg border border-border bg-background p-4 shadow-sm transition-all group-hover:border-ring group-hover:shadow-md">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="outline" compact>{s.industryName}</Badge>
-                        {s.priceDisplay ? (
-                          <span className="ml-auto text-sm font-semibold text-foreground tabular-nums">{s.priceDisplay}</span>
-                        ) : null}
-                      </div>
-                      <h3 className="text-base font-semibold leading-6 text-foreground group-hover:text-primary">{s.title}</h3>
-                      {s.summary ? <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">{s.summary}</p> : null}
-                    </article>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <p className="text-xs leading-5 text-muted-foreground">
+            * 示意数据基于沙盘示例参数（车队 60 台 / 桩 8×360kW / 光伏 500kWp / 储能 200kW·400kWh / 需量电费免征情景）由计算引擎生成，
+            参数均为【示例·待核实】，口径为全投资（无杠杆）简化年度模型，非可研级，不构成任何投资建议。
+          </p>
         </Container>
       </section>
 
-      {/* ③.5 决策沙盘入口（基础运营版 · 总指令：首页必须有沙盘入口；纯静态导流，零计算） */}
-      <Container size="lg" className="py-12 flex flex-col gap-5">
-        <div className="flex flex-col gap-4 rounded-xl border border-border bg-background p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                新能源重卡 + 光伏 + 储能 + 充电 · 可视化决策沙盘
-              </h2>
-              <Badge variant="info">V1 试点 · 免费</Badge>
-            </div>
+      {/* ── 屏③ 真实案例验证区（诚实空态）+ 次级入口条 ─────────────── */}
+      <section className="bg-muted/20">
+        <Container size="lg" className="py-14 flex flex-col gap-6">
+          <div className="flex flex-col gap-3 rounded-xl border border-dashed border-border bg-background p-6 shadow-sm">
+            <Badge variant="info" className="w-fit">真实案例验证中</Badge>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">用真实项目验证这套算法</h2>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              选地区、改参数、即时重算：CAPEX / OPEX / 收入 / NPV / IRR / ROI / 回收期、关键因素影响力排行与确定性动态报告。
-              山西已核实政策条款可点击溯源；默认数字均为占位假设，结果需专业人工确认。
+              我们坚持不拿编造的项目业绩做宣传：沙盘当前的每一个输出都标明示例参数与计算口径。
+              真实案例的输入数据、计算结果与事后核对正在首批用户验证中产生——
+              <strong className="text-foreground">首批用户将获得免费企业适配与人工复核通道</strong>。
             </p>
+            <div>
+              <Button href="/sandbox" variant="secondary">现在就算我的项目 →</Button>
+            </div>
           </div>
-          <Button href="/sandbox" variant="primary" size="lg" className="shrink-0">
-            进入沙盘 →
-          </Button>
-        </div>
-      </Container>
 
-      {/* ④ 企业服务：基础画像已开放（V1-B 完整诊断仍诚实未开放） */}
-      <Container size="lg" className="py-12 flex flex-col gap-4">
-        <div className="rounded-xl border border-border bg-background p-6 shadow-sm">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <Badge variant="success">基础画像 · 已开放</Badge>
-            <Badge variant="info">V1-B 完整诊断 · 即将开放</Badge>
-          </div>
-          <h2 className="text-xl font-semibold tracking-tight text-foreground">企业 AI 产业诊断</h2>
-          <p className="mt-2 max-w-2xl text-base leading-7 text-muted-foreground">
-            告诉 AI 你的企业有什么，AI 帮你寻找下一步可以做什么。基于企业画像与产业能力数据库，
-            给出可落地的转型方向与方案适配建议。
-          </p>
-          <p className="mt-3 text-sm text-muted-foreground">
-            现已开放基础能力：选择企业画像（车队 / 运营商 / 园区 / 公交 / 投资人）→ 带入决策沙盘按企业视角重算；
-            完整诊断（企业画像建档 / AI 诊断 / 方案适配）属 V1-B 范围，尚未开放。
-          </p>
-          <div className="mt-4">
-            <Button href="/enterprise" variant="secondary">选择企业画像 →</Button>
-          </div>
-        </div>
-      </Container>
-
-      {/* ⑤ 我们如何工作 */}
-      <section className="border-t border-border bg-muted/20">
-        <Container size="lg" className="py-12 flex flex-col gap-5">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground">我们如何工作</h2>
-          <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {WORKFLOW.map((w, i) => (
-              <li key={w.step} className="flex flex-col gap-1 rounded-lg border border-border bg-background p-4">
-                <div className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground tabular-nums">
-                    {i + 1}
-                  </span>
-                  <h3 className="text-sm font-semibold text-foreground">{w.step}</h3>
-                </div>
-                <p className="text-sm leading-6 text-muted-foreground">{w.desc}</p>
-              </li>
-            ))}
-          </ol>
+          {/* 次级入口：保留原有门户能力（案例 / 方案 / 企业 / 行业），收敛为一条入口带，避免稀释主定位。 */}
+          <nav aria-label="站点入口" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Link href="/cases" className="group rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
+              <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">产业案例库</h3>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">全球新能源案例，经 AI 拆解与人工审核。</p>
+            </Link>
+            <Link href="/solutions" className="group rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
+              <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">产业方案库</h3>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">可购买的落地方案，含成本收益与风险清单。</p>
+            </Link>
+            <Link href="/enterprise" className="group rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
+              <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">企业画像</h3>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">选车队 / 运营商 / 园区 / 投资人视角，沙盘预设随企业视角重排。</p>
+            </Link>
+            <Link href="/industries" className="group rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
+              <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">按行业浏览</h3>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">重卡充电、光伏、储能、充电网络等赛道入口。</p>
+            </Link>
+          </nav>
         </Container>
       </section>
-
-      {/* ⑥ 六大行业入口 */}
-      <Container size="lg" className="py-12 flex flex-col gap-5">
-        <SectionHead title="按行业浏览" desc="选择你关注的产业，查看该行业的案例与方案。" moreHref="/industries" moreLabel="全部行业" />
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {INDUSTRIES.map((ind) => (
-            <li key={ind.slug}>
-              <Link href={`/industries/${ind.slug}`} className="group block h-full">
-                <article className="flex h-full flex-col gap-1 rounded-lg border border-border bg-background p-4 shadow-sm transition-all group-hover:border-ring group-hover:shadow-md">
-                  <div className="flex items-center gap-2">
-                    <span aria-hidden className="text-lg">{ind.icon}</span>
-                    <h3 className="text-base font-semibold text-foreground group-hover:text-primary">{ind.name}</h3>
-                    <span className="ml-auto text-xs text-muted-foreground">{ind.nameEn}</span>
-                  </div>
-                  <p className="line-clamp-2 text-sm leading-6 text-muted-foreground">{ind.tagline}</p>
-                </article>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Container>
-    </div>
-  );
-}
-
-interface SectionHeadProps {
-  title: string;
-  desc: string;
-  moreHref: string;
-  moreLabel: string;
-}
-
-function SectionHead({ title, desc, moreHref, moreLabel }: SectionHeadProps) {
-  return (
-    <div className="flex flex-wrap items-end justify-between gap-3">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h2>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">{desc}</p>
-      </div>
-      <Link href={moreHref} className="text-sm text-primary underline-offset-4 hover:underline">
-        {moreLabel} →
-      </Link>
     </div>
   );
 }

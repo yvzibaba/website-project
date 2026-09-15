@@ -136,7 +136,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
         <Alert variant="danger" title="需要专业人工确认">
           本方案涉及高风险领域
           {s.riskDomains.length > 0 ? `（${s.riskDomains.join("、")}）` : ""}
-          ，依据宪法第 10/21 条，投资、法律、工程安全、环保、能源、医疗、政策等决策
+          ，投资、法律、工程安全、环保、能源、医疗、政策等决策
           <strong>必须由具备资质的专业人士复核</strong>后再执行，切勿仅凭本页内容决策。
         </Alert>
       ) : s.riskDomains.length > 0 ? (
@@ -158,9 +158,8 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
           （方案生成口径 <code className="mx-1 font-mono text-xs">{lineage.solutionCalcRef}</code>
           {lineage.regionName ? <>，地区「{lineage.regionName}」</> : null}
           {lineage.profileName ? <>，画像「{lineage.profileName}」</> : null}）计算并原样搬运，非二次换算。
-          其入参目前仍为<strong>示例占位假设（{lineage.evidenceKind ?? "ASSUMPTION"}）</strong>，
-          须以来源可追溯的真实电价、光照、补贴、造价、负荷等数据替换并经专业人员复核后方可作投资依据
-          （宪法第 16/20/21 条）。
+          其入参目前仍为<strong>示例参数（未经逐项核实）</strong>，
+          须以来源可追溯的真实电价、光照、补贴、造价、负荷等数据替换并经专业人员复核后方可作投资依据。
           {lineage.npvNonPositive ? (
             <span className="mt-1 block text-danger">
               注意：按当前参数 NPV 为非正，商业决策前须重点复核。
@@ -170,7 +169,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
             <span className="mt-2 block border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
               溯源审计（<code className="font-mono">{provenance.auditRef}</code>）：{provenance.buyerSummary}
               {provenance.reproducibility.allReproducible
-                ? " 若已接入来源可追溯的真实数据，可提交带合法链接与置信度的出处，经人工复核后把对应数字从 ASSUMPTION 升级为 FACT。"
+                ? " 若已接入来源可追溯的真实数据，可提交带合法链接与置信度的出处，经人工复核后把对应数字从「示例」升级为「已核实事实」。"
                 : " 复算校验发现异常，该方案在数据修复并复核前不应对外销售。"}
             </span>
           ) : null}
@@ -232,7 +231,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
         <h2 className="text-lg font-semibold tracking-tight text-foreground">财务模型</h2>
         {s.financials.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            暂无结构化财务模型。关键数字须来源可追溯、公式可复算、假设可改（宪法第 7 条），将在方案生成阶段补齐。
+            暂无结构化财务模型。关键数字须来源可追溯、公式可复算、假设可改，将在方案生成阶段补齐。
           </p>
         ) : (
           s.financials.map((f) => (
@@ -270,7 +269,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">关键未知变量</h2>
         <p className="text-xs text-muted-foreground">
-          依据宪法第 9 条，禁止用高评分掩盖高不确定性；以下变量会显著影响结论，需优先验证。
+          不允许用高评分掩盖高不确定性；以下变量会显著影响结论，需优先验证。
         </p>
         {s.unknowns.length === 0 ? (
           <p className="text-sm text-muted-foreground">暂无登记的关键未知变量。</p>
@@ -364,7 +363,7 @@ function SolutionBodySection({
               正文未解锁
             </Badge>
             <p className="text-sm text-muted-foreground">
-              这是付费方案，完整 34 分节正文（研究→Bull→Bear→Judge→QA 产出、人工审核）在订单确认到账后解锁。
+              这是付费方案，完整 34 分节正文（由多角度研究论证与质量复核产出、经人工审核）在订单确认到账后解锁。
               购买流程：下单 → 人工付款 → 提交付款凭证 → 后台确认到账 → 本页自动展示完整正文。
             </p>
             <LockedCta loginHref={loginHref} loggedIn={loggedIn} solutionId={solutionId} solutionTitle={solutionTitle} />
@@ -380,9 +379,8 @@ function SolutionBodySection({
       <section id="solution-body" className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">方案正文</h2>
         <p className="rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground">
-          本方案尚未填充 34 分节结构化正文（<code className="font-mono">Solution.body</code>，总控 §3
-          「Solution Package」）。正文须由多角色流水线（研究→Bull→Bear→Judge→QA）产出、人工审核后写入，
-          禁止单模型直出充数（宪法第 20 条）。
+          本方案尚未填充 34 分节结构化正文。正文须由多角度研究与交叉论证（正面论证、反面质疑、居中裁决、质量复核）产出、
+          经人工审核后写入，禁止单一模型直出充数。
         </p>
       </section>
     );
@@ -398,8 +396,7 @@ function SolutionBodySection({
         </Badge>
       </div>
       <p className="text-xs text-muted-foreground">
-        按总控 §3「Solution Package」34 分节结构化呈现；标注「待补充」的分节表示流水线尚未产出，
-        不代表方案已完整可售（宪法第 9/20 条）。
+        按 34 分节标准结构呈现；标注「待补充」的分节表示研究论证流程尚未产出，不代表方案已完整可售。
       </p>
       <div className="flex flex-col gap-3">
         {body.sections.map((sec) => (

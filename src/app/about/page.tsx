@@ -54,7 +54,7 @@ export default function AboutPage() {
           GitHub 开源能力，与中国的供应链和本土产业条件进行 AI 重构，形成
           <strong className="text-foreground">可购买、可实施、可进一步定制</strong>
           的产业解决方案。我们不是内容生成器，而是一套「发现 → 研究 → 验证 → 重构 → 生成 → 审查」
-          的产业研究系统：高价值方案会经过多角色（Research / Bull / Bear / Judge / QA）交叉论证，
+          的产业研究系统：高价值方案会经过多角色交叉论证（正面论证、反面质疑、居中裁决、质量复核），
           关键数字要求来源可追溯、公式可复算，并明确区分事实、假设、推断与预测。
         </p>
       </section>
@@ -99,9 +99,9 @@ export default function AboutPage() {
       <section className="rounded-lg border border-border bg-muted/30 p-5 text-sm leading-6 text-muted-foreground">
         <h2 className="mb-2 font-semibold text-foreground">当前阶段说明</h2>
         <p>
-          本站正处于 <strong className="text-foreground">V1-A 开发阶段</strong>，
+          本站目前处于<strong className="text-foreground">早期验证阶段</strong>，
           目标是先跑通「免费案例 → 标准方案 → 购买」的最小闭环。数据库中的案例与方案
-          由每日流水线逐步发现、拆解与生成，当前可能为空或未完整填充——这是真实状态，
+          由每日自动发现、拆解与生成流程逐步充实，当前可能为空或未完整填充——这是真实状态，
           我们不预置任何示例或伪造内容。涉及法律、投资、能源、医疗、政策等高风险领域的方案，
           均会标注「需要专业人工确认」。
         </p>

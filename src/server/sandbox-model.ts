@@ -389,14 +389,14 @@ export function computeEconomics(
   const notes: string[] = [];
   if (g(ECON_KEYS.demandChargePerKwMonth) === 0) {
     notes.push(
-      "需量(基本)电费按主情景 A 计 = 0：适用「2030 年前实行两部制电价的经营性集中式充换电设施用电免收需量(容量)电费」条款（山西 52 号文 S 级原文已核实，全国同类条款来源待补归档）。若项目不属集中式设施、免征到期或当地执行有出入，请切 B/C 对照场景（覆写 demandCharge=40–44 或 Kc=100）重算，须专业复核",
+      "需量(基本)电费按 0 计：依据「2030 年前，对实行两部制电价的经营性集中式充换电设施用电免收需量(容量)电费」政策（山西原文已核实，全国同类文件来源待补归档）。若项目不属于集中式充换电设施、免征到期、或当地执行有出入，请在参数中把需量电价（元/kW·月）改为实际值（如 40–44）或把需用系数设为 100% 后重算，结果须专业复核",
     );
   } else {
     notes.push(
-      `需量(基本)电费按需用系数 Kc 口径（B/C 对照组）计入购电成本：计费需量=充电装机总功率×Kc≈${round(billedDemandKw, 0)} kW，年需量费≈${round(demandChargeY1, 0)} 元（元/kW·月×12）；V1 未建模储能削峰降需量，属保守全额计，须专业复核`,
+      `需量(基本)电费按需用系数计入购电成本：计费需量 = 充电装机总功率 × 需用系数 ≈ ${round(billedDemandKw, 0)} kW，年需量费 ≈ ${round(demandChargeY1, 0)} 元（需量电价 元/kW·月 × 12）；当前未建模储能削峰带来的需量下降，属保守全额计，须专业复核`,
     );
   }
-  if (taxBlocked) notes.push("已按企业所得税率对正净现金流简化计税（无折旧抵税 shield，偏保守）");
+  if (taxBlocked) notes.push("已按企业所得税率对正净现金流简化计税（未考虑折旧抵税效应，偏保守）");
   if (rate < 0) notes.push("折现率为负，NPV 口径异常，谨慎解读");
   if (!irrVal.ok) notes.push(`IRR 无法给出（${irrVal.reason}）：不编造比率，看 NPV/回收期`);
   if (payD === null) notes.push("折现回收期超出计算期：分析期内未回本（不假设迟早回本）");
@@ -405,16 +405,16 @@ export function computeEconomics(
       "「是否配置储能」开关=关：储能 CAPEX/OPEX 与储能套利价值整腿按 0 计；储能功率/容量参数仅保留为设备规格占位，不代表已投资",
     );
   else if (!hasStorage && storageEnergy > 0)
-    notes.push("储能键存在但技术层判定未纳入，储能相关 CAPEX/OPEX 按 0 计");
+    notes.push("已填储能容量，但储能功率或技术配置条件未满足，系统判定储能不生效：储能相关 CAPEX/OPEX 按 0 计");
   if (hasStorage && deltaStoY1 > 0)
     notes.push(
-      `储能年价值增量 Δ_sto≈${round(deltaStoY1, 0)} 元（R9.0 SVE 年度代理口径：σ/SOC窗口/年衰减/放电窗口均为占位假设，非逐时峰谷模型，须专业复核）`,
+      `储能年价值增量≈${round(deltaStoY1, 0)} 元：按年度代理口径估算（峰谷价差、可充放时段窗口、年衰减等均为例示参数，非逐小时精细模拟），须专业复核`,
     );
   if (sveY1PvLegZero)
     notes.push(
-      "储能消纳腿为 0：年度能量平衡下光伏富余与下网电量互斥（S1 接口缺口，已声明留白），消纳价值需日内形态建模",
+      "储能的「光伏消纳」价值按 0 计：在年度总量平衡下，光伏富余电量与电网下网电量被视作互斥，无法体现白天富余、晚间放电的日内错配收益；该项需日内逐时建模后才能算准，当前刻意留白不估",
     );
-  for (const rz of sveZeroedReasons) notes.push(`储能价值按 0 计（SVE 诚实归零）：${rz}`);
+  for (const rz of sveZeroedReasons) notes.push(`储能价值按 0 计（不满足计入条件时诚实归零，避免高估）：${rz}`);
 
   return {
     ok: true,

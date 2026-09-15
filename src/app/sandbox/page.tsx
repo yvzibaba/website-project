@@ -36,7 +36,7 @@ export default function SandboxPage() {
     <Container size="xl" className="flex flex-col gap-6 py-10">
       <PageHeader
         title="产业项目可视化决策沙盘"
-        description="V1 试点：新能源重卡 + 光伏 + 储能 + 充电一体化场站。选参数 → 跑模型 → 看技术 / 经济 / 风险 / 敏感性联动。"
+        description="免费试用：新能源重卡 + 光伏 + 储能 + 充电一体化场站。选参数 → 跑模型 → 看投资 / 回报 / 风险 / 敏感性联动。"
       />
       <SandboxShell />
     </Container>

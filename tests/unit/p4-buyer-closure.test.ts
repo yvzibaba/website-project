@@ -23,6 +23,8 @@ import {
   LEAD_SOURCES,
   LEAD_PROJECT_STAGES,
   LEAD_BUDGET_RANGES,
+  LEAD_FLEET_SIZES,
+  LEAD_NEED_TYPES,
   LEAD_STATUSES,
   LEADS_VERSION,
 } from "@/server/leads";
@@ -119,6 +121,77 @@ describe("P4 · createLeadSchema（留资入参契约）", () => {
       "1000-5000万",
       "5000万以上",
       "暂不清楚",
+    ]);
+  });
+
+  // V1.1 P4-brief：企业咨询资格判定三字段（项目地区·自由文本 / 车辆规模·白名单 / 需求类型·白名单）。
+  it("资格判定三字段：合法值通过、越界枚举拒、projectRegion ≤100", () => {
+    expect(
+      createLeadSchema.safeParse({
+        company: "ABC",
+        contactName: "张",
+        email: "a@b.co",
+        source: "enterprise",
+        projectRegion: "山西大同",
+        fleetSize: "200-500台",
+        needType: "投资测算/可行性",
+      }).success,
+    ).toBe(true);
+    // fleetSize / needType 越界 → 拒
+    expect(
+      createLeadSchema.safeParse({
+        company: "ABC",
+        contactName: "张",
+        email: "a@b.co",
+        source: "enterprise",
+        fleetSize: "一百万台",
+      }).success,
+    ).toBe(false);
+    expect(
+      createLeadSchema.safeParse({
+        company: "ABC",
+        contactName: "张",
+        email: "a@b.co",
+        source: "enterprise",
+        needType: "随便",
+      }).success,
+    ).toBe(false);
+    // projectRegion 超长 → 拒
+    expect(
+      createLeadSchema.safeParse({
+        company: "ABC",
+        contactName: "张",
+        email: "a@b.co",
+        source: "enterprise",
+        projectRegion: "区".repeat(101),
+      }).success,
+    ).toBe(false);
+    // 三字段皆可省（additive、可选，不破坏旧调用）
+    expect(
+      createLeadSchema.safeParse({
+        company: "ABC",
+        contactName: "张",
+        email: "a@b.co",
+        source: "enterprise",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("资格判定白名单快照（防误改）", () => {
+    expect(LEAD_FLEET_SIZES).toEqual([
+      "50台以下",
+      "50-200台",
+      "200-500台",
+      "500-1000台",
+      "1000台以上",
+      "暂不确定",
+    ]);
+    expect(LEAD_NEED_TYPES).toEqual([
+      "投资测算/可行性",
+      "融资/尽调材料",
+      "方案设计与选型",
+      "运营/成本优化",
+      "其他",
     ]);
   });
 });

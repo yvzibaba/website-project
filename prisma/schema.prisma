@@ -674,8 +674,13 @@ model Lead {
   phone        String? // 电话（≤50）
   projectStage String? // 项目阶段（白名单：规划/在建/运营/其他，≤50）
   budgetRange  String? // 预算区间（白名单档位，非自由金额，≤50）
-  message      String? // 补充说明（≤2000）
-  source       String // 落位来源：enterprise | report | pricing（server 层白名单，≤50）
+  // V1.1 P4-brief：企业咨询资格判定三字段（additive、可空、白名单/自由文本，全部非承诺）——
+  //   让后台一眼判断「值不值得跟进 / 派给谁」，均为自报意向信息，不作任何报价或合同依据。
+  projectRegion String? // 项目地区（省/市自由文本，≤100；非外键，避免留资侧强绑 Region 表）
+  fleetSize     String? // 车辆规模档位（白名单，≤50；对应新能源重卡车队量级）
+  needType      String? // 需求类型（白名单：投资决策/可研尽调/融资材料/方案设计/运营优化/其他，≤50）
+  message       String? // 补充说明（≤2000）
+  source        String // 落位来源：enterprise | report | pricing（server 层白名单，≤50）
   page         String? // 提交时所在页面路径（便于定位，≤500）
   status       String    @default("NEW") // NEW | CONTACTED | CLOSED
   createdAt    DateTime  @default(now())

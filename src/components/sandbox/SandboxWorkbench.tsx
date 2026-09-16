@@ -59,6 +59,7 @@ import type { MetricCard, Tone } from "@/lib/sandbox-view";
 import { buildSandboxReport } from "@/lib/sandbox-report";
 import type { ChangedParamView } from "@/lib/sandbox-report";
 import { SandboxReportPanel } from "./SandboxReportPanel";
+import { SandboxUpgradePanel } from "./SandboxUpgradePanel";
 import { SandboxRegionClauseFacts } from "./SandboxRegionClauseFacts";
 import { SandboxExplainPanel } from "./SandboxExplainPanel";
 import { SandboxSavePanel } from "./SandboxSavePanel";
@@ -210,7 +211,11 @@ export function SandboxWorkbench({
   }, [overrides]);
 
   // 动态报告：吃「当前」视图模型，改任参数/切地区/换画像即整份重写（§9「读最新 CalcResult」，无 AI/无网络/无重算）。
-  // 选非通用画像时传入 profile → 报告追加「企业个性化视角」节；通用画像传 undefined → 逐字同 R6。
+  // 免费/专业边界（V1.1 P4-brief · 非假功能）：报告层级随「是否走企业画像路径」真实分档——
+  //   未选企业画像（通用起点）= "basic" 免费基础报告（含全部诚实核心，逐版本审计明细收敛为一行）；
+  //   选了企业画像（/enterprise「企业版」入口）= "full" 完整报告（追加「企业专属视角」节 + 逐内核版本审计明细）。
+  // 两档都保留 NPV/IRR/回收期/敏感性 + 关键假设 + 风险复核 + 常驻免责，绝不把安全声明设进付费墙。
+  const reportLevel: "basic" | "full" = profileId === DEFAULT_PROFILE_ID ? "basic" : "full";
   const report = useMemo(
     () =>
       buildSandboxReport({
@@ -219,8 +224,9 @@ export function SandboxWorkbench({
         changedParams,
         discountRatePct: discountRate * 100,
         profile: profileId === DEFAULT_PROFILE_ID ? undefined : profile,
+        reportLevel,
       }),
-    [vm, pack.name, changedParams, discountRate, profileId, profile],
+    [vm, pack.name, changedParams, discountRate, profileId, profile, reportLevel],
   );
 
   function setVal(key: string, v: number | boolean) {
@@ -605,6 +611,8 @@ export function SandboxWorkbench({
           )}
 
           {showReport ? <SandboxReportPanel report={report} /> : null}
+          {/* V1.1 P4-brief · 转化与最后一公里：报告下方即时给出「免费 vs 专业」真实对比与下一步路径。 */}
+          {showReport ? <SandboxUpgradePanel level={reportLevel} /> : null}
           {showExplain && vm.ok ? <SandboxExplainPanel report={report} /> : null}
           {showSave ? (
             <SandboxSavePanel

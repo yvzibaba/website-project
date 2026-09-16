@@ -17,8 +17,12 @@ import {
 } from "@/components/ui";
 import {
   LEAD_BUDGET_RANGES,
+  LEAD_FLEET_SIZES,
+  LEAD_NEED_TYPES,
   LEAD_PROJECT_STAGES,
   type LeadBudgetRange,
+  type LeadFleetSize,
+  type LeadNeedType,
   type LeadProjectStage,
   type LeadSource,
 } from "@/server/leads";
@@ -53,7 +57,7 @@ interface LeadFormProps {
   compact?: boolean;
 }
 
-type FieldKey = "company" | "contactName" | "role" | "email" | "phone" | "message";
+type FieldKey = "company" | "contactName" | "role" | "email" | "phone" | "projectRegion" | "message";
 
 export function LeadForm({ source, title, subtitle, compact = false }: LeadFormProps) {
   const pathname = usePathname();
@@ -65,6 +69,9 @@ export function LeadForm({ source, title, subtitle, compact = false }: LeadFormP
   const [phone, setPhone] = useState("");
   const [projectStage, setProjectStage] = useState<LeadProjectStage | "">("");
   const [budgetRange, setBudgetRange] = useState<LeadBudgetRange | "">("");
+  const [projectRegion, setProjectRegion] = useState("");
+  const [fleetSize, setFleetSize] = useState<LeadFleetSize | "">("");
+  const [needType, setNeedType] = useState<LeadNeedType | "">("");
   const [message, setMessage] = useState("");
 
   const [pending, setPending] = useState(false);
@@ -96,6 +103,9 @@ export function LeadForm({ source, title, subtitle, compact = false }: LeadFormP
       phone: phone.trim() || undefined,
       projectStage: projectStage || undefined,
       budgetRange: budgetRange || undefined,
+      projectRegion: projectRegion.trim() || undefined,
+      fleetSize: fleetSize || undefined,
+      needType: needType || undefined,
       message: message.trim() || undefined,
       source,
       page: pathname ?? undefined,
@@ -123,11 +133,14 @@ export function LeadForm({ source, title, subtitle, compact = false }: LeadFormP
         setPhone("");
         setProjectStage("");
         setBudgetRange("");
+        setProjectRegion("");
+        setFleetSize("");
+        setNeedType("");
         setMessage("");
       } else {
         const fields = json?.error?.details?.fields ?? {};
         const mapped: Partial<Record<FieldKey, string>> = {};
-        for (const k of ["company", "contactName", "role", "email", "phone", "message"] as FieldKey[]) {
+        for (const k of ["company", "contactName", "role", "email", "phone", "projectRegion", "message"] as FieldKey[]) {
           const arr = fields[k];
           if (Array.isArray(arr) && arr.length > 0) mapped[k] = arr[0];
         }
@@ -233,6 +246,54 @@ export function LeadForm({ source, title, subtitle, compact = false }: LeadFormP
           >
             <option value="">— 未选择 —</option>
             {LEAD_PROJECT_STAGES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`lead-${source}-projectRegion`}>项目地区（可选，省 / 市）</Label>
+          <Input
+            id={`lead-${source}-projectRegion`}
+            value={projectRegion}
+            onChange={(e) => setProjectRegion(e.target.value)}
+            maxLength={100}
+            disabled={pending}
+            invalid={!!fieldErrs.projectRegion}
+            aria-invalid={!!fieldErrs.projectRegion || undefined}
+            placeholder="例如：山西大同"
+          />
+          {fieldErrs.projectRegion ? <FieldError>{fieldErrs.projectRegion}</FieldError> : null}
+        </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`lead-${source}-fleetSize`}>车辆规模（可选）</Label>
+          <select
+            id={`lead-${source}-fleetSize`}
+            value={fleetSize}
+            onChange={(e) => setFleetSize(e.target.value as LeadFleetSize | "")}
+            disabled={pending}
+            className="h-[38px] w-full rounded-md border border-input bg-transparent px-2 text-sm"
+          >
+            <option value="">— 未选择 —</option>
+            {LEAD_FLEET_SIZES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`lead-${source}-needType`}>需求类型（可选）</Label>
+          <select
+            id={`lead-${source}-needType`}
+            value={needType}
+            onChange={(e) => setNeedType(e.target.value as LeadNeedType | "")}
+            disabled={pending}
+            className="h-[38px] w-full rounded-md border border-input bg-transparent px-2 text-sm"
+          >
+            <option value="">— 未选择 —</option>
+            {LEAD_NEED_TYPES.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>

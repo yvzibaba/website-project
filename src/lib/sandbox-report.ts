@@ -22,7 +22,7 @@ import type { SandboxViewModel } from "@/lib/sandbox-view";
 import type { ProfileFocusTag, SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
 
 /** 报告口径版本（叙述结构 / 择要规则变化须升版记因，宪法第 13 条）。 */
-export const REPORT_VERSION = "1.1.1"; // 1.1.1（V1.1 P3 黑话清洗）：免责/假设/风险分节文案人话化（去 §17/E1–E8/S1/S5/E7/占位假设 黑话与泄漏的 ** 星号；「占位假设」→「示例参数·未经核实」），分节结构与择要规则零改动。1.1.0：新增可选「企业个性化视角」节（R7 · 依画像裁剪，只重排既有指标卡值、绝不重算）
+export const REPORT_VERSION = "1.2.0"; // 1.2.0（V1.1 P4-brief 报告商业化）：① 新增可选 reportLevel("basic" 免费基础 / "full" 专业完整，缺省 full→既有输出逐字不变、黄金零重录)；"basic" 仅收敛「企业专属视角节 + 逐内核版本审计表」两项增值内容为专业版交付，诚实核心（NPV/IRR/回收期/敏感性 + 关键假设 + 风险提示复核 + 常驻免责）两档全留，绝不把安全声明设进付费墙；② 分节标题改投资顾问语气（去工程调试味），节 key、结构/溯源项 label、免责 token 全部不动。1.1.1（V1.1 P3 黑话清洗）：免责/假设/风险分节文案人话化。1.1.0：新增可选「企业个性化视角」节
 
 /* ────────────────────────────── 类型 ────────────────────────────── */
 
@@ -49,6 +49,15 @@ export interface ReportInput {
    * 该节只从已算好的指标卡里**挑选/排序/引用**，绝不重算任何数字。省略此字段 → 报告与 R6 输出逐字一致（向后兼容）。
    */
   profile?: SandboxEnterpriseProfile;
+  /**
+   * 报告层级（V1.1 P4-brief 免费/专业边界，缺省 `"full"` → 与升级前输出逐字一致、黄金零重录）。
+   *   - `"basic"`（免费体验档）：保留全部**诚实核心**——NPV/IRR/回收期/ROI 执行摘要、投资成本结构、能量绿色、
+   *     敏感性最值、关键假设与简化口径、风险提示与人工复核、逐条常驻免责；仅把两项**增值内容**留作专业版交付：
+   *     ① 「企业专属视角」按画像重排节；② 「数据溯源」的逐内核版本审计明细（basic 只留一行可复算声明）。
+   *   - `"full"`（专业档）：在 basic 之上追加上述两节 —— 即当前默认输出。
+   * **绝不把安全声明 / 免责 / 关键假设 / 风险提示设进付费墙**（数据诚实硬边界，宪法第 16/20 条）。
+   */
+  reportLevel?: "basic" | "full";
 }
 
 /** 报告的一个分节。kind 决定 UI 如何渲染（prose=段落；bullets=键值条；list=要点）。 */
@@ -130,7 +139,7 @@ function buildProfileSection(vm: SandboxViewModel, profile: SandboxEnterprisePro
 
   return {
     key: "profile",
-    title: "企业个性化视角（依企业画像裁剪）",
+    title: "企业专属视角（按你的关注点重排结论）",
     kind: "list",
     paragraphs,
   };
@@ -149,7 +158,8 @@ const E2E_DISCLAIMER =
 
 /** 生成结构化报告。`vm.ok=false` 时只回诚实错误 + 免责，绝不编造结论。 */
 export function buildSandboxReport(input: ReportInput): SandboxReport {
-  const { vm, regionName, changedParams = [], discountRatePct, profile } = input;
+  const { vm, regionName, changedParams = [], discountRatePct, profile, reportLevel = "full" } = input;
+  const full = reportLevel === "full";
 
   const generatedFrom: SandboxReport["generatedFrom"] = {
     calcRef: vm.calcRef,
@@ -218,12 +228,12 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
   ];
 
   const sections: ReportSection[] = [
-    { key: "exec", title: "一、执行摘要", kind: "prose", paragraphs: execParagraphs },
+    { key: "exec", title: "投资结论摘要", kind: "prose", paragraphs: execParagraphs },
   ];
 
-  // R7 · §14 第 7 项「企业个性化」：仅当调用方给了画像时，紧随执行摘要追加一节「企业个性化视角」，
-  // 只挑既有的确定性指标卡值按画像优先级重排解读，绝不重算、绝不引新数字（不选画像 → 本节不出现，输出逐字同 R6）。
-  if (profile) {
+  // R7 · §14 第 7 项「企业个性化」：**仅专业档（full）**且调用方给了画像时，紧随执行摘要追加一节「企业专属视角」，
+  // 只挑既有的确定性指标卡值按画像优先级重排解读，绝不重算、绝不引新数字（免费 basic 档不含此节，属增值交付）。
+  if (full && profile) {
     const profileSection = buildProfileSection(vm, profile);
     if (profileSection) sections.push(profileSection);
   }
@@ -232,7 +242,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
   if (meta) {
     sections.push({
       key: "structure",
-      title: "二、投资与首年运营结构",
+      title: "投资与成本结构",
       kind: "bullets",
       items: [
         { label: "净 CAPEX（补贴后）", value: meta.capexNetLabel },
@@ -251,7 +261,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
   if (meta) {
     sections.push({
       key: "energy",
-      title: "三、能量与绿色指标",
+      title: "能量与绿色效益",
       kind: "bullets",
       items: [
         { label: "光伏自用率", value: meta.pvSelfConsumptionLabel },
@@ -271,7 +281,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
       });
     sections.push({
       key: "sensitivity",
-      title: "四、敏感性：结果最容易被谁左右",
+      title: "风险敏感性：结论对哪些变量最脆弱",
       kind: "prose",
       paragraphs: [
         vm.mostSensitiveLabel
@@ -283,10 +293,10 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
     });
   }
 
-  // 关键假设与简化口径（引擎 notes 原样透出，不加工成"事实"）
+  // 关键假设与适用边界（引擎 notes 原样透出，不加工成"事实"）——**两档全留**，绝不付费墙化诚实。
   sections.push({
     key: "assumptions",
-    title: "五、关键假设与简化口径",
+    title: "关键假设与适用边界",
     kind: "list",
     paragraphs: [
       "以下为本模型显式声明的简化口径与假设，任何一项偏离都需重算：",
@@ -296,10 +306,10 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
     // notes 已在 paragraphs 原样透出
   });
 
-  // 风险与人工复核
+  // 风险提示与尽调复核清单（**两档全留**，绝不付费墙化风险提示）
   sections.push({
     key: "risk",
-    title: "六、风险与人工复核",
+    title: "风险提示与尽调复核清单",
     kind: "list",
     paragraphs: [
       "本沙盘结论属高风险领域，须由具备产业、财务、电力专业背景的人员复核后方可采信或对外发布。",
@@ -308,11 +318,22 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
     ],
   });
 
-  // 溯源
+  // 数据溯源：basic（免费）只留一行「可复算」声明；full（专业）给出逐内核版本审计明细。
   const ev = vm.engineVersions;
+  if (!full) {
+    sections.push({
+      key: "provenance",
+      title: "数据溯源",
+      kind: "prose",
+      paragraphs: [
+        `本报告全部数字由确定性引擎现算、可逐条复算（计算引用 ${vm.calcRef ?? "—"}）。` +
+          "逐内核版本审计明细、可导出与存档的完整报告随专业版提供。",
+      ],
+    });
+  } else {
   sections.push({
     key: "provenance",
-    title: "七、数据溯源",
+    title: "数据溯源（可复算审计明细）",
     kind: "bullets",
     items: [
       { label: "计算引用 calcRef", value: vm.calcRef ?? "—" },
@@ -324,6 +345,7 @@ export function buildSandboxReport(input: ReportInput): SandboxReport {
       { label: "报告版本", value: REPORT_VERSION },
     ],
   });
+  }
 
   return {
     reportVersion: REPORT_VERSION,

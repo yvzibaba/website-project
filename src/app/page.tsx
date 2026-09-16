@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Badge, Button } from "@/components/ui";
+import { SandboxUpgradePanel } from "@/components/sandbox/SandboxUpgradePanel";
 import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
@@ -140,6 +141,20 @@ export default function Home() {
             * 示意数据基于沙盘示例参数（车队 60 台 / 桩 8×360kW / 光伏 500kWp / 储能 200kW·400kWh / 需量电费免征情景）由计算引擎生成，
             参数均为【示例·待核实】，口径为全投资（无杠杆）简化年度模型，非可研级，不构成任何投资建议。
           </p>
+        </Container>
+      </section>
+
+      {/* ── 屏②·B 免费 vs 专业 转化带（与沙盘结果页同一组件、同一口径，杜绝文案漂移）── */}
+      <section className="border-b border-border bg-muted/20">
+        <Container size="lg" className="py-14 flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground">先用免费的算清楚，再决定要不要专业版</h2>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              免费版不是「试用然后卡住」——它本身就是一份能读、能核对口径的完整决策报告。
+              下面列出升级到企业 / 人工尽调时才多出来的东西，全部真实可用或明确标注为人工交付，没有点了没反应的假功能。
+            </p>
+          </div>
+          <SandboxUpgradePanel level="basic" contactAnchorHint="企业页 / 沙盘报告尾的留资表单" />
         </Container>
       </section>
 

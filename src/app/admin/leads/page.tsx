@@ -74,6 +74,9 @@ function LeadRow({ l }: { l: LeadAdminItem }) {
           <span>邮箱：<span className="font-mono text-foreground">{l.email}</span></span>
           {l.phone ? <span>电话：<span className="font-mono text-foreground">{l.phone}</span></span> : null}
           {l.projectStage ? <span>项目阶段：{l.projectStage}</span> : null}
+          {l.projectRegion ? <span>项目地区：{l.projectRegion}</span> : null}
+          {l.fleetSize ? <span>车辆规模：{l.fleetSize}</span> : null}
+          {l.needType ? <span>需求类型：{l.needType}</span> : null}
           {l.budgetRange ? <span>预算档位：{l.budgetRange}</span> : null}
         </div>
 

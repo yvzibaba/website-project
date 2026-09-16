@@ -209,3 +209,55 @@ describe("sandbox-report · R7 企业个性化视角（依画像裁剪，§14 �
     expect(rep.sections.find((s) => s.key === "profile")).toBeUndefined();
   });
 });
+
+describe("sandbox-report · V1.1 P4-brief 免费/专业边界（reportLevel，非假功能：两档都留诚实核心）", () => {
+  it("缺省 reportLevel = full：输出与不传层级逐字相等（黄金零重录反证）", () => {
+    const vm = okViewModel();
+    const def = buildSandboxReport({ vm, regionName: "山西", profile: getEnterpriseProfile("fleet") });
+    const explicitFull = buildSandboxReport({
+      vm,
+      regionName: "山西",
+      profile: getEnterpriseProfile("fleet"),
+      reportLevel: "full",
+    });
+    expect(def).toEqual(explicitFull);
+  });
+
+  it("带画像但 reportLevel=basic → 不产出 profile 节（企业专属视角=专业增值）", () => {
+    const vm = okViewModel();
+    const rep = buildSandboxReport({
+      vm,
+      regionName: "山西",
+      profile: getEnterpriseProfile("fleet"),
+      reportLevel: "basic",
+    });
+    expect(rep.sections.map((s) => s.key)).not.toContain("profile");
+  });
+
+  it("★basic 仍保留全部诚实核心：exec/structure/energy/sensitivity/assumptions/risk + 常驻免责逐条在", () => {
+    const vm = okViewModel();
+    const rep = buildSandboxReport({ vm, regionName: "山西", reportLevel: "basic" });
+    const keys = rep.sections.map((s) => s.key);
+    for (const k of ["exec", "structure", "energy", "sensitivity", "assumptions", "risk"]) {
+      expect(keys, `免费档必须保留 ${k} 节`).toContain(k);
+    }
+    const all = rep.disclaimers.join("\n");
+    expect(all).toContain("程序算");
+    expect(all).toContain("需专业人工确认");
+    expect(all).toContain("不得单独作为投资或并网决策依据");
+  });
+
+  it("basic 的数据溯源收敛为一行（含 calcRef、指向专业版审计），full 给逐内核版本明细", () => {
+    const vm = okViewModel();
+    const basic = buildSandboxReport({ vm, regionName: "山西", reportLevel: "basic" });
+    const basicProv = basic.sections.find((s) => s.key === "provenance");
+    expect(basicProv?.kind).toBe("prose");
+    expect((basicProv?.paragraphs ?? []).join("\n")).toContain(vm.calcRef ?? "—");
+
+    const full = buildSandboxReport({ vm, regionName: "山西", reportLevel: "full" });
+    const fullProv = full.sections.find((s) => s.key === "provenance");
+    expect(fullProv?.kind).toBe("bullets");
+    const items = Object.fromEntries((fullProv?.items ?? []).map((i) => [i.label, i.value]));
+    expect(items["技术内核版本"]).toBe(vm.engineVersions?.tech);
+  });
+});

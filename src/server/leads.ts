@@ -36,12 +36,33 @@ export const LEAD_BUDGET_RANGES = [
 ] as const;
 export type LeadBudgetRange = (typeof LEAD_BUDGET_RANGES)[number];
 
+/** 车辆规模档位白名单（对应新能源重卡车队量级；档位而非精确数，降低填写门槛、便于后台粗分。自报意向，非承诺）。 */
+export const LEAD_FLEET_SIZES = [
+  "50台以下",
+  "50-200台",
+  "200-500台",
+  "500-1000台",
+  "1000台以上",
+  "暂不确定",
+] as const;
+export type LeadFleetSize = (typeof LEAD_FLEET_SIZES)[number];
+
+/** 需求类型白名单（企业来意粗分，决定后台派给谁、先问什么。自报意向，非承诺）。 */
+export const LEAD_NEED_TYPES = [
+  "投资测算/可行性",
+  "融资/尽调材料",
+  "方案设计与选型",
+  "运营/成本优化",
+  "其他",
+] as const;
+export type LeadNeedType = (typeof LEAD_NEED_TYPES)[number];
+
 /** 后台跟进状态白名单。 */
 export const LEAD_STATUSES = ["NEW", "CONTACTED", "CLOSED"] as const;
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 
 /** 留资层版本（改输入契约/口径须升版记原因，规则 13）。 */
-export const LEADS_VERSION = "1.0.0";
+export const LEADS_VERSION = "1.1.0"; // 1.1.0（V1.1 P4-brief）：新增企业咨询资格判定三字段 projectRegion(项目地区·自由文本)/fleetSize(车辆规模·白名单)/needType(需求类型·白名单)，均可选、纯 additive，跟进判定用、不作报价依据。1.0.0：初版 RFQ 留资。
 
 /* ────────────────────────── 输入契约（Zod） ────────────────────────── */
 
@@ -60,6 +81,9 @@ export const createLeadSchema = z.object({
   phone: z.string().trim().max(50, "电话过长").optional().or(z.literal("")),
   projectStage: z.enum(LEAD_PROJECT_STAGES).optional(),
   budgetRange: z.enum(LEAD_BUDGET_RANGES).optional(),
+  projectRegion: z.string().trim().max(100, "项目地区过长").optional().or(z.literal("")),
+  fleetSize: z.enum(LEAD_FLEET_SIZES).optional(),
+  needType: z.enum(LEAD_NEED_TYPES).optional(),
   message: z.string().trim().max(2000, "补充说明过长（≤2000 字）").optional().or(z.literal("")),
   source: z.enum(LEAD_SOURCES),
   page: z.string().trim().max(500, "页面路径过长").optional(),
@@ -113,6 +137,9 @@ export async function createLead(
         phone: d.phone?.trim() ? d.phone.trim() : null,
         projectStage: d.projectStage ?? null,
         budgetRange: d.budgetRange ?? null,
+        projectRegion: d.projectRegion?.trim() ? d.projectRegion.trim() : null,
+        fleetSize: d.fleetSize ?? null,
+        needType: d.needType ?? null,
         message: d.message?.trim() ? d.message.trim() : null,
         source: d.source,
         page: d.page ?? null,
@@ -144,6 +171,9 @@ export interface LeadAdminItem {
   phone: string | null;
   projectStage: string | null;
   budgetRange: string | null;
+  projectRegion: string | null;
+  fleetSize: string | null;
+  needType: string | null;
   message: string | null;
   source: string;
   page: string | null;
@@ -175,6 +205,9 @@ export async function listLeads(
       phone: r.phone,
       projectStage: r.projectStage,
       budgetRange: r.budgetRange,
+      projectRegion: r.projectRegion,
+      fleetSize: r.fleetSize,
+      needType: r.needType,
       message: r.message,
       source: r.source,
       page: r.page,

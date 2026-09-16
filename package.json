@@ -1,6 +1,6 @@
 {
   "name": "website-project",
-  "version": "0.73.0",
+  "version": "0.74.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -21,7 +21,9 @@
     "db:recompute-scores": "node --env-file=.env --import tsx scripts/recompute-scores.ts",
     "user:promote": "node --env-file=.env --import tsx scripts/promote-user.ts",
     "db:studio": "prisma studio",
-    "regen:sml": "node scripts/sml-regen.mjs"
+    "regen:sml": "node scripts/sml-regen.mjs",
+    "ops:metrics": "node --env-file=.env scripts/ops-metrics.mjs",
+    "test:tally": "node scripts/tally-real-user-test.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6",

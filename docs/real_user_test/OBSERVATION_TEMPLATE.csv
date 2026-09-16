@@ -1,0 +1,2 @@
+user_id,persona,device,q1_understood,five_min_done,core_results_understood_count,independent_params_changed,next_step_found,real_lead,lead_ref,q3_top_param,q4_focus_metric,q5_distrust_metric,q8_honesty_reaction,storage_notfound_redflag,truckcount_misread_redflag,needed_hint,enter_sandbox_sec,storage_sec,report_sec,lead_sec,notes,recorder,run_date
+EXAMPLE-DO-NOT-TALLY,P-5,mobile,pass,pass,3,2,yes,no,,光伏装机,回收期,IRR 太乐观,c,no,no,no,40,95,12,30,示例行·脚本会自动剔除·请勿当作真实数据,EXAMPLE_DO_NOT_TALLY,EXAMPLE

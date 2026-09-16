@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container, Badge, Button, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { JsonLd } from "@/components/seo";
+import { LeadForm } from "@/components/leads/LeadForm";
 import { SANDBOX_PROFILES, SANDBOX_PROFILES_VERSION } from "@/server/sandbox-profiles";
 import { seoMetadata } from "@/lib/site";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
@@ -137,6 +138,20 @@ export default function EnterprisePage() {
           也可以把情景导出为产业方案草案并<strong>询价购买</strong>。
           <Link href="/register" className="ml-1 text-primary underline underline-offset-4">注册 / 登录 →</Link>
         </p>
+      </section>
+
+      {/* V1.1 P4：留资（RFQ）表单 —— 企业询价意向，走 /api/leads（游客亦可） */}
+      <section className="flex flex-col gap-3">
+        <h2 className="text-xl font-semibold tracking-tight text-foreground">想直接聊？留个联系方式</h2>
+        <p className="text-sm leading-6 text-muted-foreground">
+          填一张询价意向表，我们会走人工流程对接（非自动报价 / 非合同承诺）。
+          如果你已经在沙盘里跑出了贴近真实条件的情景，可以在导出方案时带上项目链接一起说清楚。
+        </p>
+        <LeadForm
+          source="enterprise"
+          title="企业询价意向"
+          subtitle="登录后自动归因到你的账号；游客提交亦可，凭你填写的邮箱联系。"
+        />
       </section>
     </Container>
   );

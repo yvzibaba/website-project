@@ -3,6 +3,30 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.71.0] - 2026-09-16 · V1.1 Phase 4：商业转化最小可用（买家导出闭环修复 + RFQ 留资 + Pro entitlement 桩，**权限/路由/表单层重构·经济内核零触碰·MODEL/TECH/PARAMS/SENSITIVITY/PROFILES 版本全不动**）
+
+- 原因：方案 §5 Phase 4（#10 #11 #12 #13 #14 #17）——V1.1 全库审计钉出的**商业闭环断裂**：买家侧「导出 → 定价 → 购买」的第二步被 `requireStaffWrite` 挡在门外（真实买家永远拿不到 403）；同时缺少**留资（RFQ）**这条最原始的销售线索通路，公开收款页又属高风险留待人工，故 P4 落点=**买家能走通的最小非现金闭环 + 人工跟进的接收端**。裁决边界：定价与发布仍在 staff 后台经 `publishGuard` 决定，本 Phase 只放开门禁、绝不放松治理。
+- 买家导出闭环修复（P4-1，`src/server/api-guard.ts` 新增 `requireUserWrite` · CSRF 同源 + 必须登录、任意角色 · 不 staff 亦可）：
+  - `POST /api/sandbox/solution`：门禁由 `requireStaffWrite` → `requireUserWrite`；新增**属主核验** `ownsSandboxSource`（草案带 `sandboxSource` 时必须属当前用户，staff 豁免，DB 异常保守拒绝）；新增 **entitlement 软开关** `hasEntitlement("export")` 门禁（V1 默认开，`SANDBOX_ENTITLEMENT_EXPORT=0/false/off` 一键关；未来接计费系统的唯一 seam）。落库时把 `user.id` 作为 `creatorId` 盖到 `Solution` 行。
+  - `GET /api/sandbox/source/solutions`：门禁同步降为登录 + 属主；反查在非 staff 会话下用 `restrictToCreatorId` 过滤到"自己导出过的方案"，staff 仍看全量（历史 `creatorId=null` 行仅 staff 可见，买家无从冒领）。
+  - `POST /api/sandbox/solution/provenance`：**刻意保留** `requireStaffWrite`——把 ASSUMPTION 认证为可售卖 FACT 是关键人工决策，宪法「AI 做劳动、人做关键决策」硬边界，绝不因"买家自助"顺手放开；文件顶部加 ★ 例外注释言明。
+  - 客户端 `SandboxSolutionPanel`：案例清单改走 `GET /api/cases?limit=50`（公开橱窗，非 staff-only `/api/admin/cases`），修 #13 同源断裂；`needStaff` 状态与「审核员 / 管理员门禁」提示条整体删除（语义在 P4 已不存在），401→引导登录、403→服务端如实回传越权/开关原因走通用 error 通道。
+  - `src/server/cases.ts` / `api/cases` 路由：`CaseListItem` 增 `stage` 字段、`MAX_LIMIT` 12→50；供买家可选池显示行业 + 阶段并一次拉全（预览页仍按 12 传参不变）。
+- 属主核验原语（`src/server/sandbox-solution-source.ts` · `SANDBOX_SOLUTION_SOURCE_STORE_VERSION` **1.0.0 → 1.1.0**）：`ownsSandboxSource` 与 `verifySandboxSource` **刻意不共用结果**——verify 把「不存在」与「DB 抖一下」都折成 `ok:false, ref:null`，而属主核验在两者上应对相反（前者放行、后者保守拒绝）。故独立走 `normalizeSandboxSource` 判形状 + 独立 try/catch 查 ownerId；staff 恒放行；无 owner 的无主数据一律拒（与 `canAccessProject` 同一保守口径）；反查新增可选 `opts.restrictToCreatorId`，命中 `findMany.where` 而非内存裁剪，杜绝"过滤前 DB 泄漏"。
+- 数据层（`prisma/schema.prisma` · additive · 已对 Neon 生效）：`Solution` 加 `creatorId String?` + `creator User?` 关系（`onDelete: SetNull`，镜像 `Project.ownerId`），`User` 侧新加 `solutions Solution[]`；新增 `Lead` 表（`id/userId?/company/contactName/role?/email/phone?/projectStage?/budgetRange?/message?/source/page?/status="NEW"/createdAt/updatedAt` + `@@index([status, createdAt])` + `@@index([userId])`）。迁移 `20260915174701_add_solution_creator_and_lead`；无破坏性变更、无数据回填，旧行 `creatorId=null` 只对 staff 可见（买家看不到"不明归属"的历史方案，防误认领）。
+- Pro entitlement 桩（`src/server/feature-flags.ts` 新增）：`SandboxEntitlement = "export" | "multiProject" | "versionRollback"`；`hasEntitlement(e, env=process.env)` 默认全开，env `SANDBOX_ENTITLEMENT_<UPPER>` 显式 `0/false/off`（大小写不敏感、允许前后空白）→ 关；空串按"未设"处理（避免 CI 里 `.env` 空赋值误关功能）；非约定字符串（`"1"/"on"/乱码`）→ 保持开，不意外关闭功能。当前仅 `export` 在 solution 路由被消费，`multiProject/versionRollback` 是给 P5+ 计费的预留位。
+- RFQ 留资（P4-2 · 三处表单同一后端）：
+  - **数据层** `src/server/leads.ts`（`LEADS_VERSION 1.0.0`）：`createLeadSchema` 硬约束（company ≥2·≤200 / contactName ≤100 / email regex+≤200 / projectStage & budgetRange 白名单 / message ≤2000 / source ∈ 三处白名单）；`createLead(input, user)` 判别联合不裸抛，userId 只从会话注入、绝不接受客户端传入；`listLeads/updateLeadStatus` 供后台读，status ∈ NEW|CONTACTED|CLOSED。
+  - **端点** `POST /api/leads`（`force-dynamic`）：CSRF 同源 + 允许游客（复用 `requireSameOriginActor` 与 `/api/feedback` 同构）；**进程内存级单实例 IP 频控**（60s 内 ≤3 次、Map 键上限 5000 简易 LRU-ish 清理），命中 → 429 RATE_LIMITED；诚实边界**在路由注释与 UI 文案双处标出**：非分布式、重启即清零、拦不住代理 IP 池，真兜底是"人工阅读 + 1 个工作日内联系"的流程承诺，非系统 SLA；验证码/WAF 留待 V1-B。
+  - **组件** `src/components/leads/LeadForm.tsx`（client）：三处 `source` 区分（`enterprise` / `report` / `pricing`），字段与服务端 zod 一一对齐（前端即时反馈 + 服务端唯一真源）、错误按字段回填 + 429/CSRF 走通用提示条；提交成功清表并显"已收到"。**刻意不做**：多步表单 / 富文本 / 文件上传 / 地址簿 / 行业下拉——留资 MVP，只要一条可跟进的意向。
+  - **落位**：`/enterprise` 底部新增「想直接聊？留个联系方式」section；`SandboxWorkbench` 报告尾（`showReport &&` 门控）新增「这份结果想让我们看看？」；`solutions/[id]` 定价卡下方（`!isDemo` 门控）新增「价格 / 定制问题？」。
+  - **后台读端**：`src/app/admin/leads/page.tsx`（`requireRole(STAFF_ROLES)` 双层门禁 · 支持 `?status=` 过滤），带来源徽章、登录提交者邮箱显示、"无 CRM 同步、无自动通知"顶部 Alert；`src/app/admin/page.tsx` 加导航链接。**已知尾巴**：`updateLeadStatus` server 函数已实现且被单测覆盖，但**未接 admin 端点与按钮**——P4 留资跟进结果回写走自家表格即可，若一线反馈需要"点了归档"体验属 P4 尾巴。
+- 测试随动：
+  - **新增** `tests/unit/p4-buyer-closure.test.ts`（22 用例）：`createLeadSchema` 契约 + 白名单常量防误改快照；`hasEntitlement` env 解析（默认开 / `0/false/off` 关 / 空串保开 / 乱码保开）；`requireUserWrite` CSRF + 未登录 401 + USER/REVIEWER/ADMIN 三态放行；`ownsSandboxSource` staff 恒放行不触库 + 无指针放行 + owner 吻合 / 不吻合 / 无主 / 情景所属项目吻合 / 属于别人 / 行不存在放行 / DB 异常保守拒绝。变异自测：把 `if (!p) return { owned: true }` 改成 `false` 立刻炸"行不存在放行"用例。
+  - `tests/unit/sandbox-solution-store.test.ts` 加 `vi.mock("@/server/authz")`（P4 后 `sandbox-solution-source` 引入 `STAFF_ROLES` 拉进 next-auth，vitest ESM/CJS 边界下 `next/server` 解析失败）；本测试文件只测 persist 分派、不触发属主核验路径，mock 掉即可保持原语义。
+- 验证：`npm run test:unit` **1146 通过 + 1 跳过**（64 文件，+22 净新增，除上表新 mock 修复外**零测试文件回退**）；`tsc --noEmit` exit 0；`eslint .` 0 error / 0 warning；`npm run build` 通过（新路由 `/admin/leads`、`/api/leads` 均在清单；`/`、`/enterprise`、`/sandbox` 保持 ○ 静态——P3 战果不动）；黄金/SML/溯源套件**零重录**（MODEL/TECH/PARAMS/SENSITIVITY/PROFILES 版本不动 = 反证：经济内核与快照值逐字节零变动）；`package.json` **0.70.0 → 0.71.0**。
+- 效果：真实买家自此能登录后导出方案挂到自己项目、能反向看到"我导出过哪些"，游客能在企业页 / 报告尾 / 方案定价卡三处一键留资；后台 `/admin/leads` 成为人工跟进的接收端。商业闭环的"公开收款页"仍是刻意人工边界（宪法：高风险 / 法务终稿 / 生产部署 / 密钥吊销 / 财务内核口径 → 留创始人拍板）。边界：P4 尾巴——`updateLeadStatus` 未接路由/按钮；`/api/leads` 频控是单实例内存级，接真·验证码/WAF 属 V1-B；`SANDBOX_ENTITLEMENT_MULTI_PROJECT / VERSION_ROLLBACK` 尚未接调用位。下一步 P6（测试网 + E2E）→ P5（融资腿·人工拍板）→ P7（AI 解读卡）。
+
 ## [0.70.0] - 2026-09-16 · V1.1 Phase 3：定位与呈现重构（首页三屏 + 全站公开文案「黑话清洗」，**纯文案/样式/路由内容·经济内核零触碰·MODEL/TECH/PARAMS/SENSITIVITY/PROFILES/VIEW 版本全不动**）
 
 - 原因：方案 §4 Phase 3（#7 #8 #9 #15）——公开界面长期泄漏内部口径（宪法/总控条款号、研究流水线角色名 Bull/Bear/Judge/QA、漏斗数 60→20→10→3→1、批次号、Δ_sto/E1–E8/S1/S5/G1/G2 编号、"占位假设/整链重算/发布守卫/流水线"黑话、DRAFT/ASSUMPTION 枚举直印），普通买家读不懂且显故弄玄虚；首页信息架构未立「定位三屏」。裁决边界：**管理后台（src/app/admin、src/components/admin）与服务端内部注释保留黑话**（工作人员工具），只清洗用户可见层；数据层诚实不变式（params 来源【占位假设前缀、DATA_CONFLICT 标记、字面直传/待核注记、开关=关钉桩）逐字不碰。

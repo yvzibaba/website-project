@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Container, Badge, Alert, Button, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { BuyButton } from "@/components/solutions/BuyButton";
+import { LeadForm } from "@/components/leads/LeadForm";
 import { getPublishedSolutionById } from "@/server/solutions";
 import { getCurrentUser } from "@/server/authz";
 import { hasPaidEntitlement } from "@/server/orders";
@@ -202,6 +203,16 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
           />
         </CardContent>
       </Card>
+
+      {/* V1.1 P4 · 定价位留资：未定价 / 想直接聊价的买家的兜底入口（走 /api/leads、游客亦可）。
+          source="pricing"；后台读到该条时会连同方案 id 与页面路径一起看到，便于精准回复。 */}
+      {!s.isDemo ? (
+        <LeadForm
+          source="pricing"
+          title="价格 / 定制问题？留个联系方式我们回复"
+          subtitle="方案本身是通用产业方案；如需按你项目现状调整、批量采购或跨方案组合，直接说需求即可。"
+        />
+      ) : null}
 
       {/* 关联案例 */}
       <section className="text-sm">

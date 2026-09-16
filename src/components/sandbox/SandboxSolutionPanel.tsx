@@ -3,17 +3,18 @@
  *
  * 这是把 R0–R7 的沙盘结果**推进到「案例→方案→查看→购买」真闭环**的那一步：把 R8.1 纯映射桥
  * （`sandbox-solution.ts`）现算出的产业方案草案，连同**人亲自挑定的案例（caseId）**与拟定价格，
- * POST 到受 staff + CSRF 门禁的 `/api/sandbox/solution`，落成一条真实 **DRAFT** `Solution`——
- * 随后可在方案后台补真实数据、经 publishGuard 人工裁决上架、进入查看→购买（Order）。
+ * POST 到受「登录 + 属主 + CSRF」门禁的 `/api/sandbox/solution`（V1.1 P4 买家闭环修复：不再要求
+ * staff 角色；带来源情景/项目指针时服务端核验其归当前用户），落成一条真实 **DRAFT** `Solution`——
+ * 随后可在方案后台补真实数据、经人工审核发布上架、进入查看→购买（Order）。
  *
  * 诚实与边界（宪法第 7/16/20/21 条 + 「AI 做劳动、人做关键决策」）：
  *   - **本组件只搬运、绝不本地算数**：草案由 `buildSandboxSolutionDraft`（确定性、无 DB/网络）现算，
  *     数字逐字来自引擎与视图模型；面板不重算、不改写任何指标。
  *   - **接案是人的决策**：`Solution.caseId` 是必填外键（R6.4 regionId 的 P2003 教训），故案例必须由人
- *     从真实存在的案例（`GET /api/admin/cases`）里显式挑定，绝不自动挂/凭空造；没挑案例不让导出。
+ *     从公开案例清单（`GET /api/cases`，V1.1 P4 起买家可选池）里显式挑定，绝不自动挂/凭空造；没挑案例不让导出。
  *   - **只落 DRAFT、绝不自动发布**：草案 `needsProfessionalReview=true` 且带**发布阻塞清单**，面板把这些
  *     阻塞项如实回显（「还差这些才能发布」），是否/何时上架由人在后台决定。
- *   - **权限诚实**：端点仅 REVIEWER/ADMIN 可用；未登录引导登录、已登录非 staff 明确提示「需审核员/管理员权限」。
+ *   - **权限诚实**：端点要求登录（任意角色）+ 来源属主核验；未登录引导登录，越权/开关关闭如实提示。
  */
 
 "use client";
@@ -53,8 +54,9 @@ interface ExportResult {
 }
 
 /**
- * 从 `GET /api/admin/cases` 回体里尽力挑出可展示的字段；字段缺失时回落（不因个别字段缺失而整表崩）。
- * 服务端视图（AdminCaseListItem）字段稳定，这里只做防御式收窄，不做业务判断。
+ * 从 `GET /api/cases`（公开橱窗清单）回体里尽力挑出可展示的字段；字段缺失时回落（不因个别字段缺失而整表崩）。
+ * V1.1 P4 #13：买家可选池 = 公开案例，字段与公开 API 保持一致（id/title/industryName/stage）。
+ * 这里只做防御式收窄，不做业务判断。
  */
 function toCaseOption(raw: unknown): CaseOption | null {
   if (!raw || typeof raw !== "object") return null;
@@ -104,7 +106,8 @@ export function SandboxSolutionPanel({
   const [result, setResult] = useState<ExportResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
-  const [needStaff, setNeedStaff] = useState(false);
+  // V1.1 P4：买家闭环——401→引导登录；403→服务端如实回传越权/开关原因，走通用 error 通道，
+  // 不再单独维护 needStaff 状态（旧「审核员 / 管理员门禁」的语义在 P4 已不复存在）。
 
   // 客户端现算草案（无 DB/网络）；面板只在 vm.ok 时挂载（工作台已门禁），仍对 !ok 兜底显示原因。
   const draft = useMemo(
@@ -126,19 +129,9 @@ export function SandboxSolutionPanel({
 
   const loadCases = useCallback(async () => {
     // 先 await 外部请求，再在响应回调里 setState（避免在 effect 体内同步 setState 触发级联渲染）。
-    const res = await mutateJson("/api/admin/cases", "GET");
-    if (res.status === 401) {
-      setCasesLoading(false);
-      setNeedLogin(true);
-      setCasesError("加载真实案例需要登录（导出产业方案本身还需审核员 / 管理员权限）。");
-      return;
-    }
-    if (res.status === 403) {
-      setCasesLoading(false);
-      setNeedStaff(true);
-      setCasesError("需要审核员或管理员权限才能查看案例清单并导出产业方案。");
-      return;
-    }
+    // V1.1 P4 #13：买家可选案例池 = 公开橱窗清单（/api/cases，恒非 DEMO、仅公开阶段、免登录），
+    // 不再走 staff-only 的 /api/admin/cases——否则普通登录买家根本拉不到可挂靠的案例。
+    const res = await mutateJson("/api/cases?limit=50", "GET");
     if (!res.ok) {
       setCasesLoading(false);
       setCasesError(res.message ?? "案例清单加载失败");
@@ -151,7 +144,6 @@ export function SandboxSolutionPanel({
     setCasesLoaded(true);
     setCasesError(null);
     setNeedLogin(false);
-    setNeedStaff(false);
   }, []);
 
   async function exportSolution() {
@@ -190,13 +182,14 @@ export function SandboxSolutionPanel({
       return;
     }
     if (res.status === 403) {
-      setNeedStaff(true);
-      setError(res.message ?? "导出产业方案需要审核员 / 管理员权限");
+      // V1.1 P4：403 现在有两种来源——① 来源属主核验失败（导出了别人的项目/情景）；
+      // ② 导出权益开关关闭（未来接计费/订阅时用）。服务端已回传具体原因，如实透出即可。
+      setNeedLogin(false);
+      setError(res.message ?? "当前账号无权导出该沙盘方案");
       return;
     }
     if (!res.ok) {
       setNeedLogin(false);
-      setNeedStaff(false);
       const hint = fieldHints(res.fields).join("；");
       setError((res.message ?? "导出失败") + (hint ? `：${hint}` : ""));
       return;
@@ -429,16 +422,10 @@ export function SandboxSolutionPanel({
 
         {needLogin ? (
           <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800">
-            导出产业方案需要登录（且账号需具备审核员 / 管理员权限）。
+            导出产业方案需要登录后再操作。
             <Link href="/login?callbackUrl=%2Fsandbox" className="ml-1 underline">
               前往登录
             </Link>
-          </div>
-        ) : null}
-
-        {needStaff && !needLogin ? (
-          <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800">
-            当前账号无权导出产业方案：该操作受审核员 / 管理员门禁保护（与方案后台同权限）。
           </div>
         ) : null}
 

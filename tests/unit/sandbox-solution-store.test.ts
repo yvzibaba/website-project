@@ -13,6 +13,15 @@ vi.mock("@/lib/logger", () => ({
   logger: { child: () => ({ info: () => {}, warn: () => {}, error: () => {} }) },
 }));
 
+// V1.1 P4：sandbox-solution-source 新增了对 @/server/authz 的 STAFF_ROLES 引用（ownsSandboxSource 需要）。
+// 本测试文件只测 persist 层分派、不触发属主核验路径，直接把 authz 顶掉避免 ESM 加载 next-auth（其内部
+// 依赖 next/server，在 vitest 环境里会因 ESM/CJS 边界解析失败，报 "Cannot find module 'next/server'"）。
+vi.mock("@/server/authz", () => ({
+  STAFF_ROLES: ["REVIEWER", "ADMIN"],
+  requireRole: vi.fn(),
+  getCurrentUser: vi.fn(),
+}));
+
 vi.mock("@/server/solution-admin", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/server/solution-admin")>();
   return {

@@ -10,6 +10,8 @@ import { upgradeSolutionFinancialProvenance } from "@/server/sandbox-provenance-
  *
  * 门禁（宪法安全底线 + 「AI 做劳动、人做关键决策」）：受 `requireStaffWrite`（CSRF 同源 + REVIEWER/ADMIN）
  *   保护——能把一条占位假设「认证成可售卖事实」是**关键人工决策**，普通访客 / 买家绝碰不到。
+ *   ★V1.1 P4 刻意例外：同族「买家导出」端点（/api/sandbox/solution、/api/sandbox/source/solutions）
+ *   已按预批改为「登录 + 属主」，**本端点不随之放开**——溯源升级不是买家动作，仍是 staff 专属。
  *
  * 刻意边界：
  *   - 落库前**必过** R8.4 纯函数闸门 `planProvenanceUpgrade`：无合法 http(s) 来源 / 无 [0,100] 数值置信度

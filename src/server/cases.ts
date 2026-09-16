@@ -45,6 +45,8 @@ export interface CaseListItem {
   industry: Industry;
   industrySlug: string;
   industryName: string;
+  /** V1.1 P4 加：公开阶段（PUBLIC_CASE_STAGES 之一），供导出「挂靠案例」下拉识别案例成熟度。 */
+  stage: string;
   regionName: string | null;
   discoveredAt: Date;
   opportunityScore: number | null;
@@ -114,6 +116,7 @@ export async function listPublicCases(params: CaseListParams): Promise<CaseListR
         industry: c.industry as Industry,
         industrySlug: meta?.slug ?? "other",
         industryName: meta?.name ?? "其他",
+        stage: c.stage,
         regionName: c.region?.name ?? null,
         discoveredAt: c.discoveredAt,
         opportunityScore: c.opportunityScore,

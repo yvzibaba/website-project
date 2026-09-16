@@ -13,12 +13,14 @@
  *     完成，反查也复用同一套键名常量与归一，杜绝「写一套读一套」漂移（§16 单一真源）。
  *   - **零 schema 迁移**：来源指针落在既有 `SolutionFinancial.assumptions` JSONB，反查用 Prisma 的 JSON `path` 过滤，
  *     不新增列 / 表 / 索引（V1 数据量下顺序过滤可接受；如日后成为热点再专项加 GIN 索引，见 ROADMAP）。
- *   - **权限在调用方（路由）把关**：本层不含鉴权，只认调用方已过 staff 门禁（反查暴露的是方案标题/状态等内部治理
- *     信息，故整条 R8.6 反查只走 staff-gated 端点、零公开暴露）。server 域逻辑，直接 import prisma/logger；
+ *   - **权限在调用方（路由）把关**：本层只提供**属主核验原语**（`ownsSandboxSource`），不做会话判定
+ *     （V1.1 P4 买家闭环修复后，导出/反查端点语义 = 登录 + 属主：普通用户仅可对自己的情景/项目导出与反查，
+ *     staff 不受限）。server 域逻辑，直接 import prisma/logger；
  *     本仓刻意不 import "server-only"（vitest/node 会抛错），仅注释标注。
  */
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/lib/logger";
+import { STAFF_ROLES, type SessionUser } from "@/server/authz";
 import {
   SANDBOX_SOURCE_FIELD,
   normalizeSandboxSource,
@@ -29,8 +31,10 @@ import {
 
 const log = logger.child({ module: "server/sandbox-solution-source" });
 
-/** 服务端来源关联编排版本（校验口径 / 反查契约变化须升版记因，宪法第 13 条）。 */
-export const SANDBOX_SOLUTION_SOURCE_STORE_VERSION = "1.0.0";
+/** 服务端来源关联编排版本（校验口径 / 反查契约变化须升版记因，宪法第 13 条）。
+ *  1.1.0（V1.1 P4）：新增属主核验 `ownsSandboxSource`；反查加 `restrictToCreatorId` 属主过滤（买家自助闭环开门，
+ *  端点语义由 staff-only 改「登录 + 属主」）。核验/反查的既有行为对旧调用方（不传新参数）逐字不变。 */
+export const SANDBOX_SOLUTION_SOURCE_STORE_VERSION = "1.1.0";
 
 /* ─────────────────────────── 写侧：落库前的存在性核验（诚实丢假指针） ─────────────────────────── */
 
@@ -78,6 +82,48 @@ export async function verifySandboxSource(input: SandboxSourceInput | null | und
   }
 }
 
+/**
+ * 属主核验（V1.1 P4「登录 + 属主」端点语义的写侧原语）：判定 user 是否有权把导出挂到该系统解析出的
+ * sandboxSource 所指情景 / 项目上。**刻意不复用** `verifySandboxSource` 的判别结果：verify 会把「不存在」
+ * 与「DB 异常」都折成 `ok:false, ref:null`，而属主核验在两种 false 上的应对**相反**——前者（无有效指针）
+ * 应放行（没有可越权的东西），后者（DB 抖了一下）必须保守拒绝（绝不因核验失败而放行越权写入）。
+ * 故本函数直接走 `normalizeSandboxSource` 判形状 + 独立 try/catch 查 owner：
+ *   - ref 形状不合法（都缺 / 都脏）→ `{ owned:true }`（无来源可验，交由 persist 层诚实丢指针）；
+ *   - staff（REVIEWER/ADMIN）→ 恒放行（后台治理，同 canAccessProject 语义）；
+ *   - 普通用户：项目 ownerId / 情景所属项目 ownerId 必须恰等于其 id（含 null owner 的无主数据一律拒，
+ *     与 canAccessProject「绝不认领无主数据」同一保守口径）；
+ *   - 行不存在 → `{ owned:true }`（persist 层的 verify 已经负责不写假关联，此处不重复拦）；
+ *   - DB 异常 → 保守拒绝（owned:false），**绝不因核验失败而放行越权写入**。
+ */
+export async function ownsSandboxSource(
+  input: SandboxSourceInput | null | undefined,
+  user: SessionUser,
+): Promise<{ owned: boolean; reason?: string }> {
+  if (STAFF_ROLES.includes(user.role)) return { owned: true };
+  const ref = normalizeSandboxSource(input);
+  if (!ref) return { owned: true }; // 无有效来源指针：没有可越权的东西
+  try {
+    if (ref.projectId) {
+      const p = await prisma.project.findUnique({ where: { id: ref.projectId }, select: { ownerId: true } });
+      if (!p) return { owned: true }; // 项目不存在：verify 已负责丢指针，不重复拦
+      if (!p.ownerId || p.ownerId !== user.id) return { owned: false, reason: "来源项目不属于当前登录用户" };
+    }
+    if (ref.scenarioId) {
+      const sc = await prisma.projectScenario.findUnique({
+        where: { id: ref.scenarioId },
+        select: { project: { select: { ownerId: true } } },
+      });
+      if (!sc) return { owned: true }; // 情景不存在：同上，persist 层负责
+      const ownerId = sc.project?.ownerId ?? null;
+      if (!ownerId || ownerId !== user.id) return { owned: false, reason: "来源情景所属项目不是当前登录用户" };
+    }
+    return { owned: true };
+  } catch (e) {
+    log.warn("ownsSandboxSource DB read failed; denying conservatively", { err: String(e) });
+    return { owned: false, reason: "来源属主核验失败（保守拒绝）" };
+  }
+}
+
 /* ─────────────────────────── 读侧：反查「某情景 / 项目 → 它导出的方案」 ─────────────────────────── */
 
 /** 反查命中的方案精简视图（只够导航与识别，绝不带财务明细 / 正文大对象）。 */
@@ -102,9 +148,12 @@ export type FindSolutionsBySandboxSourceResult =
  *   - 命中集合按方案去重（一方案多条财务只会各命中一次，取首条指针为准）；
  *   - DB 异常 → `error`（不裸抛）。
  * 只读 `SolutionFinancial.assumptions` 的 JSONB 指针，不重算、不外泄财务明细。
+ * `restrictToCreatorId`（V1.1 P4）：非 staff 买家只可见**自己导出**的方案（creatorId 恰等；
+ *   加列前的历史行 creatorId=null 对买家不可见，staff 后台仍全量——属主过滤在 findMany where 里做，不靠内存裁剪）。
  */
 export async function findSolutionsBySandboxSource(
   input: SandboxSourceInput | null | undefined,
+  opts?: { restrictToCreatorId?: string },
 ): Promise<FindSolutionsBySandboxSourceResult> {
   const ref = normalizeSandboxSource(input);
   if (!ref) {
@@ -132,8 +181,11 @@ export async function findSolutionsBySandboxSource(
     }
     const solutionIds = [...bySolution.keys()];
     const solutions = await prisma.solution.findMany({
-      where: { id: { in: solutionIds } },
-      select: { id: true, title: true, slug: true, status: true, updatedAt: true },
+      where: {
+        id: { in: solutionIds },
+        ...(opts?.restrictToCreatorId ? { creatorId: opts.restrictToCreatorId } : {}),
+      },
+      select: { id: true, title: true, slug: true, status: true, updatedAt: true, creatorId: true },
       orderBy: { updatedAt: "desc" },
     });
 

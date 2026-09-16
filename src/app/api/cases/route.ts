@@ -11,12 +11,12 @@ import { getIndustryBySlug } from "@/server/industries";
  *   - 恒 includeDemo=false：DEMO 只属于 /cases?demo=1 的开发验证，公开 API 绝不透出（宪法第 20 条）；
  *   - 只读 GET：无写面、不查会话、不入库；
  *   - industry 用 slug（kebab-case，与 URL 口径一致），非法 slug → 400；
- *   - limit 上限 12（预览场景够用，防批量拉取）。
+ *   - limit 上限 50（V1.1 P4 上调：预览 + 买家导出「挂靠案例」下拉共用此公开列表；仍防批量拉取）。
  * DB 失败 → 500 + 统一错误体（客户端组件据此降级提示，与数据层"ok:false 不崩溃"策略衔接）。
  */
 export const dynamic = "force-dynamic";
 
-const MAX_LIMIT = 12;
+const MAX_LIMIT = 50;
 const DEFAULT_LIMIT = 6;
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -62,6 +62,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       id: c.id,
       title: c.title,
       summary: c.summary,
+      stage: c.stage,
       industrySlug: c.industrySlug,
       industryName: c.industryName,
       regionName: c.regionName,

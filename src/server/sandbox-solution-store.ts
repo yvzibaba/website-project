@@ -41,8 +41,10 @@ import {
  * 落库编排口径版本（组合规则 / 回写字段变化须升版记因，宪法第 13 条）。
  * 1.1.0：新增可选 `sandboxSource` 入参——导出时把「来源已保存情景 / 项目」指针经服务端验存后并入财务 assumptions
  *      （R8.6 反查关联）；核验不过即诚实丢指针、绝不阻断导出。向后兼容：不传 `sandboxSource` 行为逐字同 1.0.0。
+ * 1.2.0（V1.1 P4 买家闭环）：新增可选 `opts.creatorId`——登录买家自助导出时把属主指针盖到 Solution 行
+ *      （值只从服务端会话注入）。向后兼容：不传 = creatorId null，行为逐字同 1.1.0（staff 后台建方案不受影响）。
  */
-export const SANDBOX_SOLUTION_STORE_VERSION = "1.1.0";
+export const SANDBOX_SOLUTION_STORE_VERSION = "1.2.0";
 
 /* ─────────────────────────── 入参 schema（复用既有单一真源，防录入/落库两套规则漂移） ─────────────────────────── */
 
@@ -113,10 +115,12 @@ function toFieldErrors(err: z.ZodError): Record<string, string[]> {
 /**
  * 把一份沙盘产业方案草案落库为 **DRAFT** `Solution`（+ 财务 + 关键未知）。
  * 全程委托 `solution-admin` 已测函数；**绝不自动发布**（发布由人在后台经 publishGuard 决定）。
+ * `opts.creatorId`（V1.1 P4）：买家自助导出的属主指针（服务端会话注入，绝不接客户端传入）。
  */
 export async function persistSandboxSolutionDraft(
   input: unknown,
   actor?: string,
+  opts?: { creatorId?: string },
 ): Promise<SandboxSolutionPersistResult> {
   const parsed = SandboxSolutionPersistSchema.safeParse(input);
   if (!parsed.success) {
@@ -153,6 +157,7 @@ export async function persistSandboxSolutionDraft(
       needsProfessionalReview: d.needsProfessionalReview ?? true,
     },
     actor,
+    opts,
   );
   if (created.status !== "ok" || !created.solutionId) {
     // 透传 invalid / not_found / blocked / error（含 fieldErrors，如 caseId 不存在 / slug 冲突 / price 非法）。

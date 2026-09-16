@@ -63,6 +63,7 @@ import { SandboxRegionClauseFacts } from "./SandboxRegionClauseFacts";
 import { SandboxExplainPanel } from "./SandboxExplainPanel";
 import { SandboxSavePanel } from "./SandboxSavePanel";
 import { SandboxSolutionPanel } from "./SandboxSolutionPanel";
+import { LeadForm } from "@/components/leads/LeadForm";
 import {
   BreakdownBar,
   CashFlowChart,
@@ -620,6 +621,16 @@ export function SandboxWorkbench({
               regionName={pack.name}
               profile={profileId === DEFAULT_PROFILE_ID ? undefined : profile}
               savedSource={savedSource}
+            />
+          ) : null}
+
+          {/* V1.1 P4 · 报告尾留资：看过动态报告即视为进入「考虑期」，提供人工对接入口。
+              source="report" 会写入 Lead.source，便于后台区分询价来自沙盘报告尾 vs 企业页 vs 定价位。 */}
+          {showReport ? (
+            <LeadForm
+              source="report"
+              title="这份结果想让我们看看？留个联系方式"
+              subtitle="把你的项目背景 + 关心的参数贴进来，我们走人工流程给一份初判（非报价 / 非合同承诺）。"
             />
           ) : null}
         </div>

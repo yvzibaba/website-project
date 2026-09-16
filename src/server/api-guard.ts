@@ -115,6 +115,27 @@ export async function requireSameOriginActor(request: Request): Promise<ActorGua
   return { ok: true, user, actor: user ? actorOf(user) : null };
 }
 
+type UserWriteGuardResult =
+  | { ok: true; user: SessionUser; actor: string; creatorId: string }
+  | { ok: false; response: NextResponse };
+
+/**
+ * 保护「买家侧」写/查端点（V1.1 P4 导出闭环修复）：CSRF 同源 + **必须登录**（任意角色），
+ * 但**不要求 staff**——能登录即视为买家（滥用风险由产物语义收敛：导出一律 DRAFT、
+ * 定价与发布仍在 staff 后台，见方案 §5 人工决策项 #6 的预批结论）。
+ * 属主语义（"登录 + 属主"）不在本层做通用判定：资源各异（项目/情景/方案），
+ * 由各端点用 `canAccessProject` / `ownsSandboxSource` 等专用属主核验在**动库前**完成。
+ */
+export async function requireUserWrite(request: Request): Promise<UserWriteGuardResult> {
+  const blocked = sameOriginBlock(request);
+  if (blocked) return { ok: false, response: blocked };
+  const user = await getCurrentUser();
+  if (!user) {
+    return { ok: false, response: errorResponse("UNAUTHORIZED", "请先登录后再执行此操作", 401) };
+  }
+  return { ok: true, user, actor: actorOf(user), creatorId: user.id };
+}
+
 /** 统一错误响应体（对齐 src/lib/errors.ts 的 {error:{code,message,details?}} 结构）。 */
 export function errorResponse(
   code: string,

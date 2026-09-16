@@ -154,6 +154,8 @@ model User {
   projects  Project[]
   favorites Favorite[]
   feedbacks Feedback[]
+  solutions Solution[]
+  leads     Lead[]
 
   @@index([role])
 }
@@ -377,6 +379,10 @@ model Solution {
   slug     String         @unique
   caseId   String
   case     Case           @relation(fields: [caseId], references: [id])
+  // V1.1 P4：买家自助导出——导出者属主指针（additive、可空；用户删除保留方案 SetNull，同 Project.ownerId 模式）。
+  //   仅供「登录+属主」端点语义（反查自己的导出、按属主过滤）；治理归因仍走 ChangeLog.changedBy。
+  creatorId  String?
+  creator    User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   status   SolutionStatus @default(DRAFT)
   summary  String?
   body     Json? // 结构化正文（分节，规则 12：结构化保存而非纯文章）
@@ -650,6 +656,30 @@ model Feedback {
   status     String    @default("OPEN") // OPEN | RESOLVED
   createdAt  DateTime  @default(now())
   resolvedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+// 留资（RFQ）：企业版报价意向公开表单（游客亦可），后台人工跟进（1 个工作日内联系由流程承诺，非系统功能）。
+// status 存 String（NEW|CONTACTED|CLOSED，TS 层约束，同 Feedback 先例）；不接 CRM/邮件/通知（宪法：更少依赖）。
+model Lead {
+  id           String    @id @default(cuid())
+  userId       String? // 登录提交则归因（SetNull 保留行）；游客靠自填 email 认领
+  user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  company      String // 公司名（必填，≤200）
+  contactName  String // 联系人（必填，≤100）
+  role         String? // 职务/角色（≤100）
+  email        String // 联系邮箱（必填，server 层 zod 校格式，≤200）
+  phone        String? // 电话（≤50）
+  projectStage String? // 项目阶段（白名单：规划/在建/运营/其他，≤50）
+  budgetRange  String? // 预算区间（白名单档位，非自由金额，≤50）
+  message      String? // 补充说明（≤2000）
+  source       String // 落位来源：enterprise | report | pricing（server 层白名单，≤50）
+  page         String? // 提交时所在页面路径（便于定位，≤500）
+  status       String    @default("NEW") // NEW | CONTACTED | CLOSED
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([status, createdAt])
   @@index([userId])

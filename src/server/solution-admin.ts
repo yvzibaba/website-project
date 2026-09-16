@@ -205,8 +205,14 @@ export function solutionPublishBlockers(s: {
 /**
  * 新建方案（强制 status=DRAFT；发布走 update+publishGuard）。
  * 事务：写 Solution + ChangeLog(CREATE)。
+ * `creatorId`（V1.1 P4，additive）：买家自助导出时落属主指针（服务端会话注入，绝不接客户端传入）；
+ *   缺省 null = 后台/staff 创建，属主语义不受影响。
  */
-export async function createSolution(input: unknown, actor?: string): Promise<SolutionMutationResult> {
+export async function createSolution(
+  input: unknown,
+  actor?: string,
+  opts?: { creatorId?: string },
+): Promise<SolutionMutationResult> {
   const parsed = SolutionCreateSchema.safeParse(input);
   if (!parsed.success) return { status: "invalid", fieldErrors: toFieldErrors(parsed.error) };
   const d = parsed.data;
@@ -229,6 +235,7 @@ export async function createSolution(input: unknown, actor?: string): Promise<So
           currency: d.currency ?? "CNY",
           riskDomains: d.riskDomains ?? [],
           needsProfessionalReview: d.needsProfessionalReview ?? false,
+          creatorId: opts?.creatorId ?? null,
           status: "DRAFT", // 强制，不允许直建 PUBLISHED
         },
         select: { id: true, status: true, slug: true },

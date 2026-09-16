@@ -20,8 +20,8 @@ function SectionBlock({ section }: { section: ReportSection }) {
         <dl className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
           {section.items.map((it, i) => (
             <div key={i} className="flex items-baseline justify-between gap-3 border-b border-dashed border-zinc-100 py-0.5">
-              <dt className="text-xs text-zinc-500">{it.label}</dt>
-              <dd className="text-sm font-medium tabular-nums text-zinc-800">{it.value}</dd>
+              <dt className="min-w-0 text-xs text-zinc-500">{it.label}</dt>
+              <dd className="min-w-0 break-all text-right text-sm font-medium tabular-nums text-zinc-800">{it.value}</dd>
             </div>
           ))}
         </dl>

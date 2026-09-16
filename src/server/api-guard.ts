@@ -169,6 +169,9 @@ interface MutationLike {
   orderId?: string;
   deduped?: boolean;
   order?: unknown;
+  // V1.1 P6（买家导出死路修复）：导出端点在 ok 分支注入调用者是否 staff，供成功 UI 决定
+  // 「查看/编辑/发布」的落地页——买家绝不链到 staff-only 的 /admin，避免点成功提示即撞 403。
+  isStaff?: boolean;
 }
 
 /**

@@ -143,6 +143,19 @@ describe("api-guard.mutationResponse（写入结果翻译）", () => {
     expect((body.order as Record<string, unknown>).amount).toBe("1999.00");
     expect(body.status).toBeUndefined();
   });
+
+  // V1.1 P6（买家导出死路修复）：ok 分支须把调用者是否 staff 透传到回体，供成功 UI 决定给不给
+  // staff-only 的后台链接。锁死这条契约，防止未来重构 mutationResponse 时把 isStaff 吞掉。
+  it("ok + isStaff → 200 原样透出 isStaff（true/false 都要活），仍剥掉 status", async () => {
+    const staff = await jsonOf(mutationResponse({ status: "ok", solutionId: "s_1", isStaff: true }));
+    expect(staff.ok).toBe(true);
+    expect(staff.solutionId).toBe("s_1");
+    expect(staff.isStaff).toBe(true);
+    expect(staff.status).toBeUndefined();
+
+    const buyer = await jsonOf(mutationResponse({ status: "ok", solutionId: "s_2", isStaff: false }));
+    expect(buyer.isStaff).toBe(false);
+  });
 });
 
 /* ─────────────── errorResponse ─────────────── */

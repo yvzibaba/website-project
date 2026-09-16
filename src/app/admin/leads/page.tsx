@@ -4,6 +4,7 @@ import { Container, Card, CardContent, Badge, Alert } from "@/components/ui";
 import { PageHeader } from "@/components/page";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 import { listLeads, LEAD_SOURCES, type LeadAdminItem, type LeadStatus } from "@/server/leads";
+import { LeadStatusControl } from "@/components/admin/LeadStatusControl";
 
 /**
  * /admin/leads — 后台留资（RFQ）列表（V1.1 P4 · 商业闭环人工跟进的接收端）。
@@ -13,11 +14,11 @@ import { listLeads, LEAD_SOURCES, type LeadAdminItem, type LeadStatus } from "@/
  * 支持 `?status=NEW|CONTACTED|CLOSED` 过滤（服务端读取，非法值当无过滤）。
  * force-dynamic + noindex（继承 layout metadata）。
  *
- * 刻意边界（P4 最小可用）：
- *   - **只提供列表 + 详情展开**，不做跟进状态按钮 / CRM 集成 / 邮件通知（宪法：更少依赖）；
- *     `updateLeadStatus` 已在 server 层实现并被单测覆盖，但 P4 未接路由/按钮 —— 若一线反馈需要「点了归档」
- *     的体验，属 P4 尾巴（记入 CHANGELOG）。
- *   - 「1 个工作日内联系」是**流程 SLA**、不是系统能力；本页只帮你读得清楚，不发任何提醒。
+ * 刻意边界：
+ *   - 提供「列表 + 详情展开 + 逐条跟进状态回写」（V1.1 P6 补 P4 尾巴：`LeadStatusControl` →
+ *     POST `/api/admin/leads/[id]/status`，走 `requireStaffWrite` + CSRF，数据层幂等）；
+ *     仍**不做 CRM 集成 / 邮件通知 / 自动派单**（宪法：更少依赖）。
+ *   - 「1 个工作日内联系」是**流程 SLA**、不是系统能力；本页只帮你读得清楚、改状态留痕，不发任何提醒。
  */
 export const dynamic = "force-dynamic";
 
@@ -94,6 +95,10 @@ function LeadRow({ l }: { l: LeadAdminItem }) {
           )}
           {l.page ? <span>来源页面：<span className="font-mono">{l.page}</span></span> : null}
         </div>
+
+        <div className="flex justify-end pt-1">
+          <LeadStatusControl leadId={l.id} current={l.status} />
+        </div>
       </CardContent>
     </Card>
   );
@@ -131,7 +136,7 @@ export default async function AdminLeadsPage({
     <Container className="py-10 flex flex-col gap-6">
       <PageHeader
         title="留资（RFQ）列表"
-        description="企业询价意向。逐条按邮箱 / 电话人工跟进；无自动通知、无 CRM 同步、无状态按钮（跟进结果请回写到你自己的表格里）。"
+        description="企业询价意向。逐条按邮箱 / 电话人工跟进，并可就地点「待处理 / 已联系 / 已归档」回写状态；无自动通知、无 CRM 同步（跟进结果只在本表留痕）。"
       />
 
       <div className="flex flex-wrap items-center gap-3 text-sm">

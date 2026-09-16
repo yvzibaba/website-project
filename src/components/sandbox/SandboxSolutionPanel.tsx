@@ -51,6 +51,8 @@ interface ExportResult {
   unknownCount?: number;
   warnings?: string[];
   publishBlockers?: string[];
+  /** V1.1 P6：调用者是否 staff（服务端按会话角色注入）。决定成功提示里给不给 staff-only 的后台链接。 */
+  isStaff?: boolean;
 }
 
 /**
@@ -202,6 +204,7 @@ export function SandboxSolutionPanel({
         unknownCount: d.unknownCount,
         warnings: d.warnings,
         publishBlockers: d.publishBlockers ?? draftOk.publishBlockers,
+        isStaff: d.isStaff,
       });
     } else {
       setError("服务端未回传方案 id，请刷新方案后台确认是否已建成。");
@@ -441,13 +444,26 @@ export function SandboxSolutionPanel({
                 财务条目 {result.financialCount ?? 0} · 关键未知 {result.unknownCount ?? 0}
               </span>
             </div>
-            <div>
-              已生成方案 id
-              <code className="mx-1 rounded bg-emerald-100 px-1 py-0.5 text-[11px]">{result.solutionId.slice(0, 10)}…</code>
-              <Link href={`/admin/solutions/${result.solutionId}`} className="ml-1 underline">
-                到方案后台查看 / 编辑 / 发布
-              </Link>
-            </div>
+            {result.isStaff ? (
+              <div>
+                已生成方案 id
+                <code className="mx-1 rounded bg-emerald-100 px-1 py-0.5 text-[11px]">{result.solutionId.slice(0, 10)}…</code>
+                <Link href={`/admin/solutions/${result.solutionId}`} className="ml-1 underline">
+                  到方案后台查看 / 编辑 / 发布
+                </Link>
+              </div>
+            ) : (
+              <div className="text-[12px] leading-snug text-emerald-800">
+                已生成方案 id
+                <code className="mx-1 rounded bg-emerald-100 px-1 py-0.5 text-[11px]">{result.solutionId.slice(0, 10)}…</code>
+                ——已提交进入人工审核队列。这份方案目前是草稿：真实可核验数据、定价与是否发布都要由人来完成，
+                你这边暂时不能自助查看或上架。
+                <Link href="/enterprise" className="ml-1 font-medium underline">
+                  在「企业咨询」留个联系方式
+                </Link>
+                ，我们会带着测算结果跟进你。
+              </div>
+            )}
             {result.warnings?.length ? (
               <ul className="flex list-disc flex-col gap-0.5 pl-4 text-[11px] text-amber-700">
                 {result.warnings.map((w, i) => (

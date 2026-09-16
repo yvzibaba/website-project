@@ -3,6 +3,7 @@ import { requireUserWrite, mutationResponse, readJsonSafe, errorResponse } from 
 import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
 import { ownsSandboxSource } from "@/server/sandbox-solution-source";
 import { hasEntitlement } from "@/server/feature-flags";
+import { STAFF_ROLES } from "@/server/authz";
 import { logger } from "@/lib/logger";
 
 /**
@@ -46,5 +47,10 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const result = await persistSandboxSolutionDraft(parsed.data, guard.actor, { creatorId: guard.user.id });
+  // V1.1 P6（买家导出死路修复）：把「调用者是否 staff」随 ok 结果透出。买家（非 staff）导出成功
+  // 后，前端据此不再给出只对 staff 开放的 /admin 链接（点了必撞 403），而改走人工跟进引导。
+  if (result.status === "ok") {
+    return mutationResponse({ ...result, isStaff: STAFF_ROLES.includes(guard.user.role) });
+  }
   return mutationResponse(result);
 }

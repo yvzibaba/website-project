@@ -1,5 +1,5 @@
 // 产业能力数据库 V1 schema
-// 严格遵循 docs/PROJECT_RULES_V2.md（项目宪法 V2.0）。
+// 严格遵循 docs/PROJECT_RULES_V2.md（项目宪法 V2.1）。
 // 覆盖闭环：案例发现 -> 案例拆解 -> 技术能力拆解 -> 开源/GitHub 匹配 -> 中国本土化 -> 产业解决方案 -> 查看 -> 购买
 // 说明：
 //  - provider = postgresql（决策：Prisma + Postgres；String[]/Json 依赖 Postgres 原生支持）
@@ -17,6 +17,13 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // directUrl（R9.2）：应用运行时走 Neon 连接池（pooler / PgBouncer）端点，
+  // 而 migrate / db push / studio 等**迁移期**操作走直连端点。
+  // 为什么必须分开：连接池会复用后端连接、不支持「跨事务的准备语句」等迁移期语义，
+  // 直接用它跑 migrate 会出现难以定位的偶发失败。这是 Prisma 官方对 pooler 场景的要求。
+  // 注意：CI 里若只设 DATABASE_URL 而不设 DIRECT_URL，`prisma generate` 仍可过（不连库），
+  // 但任何 migrate 命令都会失败——CI 的 quality job 目前只跑 generate/typecheck/test，不跑 migrate。
+  directUrl = env("DIRECT_URL")
 }
 
 // ----------------------------- Enums -----------------------------

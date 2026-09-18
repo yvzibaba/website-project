@@ -25,6 +25,7 @@
     "user:promote": "node --env-file=.env --import tsx scripts/promote-user.ts",
     "db:studio": "prisma studio",
     "regen:sml": "node scripts/sml-regen.mjs",
+    "params:export": "node --import tsx scripts/export-region-params.ts",
     "ops:metrics": "node --env-file=.env scripts/ops-metrics.mjs",
     "test:tally": "node scripts/tally-real-user-test.mjs"
   },

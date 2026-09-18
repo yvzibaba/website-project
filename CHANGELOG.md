@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.75.1] - 2026-09-18 · R9.2 收口：Payload 接入裁决为「弃用」（选项 B）——依赖与试接入产物全部回退，迁移所有权契约与证据元数据契约保留（**纯回退/文档；经济内核·模型·黄金·FACT·DB schema 零触碰**）
+
+- 原因：R9.2 四条接入路径**全部实测堵死**（四条可复现证据见 `docs/ai-rules/02-PAYLOAD.md` 第 7 节），按宪法 §27 把三个选项提交创始人裁决。创始人 2026-09-18 裁决 **B · 弃用 Payload**。
+- **回退内容**：`package.json` / `package-lock.json` 回到未引入 Payload 的状态（`payload` / `@payloadcms/db-postgres` / `@payloadcms/next` / `@payloadcms/richtext-lexical` / `graphql` 全部移除，`npm prune` 清掉 `node_modules` 中 **303 个包**）；`src/payload.config.ts`、`src/payload/**`、`tests/integration/payload-smoke.test.ts`、`vitest.payload.config.ts` 从工作区移除。
+- **产物未丢弃（刻意）**：上述试接入文件归档于**本地**分支 `archive-r9.2-payload-attempt`（提交 `cd47a0c`，**不推送、不合入**）。留存价值在于证据元数据契约的字段形状（`evidenceKind` / `evidenceGrade` / `confidence` / `sourceUrl` / `asOf` / `note` + FACT 强制 `sourceUrl` 校验），将来改走 Prisma + `/admin` 时可直接参照。归档前已实测两棵树：该提交 400 文件 = rewrite-v2 的 392 + 8，`src/app/**` 两树完全一致。
+- **保留项（有意为之，与 Payload 存不存在无关）**：① `prisma/schema.prisma` 的 `directUrl` —— 任何经 Neon 连接池访问的 Prisma 部署都需要它（池化端点不支持跨事务预处理语句）；② `02-PAYLOAD.md` 第 6 节「迁移所有权分工」契约继续有效（**Prisma 是唯一的表所有者**）。
+- **规范处置**：`docs/ai-rules/02-PAYLOAD.md` 顶部新增「⛔ 裁决已生效：本方案已弃用」banner，全文降级为**历史决策记录 + 契约存档**；第 7.4 节补记裁决结果执行清单与方法论留档。明确写入「不要再提议引入 Payload」，除非同时推翻第 7 节四条证据中的至少三条且本工程已完成 ESM 化。
+- **方法论留档（本轮最大教训）**：安装期间出现的 `@next/env` 未定义、`date-fns/locale/en-US` 目录导入失败、`payload/dist/*.d.ts` 缺失，**全部是 `npm install` 尚未解压完的幻影**——实测中途 `payload/dist` 的 `.d.ts` 只写了 160 个，而同目录 `.d.ts.map` 已有 665 个，且一分钟后仍以约 120 个/分钟增长。**铁律：安装进程结束前不得诊断依赖问题。** 真正唯一的墙是运行时模块格式（第 7.1 节），与安装进度无关。
+- 验证：`npm run kernel:verify` **41 文件 / 149 import / 0 违规**；`tsc --noEmit` **0 错误**；`npm run test:unit` **1167 通过 / 1 跳过（66 文件）** —— 与 R9.1 后基线**逐一致，零测试回退**。经济内核黄金（MODEL/TECH/PARAMS/SENSITIVITY/PROFILES/VIEW）与报告黄金**零重录**。
+- **操作提示（踩过的坑）**：`npm prune` 会移除生成的 Prisma Client，之后**必须重跑 `npm run db:generate`**，否则 `tsc` 与所有依赖 `@prisma/client` 的单测会整片报 `Cannot find module '.prisma/client/default'`（本轮实测 10 个测试文件失败，重新生成后全绿）。本轮同时修正 `package-lock.json` 中遗留的 `0.74.0` 版本号（0.75.0 升级时漏改）。
+- 效果与边界：结构化数据（区域参数）的录入 / 校验 / 版本 / 发布需求改由既有栈承接 —— **Prisma + `/admin` + 证据元数据契约**，不引入新基础设施，不动已验证全绿的基线。**刻意不变**：未删 `.ts` 内置参数值（legacy 回退保留）、未动认证体系与 Prisma 管表、未改任何参数值或置信度。仍待：A 类 9 项省级来源核实、B 类 41 项全局参数行业证据补全（宪法 §33/§34）。
+
 ## [0.75.0] - 2026-09-18 · 宪法 V2.1（§29–§34 生效）+ 领域内核单源化 R9.1 + 区域参数快照导出（**规则/文档 + 结构重构 + 只读脚本；经济内核·模型·黄金样本·FACT 零触碰**）
 
 - 原因：创始人批准商业模式定稿并下达 R9 指令——① 把「内核抽离」从「影子副本」真正做成单一真源；② 用成熟 GitHub 项目（Payload CMS）补齐结构化数据的录入/校验/版本/发布能力；③ 裁决宪法增补提案。

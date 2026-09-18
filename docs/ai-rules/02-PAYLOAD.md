@@ -4,6 +4,19 @@
 
 ---
 
+## ⛔ 裁决已生效：本方案已弃用（2026-09-18）
+
+**创始人裁决：选项 B —— 弃用 Payload。** 第 7 节的四条实测已把全部接入路径堵死。本文件自本日起**降级为「历史决策记录 + 迁移所有权契约存档」**，不再是待执行规范。
+
+- 第 0–4 节的 Payload 建模 / 迁移内容 **不再执行**。
+- 第 6 节的「迁移所有权分工」**契约仍然有效** —— 它是 Prisma 侧的约束（Prisma 是唯一的表所有者），与 Payload 存不存在无关。
+- 参数 CRUD 与版本管理改由既有栈承担：**Prisma + `/admin`**。
+- 证据元数据契约（`evidenceKind` / `evidenceGrade` / `confidence` / `sourceUrl` / `asOf` / `note`，以及 FACT 强制 `sourceUrl` 校验）**继续沿用**；实现代码已归档，见第 7.4 节。
+
+**不要再提议引入 Payload**，除非同时推翻第 7 节四条证据中的至少三条（且本工程已完成 ESM 化）。
+
+---
+
 ## 0. 为什么选 Payload（不要重复讨论）
 
 前期最缺的不是 SaaS 骨架（多租户/计费），而是**结构化数据的录入 / 校验 / 版本 / 发布**能力 —— 因为核心技术资产（区域参数）目前**硬编码在 TypeScript 源码里**，改一个 `confidence` 要改代码 + 重新部署，而计划是 31 字段 × N 个省。
@@ -222,7 +235,19 @@ Payload 官方模板的 `(payload)/layout.tsx` **自己渲染 `<html>/<body>`** 
 | **B · 弃用 Payload** | 参数 CRUD + 版本留在既有栈（Prisma + `/admin`），复用已设计好的证据元数据契约 | 约 2 张表 + 若干后台页 | **低**：不引入新基础设施 |
 | **C · 手工迁移绕过 CLI** | 用脚本调 drizzle-kit 的 `generateSQL` 生成建表 SQL（避开第 7.1 与 7.2 节两条坏路径） | 每次 schema 变更都要手搓迁移 | **中**：长期脆弱，且仍是 ESM 宿主 |
 
-**现状**：A 之前的**所有**路径都已被实测堵死；Payload 的表目前**一张都建不出来**。
-在创始人裁决前，`src/payload/**` 与 `tests/integration/payload-smoke.test.ts` **保持未提交状态**（第 5 节禁令 6：未跑通 4 项实测前不许写 collection 逻辑）。
+**现状**：A 之前的**所有**路径都已被实测堵死；Payload 的表**一张都建不出来**。
+
+**裁决结果（2026-09-18）：创始人选 B · 弃用 Payload。** 执行清单：
+
+| 动作 | 结果 |
+|---|---|
+| `package.json` / `package-lock.json` | 已回退到未引入 Payload 的状态（`payload` / `@payloadcms/*` / `graphql` 全部移除，`npm prune` 清理 `node_modules`） |
+| `src/payload.config.ts`、`src/payload/**`、`tests/integration/payload-smoke.test.ts`、`vitest.payload.config.ts` | 已从 `rewrite-v2` 工作区移除 |
+| 上述产物的留存 | **未丢弃**：归档于本地分支 `archive-r9.2-payload-attempt`（提交 `cd47a0c`，**不推送、不合入**），供将来参考证据元数据契约的字段形状 |
+| `prisma/schema.prisma` 的 `directUrl` | **保留**。与 Payload 无关 —— 任何经 Neon 连接池访问的 Prisma 部署都需要它（池化端点不支持跨事务预处理语句） |
+| 第 6 节「迁移所有权分工」 | **保留有效**。它是 Prisma 侧约束（Prisma 是唯一表所有者），与 Payload 存不存在无关 |
+
+**方法论留档（本轮最大教训）**：安装期间出现的 `@next/env` 未定义、`date-fns/locale/en-US` 目录导入失败、`payload/dist/*.d.ts` 缺失，**全部是 `npm install` 尚未解压完的幻影**——实测中途 `payload/dist` 的 `.d.ts` 只写了 160 个，而同目录 `.d.ts.map` 已有 665 个，且一分钟后仍以约 120 个/分钟增长。
+**铁律：安装进程结束前不得诊断依赖问题。** 真正需要留意的只有「运行时模块格式」这条墙（第 7.1 节），它与安装进度无关。
 
 

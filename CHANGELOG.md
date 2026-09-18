@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.75.0] - 2026-09-18 · 宪法 V2.1（§29–§34 生效）+ 领域内核单源化 R9.1 + 区域参数快照导出（**规则/文档 + 结构重构 + 只读脚本；经济内核·模型·黄金样本·FACT 零触碰**）
+
+- 原因：创始人批准商业模式定稿并下达 R9 指令——① 把「内核抽离」从「影子副本」真正做成单一真源；② 用成熟 GitHub 项目（Payload CMS）补齐结构化数据的录入/校验/版本/发布能力；③ 裁决宪法增补提案。
+- **宪法 V2.0 → V2.1（28 条 → 34 条）**：创始人 2026-09-18 批准增补 §29 商业模式分层 / §30 基准可信 / §31 底座与内核边界 / §32 内核不可变 / §33 单省验证优先 / §34 诚实成本（提案原文见 `docs/BUSINESS_MODEL_V1.md` 第 9 节），并新增「附则一 · §29–§34 生效记录」。六条为**纯增补**，不改写 §1–§28 任何一条；与 §26（终局）的关系明确为**细化**——§29 界定「案例库/沙盘/基准与算例属于 L1」，故 §26 继续有效。同步更新 7 处版本引用（`AGENTS.md` / `README.md` / `PROJECT_RULES.md` / `docs/MASTER_PROMPT_V2.md` / `docs/MASTER_PROMPT_FINAL.md` / `docs/ai-rules/00-INDEX.md`(2 处) / `docs/ai-rules/06-DELIVERY.md`），并把 `PROJECT_RULES.md` 中三处「待裁决」标记改为「已生效」。
+- **R9.1 内核单源化**（提交 `844ae5b`）：修复上一轮「抽离」留下的**影子副本**问题——原 `kernel/` 39 份文件与宿主**逐字节相同**、**0 处被引用**、缺入口文件、含 2 处框架依赖，等于「抽了但没接上」。本轮实测定位 **4 处边界泄漏**（原方案漏判 `solution-generation.ts:14`）、确认 `solution-admin.ts` **零框架耦合无需端口反转**（原方案误判）。动作：新增 `kernel/src/lib/roles.ts`（纯身份契约）与 `kernel/src/index.ts`（**命名空间 barrel 40 模块导出**，刻意不用 `export *` 以免同名模块静默丢失）；重写 `src/server/authz.ts` 为「纯原语转出自内核 + I/O 留在宿主」；删除 3 个内核内宿主壳文件与 39 份重复副本；执行 99 处内核内部 `@/` → `@app/kernel/` 与 160 个宿主文件 440 处引用重写。
+- **新增机械边界守卫**（`.kernel-tools/verify_kernel.mjs` · `npm run kernel:verify`）：检查框架依赖、反向宿主依赖（`@/...`）、悬空引用、白名单外依赖，并**先剥离注释再扫描**（避免头部说明里的示例 import 字面量造成误报），覆盖动态 `import()`。配套 `survey_dangling_refs.mjs`（`npm run kernel:dangling`）与 `npm run kernel:typecheck`。**为什么必须机械守门**：边界违规是**静默的**——类型检查通过、单测全绿、构建成功，只在换底座那天爆炸，不能靠人工评审兜底（此判断已写入宪法 §32 与 `docs/ai-rules/03-KERNEL.md`）。
+- **安全删除的判据修正**：重复副本删除以 **git blob 哈希等价**（`git rev-parse A:path == B:path`）为门，**不用**工作区 `cmp` —— 本机 `core.autocrlf=true` 且无 `.gitattributes`，工作区为 CRLF、blob 为 LF，直接用 `cmp` 会把等价文件误判为「不同」。并固化执行顺序铁律：**① 证明等价 → ② 重写引用 → ③ 删除副本**，颠倒则门失效。
+- **参数基线诚实修正**（提交 `ae518e1`）：新增 `scripts/export-region-params.ts`（`npm run params:export`）产出可复跑快照 `docs/verified-data/kernel-region-params.snapshot.json`（16.6KB）。修正后的真实基线：目录 **50 项参数**（技术 18 / 项目 16 / 财务 7 / 区域 5 / 政策 4；曝光度 basic 6 / advanced 21 / pro 23），**50/50 全部 `confidence≤50`**；山西覆盖层 **9 条**（1 条 FACT / 8 条占位）。按来源路径拆分：**A 类「省级可核验来源」9 项**（真实欠功课）vs **B 类「全局行业来源」41 项**。原口径把 50 项笼统当作「山西欠功课」属于口径错误，本轮按宪法 §34 予以纠正并公示。
+- 验证：`npm run kernel:verify` **41 文件 / 149 import / 0 违规**；`kernel:typecheck` **0 error**；`kernel:dangling` **837 引用 / 0 悬空**；`tsc --noEmit` **0**；`eslint` **0**；`vitest run tests/unit` **1167 通过 / 1 跳过**（与改造前**逐一致，零测试回退**）；`next build` **通过**。经济内核黄金（MODEL/TECH/PARAMS/SENSITIVITY/PROFILES/VIEW）与报告黄金**零重录**。
+- `package.json` **0.74.0 → 0.75.0**（新增 `kernel:verify`、`kernel:dangling`、`kernel:typecheck`、`params:export` 四条 npm 脚本）。
+- 效果与边界：内核从「看起来可搬走」变为「**机械可证**可搬走」——边界违规从此有 CI 级守卫（`docs/ci-guard.yml.example` 新增 `kernel-guard` job），并把「欠功课」从模糊印象固化为**可清点的 9 / 41 项清单**（宪法 §33/§34 的直接落地）。**刻意不变**：未改任何参数值或置信度、未删 `.ts` 内置值（留作 legacy 回退）、未动认证体系与 Prisma 管表。仍待：Payload 接入 4 项前置实测（R9.2）、A 类 9 项省级来源核实、B 类 41 项行业证据补全。
+
 ## [0.74.0] - 2026-09-16 · V1.1 上线运营准备：真实用户测试工具包 + 最小运营指标 + 注册用户链路 E2E 复验（**纯加性运维工具/文档·经济内核·模型·黄金·FACT·DB schema 零触碰**）
 
 - 原因：创始人 R6 指令——继续 V1.1 正式公网运营准备，自主完成「无需人工决策」的项：埋点/最小运营统计、真实用户测试工具准备、并按 §四复验「注册→保存→复制→生成方案」全链可用。刻意不发明新功能、不碰冻结项；涉收款/定价/法务/数据授权/模型一律留创始人。

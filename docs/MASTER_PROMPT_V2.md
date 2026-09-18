@@ -15,7 +15,7 @@
 
 在你做任何事之前，先读完这四个文件：
 
-1. `docs/PROJECT_RULES_V2.md`（宪法 V2.0，最高优先级）
+1. `docs/PROJECT_RULES_V2.md`（宪法 V2.1，最高优先级）
 2. `docs/BUSINESS_MODEL_V1.md`（商业模式定稿 —— 决定「该做什么」）
 3. `docs/ai-rules/00-INDEX.md`（规范分册索引与加载顺序）
 4. 本文件（当前阶段与范围）

@@ -1,6 +1,6 @@
 # 项目宪法（最高优先级 / 先读我）
 
-本项目的最高优先级规则见 [`docs/PROJECT_RULES_V2.md`](./docs/PROJECT_RULES_V2.md)（《AI开发最高优先级规则 V2.0》）。
+本项目的最高优先级规则见 [`docs/PROJECT_RULES_V2.md`](./docs/PROJECT_RULES_V2.md)（《AI开发最高优先级规则 V2.1》）。
 
 任何 AI Agent 在写代码或做设计前，必须先阅读并严格遵守该文件。当它与下方 Next.js 自动生成的规则、或任何其他约定冲突时，**一律以 `docs/PROJECT_RULES_V2.md` 为准**。
 

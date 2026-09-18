@@ -7,7 +7,7 @@
 ## 治理文档（先读，按优先级）
 
 1. [`PROJECT_RULES.md`](./PROJECT_RULES.md) — 文档索引与优先级说明
-2. [`docs/PROJECT_RULES_V2.md`](./docs/PROJECT_RULES_V2.md) — **项目宪法 V2.0（最高优先级）**
+2. [`docs/PROJECT_RULES_V2.md`](./docs/PROJECT_RULES_V2.md) — **项目宪法 V2.1（最高优先级）**
 3. [`docs/MASTER_PROMPT_V1.md`](./docs/MASTER_PROMPT_V1.md) — 全自动开发总控 Prompt V1.0
 4. [`AGENTS.md`](./AGENTS.md) — AI Agent 工作约定
 

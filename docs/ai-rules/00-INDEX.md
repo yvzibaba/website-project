@@ -9,7 +9,7 @@
 
 从高到低：
 
-1. **项目宪法 V2.0** — [`../PROJECT_RULES_V2.md`](../PROJECT_RULES_V2.md)（含待裁决的 §29–§34 提案）
+1. **项目宪法 V2.1** — [`../PROJECT_RULES_V2.md`](../PROJECT_RULES_V2.md)（34 条；§29–§34 已获创始人批准并生效）
 2. **商业模式定稿** — [`../BUSINESS_MODEL_V1.md`](../BUSINESS_MODEL_V1.md)
 3. **总控 Prompt V2.0** — [`../MASTER_PROMPT_V2.md`](../MASTER_PROMPT_V2.md)
 4. **本规则分册**（01–06）

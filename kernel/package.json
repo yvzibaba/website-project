@@ -1,0 +1,25 @@
+{
+  "name": "@app/kernel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "领域内核：光储充重卡技术经济计算引擎 + 评分内核 + 研究流水线 + Model Router。框架无关，可挂载到任意 Next.js 底座。",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@prisma/client": {
+      "optional": false
+    }
+  },
+  "sideEffects": false
+}

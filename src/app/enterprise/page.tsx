@@ -4,7 +4,7 @@ import { Container, Badge, Button, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { JsonLd } from "@/components/seo";
 import { LeadForm } from "@/components/leads/LeadForm";
-import { SANDBOX_PROFILES, SANDBOX_PROFILES_VERSION } from "@/server/sandbox-profiles";
+import { SANDBOX_PROFILES, SANDBOX_PROFILES_VERSION } from "@app/kernel/server/sandbox-profiles";
 import { seoMetadata } from "@/lib/site";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
 

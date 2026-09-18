@@ -1,20 +1,20 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
-import { updateSolution } from "@/server/solution-admin";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { persistSandboxSolutionDraft } from "@app/kernel/server/sandbox-solution-store";
+import { updateSolution } from "@app/kernel/server/solution-admin";
 import { getPublishedSolutionById } from "@/server/solutions";
 import {
   upgradeSolutionFinancialProvenance,
   SANDBOX_PROVENANCE_STORE_VERSION,
-} from "@/server/sandbox-provenance-store";
-import { isSandboxSourcedSolution } from "@/lib/sandbox-solution-lineage";
-import { evaluateSandboxSolutionProvenance, type FinancialLike } from "@/lib/sandbox-solution-provenance";
+} from "@app/kernel/server/sandbox-provenance-store";
+import { isSandboxSourcedSolution } from "@app/kernel/lib/sandbox-solution-lineage";
+import { evaluateSandboxSolutionProvenance, type FinancialLike } from "@app/kernel/lib/sandbox-solution-provenance";
 
 /**
  * 集成测试（真连 Neon，中途重构 R8.5）：实证「沙盘来源财务 ASSUMPTION→FACT 受控升级写路径」在

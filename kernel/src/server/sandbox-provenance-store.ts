@@ -31,16 +31,16 @@
 
 import { z } from "zod";
 // 注：本模块为 server 域逻辑（route 层调用）。本仓刻意不 import "server-only"（vitest/node 会抛错），仅注释标注。
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma } from "@prisma/client";
-import { CuidSchema } from "@/lib/validation";
+import { CuidSchema } from "@app/kernel/lib/validation";
 import {
   planProvenanceUpgrade,
   provenanceCalcRef,
   SANDBOX_SOLUTION_PROVENANCE_VERSION,
   type ProvenanceUpgradeIntent,
-} from "@/lib/sandbox-solution-provenance";
+} from "@app/kernel/lib/sandbox-solution-provenance";
 
 const log = logger.child({ module: "server/sandbox-provenance-store" });
 

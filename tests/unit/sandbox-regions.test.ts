@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { computeTornado } from "@/server/sandbox-sensitivity";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
 import {
   SANDBOX_REGIONS,
   SANDBOX_REGIONS_VERSION,
@@ -11,7 +11,7 @@ import {
   getRegionPack,
   listRegionOptions,
   buildSandboxLayers,
-} from "@/server/sandbox-regions";
+} from "@app/kernel/server/sandbox-regions";
 
 /** 固定"当前时间"（在山西现行政策窗口 2024-01-01..2099-12-31 内、在过期政策窗口之外），保证确定性。 */
 const NOW_ACTIVE = new Date("2026-09-05T00:00:00.000Z");

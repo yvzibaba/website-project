@@ -1,7 +1,7 @@
 import type { NextResponse } from "next/server";
 import { requireSameOriginActor, readJsonSafe, mutationResponse, errorResponse } from "@/server/api-guard";
 import type { SessionUser } from "@/server/authz";
-import { saveSandboxScenarioVersion, readSandboxScenarioVersions } from "@/server/sandbox-projects";
+import { saveSandboxScenarioVersion, readSandboxScenarioVersions } from "@app/kernel/server/sandbox-projects";
 
 /**
  * /api/sandbox/scenarios/[id]/versions — 版本时间线（R6.3）。

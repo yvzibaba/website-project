@@ -33,10 +33,10 @@ import {
   Spinner,
 } from "@/components/ui";
 import { mutateJson, fieldHints } from "@/components/admin/mutate";
-import type { CalcResult } from "@/server/sandbox-model";
-import type { SandboxViewModel } from "@/lib/sandbox-view";
-import type { SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
-import { buildSandboxSolutionDraft, SANDBOX_SOLUTION_VERSION } from "@/lib/sandbox-solution";
+import type { CalcResult } from "@app/kernel/server/sandbox-model";
+import type { SandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import type { SandboxEnterpriseProfile } from "@app/kernel/server/sandbox-profiles";
+import { buildSandboxSolutionDraft, SANDBOX_SOLUTION_VERSION } from "@app/kernel/lib/sandbox-solution";
 
 interface CaseOption {
   id: string;

@@ -15,7 +15,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { computeDemoScenario, type DemoHeadlineState, type DemoTouched } from "@/server/sandbox-demo";
+import { computeDemoScenario, type DemoHeadlineState, type DemoTouched } from "@app/kernel/server/sandbox-demo";
 
 interface ScenarioExpectation {
   id: string;

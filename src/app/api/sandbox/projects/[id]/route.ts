@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireSameOriginActor, mutationResponse, errorResponse } from "@/server/api-guard";
-import { readSandboxProject } from "@/server/sandbox-projects";
+import { readSandboxProject } from "@app/kernel/server/sandbox-projects";
 
 /**
  * /api/sandbox/projects/[id] — 读回一个沙盘项目（含其情景列表精简视图）（中途重构 R6.3）。

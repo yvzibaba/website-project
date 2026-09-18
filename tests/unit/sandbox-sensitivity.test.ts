@@ -9,8 +9,8 @@ import {
   DEFAULT_SENSITIVITY_PARAMS,
   computeTornado,
   deriveRiskFlags,
-} from "../../src/server/sandbox-sensitivity";
-import { runSandboxModelBaseline, runSandboxModel, type CalcResultOk } from "../../src/server/sandbox-model";
+} from "@app/kernel/server/sandbox-sensitivity";
+import { runSandboxModelBaseline, runSandboxModel, type CalcResultOk } from "@app/kernel/server/sandbox-model";
 
 describe("sandbox-sensitivity · 版本", () => {
   it("版本语义化、calcRef 携带版本", () => {

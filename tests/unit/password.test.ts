@@ -5,7 +5,7 @@ import {
   SCRYPT_PARAMS,
   KEYLEN,
   MAX_PASSWORD_BYTES,
-} from "@/lib/password";
+} from "@app/kernel/lib/password";
 
 /**
  * 单元测试：口令哈希（scrypt / node:crypto，零额外依赖）。

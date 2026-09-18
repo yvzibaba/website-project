@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { ingestCandidate } from "@/server/scout-ingest";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { ingestCandidate } from "@app/kernel/server/scout-ingest";
 
 /**
  * 集成测试：Scout 落库编排 `scout-ingest.ts`（Phase 10 M2），真连 Neon、不 mock。

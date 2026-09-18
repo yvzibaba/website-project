@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 
 // 纯 schema 契约测试：只验订单入参校验规则，绝不触库。
 // 把 prisma 单例 mock 掉，避免在 CI/无 DATABASE_URL 环境下 import 期实例化客户端。
-vi.mock("@/lib/prisma", () => ({ prisma: {}, disconnectPrisma: vi.fn() }));
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: {}, disconnectPrisma: vi.fn() }));
 
 import { OrderCreateSchema } from "@/server/orders";
 

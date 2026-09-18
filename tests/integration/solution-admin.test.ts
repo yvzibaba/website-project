@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import {
   createSolution,
   updateSolution,
@@ -8,7 +8,7 @@ import {
   removeSolutionFinancial,
   addSolutionUnknown,
   removeSolutionUnknown,
-} from "@/server/solution-admin";
+} from "@app/kernel/server/solution-admin";
 
 /**
  * 集成测试：方案数据层 CRUD（Phase 8 M1），真连 Neon，不 mock。

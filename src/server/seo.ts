@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { PUBLIC_CASE_STAGES } from "@/server/industries";
 import { caseDemoVisibility, solutionDemoVisibility } from "@/server/demo";
 // server-only：本模块直连数据库，仅由 /sitemap.xml MetadataRoute 与后续 SEO 端点在服务端调用。

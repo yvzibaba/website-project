@@ -1,11 +1,11 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import {
   registerUser,
   getAuthUserByEmail,
   getProfileUserById,
 } from "@/server/users";
-import { verifyPassword } from "@/lib/password";
+import { verifyPassword } from "@app/kernel/lib/password";
 
 /**
  * 集成测试：用户数据层（真连 Neon，不 mock）。

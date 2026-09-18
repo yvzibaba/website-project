@@ -6,7 +6,7 @@ import {
   type ChatProvider,
   type ModelTaskKind,
   type ModelTier,
-} from "@/server/model-router";
+} from "@app/kernel/server/model-router";
 
 /**
  * §33 多角色研究流水线（Phase 9 M2 骨架，纯逻辑 · **无 DB 依赖** · server 域逻辑）。

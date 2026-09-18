@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EvidenceTypeSchema, type EvidenceType } from "@/lib/validation";
+import { EvidenceTypeSchema, type EvidenceType } from "@app/kernel/lib/validation";
 
 /**
  * 参数引擎内核（重构 R0 契约 + R1.1 解析器，纯函数 · 无 DB · 无 UI · 无 HTTP · server 域逻辑）。

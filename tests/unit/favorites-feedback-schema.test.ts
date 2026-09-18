@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 
 // 纯 schema 契约测试（Phase 4 模块 C）：只验收藏 / 反馈的入参校验规则，绝不触库。
 // 把 prisma 单例 mock 掉，避免在 CI/无 DATABASE_URL 环境下 import 期实例化客户端。
-vi.mock("@/lib/prisma", () => ({ prisma: {}, disconnectPrisma: vi.fn() }));
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: {}, disconnectPrisma: vi.fn() }));
 
 import { favoriteMutationSchema, FAVORITE_TARGET_TYPES } from "@/server/favorites";
 import { createFeedbackSchema, listFeedbackSchema, FEEDBACK_KINDS, FEEDBACK_STATUSES } from "@/server/feedback";

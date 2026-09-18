@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { disconnectPrisma } from "@/lib/prisma";
+import { disconnectPrisma } from "@app/kernel/lib/prisma";
 import { getIndustryCaseCounts, INDUSTRIES } from "@/server/industries";
 
 /**

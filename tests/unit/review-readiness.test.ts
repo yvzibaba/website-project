@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 
 // solution-admin 在模块级 import 了 prisma（本纯函数路径并不触库），mock 掉避免无 DATABASE_URL 时构造客户端。
-vi.mock("@/lib/prisma", () => ({ prisma: {}, disconnectPrisma: async () => {} }));
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: {}, disconnectPrisma: async () => {} }));
 
-import { solutionPublishBlockers } from "@/server/solution-admin";
+import { solutionPublishBlockers } from "@app/kernel/server/solution-admin";
 
 /**
  * 单元测试：发布就绪只读预览 `solutionPublishBlockers`（Phase 13 M6）。

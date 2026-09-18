@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { createSolution, updateSolution } from "@/server/solution-admin";
-import { generateSolutionContent } from "@/server/solution-generation";
-import { StubProvider } from "@/server/model-router";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { createSolution, updateSolution } from "@app/kernel/server/solution-admin";
+import { generateSolutionContent } from "@app/kernel/server/solution-generation";
+import { StubProvider } from "@app/kernel/server/model-router";
 
 /**
  * 集成测试：§33 流水线 → 方案正文生成落库（Phase 8 M3），真连 Neon。

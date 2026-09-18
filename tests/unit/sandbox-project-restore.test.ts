@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { parseBaselineLayers } from "@/lib/sandbox-project-restore";
-import { defaultDemoState } from "@/server/sandbox-demo";
-import { SANDBOX_PROFILE_IDS } from "@/server/sandbox-profiles";
+import { parseBaselineLayers } from "@app/kernel/lib/sandbox-project-restore";
+import { defaultDemoState } from "@app/kernel/server/sandbox-demo";
+import { SANDBOX_PROFILE_IDS } from "@app/kernel/server/sandbox-profiles";
 
 /**
  * Phase 4 模块 B：?project= 载入还原的**纯解析**门禁。

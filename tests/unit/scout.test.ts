@@ -10,8 +10,8 @@ import {
   ScoutCandidateSchema,
   evaluateCandidate,
   type ReadinessInput,
-} from "@/server/scout";
-import { LicenseTypeSchema, type LicenseType } from "@/lib/validation";
+} from "@app/kernel/server/scout";
+import { LicenseTypeSchema, type LicenseType } from "@app/kernel/lib/validation";
 
 /* ─────────────── 常量守护（第 13 条版本化 + 第 16 条单一真源） ─────────────── */
 

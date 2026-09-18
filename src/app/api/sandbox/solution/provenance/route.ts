@@ -1,8 +1,8 @@
 import type { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireStaffWrite, mutationResponse, readJsonSafe, errorResponse } from "@/server/api-guard";
-import { CuidSchema } from "@/lib/validation";
-import { upgradeSolutionFinancialProvenance } from "@/server/sandbox-provenance-store";
+import { CuidSchema } from "@app/kernel/lib/validation";
+import { upgradeSolutionFinancialProvenance } from "@app/kernel/server/sandbox-provenance-store";
 
 /**
  * POST /api/sandbox/solution/provenance — 提交「真实来源链接 + 置信度」，把某条沙盘来源 `SolutionFinancial`

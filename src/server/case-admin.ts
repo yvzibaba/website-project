@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma, type ChangeAction } from "@prisma/client";
 import {
   CuidSchema,
@@ -8,8 +8,8 @@ import {
   CaseStageSchema,
   EvidenceTypeSchema,
   EvidenceGradeSchema,
-} from "@/lib/validation";
-import { recomputeCaseScores, type RecomputeOneResult } from "@/server/case-scores";
+} from "@app/kernel/lib/validation";
+import { recomputeCaseScores, type RecomputeOneResult } from "@app/kernel/server/case-scores";
 
 /**
  * 案例与证据的**数据层 CRUD**（Phase 7 M5，server-only）。

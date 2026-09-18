@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Container, Badge, Alert, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { getPublicCaseById } from "@/server/cases";
-import type { CaseScores } from "@/server/scoring";
+import type { CaseScores } from "@app/kernel/server/scoring";
 import { getCurrentUser } from "@/server/authz";
 import { isFavorited } from "@/server/favorites";
 import { FavoriteButton } from "@/components/account/FavoriteButton";

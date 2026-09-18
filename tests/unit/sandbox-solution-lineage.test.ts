@@ -18,14 +18,14 @@ import {
   SANDBOX_SOLUTION_LINEAGE_VERSION,
   SANDBOX_SOLUTION_ORIGIN_PREFIX,
   type LineageFinancialLike,
-} from "@/lib/sandbox-solution-lineage";
-import { SANDBOX_SOLUTION_VERSION } from "@/lib/sandbox-solution";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { runSandboxModelBaseline } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
+} from "@app/kernel/lib/sandbox-solution-lineage";
+import { SANDBOX_SOLUTION_VERSION } from "@app/kernel/lib/sandbox-solution";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
 
 function sandboxAssumptions(extra: Record<string, unknown> = {}) {
   return {

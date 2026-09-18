@@ -1,7 +1,7 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import { getAdminDashboardData } from "@/server/admin";
-import type { UserRole } from "@/lib/validation";
+import type { UserRole } from "@app/kernel/lib/validation";
 
 /**
  * 集成测试：后台数据聚合 getAdminDashboardData（Phase 6 M2），真连 Neon，不 mock。

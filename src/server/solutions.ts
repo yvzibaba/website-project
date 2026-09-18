@@ -1,10 +1,10 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import type { Prisma } from "@prisma/client";
 import { getIndustryByEnum } from "@/server/industries";
 import { solutionDemoVisibility, DEMO_SOURCE_TYPE } from "@/server/demo";
-import { parseSolutionBody, type ParsedSolutionBody } from "@/server/solution-body";
-import type { Industry } from "@/lib/validation";
+import { parseSolutionBody, type ParsedSolutionBody } from "@app/kernel/server/solution-body";
+import type { Industry } from "@app/kernel/lib/validation";
 
 /**
  * 方案数据层（server-only，V1-A /solutions 列表与详情）。

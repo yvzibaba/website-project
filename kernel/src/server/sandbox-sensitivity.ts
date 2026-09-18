@@ -15,9 +15,9 @@
 import {
   SANDBOX_PARAMETER_SPECS,
   resolveSandbox,
-} from "@/server/sandbox-params";
-import type { ResolveLayers } from "@/server/parameter-engine";
-import { runSandboxModel, runSandboxModelBaseline, type CalcResult } from "@/server/sandbox-model";
+} from "@app/kernel/server/sandbox-params";
+import type { ResolveLayers } from "@app/kernel/server/parameter-engine";
+import { runSandboxModel, runSandboxModelBaseline, type CalcResult } from "@app/kernel/server/sandbox-model";
 
 /** 敏感性分析版本。1.1.0：新增可选 `layers`（把龙卷风锚定到「当前情景」= 地区/政策/用户分层，而非仅全局基线），纯加性、默认行为不变。1.2.0（TASK 5 · 2026-09-08）：默认扫描集补 2 项——`tech.storageCapex`（储能 CAPEX）与 `project.chargePerTruck`（里程×电耗合并代理），兑现「电价/年里程/储能 CAPEX/光伏 CAPEX」四项主用户关切中此前缺席的两项；纯加性，既有排序逻辑不变。1.3.0（阶段1 · 2026-09-08 创始人批准）：默认扫描集解锁 `region.peakValleySpread`（±15%）——R9.0 已把它接入 E3b 储能套利腿（Δ_arb=σ·Imp0·(p−p_valley/η)），旧「P2-6 未消费」排除理由失效；基线 storage=400kWh>0 故摆幅真实非零；纯加性，E3/E4/finance 零改动。1.4.0（阶段4 · 2026-09-14 创始人拍板需量电价口径 A）：默认扫描集补 `region.demandCharge`（±15%）与 `project.chargerUtilization`（±20%）。1.5.0（V1.1 批次1.2 · MODEL 1.3.0 配套）：`project.chargerUtilization` 移出扫描集（E 层不再消费它计需量费，留集即伪敏感）；`project.demandKc`（±20%）入集承接计费需量杠杆；`region.demandCharge` 留集——主情景 A（免征，默认 0）下 ±% 扰动仍为 0、摆幅恒 0 属**诚实结果**（政策豁免即真无感），切 B/C 覆写后该行恢复真实摆幅。 */
 export const SENSITIVITY_VERSION = "1.5.0";

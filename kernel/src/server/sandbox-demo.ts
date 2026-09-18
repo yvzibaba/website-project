@@ -41,14 +41,14 @@
  *   - 纯函数、无 DB / 无网络 /（除注入 now 外）无时钟 / 无随机 → 可像 scoring.ts 一样用黄金样本焊死。
  */
 
-import { runSandboxModel, type CalcResult } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel, type TechResult } from "@/server/sandbox-tech";
-import { computeTornado, type TornadoResult } from "@/server/sandbox-sensitivity";
-import { buildSandboxLayers, getRegionPack, DEFAULT_REGION_ID } from "@/server/sandbox-regions";
-import type { ResolveLayers, ResolveResult, ResolvedParameter, ValueOrigin } from "@/server/parameter-engine";
-import { buildSandboxViewModel, formatMoney, type SandboxViewModel } from "@/lib/sandbox-view";
-import { buildSandboxReport, type ChangedParamView, type SandboxReport } from "@/lib/sandbox-report";
+import { runSandboxModel, type CalcResult } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel, type TechResult } from "@app/kernel/server/sandbox-tech";
+import { computeTornado, type TornadoResult } from "@app/kernel/server/sandbox-sensitivity";
+import { buildSandboxLayers, getRegionPack, DEFAULT_REGION_ID } from "@app/kernel/server/sandbox-regions";
+import type { ResolveLayers, ResolveResult, ResolvedParameter, ValueOrigin } from "@app/kernel/server/parameter-engine";
+import { buildSandboxViewModel, formatMoney, type SandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxReport, type ChangedParamView, type SandboxReport } from "@app/kernel/lib/sandbox-report";
 
 /* ─────────────────────────── 版本与标识 ─────────────────────────── */
 

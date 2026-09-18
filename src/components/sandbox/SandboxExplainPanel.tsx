@@ -21,7 +21,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { mutateJson, fieldHints } from "@/components/admin/mutate";
-import type { SandboxReport } from "@/lib/sandbox-report";
+import type { SandboxReport } from "@app/kernel/lib/sandbox-report";
 
 interface Explanation {
   interpretation: string;

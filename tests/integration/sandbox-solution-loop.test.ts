@@ -1,16 +1,16 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
-import { updateSolution } from "@/server/solution-admin";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { persistSandboxSolutionDraft } from "@app/kernel/server/sandbox-solution-store";
+import { updateSolution } from "@app/kernel/server/solution-admin";
 import { getPublishedSolutionById } from "@/server/solutions";
 import { createOrder, confirmOrderPaid, hasPaidEntitlement } from "@/server/orders";
-import { describeSandboxLineage } from "@/lib/sandbox-solution-lineage";
+import { describeSandboxLineage } from "@app/kernel/lib/sandbox-solution-lineage";
 
 /**
  * 集成测试（真连 Neon，中途重构 R8.3）：端到端实证沙盘来源方案的**商业闭环真跑通**——

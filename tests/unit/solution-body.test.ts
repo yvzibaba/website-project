@@ -3,7 +3,7 @@ import {
   parseSolutionBody,
   SOLUTION_SECTIONS,
   SOLUTION_SECTION_COUNT,
-} from "@/server/solution-body";
+} from "@app/kernel/server/solution-body";
 
 /**
  * 单测：Solution.body 34 分节归一器（Phase 8 M2，纯函数，无 DB）。

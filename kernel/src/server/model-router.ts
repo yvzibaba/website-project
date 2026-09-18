@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 
 /**
  * Model Router（Phase 9 M1，纯逻辑 · **无 DB 依赖** · server 域逻辑）。

@@ -1,6 +1,6 @@
 import { PrismaClient, Industry, CaseStage, EvidenceType, EvidenceGrade, Maturity } from "@prisma/client";
 import { DEMO_SOURCE_TYPE, DEMO_TITLE_PREFIX } from "../src/server/demo";
-import { computeCaseScores } from "../src/server/scoring";
+import { computeCaseScores } from "@app/kernel/server/scoring";
 
 /**
  * DEMO 种子脚本（仅案例，不种子方案 —— 创始人 2026-09-05 裁决）。

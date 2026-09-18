@@ -13,7 +13,7 @@ import {
   discountedPaybackYears,
   roiPct,
   buildAnnualNetCashFlow,
-} from "../../src/server/sandbox-finance";
+} from "@app/kernel/server/sandbox-finance";
 
 describe("sandbox-finance · 版本与 calcRef", () => {
   it("FINANCE_VERSION 语义化、calcRef 携带版本", () => {

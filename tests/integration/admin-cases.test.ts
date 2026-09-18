@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import { listAdminCases, ADMIN_CASE_LIST_LIMIT } from "@/server/admin-cases";
 import { DEMO_SOURCE_TYPE } from "@/server/demo";
 

@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma, type ChangeAction } from "@prisma/client";
 import {
   CuidSchema,
   SlugSchema,
   CurrencySchema,
   SolutionStatusSchema,
-} from "@/lib/validation";
+} from "@app/kernel/lib/validation";
 
 /**
  * 方案的**数据层 CRUD**（Phase 8 M1，server-only）。

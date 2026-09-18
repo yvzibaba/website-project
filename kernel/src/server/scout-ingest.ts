@@ -1,16 +1,16 @@
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma, type ChangeAction } from "@prisma/client";
-import { CuidSchema } from "@/lib/validation";
-import { evaluateCandidate, type ScoutCandidate } from "@/server/scout";
+import { CuidSchema } from "@app/kernel/lib/validation";
+import { evaluateCandidate, type ScoutCandidate } from "@app/kernel/server/scout";
 import {
   fetchGitHubRepo,
   mapGitHubRepoToCandidate,
   ScoutFetchError,
   type GithubFetch,
   type GitHubRepoLite,
-} from "@/server/scout-github";
+} from "@app/kernel/server/scout-github";
 
 /**
  * Scout「抓取 → 治理判定 → 落库」编排（Phase 10 M2，server-only）。

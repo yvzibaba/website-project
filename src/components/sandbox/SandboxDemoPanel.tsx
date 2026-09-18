@@ -32,11 +32,11 @@ import {
   type DemoHeadlineState,
   type DemoTouched,
   type ParamSourceCategory,
-} from "@/server/sandbox-demo";
-import { DEFAULT_REGION_ID, getRegionPack, listRegionOptions } from "@/server/sandbox-regions";
-import type { Tone } from "@/lib/sandbox-view";
-import type { MetricCard } from "@/lib/sandbox-view";
-import { formatMoney } from "@/lib/sandbox-view";
+} from "@app/kernel/server/sandbox-demo";
+import { DEFAULT_REGION_ID, getRegionPack, listRegionOptions } from "@app/kernel/server/sandbox-regions";
+import type { Tone } from "@app/kernel/lib/sandbox-view";
+import type { MetricCard } from "@app/kernel/lib/sandbox-view";
+import { formatMoney } from "@app/kernel/lib/sandbox-view";
 import { SandboxReportPanel } from "./SandboxReportPanel";
 import { SandboxRegionClauseFacts } from "./SandboxRegionClauseFacts";
 import { SandboxSavePanel } from "./SandboxSavePanel";

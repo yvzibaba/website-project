@@ -22,8 +22,8 @@
  * 命名与键：只使用 R1.2 `SANDBOX_PARAMS` 里**已注册的键**（如 `region.elecPrice`、`policy.feedInTariff`），
  * pack 不新增参数、只给地区/政策层的取值与区间，避免与参数目录漂移（第 16 条单一真源）。
  */
-import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
-import { SHANXI_REGION_SOURCES, SHANXI_POLICY_SOURCES } from "@/server/sandbox-region-facts";
+import type { ResolveLayers, ValueLayer } from "@app/kernel/server/parameter-engine";
+import { SHANXI_REGION_SOURCES, SHANXI_POLICY_SOURCES } from "@app/kernel/server/sandbox-region-facts";
 
 /**
  * 地区参数包目录版本（增删地区 / 改默认口径须升版并记原因，宪法第 13 条）。

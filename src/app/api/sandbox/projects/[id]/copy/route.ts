@@ -5,7 +5,7 @@ import {
   mutationResponse,
   errorResponse,
 } from "@/server/api-guard";
-import { copySandboxProject } from "@/server/sandbox-projects";
+import { copySandboxProject } from "@app/kernel/server/sandbox-projects";
 
 /**
  * /api/sandbox/projects/[id]/copy — 复制一个沙盘项目（Phase 4 模块 B，§四「复制」）。

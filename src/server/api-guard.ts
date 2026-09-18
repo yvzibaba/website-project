@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireRole, getCurrentUser, STAFF_ROLES, type SessionUser } from "@/server/authz";
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 
 /**
  * 后台「写」HTTP 端点的统一门禁 + 结果翻译（Phase 13 M1）。

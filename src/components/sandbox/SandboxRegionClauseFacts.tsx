@@ -14,7 +14,7 @@
  */
 
 import { Badge } from "@/components/ui";
-import { getRegionClauseFacts } from "@/server/sandbox-region-facts";
+import { getRegionClauseFacts } from "@app/kernel/server/sandbox-region-facts";
 
 export function SandboxRegionClauseFacts({ regionId }: { regionId: string }) {
   const facts = getRegionClauseFacts(regionId);

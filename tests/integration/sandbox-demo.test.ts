@@ -1,19 +1,19 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import {
   createProject,
   getProjectWithScenarios,
   toEngineLayers,
   type StoredParamLayers,
-} from "@/server/sandbox-store";
-import { runSandboxModel } from "@/server/sandbox-model";
+} from "@app/kernel/server/sandbox-store";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
 import {
   computeDemoScenario,
   defaultDemoState,
   serializeDemoLayers,
   deserializeDemoState,
   type DemoHeadlineState,
-} from "@/server/sandbox-demo";
+} from "@app/kernel/server/sandbox-demo";
 
 /**
  * 集成测试（真连 Neon，R8.8a）：证「示范项目参数模型」这条**简化入口 → 既有引擎 → 落库 → 重开**的整链

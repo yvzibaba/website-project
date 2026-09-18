@@ -1,16 +1,16 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { runSandboxModel, type CalcResult } from "@/server/sandbox-model";
-import type { ResolveLayers } from "@/server/parameter-engine";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
-import { upgradeSolutionFinancialProvenance } from "@/server/sandbox-provenance-store";
-import { isSandboxSourcedSolution } from "@/lib/sandbox-solution-lineage";
-import { evaluateSandboxSolutionProvenance, type FinancialLike } from "@/lib/sandbox-solution-provenance";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { runSandboxModel, type CalcResult } from "@app/kernel/server/sandbox-model";
+import type { ResolveLayers } from "@app/kernel/server/parameter-engine";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { persistSandboxSolutionDraft } from "@app/kernel/server/sandbox-solution-store";
+import { upgradeSolutionFinancialProvenance } from "@app/kernel/server/sandbox-provenance-store";
+import { isSandboxSourcedSolution } from "@app/kernel/lib/sandbox-solution-lineage";
+import { evaluateSandboxSolutionProvenance, type FinancialLike } from "@app/kernel/lib/sandbox-solution-provenance";
 
 /**
  * 集成测试（真连 Neon，中途重构 R8.7 · 地区真实数据接入闭环真实化）：

@@ -11,10 +11,10 @@
  *  ⑦ `isProfileDefault` 供 UI 精确区分「画像默认」与「已改」。
  */
 import { describe, it, expect } from "vitest";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { buildSandboxLayers } from "@/server/sandbox-regions";
-import { SANDBOX_PARAMS } from "@/server/sandbox-params";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { buildSandboxLayers } from "@app/kernel/server/sandbox-regions";
+import { SANDBOX_PARAMS } from "@app/kernel/server/sandbox-params";
 import {
   SANDBOX_PROFILES,
   SANDBOX_PROFILES_VERSION,
@@ -27,7 +27,7 @@ import {
   buildProfileLayers,
   isProfileDefault,
   validateProfileCatalog,
-} from "@/server/sandbox-profiles";
+} from "@app/kernel/server/sandbox-profiles";
 
 const NOW = new Date("2026-09-06T00:00:00.000Z");
 const SPEC = new Map(SANDBOX_PARAMS.map((s) => [s.key, s] as const));

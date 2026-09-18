@@ -24,15 +24,15 @@ import {
   describeSandboxSource,
   type SandboxSourceRef,
   type SourceFinancialLike,
-} from "@/lib/sandbox-solution-source";
-import { SANDBOX_SOLUTION_VERSION, buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { runSandboxModelBaseline } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { isSandboxSourcedSolution } from "@/lib/sandbox-solution-lineage";
-import { verifyReproducibility } from "@/lib/sandbox-solution-provenance";
+} from "@app/kernel/lib/sandbox-solution-source";
+import { SANDBOX_SOLUTION_VERSION, buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { isSandboxSourcedSolution } from "@app/kernel/lib/sandbox-solution-lineage";
+import { verifyReproducibility } from "@app/kernel/lib/sandbox-solution-provenance";
 
 // 合法 cuid 形状（c + 小写字母数字，20–32 长）；造两个可区分的 id。
 const SCEN = "c" + "s1enario0aaaa1bbbb2cccc3".slice(0, 24); // 长度合规、含数字小写字母

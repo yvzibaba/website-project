@@ -11,7 +11,7 @@ import { DeleteSolutionButton } from "@/components/admin/DeleteSolutionButton";
 import { PublishSolutionButton } from "@/components/admin/PublishSolutionButton";
 import { GenerateBodyButton } from "@/components/admin/GenerateBodyButton";
 import { getAdminSolutionDetail } from "@/server/admin-solutions";
-import { parseSolutionBody } from "@/server/solution-body";
+import { parseSolutionBody } from "@app/kernel/server/solution-body";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 
 /**

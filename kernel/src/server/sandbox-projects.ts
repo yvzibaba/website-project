@@ -15,10 +15,10 @@
  *   - 结果是不含裸抛的判别联合（ok/invalid/not_found/forbidden/error），由 `api-guard.mutationResponse` 统一翻译。
  *   - 本层 server-only：直接 import prisma，绝不进任何 client bundle。
  */
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { z } from "zod";
-import { STAFF_ROLES, type SessionUser } from "@/server/authz";
+import { STAFF_ROLES, type SessionUser } from "@app/kernel/lib/roles";
 import {
   createProject,
   updateScenarioLayers,
@@ -28,7 +28,7 @@ import {
   listProjectsForOwner,
   listScenarioVersions,
   type StoredParamLayers,
-} from "@/server/sandbox-store";
+} from "@app/kernel/server/sandbox-store";
 
 const log = logger.child({ module: "server/sandbox-projects" });
 

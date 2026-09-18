@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 
 /**
  * 集成测试：直接连 Neon Postgres，验证 Prisma Client ↔ 真实 DB 的读写通路。

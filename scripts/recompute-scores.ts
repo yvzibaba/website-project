@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { recomputeAllCaseScores } from "@/server/case-scores";
+import { prisma } from "@app/kernel/lib/prisma";
+import { recomputeAllCaseScores } from "@app/kernel/server/case-scores";
 
 /**
  * 评分复算脚本（Phase 7 M2）。

@@ -284,7 +284,7 @@ describe("P4 · requireUserWrite（登录即可、任意角色）", () => {
 
 // ────────────────────────── ④ ownsSandboxSource（属主核验原语） ──────────────────────────
 
-vi.mock("@/lib/prisma", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({
   prisma: {
     project: { findUnique: vi.fn() },
     projectScenario: { findUnique: vi.fn() },
@@ -292,8 +292,8 @@ vi.mock("@/lib/prisma", () => ({
   disconnectPrisma: vi.fn(),
 }));
 
-import { prisma as mockedPrisma } from "@/lib/prisma";
-import { ownsSandboxSource } from "@/server/sandbox-solution-source";
+import { prisma as mockedPrisma } from "@app/kernel/lib/prisma";
+import { ownsSandboxSource } from "@app/kernel/server/sandbox-solution-source";
 
 const prismaProjectFindUnique = mockedPrisma.project.findUnique as unknown as ReturnType<typeof vi.fn>;
 const prismaScenarioFindUnique = mockedPrisma.projectScenario.findUnique as unknown as ReturnType<typeof vi.fn>;

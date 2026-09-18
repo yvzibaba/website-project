@@ -1,10 +1,10 @@
 import type { NextResponse } from "next/server";
 import { requireUserWrite, mutationResponse, readJsonSafe, errorResponse } from "@/server/api-guard";
-import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
-import { ownsSandboxSource } from "@/server/sandbox-solution-source";
+import { persistSandboxSolutionDraft } from "@app/kernel/server/sandbox-solution-store";
+import { ownsSandboxSource } from "@app/kernel/server/sandbox-solution-source";
 import { hasEntitlement } from "@/server/feature-flags";
 import { STAFF_ROLES } from "@/server/authz";
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 
 /**
  * /api/sandbox/solution — 把沙盘「产业方案草案」（R8.1 `sandbox-solution.ts` 在浏览器现算出的草稿）

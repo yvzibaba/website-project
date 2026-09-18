@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import type { ResolvedParameter } from "@/server/parameter-engine";
-import { MODEL_VERSION, runSandboxModelBaseline } from "@/server/sandbox-model";
+import type { ResolvedParameter } from "@app/kernel/server/parameter-engine";
+import { MODEL_VERSION, runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
 import {
   DEMO_MODEL_VERSION,
   DEMO_OPERATING_DAYS,
@@ -17,7 +17,7 @@ import {
   serializeDemoLayers,
   deserializeDemoState,
   type DemoHeadlineState,
-} from "@/server/sandbox-demo";
+} from "@app/kernel/server/sandbox-demo";
 
 /**
  * R8.8a 示范项目「映射层 + 来源分类器」单元黄金样本（纯函数，无 DB/网络/时钟）。

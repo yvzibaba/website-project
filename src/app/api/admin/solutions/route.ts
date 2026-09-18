@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse, readJsonSafe } from "@/server/api-guard";
-import { createSolution } from "@/server/solution-admin";
+import { createSolution } from "@app/kernel/server/solution-admin";
 
 /**
  * POST /api/admin/solutions — 新建方案（Phase 13 M1，受 requireRole(STAFF_ROLES) + CSRF 门禁）。

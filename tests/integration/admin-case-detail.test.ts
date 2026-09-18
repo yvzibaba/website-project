@@ -1,7 +1,7 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import { getAdminCaseDetail } from "@/server/admin-cases";
-import { recomputeCaseScores } from "@/server/case-scores";
+import { recomputeCaseScores } from "@app/kernel/server/case-scores";
 import { DEMO_SOURCE_TYPE } from "@/server/demo";
 
 /**

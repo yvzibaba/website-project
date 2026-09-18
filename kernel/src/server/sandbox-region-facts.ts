@@ -1,4 +1,4 @@
-import type { ValueSourceMeta } from "@/server/parameter-engine";
+import type { ValueSourceMeta } from "@app/kernel/server/parameter-engine";
 
 /**
  * 沙盘「地区 / 政策参数」的**逐值来源编目**（中途重构 R8.7 · 真实数据接入）。

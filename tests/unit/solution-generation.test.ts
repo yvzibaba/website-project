@@ -3,10 +3,10 @@ import {
   SOLUTION_GENERATION_VERSION,
   SOLUTION_SECTION_KEYS,
   mapPipelineToSolution,
-} from "@/server/solution-generation";
-import { SOLUTION_SECTIONS } from "@/server/solution-body";
-import type { PipelineResult, PipelineRole } from "@/server/research-pipeline";
-import type { ModelTier } from "@/server/model-router";
+} from "@app/kernel/server/solution-generation";
+import { SOLUTION_SECTIONS } from "@app/kernel/server/solution-body";
+import type { PipelineResult, PipelineRole } from "@app/kernel/server/research-pipeline";
+import type { ModelTier } from "@app/kernel/server/model-router";
 
 /**
  * 单元测试：§33 流水线结果 → 方案正文的纯映射器（Phase 8 M3）。**无 DB、无网络、无 key、无时钟/随机**。

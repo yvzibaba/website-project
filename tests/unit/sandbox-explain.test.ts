@@ -8,12 +8,12 @@ import {
   buildExplainPrompt,
   explainSandboxScenario,
   type SandboxReportInput,
-} from "@/server/sandbox-explain";
+} from "@app/kernel/server/sandbox-explain";
 import {
   StubProvider,
   createMemoryRecorder,
   type ChatProvider,
-} from "@/server/model-router";
+} from "@app/kernel/server/model-router";
 
 /**
  * 单元测试：沙盘「AI 解释」编排（中途重构 R6.2 · §7 LLM 只解释不算数）。

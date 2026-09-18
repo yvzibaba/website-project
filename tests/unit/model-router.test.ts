@@ -16,7 +16,7 @@ import {
   type ModelTaskKind,
   type ModelTier,
   type ChatProvider,
-} from "@/server/model-router";
+} from "@app/kernel/server/model-router";
 
 /**
  * Model Router 契约单测（Phase 9 M1，**无 DB、无网络、无 key**）。

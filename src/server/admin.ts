@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
-import type { CaseStage, SolutionStatus, UserRole } from "@/lib/validation";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
+import type { CaseStage, SolutionStatus, UserRole } from "@app/kernel/lib/validation";
 
 /**
  * 后台数据聚合（server-only，Phase 6 M2）。

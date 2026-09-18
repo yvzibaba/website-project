@@ -28,7 +28,7 @@ import {
   LoginInputSchema,
   paginatedResponseSchema,
   HealthResponseSchema,
-} from "@/lib/validation";
+} from "@app/kernel/lib/validation";
 import { z } from "zod";
 
 describe("validation — ID schemas", () => {

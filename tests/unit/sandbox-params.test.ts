@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { filterByExposure } from "@/server/parameter-engine";
-import { runSandboxModel } from "@/server/sandbox-model";
+import { filterByExposure } from "@app/kernel/server/parameter-engine";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
 import {
   SANDBOX_PARAMS_VERSION,
   SANDBOX_PARAMS,
@@ -9,7 +9,7 @@ import {
   SANDBOX_DERIVED,
   resolveSandbox,
   resolveSandboxBaseline,
-} from "@/server/sandbox-params";
+} from "@app/kernel/server/sandbox-params";
 
 /**
  * 单元测试：「重卡 + 光伏 + 储能 + 充电」沙盘参数模板（R1.2）。

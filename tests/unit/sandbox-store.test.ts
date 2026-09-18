@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
 
 // 只测导出的纯映射函数 `projectCalcToColumns`（不触库）；顶掉 prisma 以免实例化客户端。
-vi.mock("@/lib/prisma", () => ({ prisma: {} }));
-vi.mock("@/lib/logger", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: {} }));
+vi.mock("@app/kernel/lib/logger", () => ({
   logger: { child: () => ({ info: () => {}, warn: () => {}, error: () => {} }) },
 }));
 
-import { runSandboxModel, type CalcResult, type CalcResultOk } from "@/server/sandbox-model";
-import { projectCalcToColumns, STORE_VERSION } from "@/server/sandbox-store";
+import { runSandboxModel, type CalcResult, type CalcResultOk } from "@app/kernel/server/sandbox-model";
+import { projectCalcToColumns, STORE_VERSION } from "@app/kernel/server/sandbox-store";
 
 const base = runSandboxModel();
 if (!base.ok) {

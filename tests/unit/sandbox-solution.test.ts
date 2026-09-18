@@ -15,13 +15,13 @@ import {
   buildSandboxSolutionDraft,
   sandboxSolutionCalcRef,
   SANDBOX_SOLUTION_VERSION,
-} from "@/lib/sandbox-solution";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { runSandboxModel, runSandboxModelBaseline } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { getEnterpriseProfile } from "@/server/sandbox-profiles";
+} from "@app/kernel/lib/sandbox-solution";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { runSandboxModel, runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { getEnterpriseProfile } from "@app/kernel/server/sandbox-profiles";
 
 function okDraft(calc = runSandboxModelBaseline(), overrides: Record<string, unknown> = {}) {
   const resolved = resolveSandbox();

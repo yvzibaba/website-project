@@ -19,9 +19,9 @@ import {
   SHANXI_REGION_SOURCES,
   SHANXI_POLICY_SOURCES,
   NATIONAL_REGION_SOURCES,
-} from "@/server/sandbox-region-facts";
-import { getRegionPack } from "@/server/sandbox-regions";
-import { SANDBOX_PARAMS } from "@/server/sandbox-params";
+} from "@app/kernel/server/sandbox-region-facts";
+import { getRegionPack } from "@app/kernel/server/sandbox-regions";
+import { SANDBOX_PARAMS } from "@app/kernel/server/sandbox-params";
 
 const knownKeys = new Set(SANDBOX_PARAMS.map((s) => s.key));
 const USABLE_HTTP_URL = /^https?:\/\/\S+$/;

@@ -1,12 +1,12 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import {
   computeCaseScores,
   CaseScoresSchema,
   type CaseScores,
   type EvidenceLike,
-} from "@/server/scoring";
-import type { EvidenceType } from "@/lib/validation";
+} from "@app/kernel/server/scoring";
+import type { EvidenceType } from "@app/kernel/lib/validation";
 
 const log = logger.child({ module: "server/case-scores" });
 

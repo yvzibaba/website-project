@@ -18,16 +18,16 @@
  *     staff 不受限）。server 域逻辑，直接 import prisma/logger；
  *     本仓刻意不 import "server-only"（vitest/node 会抛错），仅注释标注。
  */
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
-import { STAFF_ROLES, type SessionUser } from "@/server/authz";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
+import { STAFF_ROLES, type SessionUser } from "@app/kernel/lib/roles";
 import {
   SANDBOX_SOURCE_FIELD,
   normalizeSandboxSource,
   readSandboxSourceFromFinancials,
   type SandboxSourceInput,
   type SandboxSourceRef,
-} from "@/lib/sandbox-solution-source";
+} from "@app/kernel/lib/sandbox-solution-source";
 
 const log = logger.child({ module: "server/sandbox-solution-source" });
 

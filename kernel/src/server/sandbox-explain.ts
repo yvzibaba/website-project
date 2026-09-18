@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 import {
   runTask,
   type CallRecord,
   type CallRecorder,
   type ChatProvider,
   type ModelTier,
-} from "@/server/model-router";
-import { createChatProvider } from "@/server/deepseek-provider";
+} from "@app/kernel/server/model-router";
+import { createChatProvider } from "@app/kernel/server/deepseek-provider";
 
 /**
  * 沙盘「AI 解释」编排（中途重构 R6.2 · §7「关键数字必须程序算、LLM 只解释」里 **LLM 负责的那一半**）。

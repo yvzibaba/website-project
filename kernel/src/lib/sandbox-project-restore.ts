@@ -13,8 +13,8 @@
  * 引擎只读 region/policy/user/now（见 sandbox-store.toEngineLayers），`demo`/`wb` 是刻意加性
  * 透传块，不参与任何计算，也不会被引擎改写。
  */
-import { deserializeDemoState, type DemoHeadlineState, type DemoTouched } from "@/server/sandbox-demo";
-import { getEnterpriseProfile } from "@/server/sandbox-profiles";
+import { deserializeDemoState, type DemoHeadlineState, type DemoTouched } from "@app/kernel/server/sandbox-demo";
+import { getEnterpriseProfile } from "@app/kernel/server/sandbox-profiles";
 
 export interface DemoRestore {
   state: DemoHeadlineState;

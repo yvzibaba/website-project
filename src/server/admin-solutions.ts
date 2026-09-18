@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import type { Industry } from "@prisma/client";
 import { getIndustryByEnum } from "@/server/industries";
 import { isDemoEntity } from "@/server/demo";

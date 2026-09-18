@@ -4,7 +4,7 @@ import {
   LicenseReviewStatusSchema,
   type LicenseType,
   type LicenseReviewStatus,
-} from "@/lib/validation";
+} from "@app/kernel/lib/validation";
 
 /**
  * GitHub Scout 治理逻辑（Phase 10 M1，纯函数 · **无 DB 依赖** · server 域逻辑）。

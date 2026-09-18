@@ -4,10 +4,12 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@app/kernel": ["./src/index.ts"],
+      "@app/kernel/*": ["./src/*"]
     },
     "lib": ["ES2022"],
-    "types": ["node"]
+    "types": ["node"],
+    "plugins": []
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

@@ -17,7 +17,7 @@ const mockTx = vi.hoisted(() => ({
 }));
 
 // vi.mock 工厂被提升到文件顶，故用 vi.hoisted 造 mock 句柄供工厂与测试体共享引用。
-vi.mock("@/lib/prisma", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({
   prisma: {
     $transaction: (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx),
     openSourceProject: mockTx.openSourceProject,
@@ -26,8 +26,8 @@ vi.mock("@/lib/prisma", () => ({
   disconnectPrisma: async () => {},
 }));
 
-import { ingestCandidate, ingestGitHubRepo } from "@/server/scout-ingest";
-import { ScoutFetchError } from "@/server/scout-github";
+import { ingestCandidate, ingestGitHubRepo } from "@app/kernel/server/scout-ingest";
+import { ScoutFetchError } from "@app/kernel/server/scout-github";
 
 const mitCandidate = {
   name: "facebook/react",

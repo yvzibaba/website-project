@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 import {
   listPublicCases,
   type CaseListResult,

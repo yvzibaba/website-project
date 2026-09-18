@@ -11,7 +11,7 @@ import {
   computeCaseScores,
   CaseScoresSchema,
   type EvidenceLike,
-} from "@/server/scoring";
+} from "@app/kernel/server/scoring";
 
 /**
  * 单元测试：案例评分内核（纯函数 · 黄金样本）。

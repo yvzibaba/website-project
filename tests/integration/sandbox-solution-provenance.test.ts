@@ -1,15 +1,15 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
-import { updateSolution } from "@/server/solution-admin";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { persistSandboxSolutionDraft } from "@app/kernel/server/sandbox-solution-store";
+import { updateSolution } from "@app/kernel/server/solution-admin";
 import { getPublishedSolutionById } from "@/server/solutions";
-import { evaluateSandboxSolutionProvenance, type FinancialLike } from "@/lib/sandbox-solution-provenance";
+import { evaluateSandboxSolutionProvenance, type FinancialLike } from "@app/kernel/lib/sandbox-solution-provenance";
 
 /**
  * 集成测试（真连 Neon，中途重构 R8.4）：实证沙盘来源方案的**溯源审计在真实数据库往返后仍站得住**——

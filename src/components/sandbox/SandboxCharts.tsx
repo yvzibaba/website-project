@@ -26,8 +26,8 @@ import {
   LabelList,
 } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
-import { formatMoney } from "@/lib/sandbox-view";
-import type { CashFlowPoint, NamedValue, TornadoBar } from "@/lib/sandbox-view";
+import { formatMoney } from "@app/kernel/lib/sandbox-view";
+import type { CashFlowPoint, NamedValue, TornadoBar } from "@app/kernel/lib/sandbox-view";
 
 const AXIS = { fontSize: 12, fill: "#71717a" } as const;
 

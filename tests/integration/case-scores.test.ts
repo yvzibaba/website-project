@@ -1,8 +1,8 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { recomputeCaseScores, recomputeAllCaseScores } from "@/server/case-scores";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { recomputeCaseScores, recomputeAllCaseScores } from "@app/kernel/server/case-scores";
 import { getPublicCaseById } from "@/server/cases";
-import { CaseScoresSchema, SCORING_RUBRIC_VERSION } from "@/server/scoring";
+import { CaseScoresSchema, SCORING_RUBRIC_VERSION } from "@app/kernel/server/scoring";
 
 /**
  * 集成测试：评分持久化与复算（Phase 7 M2）+ 详情页数据层暴露拆解（M3），真连 Neon，不 mock。

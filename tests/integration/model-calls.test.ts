@@ -1,11 +1,11 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import {
   createDbCallRecorder,
   getCostSummary,
   summarizeModelCalls,
 } from "@/server/model-calls";
-import type { CallRecord } from "@/server/model-router";
+import type { CallRecord } from "@app/kernel/server/model-router";
 
 /**
  * 集成测试（真连 Neon，Phase 9 M5）：证明 §31 AI 成本观测**真的落库 + 真的读回聚合**。

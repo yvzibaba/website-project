@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import {
   createProject,
   updateScenarioLayers,
@@ -8,7 +8,7 @@ import {
   getProjectWithScenarios,
   listScenarioVersions,
   type StoredParamLayers,
-} from "@/server/sandbox-store";
+} from "@app/kernel/server/sandbox-store";
 
 /**
  * 集成测试（真连 Neon，中途重构 R3）：证 §14 #2「项目模型」持久层**真的落库、真的按 §4 命脉重算**。

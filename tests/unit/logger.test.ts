@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { createLogger, __redact } from "@/lib/logger";
+import { createLogger, __redact } from "@app/kernel/lib/logger";
 
 type WriteSpy = ReturnType<typeof vi.spyOn>;
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { Order } from "@prisma/client";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 import { errorResponse } from "@/server/api-guard";
-import { PaginationSchema } from "@/lib/validation";
+import { PaginationSchema } from "@app/kernel/lib/validation";
 import { listOrdersForAdmin } from "@/server/orders";
 
 /**

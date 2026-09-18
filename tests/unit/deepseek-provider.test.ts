@@ -6,7 +6,7 @@ import {
   runTask,
   type ModelTaskKind,
   type ProviderRequest,
-} from "@/server/model-router";
+} from "@app/kernel/server/model-router";
 import {
   DeepSeekProvider,
   deepSeekConfigFromEnv,
@@ -14,7 +14,7 @@ import {
   DEEPSEEK_TIER_HINT,
   type FetchLike,
   type DeepSeekConfig,
-} from "@/server/deepseek-provider";
+} from "@app/kernel/server/deepseek-provider";
 
 /**
  * Phase 9 M3 —— DeepSeek 真实供应商（OpenAI 兼容 `/chat/completions`）。

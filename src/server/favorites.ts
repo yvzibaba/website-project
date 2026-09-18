@@ -11,8 +11,8 @@
  *   - 结果一律判别联合（ok/invalid/not_found/error），不裸抛——api-guard.mutationResponse 统一翻译。
  *   - ownerId 只从服务端会话取（调用方传入 SessionUser），绝不接受客户端传入的 userId（SECURITY）。
  */
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { z } from "zod";
 import type { SessionUser } from "@/server/authz";
 

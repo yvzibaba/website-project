@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse, readJsonSafe } from "@/server/api-guard";
-import { addSolutionFinancial } from "@/server/solution-admin";
+import { addSolutionFinancial } from "@app/kernel/server/solution-admin";
 
 /**
  * POST /api/admin/solutions/[id]/financial — 给方案追加一条财务测算（Phase 13 M1，受门禁）。

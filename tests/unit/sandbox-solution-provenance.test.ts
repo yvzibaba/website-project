@@ -23,13 +23,13 @@ import {
   provenanceCalcRef,
   SANDBOX_SOLUTION_PROVENANCE_VERSION,
   type FinancialLike,
-} from "@/lib/sandbox-solution-provenance";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { runSandboxModelBaseline } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
+} from "@app/kernel/lib/sandbox-solution-provenance";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
 
 /** 一条「沙盘基线导出」形状的财务（十进制串 = 引擎源值 toFixed 后的落库形态）。 */
 function sandboxFinancial(over: Partial<FinancialLike> = {}): FinancialLike {

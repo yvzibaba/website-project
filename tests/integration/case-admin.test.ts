@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
 import type { ChangeAction } from "@prisma/client";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import {
   createCase,
   updateCase,
@@ -9,7 +9,7 @@ import {
   removeCaseEvidence,
 } from "@/server/case-admin";
 import { getPublicCaseById } from "@/server/cases";
-import { SCORING_RUBRIC_VERSION } from "@/server/scoring";
+import { SCORING_RUBRIC_VERSION } from "@app/kernel/server/scoring";
 
 /**
  * 集成测试：案例与证据的数据层 CRUD（Phase 7 M5），真连 Neon，不 mock。

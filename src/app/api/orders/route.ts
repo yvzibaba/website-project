@@ -1,7 +1,7 @@
 import type { NextResponse } from "next/server";
 import { requireSameOriginActor, mutationResponse, readJsonSafe } from "@/server/api-guard";
 import { createOrder } from "@/server/orders";
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 
 /**
  * POST /api/orders — 用户下单（Phase 12 M2，购买闭环的公开入口，游客亦可）。

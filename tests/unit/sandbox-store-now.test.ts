@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 
 // 只测导出的纯函数 `toEngineLayers`（不触库）；顶掉 prisma/logger 以免实例化客户端。
-vi.mock("@/lib/prisma", () => ({ prisma: {} }));
-vi.mock("@/lib/logger", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: {} }));
+vi.mock("@app/kernel/lib/logger", () => ({
   logger: { child: () => ({ info: () => {}, warn: () => {}, error: () => {} }) },
 }));
 
-import { toEngineLayers, type StoredParamLayers } from "@/server/sandbox-store";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { buildSandboxLayers } from "@/server/sandbox-regions";
+import { toEngineLayers, type StoredParamLayers } from "@app/kernel/server/sandbox-store";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { buildSandboxLayers } from "@app/kernel/server/sandbox-regions";
 
 /**
  * R6.3 命脉正确性回归（政策日期窗 §6 + 时钟 now 持久化回放）。

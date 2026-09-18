@@ -17,8 +17,8 @@ import {
   demoBaseline,
   type DemoHeadlineState,
   type DemoScenarioResult,
-} from "@/server/sandbox-demo";
-import { MODEL_VERSION, type CalcResultOk } from "@/server/sandbox-model";
+} from "@app/kernel/server/sandbox-demo";
+import { MODEL_VERSION, type CalcResultOk } from "@app/kernel/server/sandbox-model";
 
 const NOW = new Date("2026-01-01T00:00:00.000Z");
 

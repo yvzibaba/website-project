@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import type { Industry } from "@prisma/client";
 import { getIndustryByEnum } from "@/server/industries";
 import { isDemoEntity } from "@/server/demo";
-import { solutionPublishBlockers } from "@/server/solution-admin";
+import { solutionPublishBlockers } from "@app/kernel/server/solution-admin";
 
 /**
  * 后台「审核发布队列」只读聚合（Phase 13 M6，server-only）。

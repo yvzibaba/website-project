@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import { getSitemapEntries, SITEMAP_PER_TYPE } from "@/server/seo";
 import { DEMO_SOURCE_TYPE } from "@/server/demo";
 

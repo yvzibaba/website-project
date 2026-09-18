@@ -8,8 +8,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  * 换成可编排断言的 vi.fn。顶掉 prisma/logger 以免实例化客户端 / 打日志。
  */
 
-vi.mock("@/lib/prisma", () => ({ prisma: {}, disconnectPrisma: async () => {} }));
-vi.mock("@/lib/logger", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: {}, disconnectPrisma: async () => {} }));
+vi.mock("@app/kernel/lib/logger", () => ({
   logger: { child: () => ({ info: () => {}, warn: () => {}, error: () => {} }) },
 }));
 
@@ -22,8 +22,8 @@ vi.mock("@/server/authz", () => ({
   getCurrentUser: vi.fn(),
 }));
 
-vi.mock("@/server/solution-admin", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/server/solution-admin")>();
+vi.mock("@app/kernel/server/solution-admin", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@app/kernel/server/solution-admin")>();
   return {
     ...actual,
     createSolution: vi.fn(),
@@ -36,12 +36,12 @@ import {
   createSolution,
   addSolutionFinancial,
   addSolutionUnknown,
-} from "@/server/solution-admin";
+} from "@app/kernel/server/solution-admin";
 import {
   persistSandboxSolutionDraft,
   SandboxSolutionPersistSchema,
   SANDBOX_SOLUTION_STORE_VERSION,
-} from "@/server/sandbox-solution-store";
+} from "@app/kernel/server/sandbox-solution-store";
 
 const mockCreate = vi.mocked(createSolution);
 const mockFin = vi.mocked(addSolutionFinancial);

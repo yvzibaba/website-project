@@ -18,7 +18,7 @@
  *      放电侧乘往返效率。峰谷套利的**钱**在财务/编排层结算，此处只算可移动的**能量**。
  *   S5 不含电池健康度(SOH)衰减、温度折减、限电弃光、充电需求增长曲线——V1 刻意留白，标记待补。
  */
-import { round } from "@/server/sandbox-finance";
+import { round } from "@app/kernel/server/sandbox-finance";
 
 /** 技术模型版本（改公式/简化口径须升版并记原因，宪法第 13 条）。 */
 export const TECH_VERSION = "1.0.0";

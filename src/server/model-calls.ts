@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
-import { loggingRecorder, type CallRecord, type CallRecorder } from "@/server/model-router";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
+import { loggingRecorder, type CallRecord, type CallRecorder } from "@app/kernel/server/model-router";
 
 const log = logger.child({ module: "server/model-calls" });
 

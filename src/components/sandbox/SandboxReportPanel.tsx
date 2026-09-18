@@ -9,7 +9,7 @@
 "use client";
 
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
-import type { ReportSection, SandboxReport } from "@/lib/sandbox-report";
+import type { ReportSection, SandboxReport } from "@app/kernel/lib/sandbox-report";
 
 function SectionBlock({ section }: { section: ReportSection }) {
   return (

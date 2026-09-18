@@ -8,7 +8,7 @@ import { AdminCaseEvidences } from "@/components/admin/AdminCaseEvidences";
 import { DeleteCaseButton } from "@/components/admin/DeleteCaseButton";
 import { CaseOpportunityScoreForm } from "@/components/admin/CaseOpportunityScoreForm";
 import { getAdminCaseDetail } from "@/server/admin-cases";
-import { OPPORTUNITY_DIMENSIONS } from "@/server/scoring";
+import { OPPORTUNITY_DIMENSIONS } from "@app/kernel/server/scoring";
 import { INDUSTRIES } from "@/server/industries";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 

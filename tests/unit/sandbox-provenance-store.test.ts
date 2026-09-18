@@ -13,7 +13,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  *   - 记录不存在 → `not_found`，无写。
  */
 
-vi.mock("@/lib/logger", () => ({
+vi.mock("@app/kernel/lib/logger", () => ({
   logger: { child: () => ({ info: () => {}, warn: () => {}, error: () => {} }) },
 }));
 
@@ -24,7 +24,7 @@ const { mockFindUnique, mockTxUpdate, mockTxChangeLogCreate } = vi.hoisted(() =>
   mockTxChangeLogCreate: vi.fn(),
 }));
 
-vi.mock("@/lib/prisma", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({
   prisma: {
     solutionFinancial: { findUnique: (...a: unknown[]) => mockFindUnique(...a) },
     $transaction: (fn: (tx: unknown) => Promise<unknown>) =>
@@ -40,7 +40,7 @@ import {
   upgradeSolutionFinancialProvenance,
   SANDBOX_PROVENANCE_STORE_VERSION,
   ProvenanceUpgradeIntentSchema,
-} from "@/server/sandbox-provenance-store";
+} from "@app/kernel/server/sandbox-provenance-store";
 
 const FINANCIAL_ID = "ckfin0v3n8p0000abcdef123456";
 const SOLUTION_ID = "cksol1w4q9r1111zzzz9876543210";

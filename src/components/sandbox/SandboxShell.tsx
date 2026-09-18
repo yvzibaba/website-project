@@ -22,7 +22,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { mutateJson } from "@/components/admin/mutate";
-import { parseBaselineLayers, type ProjectRestore } from "@/lib/sandbox-project-restore";
+import { parseBaselineLayers, type ProjectRestore } from "@app/kernel/lib/sandbox-project-restore";
 import { SandboxDemoPanel } from "./SandboxDemoPanel";
 import { SandboxWorkbench } from "./SandboxWorkbench";
 

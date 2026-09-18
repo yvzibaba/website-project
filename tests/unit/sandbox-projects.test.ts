@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // 离线单测：顶掉 prisma / logger / authz / sandbox-store，专注验证「鉴权真值表 + 编排契约」，绝不触库、绝不打真模型。
-vi.mock("@/lib/prisma", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({
   prisma: { project: { findUnique: vi.fn() }, projectScenario: { findUnique: vi.fn() } },
 }));
-vi.mock("@/lib/logger", () => ({
+vi.mock("@app/kernel/lib/logger", () => ({
   logger: { child: () => ({ info: () => {}, warn: () => {}, error: () => {} }) },
 }));
 vi.mock("@/server/authz", () => ({ STAFF_ROLES: ["REVIEWER", "ADMIN"] }));
-vi.mock("@/server/sandbox-store", () => ({
+vi.mock("@app/kernel/server/sandbox-store", () => ({
   createProject: vi.fn(),
   updateScenarioLayers: vi.fn(),
   saveScenarioAsVersion: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock("@/server/sandbox-store", () => ({
   listScenarioVersions: vi.fn(),
 }));
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@app/kernel/lib/prisma";
 import {
   canAccessProject,
   createProjectSchema,
@@ -28,8 +28,8 @@ import {
   readSandboxProject,
   readSandboxScenarioVersions,
   SANDBOX_PROJECTS_VERSION,
-} from "@/server/sandbox-projects";
-import * as store from "@/server/sandbox-store";
+} from "@app/kernel/server/sandbox-projects";
+import * as store from "@app/kernel/server/sandbox-store";
 import type { SessionUser } from "@/server/authz";
 
 const findProject = prisma.project.findUnique as unknown as ReturnType<typeof vi.fn>;

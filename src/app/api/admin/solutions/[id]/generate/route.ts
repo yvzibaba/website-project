@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse, readJsonSafe } from "@/server/api-guard";
-import { generateSolutionContent } from "@/server/solution-generation";
+import { generateSolutionContent } from "@app/kernel/server/solution-generation";
 import { createDbCallRecorder } from "@/server/model-calls";
 
 /**

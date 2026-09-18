@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { UserRoleSchema } from "@/lib/validation";
+import { prisma } from "@app/kernel/lib/prisma";
+import { UserRoleSchema } from "@app/kernel/lib/validation";
 
 /**
  * 用户角色授予脚本（Phase 6 M2）。

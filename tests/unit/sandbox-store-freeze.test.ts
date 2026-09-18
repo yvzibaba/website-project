@@ -9,8 +9,8 @@
  * 同时钉桩：STORAGE_MODEL_VERSION 仅元数据（进 engineVersions 快照），经济结果零 churn 由既有黄金测试保证。
  */
 import { describe, it, expect } from "vitest";
-import { shouldAutoFreezeVersion, frozenVersionSummary, STORE_VERSION } from "@/server/sandbox-store";
-import { STORAGE_MODEL_VERSION } from "@/server/sandbox-storage-value";
+import { shouldAutoFreezeVersion, frozenVersionSummary, STORE_VERSION } from "@app/kernel/server/sandbox-store";
+import { STORAGE_MODEL_VERSION } from "@app/kernel/server/sandbox-storage-value";
 
 const EV_NEW = { model: "1.1.0", tech: "1.0.0", finance: "1.0.0", params: "1.2.0", storage: "1.0.0" };
 const EV_LEGACY = { model: "1.0.0", tech: "1.0.0", finance: "1.0.0", params: "1.1.0" };

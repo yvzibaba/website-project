@@ -1,12 +1,12 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { buildSandboxSolutionDraft } from "@/lib/sandbox-solution";
-import { persistSandboxSolutionDraft } from "@/server/sandbox-solution-store";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxSolutionDraft } from "@app/kernel/lib/sandbox-solution";
+import { persistSandboxSolutionDraft } from "@app/kernel/server/sandbox-solution-store";
 
 /**
  * 集成测试（真连 Neon，中途重构 R8.2）：证「沙盘结果 → 产业方案 DRAFT」这条**商业闭环第一块**在真库里落地。

@@ -27,14 +27,14 @@ import {
   tornadoSeries,
   summaryCards,
   buildSandboxViewModel,
-} from "@/lib/sandbox-view";
-import type { CalcResultOk } from "@/server/sandbox-model";
-import type { TechFirstYearResult } from "@/server/sandbox-tech";
-import type { TornadoResult } from "@/server/sandbox-sensitivity";
-import { runSandboxModelBaseline } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
+} from "@app/kernel/lib/sandbox-view";
+import type { CalcResultOk } from "@app/kernel/server/sandbox-model";
+import type { TechFirstYearResult } from "@app/kernel/server/sandbox-tech";
+import type { TornadoResult } from "@app/kernel/server/sandbox-sensitivity";
+import { runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
 
 /* ───────────────────────── 手搓 fixture ───────────────────────── */
 
@@ -317,7 +317,7 @@ describe("sandbox-view · ★§8 图表绑定真实模型输出", () => {
   });
 
   it("改参数（充电单价↑）→ 视图 NPV 卡随引擎重算而升（§4 命脉在呈现层的体现）", async () => {
-    const { runSandboxModel } = await import("@/server/sandbox-model");
+    const { runSandboxModel } = await import("@app/kernel/server/sandbox-model");
     const base = runSandboxModelBaseline();
     const hi = runSandboxModel({ user: { values: { "project.chargingPrice": 1.2 } } });
     expect(base.ok && hi.ok).toBe(true);

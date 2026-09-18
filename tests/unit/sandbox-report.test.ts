@@ -7,13 +7,13 @@
  * 构造视图模型再产报告，端到端证 §9「报告读最新 CalcResult」与 §7「程序算、LLM 只解释」的算数侧。
  */
 import { describe, it, expect } from "vitest";
-import { buildSandboxReport, REPORT_VERSION } from "@/lib/sandbox-report";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import { runSandboxModel, runSandboxModelBaseline } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import { computeTechModel as techFromTech } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
-import { getEnterpriseProfile } from "@/server/sandbox-profiles";
+import { buildSandboxReport, REPORT_VERSION } from "@app/kernel/lib/sandbox-report";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import { runSandboxModel, runSandboxModelBaseline } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { computeTechModel as techFromTech } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
+import { getEnterpriseProfile } from "@app/kernel/server/sandbox-profiles";
 
 function okViewModel() {
   const calc = runSandboxModelBaseline();

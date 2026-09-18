@@ -34,9 +34,9 @@
  *   **不产生任何计算后果**（内核不消费），仅保留该画像的"本意刻画"作运营参考；UI 已把这些滑块收起进
  *   「未启用·即将支持」区，画像切换不会再给它们安排可拖控件。待对应腿接线（如 P5 融资腿）后再启用。
  */
-import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
-import { getRegionPack, buildSandboxLayers } from "@/server/sandbox-regions";
-import { SANDBOX_PARAMS } from "@/server/sandbox-params";
+import type { ResolveLayers, ValueLayer } from "@app/kernel/server/parameter-engine";
+import { getRegionPack, buildSandboxLayers } from "@app/kernel/server/sandbox-regions";
+import { SANDBOX_PARAMS } from "@app/kernel/server/sandbox-params";
 
 /** 企业画像目录版本（增删画像 / 改预设口径须升版并记原因，宪法第 13 条）。 */
 export const SANDBOX_PROFILES_VERSION = "1.0.0";

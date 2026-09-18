@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { prisma, disconnectPrisma } from "@/lib/prisma";
+import { prisma, disconnectPrisma } from "@app/kernel/lib/prisma";
 import { listPublicCases, getPublicCaseById } from "@/server/cases";
 import { listPublishedSolutions, getPublishedSolutionById } from "@/server/solutions";
 import { searchPublic } from "@/server/search";

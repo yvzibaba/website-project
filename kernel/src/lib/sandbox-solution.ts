@@ -23,11 +23,11 @@
  *   - 只填沙盘**能确证**的分节，其余留空——由 `parseSolutionBody` 如实显示「待补充」，绝不臆造内容。
  */
 
-import type { CalcResult, CalcResultOk } from "@/server/sandbox-model";
-import { factInputs } from "@/server/parameter-engine";
-import { formatMoney, type NamedValue, type SandboxViewModel } from "@/lib/sandbox-view";
-import type { SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
-import { SANDBOX_PROFILES_VERSION } from "@/server/sandbox-profiles";
+import type { CalcResult, CalcResultOk } from "@app/kernel/server/sandbox-model";
+import { factInputs } from "@app/kernel/server/parameter-engine";
+import { formatMoney, type NamedValue, type SandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import type { SandboxEnterpriseProfile } from "@app/kernel/server/sandbox-profiles";
+import { SANDBOX_PROFILES_VERSION } from "@app/kernel/server/sandbox-profiles";
 
 /**
  * 方案草案口径版本（分节映射 / 财务搬运规则变化须升版记因，宪法第 13 条）。

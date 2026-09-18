@@ -16,7 +16,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { computeDemoScenario, type DemoHeadlineState, type DemoTouched } from "@/server/sandbox-demo";
+import { computeDemoScenario, type DemoHeadlineState, type DemoTouched } from "@app/kernel/server/sandbox-demo";
 
 const REGEN = process.env.SML_REGEN === "1";
 const FIXTURE_PATH = resolve(

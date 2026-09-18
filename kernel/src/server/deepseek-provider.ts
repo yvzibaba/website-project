@@ -4,7 +4,7 @@ import {
   type ProviderResult,
   type ModelTier,
   StubProvider,
-} from "@/server/model-router";
+} from "@app/kernel/server/model-router";
 
 /**
  * DeepSeek 真实供应商（Phase 9 M3，OpenAI 兼容 `/chat/completions`）——把「模型经 Model Router 解耦、

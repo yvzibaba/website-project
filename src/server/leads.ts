@@ -10,8 +10,8 @@
  *     UI 与后台需如实表述；
  *   - **频控不在本层**：留给路由（可读客户端 IP/UA；进程内存级、单实例、非分布式，见路由注释）。
  */
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { z } from "zod";
 import type { SessionUser } from "@/server/authz";
 

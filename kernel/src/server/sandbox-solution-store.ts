@@ -26,16 +26,16 @@
 
 import { z } from "zod";
 // 注：本模块为 server 域逻辑（route 层调用）。本仓刻意不 import "server-only"（vitest/node 会抛错），仅注释标注。
-import { CuidSchema, SlugSchema, CurrencySchema } from "@/lib/validation";
-import { attachSandboxSource, type SandboxSourceInput } from "@/lib/sandbox-solution-source";
-import { verifySandboxSource } from "@/server/sandbox-solution-source";
+import { CuidSchema, SlugSchema, CurrencySchema } from "@app/kernel/lib/validation";
+import { attachSandboxSource, type SandboxSourceInput } from "@app/kernel/lib/sandbox-solution-source";
+import { verifySandboxSource } from "@app/kernel/server/sandbox-solution-source";
 import {
   createSolution,
   addSolutionFinancial,
   addSolutionUnknown,
   SolutionFinancialInputSchema,
   SolutionUnknownInputSchema,
-} from "@/server/solution-admin";
+} from "@app/kernel/server/solution-admin";
 
 /**
  * 落库编排口径版本（组合规则 / 回写字段变化须升版记因，宪法第 13 条）。

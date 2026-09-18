@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EvidenceTypeSchema, type EvidenceType } from "@/lib/validation";
+import { EvidenceTypeSchema, type EvidenceType } from "@app/kernel/lib/validation";
 
 /**
  * 案例评分内核（Phase 7 M1，纯函数 · 无 DB 依赖 · server 域逻辑）。

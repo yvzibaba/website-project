@@ -19,12 +19,12 @@
  *    本层**不含鉴权**——「谁能建/改哪个项目」由 R6.3 接上的路由层（`/api/sandbox/**`）用
  *    `requireSameOriginActor`（登录）+ `sandbox-projects` 的 owner-or-staff 判定把关，本层只认调用方已鉴权。
  */
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma, type ChangeAction, type Industry } from "@prisma/client";
-import { runSandboxModel, type CalcResult } from "@/server/sandbox-model";
-import { resolveSandbox } from "@/server/sandbox-params";
-import type { ResolveLayers, ValueLayer } from "@/server/parameter-engine";
+import { runSandboxModel, type CalcResult } from "@app/kernel/server/sandbox-model";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import type { ResolveLayers, ValueLayer } from "@app/kernel/server/parameter-engine";
 
 const log = logger.child({ module: "server/sandbox-store" });
 

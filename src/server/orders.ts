@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma, type ChangeAction, type Order } from "@prisma/client";
-import { CuidSchema, EmailSchema, BuyerTypeSchema } from "@/lib/validation";
+import { CuidSchema, EmailSchema, BuyerTypeSchema } from "@app/kernel/lib/validation";
 import { deriveOrderDisplayState } from "@/lib/order-status";
 
 /**

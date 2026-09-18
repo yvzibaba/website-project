@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@app/kernel": ["./kernel/src/index.ts"],
+      "@app/kernel/*": ["./kernel/src/*"]
     }
   },
   "include": [

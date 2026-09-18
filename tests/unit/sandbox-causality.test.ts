@@ -20,9 +20,9 @@ import {
   runSandboxModel,
   runSandboxModelBaseline,
   type CalcResultOk,
-} from "../../src/server/sandbox-model";
-import { computeTechModel } from "../../src/server/sandbox-tech";
-import { resolveSandbox } from "../../src/server/sandbox-params";
+} from "@app/kernel/server/sandbox-model";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
 
 /** 从 `user.values` 覆写跑一次，若失败即抛出（本测试只在健康情景扫参）。 */
 function ok(res: ReturnType<typeof runSandboxModel>): CalcResultOk {

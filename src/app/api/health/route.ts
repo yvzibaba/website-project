@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { toErrorResponse } from "@/lib/errors";
 import { REQUEST_ID_HEADER, isValidRequestId } from "@/lib/request-id";
 

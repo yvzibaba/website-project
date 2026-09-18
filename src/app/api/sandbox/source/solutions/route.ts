@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextResponse as NR } from "next/server";
 import { requireUserWrite, errorResponse } from "@/server/api-guard";
-import { findSolutionsBySandboxSource, ownsSandboxSource } from "@/server/sandbox-solution-source";
-import { SANDBOX_SOURCE_FIELD } from "@/lib/sandbox-solution-source";
+import { findSolutionsBySandboxSource, ownsSandboxSource } from "@app/kernel/server/sandbox-solution-source";
+import { SANDBOX_SOURCE_FIELD } from "@app/kernel/lib/sandbox-solution-source";
 import { STAFF_ROLES } from "@/server/authz";
 
 /**

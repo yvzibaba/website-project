@@ -16,7 +16,7 @@ import {
   type ParameterSpec,
   type ResolveLayers,
   type ValueSourceMeta,
-} from "@/server/parameter-engine";
+} from "@app/kernel/server/parameter-engine";
 
 /**
  * 单元测试：参数引擎内核（重构 R1.1 · 纯函数 · 黄金样本）。

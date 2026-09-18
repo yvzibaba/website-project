@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse, readJsonSafe } from "@/server/api-guard";
-import { updateSolution, deleteSolution } from "@/server/solution-admin";
+import { updateSolution, deleteSolution } from "@app/kernel/server/solution-admin";
 
 /**
  * /api/admin/solutions/[id] — 更新（PATCH，含发布迁移走 publishGuard）与删除（DELETE，

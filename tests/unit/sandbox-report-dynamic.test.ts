@@ -22,8 +22,8 @@ import {
   defaultDemoState,
   type DemoHeadlineState,
   type DemoScenarioResult,
-} from "@/server/sandbox-demo";
-import { MODEL_VERSION } from "@/server/sandbox-model";
+} from "@app/kernel/server/sandbox-demo";
+import { MODEL_VERSION } from "@app/kernel/server/sandbox-model";
 
 const NOW = new Date("2026-01-01T00:00:00.000Z");
 

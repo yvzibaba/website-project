@@ -6,7 +6,7 @@ import {
   errorResponse,
 } from "@/server/api-guard";
 import { createDbCallRecorder } from "@/server/model-calls";
-import { explainSandboxScenario, sandboxReportInputSchema } from "@/server/sandbox-explain";
+import { explainSandboxScenario, sandboxReportInputSchema } from "@app/kernel/server/sandbox-explain";
 
 /**
  * /api/sandbox/explain — 对**当前沙盘情景的确定性报告**追加一段 AI 自然语言解释（中途重构 R6.2）。

@@ -4,7 +4,7 @@ import { Container, Badge, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb, EmptyState } from "@/components/page";
 import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { listPublicCases, CASE_SORT_FIELDS, type CaseSortField } from "@/server/cases";
-import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@/lib/validation";
+import { PaginationSchema, makeSortSchema, SearchQuerySchema } from "@app/kernel/lib/validation";
 import { cn } from "@/lib/cn";
 import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";

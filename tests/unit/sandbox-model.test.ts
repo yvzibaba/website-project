@@ -9,7 +9,7 @@ import {
   computeEconomics,
   runSandboxModel,
   runSandboxModelBaseline,
-} from "../../src/server/sandbox-model";
+} from "@app/kernel/server/sandbox-model";
 
 /** 与 R1.2 默认一致的全量数值快照（能量键 + 经济键），供 computeEconomics 直测。 */
 const NUMERIC: Record<string, number> = {

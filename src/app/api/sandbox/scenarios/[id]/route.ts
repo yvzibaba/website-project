@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireSameOriginActor, readJsonSafe, mutationResponse, errorResponse } from "@/server/api-guard";
-import { updateSandboxScenario } from "@/server/sandbox-projects";
+import { updateSandboxScenario } from "@app/kernel/server/sandbox-projects";
 
 /**
  * /api/sandbox/scenarios/[id] (PUT) — 改某情景的参数分层 → **服务端重跑引擎**落新快照（version++）（R6.3）。

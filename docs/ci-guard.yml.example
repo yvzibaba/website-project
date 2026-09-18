@@ -35,9 +35,26 @@ jobs:
           fi
           echo "TLS verification OK."
 
+  # 内核边界守卫（R9.1）。为什么必须在 CI 里跑、而不是靠人记得：
+  # 内核越界的失效是**静默的** —— 往内核写一行 `import ... from "@/auth"`，typecheck 通过、
+  # 1167 个测试全绿、构建成功，只有换底座那天才炸。测试测的是「算得对不对」，
+  # 测不了「边界有没有被越」。所以必须有一条独立于测试的门。
+  # 依据：docs/ai-rules/03-KERNEL.md §3。
+  kernel-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Kernel boundary guard (framework-free / no host back-reference)
+        run: node .kernel-tools/verify_kernel.mjs .
+      - name: No dangling imports after refactors
+        run: node .kernel-tools/survey_dangling_refs.mjs .
+
   quality:
     runs-on: ubuntu-latest
-    needs: [secret-scan, tls-guard]
+    needs: [secret-scan, tls-guard, kernel-guard]
     env:
       DATABASE_URL: ""
     steps:
@@ -46,7 +63,10 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      # 新克隆必须先生成 Next 的路由类型（LayoutProps 等），否则 tsc 会报
+      # "Cannot find name 'LayoutProps'"。这一坑已实测踩中，见 docs/ai-rules/05-TESTING.md。
       - run: npm ci
+      - run: npx next typegen
       - run: npx tsc --noEmit
       - run: npm run lint
       - run: npm run test

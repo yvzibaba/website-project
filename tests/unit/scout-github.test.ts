@@ -10,7 +10,7 @@ import {
   SCOUT_GITHUB_VERSION,
   type GithubFetch,
   type GitHubRepoLite,
-} from "@/server/scout-github";
+} from "@app/kernel/server/scout-github";
 
 /**
  * 单元测试：GitHub Scout 输入管道 `scout-github.ts`（Phase 10 M2）。

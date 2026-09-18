@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { Prisma } from "@prisma/client";
-import { hashPassword } from "@/lib/password";
-import { RegisterInputSchema } from "@/lib/validation";
+import { hashPassword } from "@app/kernel/lib/password";
+import { RegisterInputSchema } from "@app/kernel/lib/validation";
 
 /**
  * 用户数据层（server-only，Phase 6 M1）。

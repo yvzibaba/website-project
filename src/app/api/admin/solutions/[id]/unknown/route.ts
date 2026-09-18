@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse, readJsonSafe } from "@/server/api-guard";
-import { addSolutionUnknown } from "@/server/solution-admin";
+import { addSolutionUnknown } from "@app/kernel/server/solution-admin";
 
 /**
  * POST /api/admin/solutions/[id]/unknown — 给方案追加一条关键未知变量（Phase 13 M1，受门禁）。

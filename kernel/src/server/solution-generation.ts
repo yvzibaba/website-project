@@ -1,6 +1,6 @@
-import { logger } from "@/lib/logger";
-import { prisma } from "@/lib/prisma";
-import type { ChatProvider, CallRecorder } from "@/server/model-router";
+import { logger } from "@app/kernel/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import type { ChatProvider, CallRecorder } from "@app/kernel/server/model-router";
 import {
   runResearchPipeline,
   PIPELINE_VERSION,
@@ -8,10 +8,10 @@ import {
   type PipelineRole,
   type QAOutput,
   type JudgeOutput,
-} from "@/server/research-pipeline";
-import { createChatProvider } from "@/server/deepseek-provider";
-import { SOLUTION_SECTIONS, type SolutionSectionKey } from "@/server/solution-body";
-import { updateSolution, type SolutionMutationResult } from "@/server/solution-admin";
+} from "@app/kernel/server/research-pipeline";
+import { createChatProvider } from "@app/kernel/server/deepseek-provider";
+import { SOLUTION_SECTIONS, type SolutionSectionKey } from "@app/kernel/server/solution-body";
+import { updateSolution, type SolutionMutationResult } from "@app/kernel/server/solution-admin";
 
 /**
  * 方案正文 AI 生成（Phase 8 M3 / 承接 Phase 9 M4，server-only）。

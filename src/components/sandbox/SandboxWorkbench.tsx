@@ -35,16 +35,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
-import { SANDBOX_PARAMS, resolveSandbox } from "@/server/sandbox-params";
-import { runSandboxModel } from "@/server/sandbox-model";
-import { computeTechModel } from "@/server/sandbox-tech";
-import { computeTornado } from "@/server/sandbox-sensitivity";
+import { SANDBOX_PARAMS, resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { runSandboxModel } from "@app/kernel/server/sandbox-model";
+import { computeTechModel } from "@app/kernel/server/sandbox-tech";
+import { computeTornado } from "@app/kernel/server/sandbox-sensitivity";
 import {
   DEFAULT_REGION_ID,
   getRegionPack,
   listRegionOptions,
   SANDBOX_REGIONS_VERSION,
-} from "@/server/sandbox-regions";
+} from "@app/kernel/server/sandbox-regions";
 import {
   DEFAULT_PROFILE_ID,
   SANDBOX_PROFILE_IDS,
@@ -53,11 +53,11 @@ import {
   isProfileDefault,
   listProfileOptions,
   SANDBOX_PROFILES_VERSION,
-} from "@/server/sandbox-profiles";
-import { buildSandboxViewModel } from "@/lib/sandbox-view";
-import type { MetricCard, Tone } from "@/lib/sandbox-view";
-import { buildSandboxReport } from "@/lib/sandbox-report";
-import type { ChangedParamView } from "@/lib/sandbox-report";
+} from "@app/kernel/server/sandbox-profiles";
+import { buildSandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import type { MetricCard, Tone } from "@app/kernel/lib/sandbox-view";
+import { buildSandboxReport } from "@app/kernel/lib/sandbox-report";
+import type { ChangedParamView } from "@app/kernel/lib/sandbox-report";
 import { SandboxReportPanel } from "./SandboxReportPanel";
 import { SandboxUpgradePanel } from "./SandboxUpgradePanel";
 import { SandboxRegionClauseFacts } from "./SandboxRegionClauseFacts";

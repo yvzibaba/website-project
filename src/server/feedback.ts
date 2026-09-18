@@ -8,8 +8,8 @@
  *   - 不做邮件通知/工单系统——后台人工阅读 + 标记 RESOLVED 即闭环（宪法：更简单、更少依赖）；
  *   - 结果判别联合不裸抛；email/message 全部有长度上限，防滥用刷库（无验证码是已知 P2，见完成报告）。
  */
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import { z } from "zod";
 import type { SessionUser } from "@/server/authz";
 

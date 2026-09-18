@@ -4,7 +4,7 @@ import { Container, Badge, Alert, Input, Button } from "@/components/ui";
 import { PageHeader, Breadcrumb, EmptyState } from "@/components/page";
 import { INDUSTRIES, getIndustryBySlug } from "@/server/industries";
 import { searchPublic } from "@/server/search";
-import { SearchQuerySchema } from "@/lib/validation";
+import { SearchQuerySchema } from "@app/kernel/lib/validation";
 import { cn } from "@/lib/cn";
 
 /**

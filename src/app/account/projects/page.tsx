@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Container, Card, CardContent, Badge, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb, EmptyState } from "@/components/page";
 import { getCurrentUser } from "@/server/authz";
-import { listSandboxProjects, type SandboxProjectListItem } from "@/server/sandbox-projects";
+import { listSandboxProjects, type SandboxProjectListItem } from "@app/kernel/server/sandbox-projects";
 import { ProjectCopyButton } from "@/components/account/ProjectCopyButton";
 
 /**

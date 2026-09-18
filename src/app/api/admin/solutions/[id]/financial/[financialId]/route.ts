@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse } from "@/server/api-guard";
-import { removeSolutionFinancial } from "@/server/solution-admin";
+import { removeSolutionFinancial } from "@app/kernel/server/solution-admin";
 
 /**
  * DELETE /api/admin/solutions/[id]/financial/[financialId] — 删除方案的一条财务测算（Phase 13 M1，受门禁）。

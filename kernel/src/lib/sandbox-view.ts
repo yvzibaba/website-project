@@ -16,9 +16,9 @@
  *     沙盘链路本身纯函数、client-safe，见 sandbox-model.ts 依赖分析）。
  */
 
-import type { CapexBreakdown, CalcResult, CalcResultOk, OpexBreakdownY1, RevenueBreakdownY1 } from "@/server/sandbox-model";
-import type { TechFirstYearResult } from "@/server/sandbox-tech";
-import type { TornadoResult, TornadoRow } from "@/server/sandbox-sensitivity";
+import type { CapexBreakdown, CalcResult, CalcResultOk, OpexBreakdownY1, RevenueBreakdownY1 } from "@app/kernel/server/sandbox-model";
+import type { TechFirstYearResult } from "@app/kernel/server/sandbox-tech";
+import type { TornadoResult, TornadoRow } from "@app/kernel/server/sandbox-sensitivity";
 
 /** 视图模型版本（呈现口径变化须升版记因，宪法第 13 条）。 */
 export const VIEW_VERSION = "1.2.0"; // 1.2.0（V1.1 批次1.3）：四张回报指标卡 hint 明示「全投资（无杠杆）口径 ≠ 股权融资回报」（P5 融资腿接线前的诚实口径声明）。纯呈现文案，无重算、不动经济内核。1.1.0：首年钱流对比拆分「电量电费/需量电费」（配合 MODEL_VERSION 1.2.0 E4 需量费接入）；meta 增 demandChargeY1Label。纯加性呈现，无重算。

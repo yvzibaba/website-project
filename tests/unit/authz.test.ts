@@ -12,7 +12,7 @@ import {
   getCurrentUser,
   STAFF_ROLES,
 } from "@/server/authz";
-import type { UserRole } from "@/lib/validation";
+import type { UserRole } from "@app/kernel/lib/validation";
 
 const authMock = auth as unknown as ReturnType<typeof vi.fn>;
 

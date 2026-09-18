@@ -2,7 +2,7 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { LoginInputSchema } from "@/lib/validation";
+import { LoginInputSchema } from "@app/kernel/lib/validation";
 import { sanitizeCallbackUrl } from "@/lib/redirect-safety";
 import type { AuthFormState } from "@/components/auth/types";
 

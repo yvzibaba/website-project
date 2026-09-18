@@ -5,7 +5,7 @@ import {
   type ResolveResult,
   ParameterSetSchema,
   resolveParameters,
-} from "@/server/parameter-engine";
+} from "@app/kernel/server/parameter-engine";
 
 /**
  * 「新能源重卡 + 光伏 + 储能 + 充电」一体化决策沙盘 —— 参数模板（中途重构 R1.2）。

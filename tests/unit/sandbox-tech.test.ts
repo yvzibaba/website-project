@@ -15,7 +15,7 @@ import {
   annualEnergyBalance,
   storageAnnualThroughput,
   computeTechModel,
-} from "../../src/server/sandbox-tech";
+} from "@app/kernel/server/sandbox-tech";
 
 /** R1.2 基线数值快照（与 sandbox-params 默认一致，用于聚合入口手算）。 */
 const BASELINE: Record<string, number> = {

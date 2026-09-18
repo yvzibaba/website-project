@@ -15,7 +15,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
  */
 
 const { leadFindUnique, leadUpdate } = vi.hoisted(() => ({ leadFindUnique: vi.fn(), leadUpdate: vi.fn() }));
-vi.mock("@/lib/prisma", () => ({
+vi.mock("@app/kernel/lib/prisma", () => ({
   prisma: { lead: { findUnique: leadFindUnique, update: leadUpdate } },
   disconnectPrisma: vi.fn(),
 }));
@@ -25,8 +25,8 @@ vi.mock("@/server/authz", () => ({
   getCurrentUser: vi.fn(),
 }));
 vi.mock("@/server/feature-flags", () => ({ hasEntitlement: vi.fn(() => true) }));
-vi.mock("@/server/sandbox-solution-source", () => ({ ownsSandboxSource: vi.fn(async () => ({ owned: true })) }));
-vi.mock("@/server/sandbox-solution-store", () => ({
+vi.mock("@app/kernel/server/sandbox-solution-source", () => ({ ownsSandboxSource: vi.fn(async () => ({ owned: true })) }));
+vi.mock("@app/kernel/server/sandbox-solution-store", () => ({
   persistSandboxSolutionDraft: vi.fn(async () => ({
     status: "ok",
     solutionId: "sol_1",

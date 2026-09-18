@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireStaffWrite, mutationResponse } from "@/server/api-guard";
-import { removeSolutionUnknown } from "@/server/solution-admin";
+import { removeSolutionUnknown } from "@app/kernel/server/solution-admin";
 
 /**
  * DELETE /api/admin/solutions/[id]/unknown/[unknownId] — 删除方案的一条关键未知变量（Phase 13 M1，受门禁）。

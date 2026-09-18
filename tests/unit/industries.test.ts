@@ -7,7 +7,7 @@ import {
   getIndustrySlug,
   isValidIndustrySlug,
 } from "@/server/industries";
-import { IndustrySchema, SlugSchema, type Industry } from "@/lib/validation";
+import { IndustrySchema, SlugSchema, type Industry } from "@app/kernel/lib/validation";
 
 /**
  * 行业数据层单元测试（纯函数与常量，不触库）。

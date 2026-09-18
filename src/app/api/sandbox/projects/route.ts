@@ -6,7 +6,7 @@ import {
   errorResponse,
 } from "@/server/api-guard";
 import { getCurrentUser } from "@/server/authz";
-import { createSandboxProject, listSandboxProjects } from "@/server/sandbox-projects";
+import { createSandboxProject, listSandboxProjects } from "@app/kernel/server/sandbox-projects";
 
 /**
  * /api/sandbox/projects — 沙盘项目集合端点（Phase 4 模块 B 扩展）。

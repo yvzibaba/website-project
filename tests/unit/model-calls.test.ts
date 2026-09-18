@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // 必须在 import 被测模块前 mock prisma（被测模块顶层 import @/lib/prisma）。
 const createMock = vi.fn();
-vi.mock("@/lib/prisma", () => ({ prisma: { modelCall: { create: (...a: unknown[]) => createMock(...a) } } }));
+vi.mock("@app/kernel/lib/prisma", () => ({ prisma: { modelCall: { create: (...a: unknown[]) => createMock(...a) } } }));
 
 import {
   toModelCallCreateData,
@@ -16,7 +16,7 @@ import {
   createDbCallRecorder,
   type ModelCallRow,
 } from "@/server/model-calls";
-import { loggingRecorder, type CallRecord } from "@/server/model-router";
+import { loggingRecorder, type CallRecord } from "@app/kernel/server/model-router";
 
 function rec(over: Partial<CallRecord> = {}): CallRecord {
   return {

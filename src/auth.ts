@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getAuthUserByEmail } from "@/server/users";
-import { verifyPassword } from "@/lib/password";
-import { LoginInputSchema, type UserRole } from "@/lib/validation";
+import { verifyPassword } from "@app/kernel/lib/password";
+import { LoginInputSchema, type UserRole } from "@app/kernel/lib/validation";
 
 /**
  * Auth.js v5（next-auth@beta）配置（Phase 6 M1）。

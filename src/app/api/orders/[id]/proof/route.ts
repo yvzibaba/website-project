@@ -6,7 +6,7 @@ import {
   errorResponse,
 } from "@/server/api-guard";
 import { submitPaymentProof, getOrderById, type OrderView } from "@/server/orders";
-import { logger } from "@/lib/logger";
+import { logger } from "@app/kernel/lib/logger";
 
 /**
  * POST /api/orders/[id]/proof — 买家提交付款凭证（Phase 12 M4，过渡版人工收款闭环）。

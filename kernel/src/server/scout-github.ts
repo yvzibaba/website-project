@@ -1,5 +1,5 @@
-import { type LicenseType } from "@/lib/validation";
-import { type ScoutCandidateInput } from "@/server/scout";
+import { type LicenseType } from "@app/kernel/lib/validation";
+import { type ScoutCandidateInput } from "@app/kernel/server/scout";
 
 /**
  * GitHub 仓库元数据抓取 + 许可证归一（Phase 10 M2，纯逻辑 + 可注入 fetch · **无 DB** · server 域）。

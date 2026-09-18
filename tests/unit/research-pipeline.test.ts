@@ -15,7 +15,7 @@ import {
   runResearchPipeline,
   type PipelineInput,
   type PipelineRole,
-} from "@/server/research-pipeline";
+} from "@app/kernel/server/research-pipeline";
 import {
   StubProvider,
   type ChatProvider,
@@ -23,7 +23,7 @@ import {
   type ModelTaskKind,
   type ProviderRequest,
   type ProviderResult,
-} from "@/server/model-router";
+} from "@app/kernel/server/model-router";
 
 /**
  * §33 多角色研究流水线契约单测（Phase 9 M2，**无 DB、无网络、无 key**）。

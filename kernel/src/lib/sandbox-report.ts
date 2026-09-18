@@ -18,8 +18,8 @@
  * 不 import 任何 server 引擎（类型走 `import type`），与 `sandbox-view.ts` 同为 client-safe 纯投影。
  */
 
-import type { SandboxViewModel } from "@/lib/sandbox-view";
-import type { ProfileFocusTag, SandboxEnterpriseProfile } from "@/server/sandbox-profiles";
+import type { SandboxViewModel } from "@app/kernel/lib/sandbox-view";
+import type { ProfileFocusTag, SandboxEnterpriseProfile } from "@app/kernel/server/sandbox-profiles";
 
 /** 报告口径版本（叙述结构 / 择要规则变化须升版记因，宪法第 13 条）。 */
 export const REPORT_VERSION = "1.2.0"; // 1.2.0（V1.1 P4-brief 报告商业化）：① 新增可选 reportLevel("basic" 免费基础 / "full" 专业完整，缺省 full→既有输出逐字不变、黄金零重录)；"basic" 仅收敛「企业专属视角节 + 逐内核版本审计表」两项增值内容为专业版交付，诚实核心（NPV/IRR/回收期/敏感性 + 关键假设 + 风险提示复核 + 常驻免责）两档全留，绝不把安全声明设进付费墙；② 分节标题改投资顾问语气（去工程调试味），节 key、结构/溯源项 label、免责 token 全部不动。1.1.1（V1.1 P3 黑话清洗）：免责/假设/风险分节文案人话化。1.1.0：新增可选「企业个性化视角」节

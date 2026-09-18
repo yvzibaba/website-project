@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
 import type { Industry, Prisma } from "@prisma/client";
 import { PUBLIC_CASE_STAGES, getIndustryByEnum } from "@/server/industries";
 import { caseDemoVisibility, isDemoEntity } from "@/server/demo";
-import { CaseScoresSchema, type CaseScores } from "@/server/scoring";
+import { CaseScoresSchema, type CaseScores } from "@app/kernel/server/scoring";
 /**
  * 案例数据层（server-only，V1-A /cases 列表与详情）。
  *

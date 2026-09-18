@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
-import { logger } from "@/lib/logger";
-import type { Industry } from "@/lib/validation";
+import { prisma } from "@app/kernel/lib/prisma";
+import { logger } from "@app/kernel/lib/logger";
+import type { Industry } from "@app/kernel/lib/validation";
 
 /**
  * 行业数据层（server-only）。

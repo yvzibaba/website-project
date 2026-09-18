@@ -28,7 +28,7 @@ import {
   type EnergyFlowLedgerInput,
   type StorageThroughputInput,
   type StorageValueYearInput,
-} from "@/server/sandbox-storage-value";
+} from "@app/kernel/server/sandbox-storage-value";
 
 /* ─────────────────────────── 公共夹具与工具 ─────────────────────────── */
 

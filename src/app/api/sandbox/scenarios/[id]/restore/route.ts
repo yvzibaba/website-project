@@ -1,6 +1,6 @@
 import type { NextResponse } from "next/server";
 import { requireSameOriginActor, readJsonSafe, mutationResponse, errorResponse } from "@/server/api-guard";
-import { restoreSandboxScenarioVersion } from "@/server/sandbox-projects";
+import { restoreSandboxScenarioVersion } from "@app/kernel/server/sandbox-projects";
 
 /**
  * /api/sandbox/scenarios/[id]/restore (POST) — 回滚到某历史版本（R6.3）。

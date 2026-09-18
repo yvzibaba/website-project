@@ -43,16 +43,16 @@
  *      无逐时曲线（S1，故消纳腿恒 0）、无 SOH/温度/弃电（S5）、无充电需求增长曲线、残值不再按通胀折算（E7 取名义常数）。
  *      R9.0 已接：储能峰谷套利价值（SVE 年度代理口径，E3b）；仍留白：消纳腿日内形态、逐时电价、E4 分时化。
  */
-import { resolveSandbox } from "@/server/sandbox-params";
-import { collectInputProvenance, type InputProvenance } from "@/server/parameter-engine";
-import type { ResolveLayers } from "@/server/parameter-engine";
+import { resolveSandbox } from "@app/kernel/server/sandbox-params";
+import { collectInputProvenance, type InputProvenance } from "@app/kernel/server/parameter-engine";
+import type { ResolveLayers } from "@app/kernel/server/parameter-engine";
 import {
   computeTechModel,
   pvDegradedAnnualEnergy,
   annualEnergyBalance,
   TECH_VERSION,
-} from "@/server/sandbox-tech";
-import { storageValueDelta, STORAGE_MODEL_VERSION } from "@/server/sandbox-storage-value";
+} from "@app/kernel/server/sandbox-tech";
+import { storageValueDelta, STORAGE_MODEL_VERSION } from "@app/kernel/server/sandbox-storage-value";
 import {
   npv,
   irr,
@@ -62,7 +62,7 @@ import {
   round,
   FINANCE_VERSION,
   type IrrResult,
-} from "@/server/sandbox-finance";
+} from "@app/kernel/server/sandbox-finance";
 
 /** 编排引擎版本（改经济口径须升版并记原因，宪法第 13 条）。 */
 export const MODEL_VERSION = "1.4.0"; // 1.4.0（V1.1 批次1.4 · 2026-09-16 放行方案 Phase1）：**F-2h includeStorage 布尔真接线**——hasStorage 增门控 `&& project.includeStorage≠0`（编排层把布尔以 0/1 门控值注入经济快照消费，resolve 层 numeric 契约不变）；开关置 0 → 储能 CAPEX/OPEX/SVE 套利价值整腿归零，终结「关了储能照样算储能」假开关（审计 F-2h P1）。基线默认=开 → 既有黄金数值**逐字节不变**（仅 calcRef 版本滚动 + 无开关键的纯函数调用按目录默认=开处理，向后兼容）。1.3.0（V1.1 批次1.2）：E4 计费需量基准改用**需用系数 Kc**（project.demandKc，取代 1.2.0 用平均利用率冒充最大需量的口径错位·审计 P0-3）；主情景切到 **A 政策免征**（region.demandCharge 默认 0，2030 前集中式充换电免需量电费条款），B/C 为参数覆写对照组——零代码分支。基线黄金回摆至接入需量费前的 R9.0 口径值（demandCharge=0 数学期末端相等），B/C 场景手算焊点新增。1.2.0：E4 接入需量(基本)电费（口径 A），2026-09-14 创始人拍板。

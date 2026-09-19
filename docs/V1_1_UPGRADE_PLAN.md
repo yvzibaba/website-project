@@ -19,23 +19,23 @@
 
 | 资产 | 位置 | 保护策略 |
 |---|---|---|
-| R9.0 储能经济模型（σ/SOC 年度代理） | `sandbox-storage-value.ts` STORAGE 1.0.0 | 不碰口径；仅在其上游修需求侧参数传导 |
-| MODEL_VERSION 体系与 calcRef 溯源 | `sandbox-model.ts` 1.2.0 等全系列版本常量 | 口径变更必 bump + 记录原因；演示映射层改动刻意不 bump |
+| R9.0 储能经济模型（σ/SOC 年度代理） | `storage-value.ts` STORAGE 1.0.0 | 不碰口径；仅在其上游修需求侧参数传导 |
+| MODEL_VERSION 体系与 calcRef 溯源 | `project-model.ts` 1.2.0 等全系列版本常量 | 口径变更必 bump + 记录原因；演示映射层改动刻意不 bump |
 | 黄金样本 | `tests/**`、`scenarios-sml.json` | 有意重录（逐条写明原因），绝不为过测试顺手改数 |
-| FACT/ASSUMPTION 数据诚实体系 | `parameter-engine.ts` usableHttpUrl 闸门、`sandbox-region-facts.ts` makeVerifiedFact | 无权威来源一律保持 ASSUMPTION，不伪造 FACT |
+| FACT/ASSUMPTION 数据诚实体系 | `parameter-engine.ts` usableHttpUrl 闸门、`region-facts.ts` makeVerifiedFact | 无权威来源一律保持 ASSUMPTION，不伪造 FACT |
 | 权限系统 | RBAC / requireStaffWrite / canAccessProject / CSRF | 买家路径开放时逐端点重审权限语义（见 Phase 4） |
 | 订单状态机 | PENDING→PAID、服务端价快照、PAID-only 解锁 | 不改动；只补"留资→报价→下单"的上游入口 |
 | 项目版本冻结 | ProjectVersion append-only + shouldAutoFreezeVersion | 不迁移历史数据；新参数经 JSONB paramLayers 天然兼容 |
 
 ### 1.2 各层审计摘要
 
-**计算引擎层**：车辆→年里程→百公里电耗→日充电量→桩功率/桩数→总装机→峰值负荷→并网容量→计费需量→电费→NPV 的因果链上，**"桩数"与"并网容量"两环断裂**：`project.chargerCount` 恒定默认 8（demo 路径永不随车队缩放，`sandbox-demo.ts:272-303`）；`project.gridCapacity`（2000kW）全模型零消费（僵尸）。计费需量 = 装机×平均利用率（口径 A），概念上是"平均"冒充"最大"，且主情景 40/44 元与"2030 年前集中式充换电免需量电费"的已核实政策直接冲突。财务侧 equityRatio/loanRate/landRent/carbonPrice 全部声明但零参与——**所有回报指标实为全投资口径，却未向用户言明**。
+**计算引擎层**：车辆→年里程→百公里电耗→日充电量→桩功率/桩数→总装机→峰值负荷→并网容量→计费需量→电费→NPV 的因果链上，**"桩数"与"并网容量"两环断裂**：`project.chargerCount` 恒定默认 8（demo 路径永不随车队缩放，`demo-project.ts:272-303`）；`project.gridCapacity`（2000kW）全模型零消费（僵尸）。计费需量 = 装机×平均利用率（口径 A），概念上是"平均"冒充"最大"，且主情景 40/44 元与"2030 年前集中式充换电免需量电费"的已核实政策直接冲突。财务侧 equityRatio/loanRate/landRent/carbonPrice 全部声明但零参与——**所有回报指标实为全投资口径，却未向用户言明**。
 
 **持久层**：JSONB paramLayers 设计优秀（新参数零 schema 迁移即可回放）；但重开历史项目用**现行引擎**重算（无引擎版本钉），存在"昨天的项目今天数字变了"的静默漂移隐患，现仅靠写时冻结缓解。
 
 **UX 层**：首页仍是"产业案例内容平台"人设（品牌"产业案例引擎"、V1-A 徽标、60→20→10→3→1 流水线漏斗文案）；沙盘与报告暴露大量内部黑话（MODEL_VERSION 页脚、"占位假设"徽标、E1–E8、Δ_sto、S1-gap、`?demo=1` 泄漏进空态文案）；企业页承诺"询价"但全站**无留资表单**；沙盘导出方案的端点挂 `requireStaffWrite`（**买家自己导出自己的方案要 staff 权限**，商业闭环在最后一米断开）；收款/客服信息为未配置占位符。
 
-**测试基建**：单元 1081 + 集成全绿，但**零 UI/E2E/API 路由测试**；黄金重录脚本 `sml-regen` 不在仓库（重录靠临时脚本，属丢失的工程资产）；敏感性假联动守护测试（`sandbox-causality.test.ts` L331-343）把僵尸参数**钉为已知假联动**——接线时须同步改写，这是现成的施工图。
+**测试基建**：单元 1081 + 集成全绿，但**零 UI/E2E/API 路由测试**；黄金重录脚本 `sml-regen` 不在仓库（重录靠临时脚本，属丢失的工程资产）；敏感性假联动守护测试（`causality.test.ts` L331-343）把僵尸参数**钉为已知假联动**——接线时须同步改写，这是现成的施工图。
 
 ---
 
@@ -74,7 +74,7 @@
 
 #### (a) 车辆规模 → 能源需求 → 设备配置 链路（批次 1，改映射层不改引擎）
 
-在 `sandbox-demo.ts::demoUserValues` 内建立完整传导：
+在 `demo-project.ts::demoUserValues` 内建立完整传导：
 
 ```
 日充电量      = trucksPerDay × chargePerTruck                     （已有）
@@ -123,7 +123,7 @@ CAPEX/E2运维/需量基准                                        （引擎已�
 | 企业服务版·定制 | 私有数据接入 + 企业专属模型 + 交付服务 | 留资→人工报价→订单 |
 
 - 一次性买断**降级为**"单份方案购买"（既有 Solution+Order 闭环保留为主转化物，不作为软件主模式）；私有化部署列高级方案（只挂留资，不做实现）。
-- **买家导出闭环修复**：`POST /api/sandbox/solution` 从 requireStaffWrite 改为「登录用户 + 项目属主」语义（服务端现算不变、DRAFT 状态不变、定价仍由 staff 后台完成后才进入购买），端点权限变更列人工决策项。
+- **买家导出闭环修复**：`POST /api/workbench/solution` 从 requireStaffWrite 改为「登录用户 + 项目属主」语义（服务端现算不变、DRAFT 状态不变、定价仍由 staff 后台完成后才进入购买），端点权限变更列人工决策项。
 - **留资（RFQ）**：新建轻量 `Lead` 落库（复用既有 JSONB 表扩展或新表迁移 additive）+ `/api/leads` 受频控公开端点 + 企业页/报告尾/定价位三处「申请企业版报价」表单（公司/角色/项目阶段/预算区间/联系方式）。提交后诚实告知"1 个工作日内人工联系"。
 
 ### 3.4 UX 两条路径（P3+P4 穿插）
@@ -132,7 +132,7 @@ CAPEX/E2运维/需量基准                                        （引擎已�
 
 ### 3.5 AI 投资顾问（P7）
 
-不新造聊天机器人。把现有 `sandbox-explain.ts`（已实证 LLM 逐字引用报告数字、what-if 全定性）**升级包装为「投资顾问解读」**：输入仍是确定性报告全文 + CalcResult 摘要；输出增加「三段式」固定结构——能不能投（阈值判断：NPV>0 且 IRR>资本金成本参考线时表述强度分级）/ 建议怎么改（只从敏感性排名给方向，禁止编数字）/ 离贷款可贷还差什么（P5 后接 DSCR）。UI 上是结果页的一张"顾问解读"卡 + 刷新按钮，**绝不开放自由对话**（防幻觉、防成本失控、维持 §7 程序算铁律）。
+不新造聊天机器人。把现有 `decision-explain.ts`（已实证 LLM 逐字引用报告数字、what-if 全定性）**升级包装为「投资顾问解读」**：输入仍是确定性报告全文 + CalcResult 摘要；输出增加「三段式」固定结构——能不能投（阈值判断：NPV>0 且 IRR>资本金成本参考线时表述强度分级）/ 建议怎么改（只从敏感性排名给方向，禁止编数字）/ 离贷款可贷还差什么（P5 后接 DSCR）。UI 上是结果页的一张"顾问解读"卡 + 刷新按钮，**绝不开放自由对话**（防幻觉、防成本失控、维持 §7 程序算铁律）。
 
 ---
 
@@ -149,7 +149,7 @@ CAPEX/E2运维/需量基准                                        （引擎已�
 | 1.3 | 僵尸参数 Level-2 收起+「未启用」标注 + 全投资口径明示（§3.1d 立即可做部分） | 不升（纯视图/参数分组） |
 | 1.4 | includeStorage 真接线（F-2h：布尔进解析快照/真实门控）+ 派生 storageDuration 名实修正 | **→ 1.3.x**（若动 CalcResult 则并 bump） |
 
-黄金重录范围预估：sandbox-model 数值组、scenarios-sml（三场景全部经 A 主情景）、敏感性 swing 表、view/report 快照若干。**规则：每处新旧值对照表进 CHANGELOG，无原因不得变化。**
+黄金重录范围预估：project-model 数值组、scenarios-sml（三场景全部经 A 主情景）、敏感性 swing 表、view/report 快照若干。**规则：每处新旧值对照表进 CHANGELOG，无原因不得变化。**
 
 ### Phase 2 · 数据真实化（对应 #14 #20）——**阻塞于人工输入**
 
@@ -157,7 +157,7 @@ CAPEX/E2运维/需量基准                                        （引擎已�
 
 ### Phase 3 · 定位与呈现重构（#7 #8 #9 #15，纯文案/样式/路由内容，零模型风险）
 
-黑话清除白名单（逐文件）：`page.tsx`（首页三屏重写）、`layout.tsx:44`（品牌）、`cases/page.tsx:181`（?demo=1 空态）、`solutions/page.tsx:112`、`SandboxWorkbench.tsx:231-252,564-569`、`SandboxDemoPanel.tsx:166-171,354-355`（版本页脚移入"关于"折叠）、`sandbox-model.ts:383,393,396-398` notes 文案人话化（note 文本改动不动公式、不动 calcRef，但 note 参与报告文本→重录含 note 断言的测试）、`sandbox-report.ts` 术语表。
+黑话清除白名单（逐文件）：`page.tsx`（首页三屏重写）、`layout.tsx:44`（品牌）、`cases/page.tsx:181`（?demo=1 空态）、`solutions/page.tsx:112`、`ProjectWorkbench.tsx:231-252,564-569`、`DemoProjectPanel.tsx:166-171,354-355`（版本页脚移入"关于"折叠）、`project-model.ts:383,393,396-398` notes 文案人话化（note 文本改动不动公式、不动 calcRef，但 note 参与报告文本→重录含 note 断言的测试）、`decision-report.ts` 术语表。
 
 ### Phase 4 · 商业转化（#10 #11 #12 #13）
 
@@ -169,7 +169,7 @@ CAPEX/E2运维/需量基准                                        （引擎已�
 
 ### Phase 6 · 工程安全网（#17 #19）
 
-Playwright 关键路径 E2E 两条（游客 5 分钟链、企业导出链）+ API 路由契约测试补齐 sandbox 全端点；引擎版本钉策略（人工决策：历史项目重开是"用新引擎+提示口径已变"还是"按存档引擎版本重算"——V1 建议前者+写时冻结已兜底，仅在报告页标注"本项目按模型 X 计算，现行模型 Y 可能有差异"）。
+Playwright 关键路径 E2E 两条（游客 5 分钟链、企业导出链）+ API 路由契约测试补齐 workbench 全端点；引擎版本钉策略（人工决策：历史项目重开是"用新引擎+提示口径已变"还是"按存档引擎版本重算"——V1 建议前者+写时冻结已兜底，仅在报告页标注"本项目按模型 X 计算，现行模型 Y 可能有差异"）。
 
 ### Phase 7 · AI 投资顾问包装（§3.5）
 

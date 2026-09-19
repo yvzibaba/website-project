@@ -124,7 +124,7 @@ type UserWriteGuardResult =
  * 但**不要求 staff**——能登录即视为买家（滥用风险由产物语义收敛：导出一律 DRAFT、
  * 定价与发布仍在 staff 后台，见方案 §5 人工决策项 #6 的预批结论）。
  * 属主语义（"登录 + 属主"）不在本层做通用判定：资源各异（项目/情景/方案），
- * 由各端点用 `canAccessProject` / `ownsSandboxSource` 等专用属主核验在**动库前**完成。
+ * 由各端点用 `canAccessProject` / `ownsSolutionSource` 等专用属主核验在**动库前**完成。
  */
 export async function requireUserWrite(request: Request): Promise<UserWriteGuardResult> {
   const blocked = sameOriginBlock(request);

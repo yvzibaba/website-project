@@ -10,8 +10,8 @@ import { hasRole, type SessionUser } from "@app/kernel/lib/roles";
  *
  * ## R9.1 内核解耦后的职责切分（重要）
  *
- * 本文件原先把「纯原语」与「I/O」混住，代价是：内核的 `sandbox-projects` /
- * `sandbox-solution-source` 为了拿到 `SessionUser` 与 `STAFF_ROLES` 被迫 import 本文件，
+ * 本文件原先把「纯原语」与「I/O」混住，代价是：内核的 `project-service` /
+ * `solution-source` 为了拿到 `SessionUser` 与 `STAFF_ROLES` 被迫 import 本文件，
  * 而本文件第一行就从认证框架入口取 `auth` —— 于是 `next-auth` 被拖进内核传递闭包，
  * 「换底座不动内核」被一行 import 破坏（实测：闭包白名单外依赖 2 个）。
  *

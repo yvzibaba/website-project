@@ -3,8 +3,8 @@
  *
  * ## 为什么需要这个脚本（文档 ai-rules/02-PAYLOAD.md §4 第 1 步）
  *
- * 当前区域参数**硬编码在 TypeScript 源码里**（`kernel/src/server/sandbox-regions.ts` 的
- * `values` + `sandbox-region-facts.ts` 的逐值溯源）。要把它迁进数据库（Payload）之前，
+ * 当前区域参数**硬编码在 TypeScript 源码里**（`kernel/src/server/regions.ts` 的
+ * `values` + `region-facts.ts` 的逐值溯源）。要把它迁进数据库（Payload）之前，
  * 必须先有一份**机器可读、可留档、可 diff 的完整快照**——否则迁移就成了「一边读代码一边改库」，
  * 既无法复核，也无法回滚。
  *
@@ -28,18 +28,18 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import {
-  SANDBOX_REGIONS,
-  SANDBOX_REGIONS_VERSION,
+  REGION_PACKS,
+  REGIONS_VERSION,
   regionCalcRef,
-  type SandboxRegionPack,
-} from "@app/kernel/server/sandbox-regions";
+  type RegionPack,
+} from "@app/kernel/server/regions";
 import {
-  SANDBOX_REGION_FACTS_VERSION,
+  REGION_FACTS_VERSION,
   regionFactsCalcRef,
   SHANXI_CLAUSE_FACTS,
-} from "@app/kernel/server/sandbox-region-facts";
+} from "@app/kernel/server/region-facts";
 import type { ValueLayer } from "@app/kernel/server/parameter-engine";
-import { SANDBOX_PARAMS, SANDBOX_PARAMS_VERSION } from "@app/kernel/server/sandbox-params";
+import { PROJECT_PARAMS, PARAMS_VERSION } from "@app/kernel/server/project-params";
 
 /** 快照自身的 schema 版本（字段增减须升版记因）。 */
 const SNAPSHOT_SCHEMA_VERSION = "1.0.0";
@@ -76,7 +76,7 @@ interface ParamEntry {
 }
 
 function collect(
-  pack: SandboxRegionPack,
+  pack: RegionPack,
   layer: ValueLayer,
   kind: "region" | "policy",
   layerIndex: number,
@@ -110,7 +110,7 @@ function collect(
   });
 }
 
-const packs = SANDBOX_REGIONS.map((pack) => {
+const packs = REGION_PACKS.map((pack) => {
   const entries: ParamEntry[] = [
     ...collect(pack, pack.region, "region", 0),
     ...pack.policy.flatMap((layer, i) => collect(pack, layer, "policy", i)),
@@ -153,8 +153,8 @@ for (const e of all) {
    · `stats.*Entries` = 地区包**实际覆写**的条目数
    一个省要「做功课」，做的是**目录**里那些参数在该省的取值，不是只做已被覆写的 9 条。 */
 const catalog = {
-  version: SANDBOX_PARAMS_VERSION,
-  total: SANDBOX_PARAMS.length,
+  version: PARAMS_VERSION,
+  total: PROJECT_PARAMS.length,
   byGroup: {} as Record<string, number>,
   byExposure: {} as Record<string, number>,
   byEvidenceKind: {} as Record<string, number>,
@@ -163,7 +163,7 @@ const catalog = {
   notEditableCount: 0,
   lowConfidenceCount: 0,
 };
-for (const p of SANDBOX_PARAMS) {
+for (const p of PROJECT_PARAMS) {
   const g = String(p.group);
   const e = String(p.exposure);
   catalog.byGroup[g] = (catalog.byGroup[g] ?? 0) + 1;
@@ -185,11 +185,18 @@ const snapshot = {
     /** 本快照倒出的是「内核此刻真实生效的默认层」，不是候选数据层（后者见 shanxi-v1.json）。 */
     purpose:
       "① 迁移到 Payload 的导入源；② 迁移前后逐位对比的基准；③ 占位参数规模的可数化证据。",
-    /** 源文件版本号。迁移后若内核行为变化，这些版本号必须一同变化，否则说明漏改了。 */
+    /**
+     * 源文件版本号。迁移后若内核行为变化，这些版本号必须一同变化，否则说明漏改了。
+     *
+     * ★ 键名冻结（P-1 内核重命名时保留）：这三个键是**已冻结快照的字段名**
+     *   （`docs/verified-data/kernel-region-params.snapshot.json`，`snapshotSchemaVersion: "1.0.0"`）。
+     *   快照是「迁移到 Payload 的导入源」，其字段名属数据契约——改键名须升 schema 版本，
+     *   故这里刻意用显式旧键名 + 新常量值：输出字节不变，常量名已随域命名更新。
+     */
     sourceVersions: {
-      SANDBOX_PARAMS_VERSION,
-      SANDBOX_REGIONS_VERSION,
-      SANDBOX_REGION_FACTS_VERSION,
+      SANDBOX_PARAMS_VERSION: PARAMS_VERSION,
+      SANDBOX_REGIONS_VERSION: REGIONS_VERSION,
+      SANDBOX_REGION_FACTS_VERSION: REGION_FACTS_VERSION,
       regionCalcRef: regionCalcRef(),
       regionFactsCalcRef: regionFactsCalcRef(),
     },
@@ -220,7 +227,7 @@ writeFileSync(OUT_PATH, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
 console.log("内核区域参数快照已导出");
 console.log("─".repeat(64));
 console.log(`输出      : ${path.relative(process.cwd(), OUT_PATH)}`);
-console.log(`源版本    : params=${SANDBOX_PARAMS_VERSION} regions=${SANDBOX_REGIONS_VERSION} facts=${SANDBOX_REGION_FACTS_VERSION}`);
+console.log(`源版本    : params=${PARAMS_VERSION} regions=${REGIONS_VERSION} facts=${REGION_FACTS_VERSION}`);
 console.log("");
 console.log(`【参数目录】共 ${catalog.total} 个可调参数（这是"欠功课"的分母）`);
 console.log(`  派生键 ${catalog.derivedCount} · 未启用 ${catalog.inactiveCount} · 不可改 ${catalog.notEditableCount} · 置信度≤50 者 ${catalog.lowConfidenceCount}`);

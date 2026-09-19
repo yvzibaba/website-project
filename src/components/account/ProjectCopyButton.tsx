@@ -6,7 +6,7 @@ import { Button } from "@/components/ui";
 import { mutateJson, fieldHints } from "@/components/admin/mutate";
 
 /**
- * 「复制项目」按钮（Phase 4 模块 B）：POST /api/sandbox/projects/[id]/copy → 服务端按源项目
+ * 「复制项目」按钮（Phase 4 模块 B）：POST /api/workbench/projects/[id]/copy → 服务端按源项目
  * 基线参数**现算重跑**落一个新项目（绝不搬旧数字），成功后刷新列表页让副本出现在最上方。
  */
 export function ProjectCopyButton({ projectId }: { projectId: string }) {
@@ -21,7 +21,7 @@ export function ProjectCopyButton({ projectId }: { projectId: string }) {
     setError(null);
     setNotice(null);
     const res = await mutateJson(
-      `/api/sandbox/projects/${encodeURIComponent(projectId)}/copy`,
+      `/api/workbench/projects/${encodeURIComponent(projectId)}/copy`,
       "POST",
       {},
     );

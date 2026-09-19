@@ -36,7 +36,7 @@ $ npm run kernel:verify
 
 | 模块 | 文件 | 职责 |
 |---|---|---|
-| 技术经济沙盘 | `src/server/sandbox-*.ts`、`src/lib/sandbox-*.ts` | 光储充重卡项目的确定性计算：参数分层解析 → 技术能耗模型 → 逐年现金流 → NPV/IRR/ROI/回收期 → 敏感性 tornado → 动态报告 |
+| 技术经济引擎 | `src/server/project-{model,params}.ts`、`src/server/{tech,finance,sensitivity,storage-value}.ts`、`src/lib/decision-{view,report}.ts` | 光储充重卡项目的确定性计算：参数分层解析 → 技术能耗模型 → 逐年现金流 → NPV/IRR/ROI/回收期 → 敏感性 tornado → 决策报告 |
 | 参数引擎 | `src/server/parameter-engine.ts` | `default < region < policy < user` 分层解析、裁剪、派生参数重算、版本化 |
 | 评分内核 | `src/server/scoring.ts`、`case-scores.ts` | 10 维机会评分 + 证据可信度，幂等、可复算、版本化 |
 | 方案数据层 | `src/server/solution-admin.ts`、`solution-body.ts` | Solution 聚合的 CRUD + 34 分节正文解析（纯数据层，无鉴权） |
@@ -82,10 +82,10 @@ export function hasRole(role, allowed): boolean
 
 ```ts
 // 方式一：barrel（公开 API 面稳定）
-import { sandboxParams, parameterEngine } from "@app/kernel";
+import { projectParams, parameterEngine } from "@app/kernel";
 
 // 方式二：深路径直取（细粒度；由 package.json exports 的 "./*" 与 tsconfig paths 支持）
-import { SANDBOX_PARAMS_VERSION } from "@app/kernel/server/sandbox-params";
+import { PARAMS_VERSION } from "@app/kernel/server/project-params";
 ```
 
 别名解析由两处声明：根 `tsconfig.json` 的 `paths`、`vitest.config.ts` 的 `resolve.alias`

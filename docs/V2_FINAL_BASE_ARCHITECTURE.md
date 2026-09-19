@@ -178,10 +178,10 @@ npm run kernel:verify
 
 | 内核文件 | 字节 | 职责 |
 |---|---|---|
-| `kernel/src/server/sandbox-model.ts` | 29,310 | 模型定义与装配（**最大**） |
-| `kernel/src/server/sandbox-storage-value.ts` | 24,514 | 储能价值计算 |
-| `kernel/src/server/sandbox-sensitivity.ts` | 14,575 | 敏感性分析 |
-| `kernel/src/server/sandbox-finance.ts` | 10,390 | 财务现金流 |
+| `kernel/src/server/project-model.ts` | 29,310 | 模型定义与装配（**最大**） |
+| `kernel/src/server/storage-value.ts` | 24,514 | 储能价值计算 |
+| `kernel/src/server/sensitivity.ts` | 14,575 | 敏感性分析 |
+| `kernel/src/server/finance.ts` | 10,390 | 财务现金流 |
 
 **这就是「换底座不动内核」的物质基础**：41 个文件、零框架依赖、149 条 import 全部在白名单内（zod / @prisma/client / node 内置）。**这句话是已经守住的，不是待实现的。**
 

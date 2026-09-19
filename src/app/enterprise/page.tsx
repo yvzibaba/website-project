@@ -4,7 +4,7 @@ import { Container, Badge, Button, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb } from "@/components/page";
 import { JsonLd } from "@/components/seo";
 import { LeadForm } from "@/components/leads/LeadForm";
-import { SANDBOX_PROFILES, SANDBOX_PROFILES_VERSION } from "@app/kernel/server/sandbox-profiles";
+import { ENTERPRISE_PROFILES, PROFILES_VERSION } from "@app/kernel/server/profiles";
 import { seoMetadata } from "@/lib/site";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
 
@@ -12,8 +12,8 @@ import { breadcrumbJsonLd } from "@/lib/json-ld";
  * /enterprise — 企业服务页（Phase 4 模块 E，V1-B 边界内的最小实现）。
  *
  * 目标（创始人 Phase 4 §二/§五）：让企业用户「描述自己 → 得到个性化测算」的最短路径：
- *   选一张企业画像卡 → 带画像进入沙盘（/sandbox?profile=…）→ 沙盘按画像预设参数重算 →
- *   报告追加「企业个性化视角」节。复用 R7 画像目录（SANDBOX_PROFILES），零引擎改动、零落库。
+ *   选一张企业画像卡 → 带画像进入沙盘（/workbench?profile=…）→ 沙盘按画像预设参数重算 →
+ *   报告追加「企业个性化视角」节。复用 R7 画像目录（ENTERPRISE_PROFILES），零引擎改动、零落库。
  *
  * 诚实边界（宪法第 20 条 / §十六自主执行规则）：
  *   - 完整「企业 AI 产业诊断」（企业画像建档 / 诊断报告 / 方案适配）属 V1-B，本页不做、不假装；
@@ -90,10 +90,10 @@ export default function EnterprisePage() {
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <h2 className="text-xl font-semibold tracking-tight text-foreground">选择你的企业画像</h2>
-          <span className="font-mono text-[11px] text-muted-foreground">profiles@{SANDBOX_PROFILES_VERSION}</span>
+          <span className="font-mono text-[11px] text-muted-foreground">profiles@{PROFILES_VERSION}</span>
         </div>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {SANDBOX_PROFILES.map((p) => (
+          {ENTERPRISE_PROFILES.map((p) => (
             <li key={p.id}>
               <article className="flex h-full flex-col gap-2 rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
                 <div className="flex flex-wrap items-center gap-2">
@@ -109,11 +109,11 @@ export default function EnterprisePage() {
                 </div>
                 <div className="mt-auto pt-2">
                   {p.id === "generic" ? (
-                    <Button variant="secondary" href="/sandbox" className="w-full">
+                    <Button variant="secondary" href="/workbench" className="w-full">
                       直接进入沙盘 →
                     </Button>
                   ) : (
-                    <Button variant="secondary" href={`/sandbox?profile=${encodeURIComponent(p.id)}`} className="w-full">
+                    <Button variant="secondary" href={`/workbench?profile=${encodeURIComponent(p.id)}`} className="w-full">
                       带画像进入沙盘 →
                     </Button>
                   )}

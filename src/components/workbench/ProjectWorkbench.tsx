@@ -1,0 +1,648 @@
+/**
+ * 沙盘交互工作台（中途重构 R4 · 可视化 + §4 命脉端到端交互层）。
+ *
+ * 这里是《项目中途重构总控》§4「改参数→模型重算→技术/经济/图表/风险全变」的**用户可感知兑现点**：
+ *   - **纯前端即时重算**：`runProjectModel`/`computeTechModel`/`computeTornado` 都是无 DB、无网络的纯函数
+ *     （见 project-model.ts 依赖分析），因此直接打进浏览器 bundle、随参数状态 `useMemo` 重跑整条链，
+ *     拖动滑杆即看经济/图表变化——不是「只改页面上的数字」，而是真的把能量与价格参数重新撮合成钱。
+ *   - **参数驱动 UI**（第 5 条「一切关键变量皆参数」）：控件不是硬编码字段，而是从 `PROJECT_PARAMS` 的
+ *     `exposure` 层级（basic / advanced）自动渲染，改模板即改界面，单一真源。
+ *   - **派生量实时联动**：只读展示 `derived.*`（日充电总量 / 充电总功率 / 储能满功率放电时长），改上游即变，§4 显性化。
+ *   - **诚实贯穿**（第 16/20 条）：顶部横幅声明「全部为占位假设 + 需专业人工确认 + E2E 主链未通不得当决策依据」，
+ *     每个参数标 `ASSUMPTION` 置信度，被裁剪到边界如实标注，指标算不出显示「—」而非 0。
+ *
+ * 边界（截至 R8.2）：本页已接入**确定性动态报告**（`buildDecisionReport` + `DecisionReportPanel`，改参数即整份重写）、
+ *   **AI 解释**（`DecisionExplainPanel` → 受登录门禁的 `POST /api/workbench/explain`，LLM 只解读报告、绝不算数、成本入 ModelCall）、
+ *   **项目保存 / 情景更新 / 版本 / 回滚**（`ProjectSavePanel` → 受登录 + owner 门禁的 `/api/workbench/**`，落到 R3 `project-store`，
+ *   **服务端按输入重跑引擎**落库——非搬页面数字），以及 R7 的**企业个性化**（「选企业画像」把典型企业预设垫作参数起点、
+ *   并在动态报告里追加一节「企业个性化视角」按画像侧重挑读既有指标——全程零重算，数字仍由确定性引擎现算）。
+ *   R8.2 起另有**导出产业方案**（`SolutionExportPanel` → 受 staff + CSRF 门禁的 `POST /api/workbench/solution`）：
+ *   把 R8.1 草案（引擎现算、逐字搬运）连同**人挑定的真实案例 caseId** 落成一条 DRAFT `Solution`，接进「案例→方案→查看→购买」闭环。
+ *   §17 端到端主链「选地区→(选画像)→改参数→跑→技术/经济/风险/敏感性→报告→AI解释→保存」已于 R6.4 以自动化冒烟脚本跑通并宣布核心完成。
+ *   ⚠️ 但全部默认数字仍是**占位假设**、经济口径为透明简化 E1–E8、画像预设亦为示例假设，结论恒「需专业人工确认」，不得作投资/并网决策依据。
+ */
+
+"use client";
+
+import { useMemo, useState } from "react";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui";
+import { PROJECT_PARAMS, resolveProjectParams } from "@app/kernel/server/project-params";
+import { runProjectModel } from "@app/kernel/server/project-model";
+import { computeTechModel } from "@app/kernel/server/tech";
+import { computeTornado } from "@app/kernel/server/sensitivity";
+import {
+  DEFAULT_REGION_ID,
+  getRegionPack,
+  listRegionOptions,
+  REGIONS_VERSION,
+} from "@app/kernel/server/regions";
+import {
+  DEFAULT_PROFILE_ID,
+  PROFILE_IDS,
+  buildProfileLayers,
+  getEnterpriseProfile,
+  isProfileDefault,
+  listProfileOptions,
+  PROFILES_VERSION,
+} from "@app/kernel/server/profiles";
+import { buildDecisionViewModel } from "@app/kernel/lib/decision-view";
+import type { MetricCard, Tone } from "@app/kernel/lib/decision-view";
+import { buildDecisionReport } from "@app/kernel/lib/decision-report";
+import type { ChangedParamView } from "@app/kernel/lib/decision-report";
+import { DecisionReportPanel } from "./DecisionReportPanel";
+import { UpgradePanel } from "./UpgradePanel";
+import { RegionClauseFacts } from "./RegionClauseFacts";
+import { DecisionExplainPanel } from "./DecisionExplainPanel";
+import { ProjectSavePanel } from "./ProjectSavePanel";
+import { SolutionExportPanel } from "./SolutionExportPanel";
+import { LeadForm } from "@/components/leads/LeadForm";
+import {
+  BreakdownBar,
+  CashFlowChart,
+  TornadoChart,
+  Year1MoneyChart,
+} from "./WorkbenchCharts";
+
+type Override = Record<string, number | boolean>;
+
+const TONE_CLASS: Record<Tone, string> = {
+  pos: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  neg: "border-rose-200 bg-rose-50 text-rose-700",
+  warn: "border-amber-200 bg-amber-50 text-amber-700",
+  muted: "border-zinc-200 bg-zinc-50 text-zinc-600",
+};
+
+/** 参数来源徽章文案（§5/§6：让用户看见「这个值是从哪层来的」）。 */
+const ORIGIN_BADGE: Record<string, { label: string; cls: string } | null> = {
+  region: { label: "地区默认", cls: "border-sky-200 bg-sky-50 text-sky-700" },
+  policy: { label: "政策", cls: "border-violet-200 bg-violet-50 text-violet-700" },
+};
+
+const REGION_OPTIONS = listRegionOptions();
+const PROFILE_OPTIONS = listProfileOptions();
+
+/** R7「画像默认」徽章样式（参数值来自当前企业画像预设、且用户本次未改）。 */
+const PROFILE_BADGE = { label: "画像默认", cls: "border-teal-200 bg-teal-50 text-teal-700" };
+
+/** 由区间推一个「好看」的滑杆步长（避免 1e-15 级细碎步进）。 */
+function niceStep(min: number, max: number): number {
+  const raw = (max - min) / 100;
+  if (!Number.isFinite(raw) || raw <= 0) return 0.01;
+  if (raw >= 100) return Math.round(raw);
+  if (raw >= 1) return Math.round(raw * 10) / 10;
+  return Number(raw.toPrecision(1));
+}
+
+function MetricTile({ card }: { card: MetricCard }) {
+  return (
+    <div className={`rounded-xl border px-4 py-3 ${TONE_CLASS[card.tone]}`}>
+      <div className="text-xs opacity-80">{card.label}</div>
+      <div className="mt-1 text-xl font-semibold tabular-nums">{card.value}</div>
+      {card.hint ? <div className="mt-1 text-[11px] leading-tight opacity-80">{card.hint}</div> : null}
+    </div>
+  );
+}
+
+export function ProjectWorkbench({
+  initialProfileId,
+  initialProject,
+}: {
+  /** 可选初始画像（Phase 4 模块 E：/enterprise 画像卡经 /workbench?profile=… 带入；非法 id 恒回落通用画像）。 */
+  initialProfileId?: string;
+  /** Phase 4 模块 B：从已保存项目还原（?project= 载入）——用户覆写 + 地区/画像 id + 项目名（仅提示用）。 */
+  initialProject?: {
+    overrides: Record<string, number | boolean>;
+    regionId?: string;
+    profileId?: string;
+    projectName?: string;
+  } | null;
+}) {
+  const [overrides, setOverrides] = useState<Override>(() => initialProject?.overrides ?? {});
+  const [advanced, setAdvanced] = useState(false);
+  const [regionId, setRegionId] = useState<string>(() => {
+    const rid = initialProject?.regionId;
+    // 未知地区 id 诚实回落默认包（getRegionPack 对未知 id 回落 national，用 id 比对鉴别）。
+    return rid && getRegionPack(rid).id === rid ? rid : DEFAULT_REGION_ID;
+  });
+  const [profileId, setProfileId] = useState<string>(() => {
+    const pid = initialProject?.profileId ?? initialProfileId;
+    return pid && PROFILE_IDS.includes(pid) ? pid : DEFAULT_PROFILE_ID;
+  });
+  const [showReport, setShowReport] = useState(false);
+  const [showExplain, setShowExplain] = useState(false);
+  const [showSave, setShowSave] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
+
+  // R8.6 反查关联：当前情景一旦被「保存为项目」，SavePanel 把服务端派生的 {projectId, scenarioId} 上提到这里；
+  // 之后「导出产业方案」会把这枚来源指针随草案上行（未保存则为 null → 导出诚实不挂指针，绝不虚构）。
+  const [savedSource, setSavedSource] = useState<{ projectId: string; scenarioId: string } | null>(null);
+
+  // 分层情景 = 地区包(region+policy) 垫底 → 企业画像预设 → 用户本次覆写 依次在上（§6 优先级 + §14 #7）。
+  // 切地区换整份默认、切画像换一组预设起点，两者都被用户显式改动覆盖（裁剪而非锁死）。
+  const layers = useMemo(
+    () => buildProfileLayers(profileId, regionId, overrides),
+    [profileId, regionId, overrides],
+  );
+  // Phase 4 模块 B：保存时随分层附带工作台还原信息（地区包 id + 画像 id），供 ?project= 重开时还原。
+  // 纯加性顶层键（引擎 toEngineLayers 只读 region/policy/user/now，不消费、不改写既有落库口径）。
+  const savedLayers = useMemo(
+    () => ({
+      ...(layers as unknown as Record<string, unknown>),
+      wb: { version: 1, regionId, profileId },
+    }),
+    [layers, regionId, profileId],
+  );
+  const pack = getRegionPack(regionId);
+  const profile = getEnterpriseProfile(profileId);
+
+  // 参数分层解析（含派生）→ 经济编排 → 技术能量 → 敏感性（锚定「当前情景」，随地区/参数变）。
+  const resolved = useMemo(() => resolveProjectParams(layers), [layers]);
+  const calc = useMemo(() => runProjectModel(layers), [layers]);
+  const tech = useMemo(
+    () => (calc.ok ? computeTechModel(resolved.numeric) : null),
+    [calc, resolved],
+  );
+  const tornado = useMemo(() => computeTornado({ layers }), [layers]);
+  const discountRate = (resolved.numeric["finance.discountRate"] ?? 8) / 100;
+
+  const vm = useMemo(
+    () =>
+      buildDecisionViewModel({
+        calc,
+        tech: tech && tech.ok ? tech.firstYear : null,
+        tornado,
+        discountRate,
+      }),
+    [calc, tech, tornado, discountRate],
+  );
+
+  // V1.1 批次1.3：`inactive` 僵尸/未接线参数从可拖滑块中收起（诚实：不给"假装在算"的假滑块），
+  // 但仍集中列在下方「未启用·即将支持」折叠区并给出原因——收起 ≠ 删除。
+  const editable = PROJECT_PARAMS.filter(
+    (s) => s.editable && !s.derived && !s.inactive && (s.exposure === "basic" || (advanced && s.exposure === "advanced")),
+  );
+  const inactiveSpecs = PROJECT_PARAMS.filter((s) => s.inactive);
+  const derivedView = PROJECT_PARAMS.filter((s) => s.derived).map((s) => ({
+    spec: s,
+    value: resolved.params[s.key]?.value ?? s.defaultValue,
+  }));
+  const changedCount = Object.keys(overrides).length;
+
+  // 用户改动清单（§9 报告来路叙述用）：键排序保证确定性，标签/单位取自参数模板单一真源。
+  const changedParams = useMemo<ChangedParamView[]>(() => {
+    return Object.keys(overrides)
+      .sort()
+      .map((key) => {
+        const spec = PROJECT_PARAMS.find((s) => s.key === key);
+        const raw = overrides[key];
+        const value =
+          typeof raw === "boolean" ? (raw ? "开" : "关") : String(raw);
+        return { key, label: spec?.label ?? key, value, unit: spec?.unit };
+      });
+  }, [overrides]);
+
+  // 动态报告：吃「当前」视图模型，改任参数/切地区/换画像即整份重写（§9「读最新 CalcResult」，无 AI/无网络/无重算）。
+  // 免费/专业边界（V1.1 P4-brief · 非假功能）：报告层级随「是否走企业画像路径」真实分档——
+  //   未选企业画像（通用起点）= "basic" 免费基础报告（含全部诚实核心，逐版本审计明细收敛为一行）；
+  //   选了企业画像（/enterprise「企业版」入口）= "full" 完整报告（追加「企业专属视角」节 + 逐内核版本审计明细）。
+  // 两档都保留 NPV/IRR/回收期/敏感性 + 关键假设 + 风险复核 + 常驻免责，绝不把安全声明设进付费墙。
+  const reportLevel: "basic" | "full" = profileId === DEFAULT_PROFILE_ID ? "basic" : "full";
+  const report = useMemo(
+    () =>
+      buildDecisionReport({
+        vm,
+        regionName: pack.name,
+        changedParams,
+        discountRatePct: discountRate * 100,
+        profile: profileId === DEFAULT_PROFILE_ID ? undefined : profile,
+        reportLevel,
+      }),
+    [vm, pack.name, changedParams, discountRate, profileId, profile, reportLevel],
+  );
+
+  function setVal(key: string, v: number | boolean) {
+    setOverrides((prev) => ({ ...prev, [key]: v }));
+  }
+  function reset() {
+    setOverrides({});
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <Alert variant="warning">
+        <strong>这是决策沙盘：屏幕上每个数字都是示例条件下的推演结果。</strong>
+        下方全部默认数值（含企业画像预设）均为<span className="font-medium">示例参数 · 未经逐条核实</span>
+        ，经济模型为透明简化的年度口径、非可研级，结果<span className="font-medium">需专业人工确认，不得作为投资或并网决策依据</span>。
+        <span className="font-medium">全部回报指标（NPV / IRR / 回收期 / ROI）为全投资（无杠杆）口径，≠ 股权融资回报。</span>
+        选地区、选企业画像、拖动任何参数，右侧的技术、经济、图表、敏感性结论都会即时联动重算——不是页面数字游戏。
+      </Alert>
+
+      {initialProject ? (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          已从项目「{initialProject.projectName ?? "未命名"}」载入参数（地区 / 画像 / 已改参数均按保存时快照还原）；
+          可继续修改，或「保存为项目」另存副本。
+        </p>
+      ) : null}
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,320px)_1fr]">
+        {/* ─────────── 左：参数控制台 ─────────── */}
+        <Card className="h-fit">
+          <CardHeader>
+            <CardTitle className="text-base">参数控制台</CardTitle>
+            <CardDescription>
+              先选地区载入默认电价 / 光照 / 补贴，再选企业画像裁剪预设起点，改任一项右侧全链即时重算。
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            {/* 选地区（§6：地区/政策层垫底，用户覆写在上；切地区即换整份默认） */}
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-zinc-500">选地区（载入默认参数）</div>
+              <div className="flex flex-wrap gap-2">
+                {REGION_OPTIONS.map((r) => {
+                  const active = r.id === regionId;
+                  return (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => setRegionId(r.id)}
+                      aria-pressed={active}
+                      title={r.summary}
+                      className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                        active
+                          ? "border-blue-500 bg-blue-50 text-blue-700"
+                          : "border-input bg-transparent text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {r.name}
+                    </button>
+                  );
+                })}
+              </div>
+              {regionId !== DEFAULT_REGION_ID ? (
+                <p className="text-[11px] leading-tight text-zinc-500">{pack.summary}</p>
+              ) : null}
+              {/* 阶段3A：已核实政策条款（FACT）展示条——条款≠数值，诚实边界随地区切换呈现 */}
+              <RegionClauseFacts regionId={regionId} />
+            </div>
+
+            {/* 选企业画像（R7 · §14 第 7 项：画像预设垫作参数起点、报告按侧重裁剪；用户仍可逐项覆写） */}
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-zinc-500">选企业画像（裁剪方案起点）</div>
+              <div className="flex flex-wrap gap-2">
+                {PROFILE_OPTIONS.map((p) => {
+                  const active = p.id === profileId;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setProfileId(p.id)}
+                      aria-pressed={active}
+                      title={p.summary}
+                      className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                        active
+                          ? "border-teal-500 bg-teal-50 text-teal-700"
+                          : "border-input bg-transparent text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {p.name}
+                    </button>
+                  );
+                })}
+              </div>
+              {profileId !== DEFAULT_PROFILE_ID ? (
+                <p className="text-[11px] leading-tight text-zinc-500">
+                  {profile.summary}
+                  <span className="mt-0.5 block text-teal-700/80">{profile.emphasis.headline}</span>
+                </p>
+              ) : null}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setAdvanced((a) => !a)}
+              >
+                {advanced ? "收起高级参数" : "展开高级参数"}
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={reset} disabled={changedCount === 0}>
+                重置{changedCount ? `（已改 ${changedCount}）` : ""}
+              </Button>
+            </div>
+
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowReport((v) => !v)}
+              aria-pressed={showReport}
+            >
+              {showReport ? "收起动态报告" : "生成动态报告"}
+            </Button>
+
+            {vm.ok ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowExplain((v) => !v)}
+                aria-pressed={showExplain}
+              >
+                {showExplain ? "收起 AI 解释" : "AI 解释此结果"}
+              </Button>
+            ) : null}
+
+            {vm.ok ? (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowSolution((v) => !v)}
+                aria-pressed={showSolution}
+              >
+                {showSolution ? "收起导出方案" : "导出产业方案"}
+              </Button>
+            ) : null}
+
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowSave((v) => !v)}
+              aria-pressed={showSave}
+            >
+              {showSave ? "收起保存面板" : "保存 / 版本"}
+            </Button>
+
+            {editable.map((s) => {
+              const rp = resolved.params[s.key];
+              const min = rp?.allowedMin ?? s.min ?? 0;
+              const max = rp?.allowedMax ?? s.max ?? 100;
+              const raw = overrides[s.key] ?? (rp?.value ?? s.defaultValue);
+              const step = niceStep(min, max);
+
+              if (s.kind === "boolean") {
+                const on = raw === true || raw === 1;
+                return (
+                  <label key={s.key} className="flex items-center justify-between gap-3 text-sm">
+                    <span>
+                      {s.label}
+                      <span className="ml-1 align-middle">
+                        <Badge variant="outline" className="text-[10px]">
+                          假设
+                        </Badge>
+                      </span>
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={on}
+                      onChange={(e) => setVal(s.key, e.target.checked)}
+                      className="h-4 w-4 accent-blue-600"
+                    />
+                  </label>
+                );
+              }
+
+              const value = typeof raw === "number" ? raw : Number(raw);
+              const userTouched = overrides[s.key] !== undefined;
+              const originBadge = !userTouched ? ORIGIN_BADGE[rp?.origin ?? ""] : null;
+              // R7：值来自当前画像预设、且用户本次未改 → 标「画像默认」（与地区/政策/已改区分，用数据算不臆测）。
+              const showProfileBadge = !userTouched && isProfileDefault(profileId, s.key, overrides);
+              return (
+                <div key={s.key} className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="truncate pr-2" title={s.label}>
+                      {s.label}
+                      {s.unit ? <span className="text-zinc-400">（{s.unit}）</span> : null}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        value={Number.isFinite(value) ? value : ""}
+                        min={min}
+                        max={max}
+                        step={step}
+                        onChange={(e) => {
+                          const n = e.target.valueAsNumber;
+                          if (Number.isFinite(n)) setVal(s.key, n);
+                        }}
+                        className="w-24 rounded-md border border-input bg-transparent px-2 py-1 text-right text-sm tabular-nums"
+                      />
+                    </div>
+                  </div>
+                  <input
+                    type="range"
+                    value={Number.isFinite(value) ? value : min}
+                    min={min}
+                    max={max}
+                    step={step}
+                    onChange={(e) => setVal(s.key, e.target.valueAsNumber)}
+                    className="w-full accent-blue-600"
+                  />
+                  <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                    <span>
+                      区间 {min}–{max}
+                    </span>
+                    {rp?.clamped ? (
+                      <Badge variant="neutral" className="text-[10px]">
+                        已裁剪到边界
+                      </Badge>
+                    ) : userTouched ? (
+                      <Badge variant="neutral" className="text-[10px]">
+                        已改
+                      </Badge>
+                    ) : showProfileBadge ? (
+                      <span
+                        className={`rounded border px-1.5 py-0.5 text-[10px] ${PROFILE_BADGE.cls}`}
+                      >
+                        {PROFILE_BADGE.label}
+                      </span>
+                    ) : originBadge ? (
+                      <span
+                        className={`rounded border px-1.5 py-0.5 text-[10px] ${originBadge.cls}`}
+                      >
+                        {originBadge.label}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })}
+
+            {inactiveSpecs.length ? (
+              <details className="mt-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3">
+                <summary className="cursor-pointer text-xs font-medium text-zinc-500">
+                  未启用 · 即将支持（{inactiveSpecs.length} 项参数目前不参与计算）
+                </summary>
+                <ul className="mt-2 flex list-none flex-col gap-2">
+                  {inactiveSpecs.map((s) => (
+                    <li key={s.key} className="text-[11px] leading-snug text-zinc-500">
+                      <span className="flex items-center gap-1.5">
+                        <Badge variant="neutral" className="shrink-0 text-[10px]">
+                          未启用
+                        </Badge>
+                        <span className="font-medium text-zinc-600">
+                          {s.label}
+                          {s.unit ? <span className="text-zinc-400">（{s.unit}）</span> : null}
+                        </span>
+                      </span>
+                      <span className="mt-0.5 block pl-0.5 text-zinc-400">
+                        {s.inactiveReason ?? "未接线：该参数目前不参与任何计算"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : null}
+
+            <div className="mt-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3">
+              <div className="mb-2 text-xs font-medium text-zinc-500">派生量（随上游即时重算，只读）</div>
+              <dl className="flex flex-col gap-1 text-sm">
+                {derivedView.map(({ spec, value }) => (
+                  <div key={spec.key} className="flex items-center justify-between">
+                    <dt className="truncate pr-2 text-zinc-500" title={spec.label}>
+                      {spec.label}
+                    </dt>
+                    <dd className="tabular-nums">
+                      {typeof value === "number" ? value.toLocaleString("zh-CN") : String(value)}
+                      {spec.unit ? <span className="text-zinc-400"> {spec.unit}</span> : null}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* ─────────── 右：结果与图表 ─────────── */}
+        <div className="flex flex-col gap-6">
+          {!vm.ok ? (
+            <Alert variant="danger">
+              <div className="font-medium">当前参数不足以出图</div>
+              <div className="mt-1 text-sm">
+                原因：{vm.error?.reason} · {vm.error?.detail}
+              </div>
+              {vm.error?.missingInputs?.length ? (
+                <div className="mt-1 text-xs">缺少的输入：{vm.error.missingInputs.join("、")}</div>
+              ) : null}
+              {vm.error?.invalidInputs?.length ? (
+                <div className="mt-1 text-xs">非法的输入：{vm.error.invalidInputs.join("、")}</div>
+              ) : null}
+            </Alert>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+                {vm.cards?.map((c) => (
+                  <MetricTile key={c.key} card={c} />
+                ))}
+              </div>
+
+              {vm.needsProfessionalReview ? (
+                <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                  <Badge variant="warning">需专业人工确认</Badge>
+                  <span>
+                    净 CAPEX {vm.meta?.capexNetLabel} · 毛 {vm.meta?.capexGrossLabel} · 补贴{" "}
+                    {vm.meta?.subsidyLabel} · 计算期 {vm.meta?.projectLifeYears} 年
+                  </span>
+                </div>
+              ) : null}
+
+              {vm.cashFlow ? <CashFlowChart data={vm.cashFlow} /> : null}
+
+              <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                {vm.year1Money ? <Year1MoneyChart data={vm.year1Money} /> : null}
+                {vm.capex ? (
+                  <BreakdownBar title="初始投资 CAPEX 构成" desc="补贴前各实物分量（元）。" data={vm.capex} color="#3b82f6" />
+                ) : null}
+                {vm.revenue ? (
+                  <BreakdownBar title="首年收入构成" desc="充电 / 余电上网 / 运营补贴（元）。" data={vm.revenue} color="#16a34a" />
+                ) : null}
+                {vm.opex ? (
+                  <BreakdownBar title="首年运维成本 OPEX" desc="四类运维（元）。" data={vm.opex} color="#f97316" />
+                ) : null}
+                {vm.energyBalance ? (
+                  <BreakdownBar
+                    title="首年能量平衡"
+                    desc={`光伏自用率 ${vm.meta?.pvSelfConsumptionLabel ?? "—"} · 绿电占比 ${vm.meta?.renewableFractionLabel ?? "—"}（kWh）。`}
+                    data={vm.energyBalance}
+                    color="#0ea5e9"
+                    money={false}
+                  />
+                ) : null}
+                {vm.tornado ? <TornadoChart data={vm.tornado} base={tornado.baseValue} /> : null}
+              </div>
+
+              {vm.notes && vm.notes.length ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm">模型口径提示</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="flex list-disc flex-col gap-1 pl-5 text-xs text-zinc-500">
+                      {vm.notes.map((n, i) => (
+                        <li key={i}>{n}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ) : null}
+
+              <details className="text-[11px] text-zinc-400">
+                <summary className="cursor-pointer select-none">计算口径与溯源（引擎版本 · 供复核）</summary>
+                <p className="mt-1 leading-5">
+                  溯源 {vm.calcRef} · 版本 model@{vm.engineVersions?.model} / tech@{vm.engineVersions?.tech} /
+                  finance@{vm.engineVersions?.finance} / params@{vm.engineVersions?.params} / storage@
+                  {vm.engineVersions?.storage ?? "none"}
+                  （历史快照无此键 = 储能内核接入前生成）· regions@{REGIONS_VERSION} · profiles@
+                  {PROFILES_VERSION} · 视图 v{vm.viewVersion}
+                </p>
+              </details>
+            </>
+          )}
+
+          {showReport ? <DecisionReportPanel report={report} /> : null}
+          {/* V1.1 P4-brief · 转化与最后一公里：报告下方即时给出「免费 vs 专业」真实对比与下一步路径。 */}
+          {showReport ? <UpgradePanel level={reportLevel} /> : null}
+          {showExplain && vm.ok ? <DecisionExplainPanel report={report} /> : null}
+          {showSave ? (
+            <ProjectSavePanel
+              layers={savedLayers}
+              regionId={regionId}
+              regionName={pack.name}
+              onSavedSource={setSavedSource}
+            />
+          ) : null}
+          {showSolution && vm.ok ? (
+            <SolutionExportPanel
+              calc={calc}
+              vm={vm}
+              regionName={pack.name}
+              profile={profileId === DEFAULT_PROFILE_ID ? undefined : profile}
+              savedSource={savedSource}
+            />
+          ) : null}
+
+          {/* V1.1 P4 · 报告尾留资：看过动态报告即视为进入「考虑期」，提供人工对接入口。
+              source="report" 会写入 Lead.source，便于后台区分询价来自沙盘报告尾 vs 企业页 vs 定价位。 */}
+          {showReport ? (
+            <LeadForm
+              source="report"
+              title="这份结果想让我们看看？留个联系方式"
+              subtitle="把你的项目背景 + 关心的参数贴进来，我们走人工流程给一份初判（非报价 / 非合同承诺）。"
+            />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}

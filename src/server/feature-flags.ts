@@ -7,22 +7,22 @@
  * 开关经环境变量控制（默认开）；非 Next 运行时（vitest/node 直跑）下同样可读。
  */
 
-export type SandboxEntitlement = "export" | "multiProject" | "versionRollback";
+export type Entitlement = "export" | "multiProject" | "versionRollback";
 
 /** 缺省（未配置环境变量）= 全开：V1.1 先全开、计费开关留桩（方案 §3.3）。 */
-const DEFAULT_ON: Record<SandboxEntitlement, boolean> = {
+const DEFAULT_ON: Record<Entitlement, boolean> = {
   export: true,
   multiProject: true,
   versionRollback: true,
 };
 
-function envKey(e: SandboxEntitlement): string {
+function envKey(e: Entitlement): string {
   return `SANDBOX_ENTITLEMENT_${e.toUpperCase()}`;
 }
 
 /** 某项沙盘 Pro 能力是否放行。环境变量显式置 "0"/"false" 才关，其余（含缺省）为开。 */
 export function hasEntitlement(
-  entitlement: SandboxEntitlement,
+  entitlement: Entitlement,
   env: Record<string, string | undefined> = process.env,
 ): boolean {
   const raw = env[envKey(entitlement)];

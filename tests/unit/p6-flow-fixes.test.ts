@@ -25,9 +25,9 @@ vi.mock("@/server/authz", () => ({
   getCurrentUser: vi.fn(),
 }));
 vi.mock("@/server/feature-flags", () => ({ hasEntitlement: vi.fn(() => true) }));
-vi.mock("@app/kernel/server/sandbox-solution-source", () => ({ ownsSandboxSource: vi.fn(async () => ({ owned: true })) }));
-vi.mock("@app/kernel/server/sandbox-solution-store", () => ({
-  persistSandboxSolutionDraft: vi.fn(async () => ({
+vi.mock("@app/kernel/server/solution-source-server", () => ({ ownsSolutionSource: vi.fn(async () => ({ owned: true })) }));
+vi.mock("@app/kernel/server/solution-store", () => ({
+  persistSolutionDraft: vi.fn(async () => ({
     status: "ok",
     solutionId: "sol_1",
     financialCount: 2,
@@ -39,7 +39,7 @@ vi.mock("@app/kernel/server/sandbox-solution-store", () => ({
 
 import { requireRole, getCurrentUser } from "@/server/authz";
 import { updateLeadStatus } from "@/server/leads";
-import { POST as exportSolution } from "@/app/api/sandbox/solution/route";
+import { POST as exportSolution } from "@/app/api/workbench/solution/route";
 import { POST as setLeadStatus } from "@/app/api/admin/leads/[id]/status/route";
 
 const requireRoleMock = requireRole as unknown as ReturnType<typeof vi.fn>;
@@ -63,11 +63,11 @@ beforeEach(() => {
 
 /* ───────────────────────── ① 导出端点 isStaff 透出 ───────────────────────── */
 
-describe("V1.1 P6 · /api/sandbox/solution 回 isStaff（买家导出死路修复的核心契约）", () => {
+describe("V1.1 P6 · /api/workbench/solution 回 isStaff（买家导出死路修复的核心契约）", () => {
   async function isStaffForRole(role: "USER" | "REVIEWER" | "ADMIN") {
     getCurrentUserMock.mockResolvedValue({ id: "u_1", email: "x@y.co", name: null, role });
     const res = (await exportSolution(
-      makeReq("http://localhost:3000/api/sandbox/solution", { caseId: "c_1" }) as never,
+      makeReq("http://localhost:3000/api/workbench/solution", { caseId: "c_1" }) as never,
     )) as unknown as Response;
     expect(res.status).toBe(200);
     const body = await jsonOf(res);
@@ -88,7 +88,7 @@ describe("V1.1 P6 · /api/sandbox/solution 回 isStaff（买家导出死路修�
   it("未登录 → requireUserWrite 直接 401，根本不落库", async () => {
     getCurrentUserMock.mockResolvedValue(null);
     const res = (await exportSolution(
-      makeReq("http://localhost:3000/api/sandbox/solution", { caseId: "c_1" }) as never,
+      makeReq("http://localhost:3000/api/workbench/solution", { caseId: "c_1" }) as never,
     )) as unknown as Response;
     expect(res.status).toBe(401);
   });

@@ -1,6 +1,6 @@
 # R9.0 储能价值模型设计（Storage Value Engine · 规划稿 V0）
 
-> **状态（2026-09-08 更新·Step 2/3 已接入生产）**：Step 1（纯函数 `sandbox-storage-value.ts` + 61 项独立单测）按创始人四项裁决收口（§十六·五）；Step 2/3 依创始人指令「按照你的思路推荐继续完成项目」（2026-09-08）完成接线——SVE 已接入 `sandbox-model.ts` E3b（加性收入项，E4/财务原语零改动），`MODEL_VERSION` 1.0.0→**1.1.0**、`SANDBOX_PARAMS_VERSION` 1.1.0→**1.2.0**（+5 个 SVE 键），storage>0 黄金样本全仓重录、storage=0 路径**逐字节零 churn**（焊点测试锚定）。收口记录见 §十六·六；**老项目重算版本戳策略仍未裁决**（§16.5，见 §十六·六·遗留）。
+> **状态（2026-09-08 更新·Step 2/3 已接入生产）**：Step 1（纯函数 `storage-value.ts` + 61 项独立单测）按创始人四项裁决收口（§十六·五）；Step 2/3 依创始人指令「按照你的思路推荐继续完成项目」（2026-09-08）完成接线——SVE 已接入 `project-model.ts` E3b（加性收入项，E4/财务原语零改动），`MODEL_VERSION` 1.0.0→**1.1.0**、`PARAMS_VERSION` 1.1.0→**1.2.0**（+5 个 SVE 键），storage>0 黄金样本全仓重录、storage=0 路径**逐字节零 churn**（焊点测试锚定）。收口记录见 §十六·六；**老项目重算版本戳策略仍未裁决**（§16.5，见 §十六·六·遗留）。
 > **V1 方法论声明（ISSUE-1 强制声明）**：V1 采用年度平均购电价基线上的储能增量价值估算，并非逐时峰谷电价模型。逐时电价 / E4 分时化以后单独立项。
 > **触发**：v0.58.0 夜批 TASK1 审计发现 **P1-2** —— 储能 `annualDischargeThroughputKwh` 在技术层已算出，但经济层 E3/E4 从不消费，导致储能「只计成本、不计收益」，`storageEnergy↑ ⇒ NPV 严格↓`。
 > **本稿唯一裁决人**：创始人。§16 明确列出需要创始人拍板的版本口径问题，本文档**不自行决定**。
@@ -14,11 +14,11 @@
 
 | 位置 | 现状 | 后果 |
 |---|---|---|
-| `sandbox-tech.ts:150 storageAnnualThroughput` | 算了 `annualDischargeThroughputKwh`（能量口径，每天一次满充满放，受 `min(operatingDays, cycleLife/calendarLife)` 封顶，放电侧乘 RTE） | 能量算了，但—— |
-| `sandbox-model.ts` 通读 | E3 收入 = 充电收入 + 余电上网 + 运营补贴；E4 购电 = `gridImport × elecPrice`。`tech.storage.*` **零引用** | 储能吞吐从未变成钱 |
-| `sandbox-model.ts:203–216 hasStorage` | 储能只 gate 了 `storageCapex`（E1）与 `opexStorage`（E2） | 储能只进成本、不进收入 ⇒ 加储能必让 NPV 变差 |
-| `sandbox-model.ts:227 energyCostY1 = gridImport × elecPrice` | E4 用**单一扁平电价**，无峰/谷之分 | 峰谷套利在数学上**根本无法存在**（没有时间维的价格差） |
-| `sandbox-params.ts:79 region.peakValleySpread` | 参数**已存在**（默认 0.6，山西覆写 0.7），但 grep 全链路无消费方 | 套利腿有现成锚点，只差接线（P2-6 同源） |
+| `tech.ts:150 storageAnnualThroughput` | 算了 `annualDischargeThroughputKwh`（能量口径，每天一次满充满放，受 `min(operatingDays, cycleLife/calendarLife)` 封顶，放电侧乘 RTE） | 能量算了，但—— |
+| `project-model.ts` 通读 | E3 收入 = 充电收入 + 余电上网 + 运营补贴；E4 购电 = `gridImport × elecPrice`。`tech.storage.*` **零引用** | 储能吞吐从未变成钱 |
+| `project-model.ts:203–216 hasStorage` | 储能只 gate 了 `storageCapex`（E1）与 `opexStorage`（E2） | 储能只进成本、不进收入 ⇒ 加储能必让 NPV 变差 |
+| `project-model.ts:227 energyCostY1 = gridImport × elecPrice` | E4 用**单一扁平电价**，无峰/谷之分 | 峰谷套利在数学上**根本无法存在**（没有时间维的价格差） |
+| `project-params.ts:79 region.peakValleySpread` | 参数**已存在**（默认 0.6，山西覆写 0.7），但 grep 全链路无消费方 | 套利腿有现成锚点，只差接线（P2-6 同源） |
 
 另三个建模缺口（技术层）：
 
@@ -56,7 +56,7 @@ selfConsumed = min(PV, L)      export = max(0, PV − L)      import = max(0, L 
 **数据流（谁算谁、单向、不回头重算）**：
 
 ```
-参数引擎 resolveSandbox  ──(numeric 快照)──▶  技术层 computeTechModel
+参数引擎 resolveProjectParams  ──(numeric 快照)──▶  技术层 computeTechModel
         │  region.elecPrice / peakValleySpread / policy.feedInTariff        │  PV_y, L, SC0/Exp0/Imp0
         │  project.storageEnergy/Power, tech.storageRoundTripEff,          │  storageThroughput（升级：功率/SOC/衰减封顶）
         │  storageCycleLife/CalendarLife, + 新增 SocMin/Max、Degradation、  │
@@ -67,9 +67,9 @@ selfConsumed = min(PV, L)      export = max(0, PV − L)      import = max(0, L 
                                             经济层 computeEconomics（E1–E8 不变，E3 加 Δ_sto）
                                                           │  flows → npv/irr/payback/roi（原语不变）
                                                           ▼
-                                            sandbox-view（revenue 卡拆 5 项 + 可选边际曲线）
+                                            decision-view（revenue 卡拆 5 项 + 可选边际曲线）
                                                           ▼
-                                            sandbox-report（读 vm，不重算）/ sandbox-demo（默认态不变）
+                                            decision-report（读 vm，不重算）/ demo-project（默认态不变）
 ```
 
 **能源流（每年度、每一度电的唯一去向，互斥完备）**：
@@ -119,7 +119,7 @@ selfConsumed = min(PV, L)      export = max(0, PV − L)      import = max(0, L 
 | `H_dis` | `tech.storageDischargeWindowHours` | h/日 | 2 | 每天可"满功率向价值窗口放电"的小时数（峰段可用时长；demo `storageDuration=2h` 时恰覆盖全容量） |
 | `σ` | `tech.storagePeakLoadShare` | —(0–1) | 0.4 | **年度简化代理（ISSUE-4 裁决保留，2026-09-08）**：σ 不是逐时真实峰时电量，而是"峰时可套利下网电量比例"的年度代理。标记 `ASSUMPTION`；凡产出恒 `needsProfessionalReview=true`（方向性偏差见 §18 R-A） |
 
-> 参数引擎会强制：新增 `derived` 键须声明 `dependsOn`；新增 numeric 键须过 `ParameterSpecSchema`。上表均 numeric 非派生，直接登记即可。`SANDBOX_PARAMS_VERSION` 须随之升版（§16）。
+> 参数引擎会强制：新增 `derived` 键须声明 `dependsOn`；新增 numeric 键须过 `ParameterSpecSchema`。上表均 numeric 非派生，直接登记即可。`PARAMS_VERSION` 须随之升版（§16）。
 
 ### 4.2 中间变量
 
@@ -218,7 +218,7 @@ E_cap · w · P_rated · H_dis · cycles_y · 衰减  →  D_max,y
 D_max,y · Exp0_y · (1−σ)Imp0_y  →  M_pv,y (=min(剩余预算, η·Exp0, (1−σ)·Imp0))
    →  × (p − feedIn/η)  →  Δ_pv,y  →  E3 收入 → E8 → NPV/IRR/Payback
 ```
-两条链各自"容量→可移动/可吸收电量→价差→收益"，每一步都可被 `sandbox-causality` 式测试逐段钉死（§19 测法：给单变量扰动，断言对应段变、下游指标变）。
+两条链各自"容量→可移动/可吸收电量→价差→收益"，每一步都可被 `causality` 式测试逐段钉死（§19 测法：给单变量扰动，断言对应段变、下游指标变）。
 
 ---
 
@@ -298,7 +298,7 @@ MarginalCAPEX(E) = ΔE·1000·capex_s
 MarginalRevenue(E) = Σ_y [Δ_sto,y(E+ΔE) − Δ_sto,y(E)] 折现
 MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为迷你现金流跑 irr/payback
 ```
-纯函数 `computeStorageMarginalValue(state, ΔE)` 两次调用既有 `runSandboxModel` 相减即可（复用命脉，不另立经济内核）。回答"继续加下去还有没有价值"= 边际 NPV 是否转正为负。建议 UI 出"边际收益 vs 容量"曲线（view 层加一张图，读取，不重算）。
+纯函数 `computeStorageMarginalValue(state, ΔE)` 两次调用既有 `runProjectModel` 相减即可（复用命脉，不另立经济内核）。回答"继续加下去还有没有价值"= 边际 NPV 是否转正为负。建议 UI 出"边际收益 vs 容量"曲线（view 层加一张图，读取，不重算）。
 
 ---
 
@@ -310,7 +310,7 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 
 ## 十四、敏感性（§14）
 
-接线后，把以下键加入 `DEFAULT_SENSITIVITY_PARAMS`（当前因 E 层未消费被刻意排除，见 `sandbox-sensitivity.ts` 注释；**接线即解锁**）：
+接线后，把以下键加入 `DEFAULT_SENSITIVITY_PARAMS`（当前因 E 层未消费被刻意排除，见 `sensitivity.ts` 注释；**接线即解锁**）：
 
 | 参数键 | 目标指标 |
 |---|---|
@@ -329,7 +329,7 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 
 ## 十五、与现有模型的兼容（§15，不推翻 R1–R8.8a）
 
-- 参数映射（`sandbox-demo`）：`storageEnergy` headline 仍映射 `project.storageEnergy`(+联动 `storagePower=容量/2h`)；`spread` 未上 headline，故 10 参数演示模型默认态**不变**（除非新增第 11 个 headline，属产品决定，另裁）。
+- 参数映射（`demo-project`）：`storageEnergy` headline 仍映射 `project.storageEnergy`(+联动 `storagePower=容量/2h`)；`spread` 未上 headline，故 10 参数演示模型默认态**不变**（除非新增第 11 个 headline，属产品决定，另裁）。
 - 技术模型：仅**新增** `storageAnnualThroughput` 的功率/SOC/衰减封顶分支，`computeTechModel` 返回体加字段（加性），`pvAnnualEnergyYear1/annualEnergyBalance` 等纯函数一字不改。
 - 经济模型：E1–E8 保持，只在 E3 加一条 `储能收益` 分量（=Δ_sto）。
 - 敏感性/报告/视图：视图 `revenueItems` 由 3 项增至 5 项（拆"储能-套利""储能-光伏消纳"）；报告读 vm 不重算，自动反映。**这些是呈现层加性扩展**。
@@ -342,8 +342,8 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 诚实结论：**这是一次经济口径变更**（E3 收入构成改变），不是纯加性元数据（与 R8.7 只加 `inputProvenance` 不同）。逐条：
 
 1. **是否需改 `MODEL_VERSION`？** **需要**。E3 现金流构成变了，`calcRef` 指向的公式不再等价，依 §13「改口径须升版」不可留 1.0.0。（夜批禁令「自主不得 bump MODEL_VERSION」正是本项被留人工的直接原因。）
-2. **是否需新增模型版本？** 建议**新增独立版本轴** `STORAGE_MODEL_VERSION`（如 1.0.0）描述 SVE 口径，并令 `MODEL_VERSION` 1.0.0→次版本，`engineVersions` 增列 SVE；`TECH_VERSION` 与 `SANDBOX_PARAMS_VERSION` 因新参数/新封顶亦须各升次版本。
-3. **是否需重生成黄金样本？** **需要**——且注意 **demo 默认态本身含 400kWh 储能**，接入收益后基线 NPV/IRR/回收期会变，现有 `sandbox-model.test` 黄金样本（storage>0）**必须重录**；`storageEnergy=0` 的场景逐字不变。
+2. **是否需新增模型版本？** 建议**新增独立版本轴** `STORAGE_MODEL_VERSION`（如 1.0.0）描述 SVE 口径，并令 `MODEL_VERSION` 1.0.0→次版本，`engineVersions` 增列 SVE；`TECH_VERSION` 与 `PARAMS_VERSION` 因新参数/新封顶亦须各升次版本。
+3. **是否需重生成黄金样本？** **需要**——且注意 **demo 默认态本身含 400kWh 储能**，接入收益后基线 NPV/IRR/回收期会变，现有 `project-model.test` 黄金样本（storage>0）**必须重录**；`storageEnergy=0` 的场景逐字不变。
 4. **历史版本是否保持不变？** 已发布的 v0.58.0（`MODEL_VERSION=1.0.0`）作为快照**不回改**；新口径仅在新版本生效。
 5. **新模型是否只作用于新版本？** 代码上是；但**数据风险**：既有已保存项目下次运行会按新口径重算 → 老项目历史结论与新结论并存，需要创始人决定是否给老项目打"生成时版本"戳以冻结展示（属持久化语义决定）。
 
@@ -358,7 +358,7 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 3. **ISSUE-3 · 修订"必然存在最优容量"的表述**：统一改为"系统在给定容量搜索范围内寻找最优配置；可能存在内部最优点、端点最优，或在当前范围内持续增加/持续下降"。本稿 §三/§四·五/§11/§19/附 已同步；今后测试不得断言"必然存在 argmax"。
 4. **ISSUE-4 · σ 时间代理保留**：`sigma = tech.storagePeakLoadShare` 与当前 V1 年度代理口径保留；方法论明确"**σ 不是逐时真实峰时电量，而是峰时可套利下网电量比例的年度代理**"，标记 `ASSUMPTION`、`needsProfessionalReview=true`（§4.1 已同步；放电侧 `σ·Imp0` 时间片口径随本裁决一并落档）。
 
-本批范围＝设计文档、模块注释与测试说明文字的同步；**未接入 sandbox-model E3、未改 E4、未改 `MODEL_VERSION` / `TECH_VERSION` / 参数版本、未重录黄金样本、未改数据库、未改历史结果、未接支付、未进融资模型**。§16 五项版本裁决仍待 Step 2/3 前逐项人工放行。
+本批范围＝设计文档、模块注释与测试说明文字的同步；**未接入 project-model E3、未改 E4、未改 `MODEL_VERSION` / `TECH_VERSION` / 参数版本、未重录黄金样本、未改数据库、未改历史结果、未接支付、未进融资模型**。§16 五项版本裁决仍待 Step 2/3 前逐项人工放行。
 
 ---
 
@@ -369,17 +369,17 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 **§16 五项裁决执行情况**：
 
 1. **§16.1 升 `MODEL_VERSION`**：✅ 1.0.0→**1.1.0**，注释写明「R9.0 Step 2 接入 SVE 储能价值 Δ_sto（E3b，加性收入项，E4/财务原语零改动）」。`calcRef` 随之为 `model@1.1.0`。
-2. **§16.2 独立版本轴 `STORAGE_MODEL_VERSION`**：**未采纳**（授权内自主裁决，按宪法「冲突选更简单」）。`engineVersions` 保持 model/tech/finance 三轴不变：`TECH_VERSION` 仍 1.0.0（技术层零改动，SVE 是独立新模块 `sandbox-storage-value.ts`）、财务原语零改动。SVE 口径的真源＝本模块头注 + 本文档；若创始人要求第四轴可后补（纯加性）。
-3. **§16.3 重录黄金样本**：✅ 全仓完成。storage>0 的 live 黄金全部按引擎真值重录（基线 NPV 4,277,409→**4,448,573**、IRR 23.7553→**24.3497**%、折现回收 5.28→**5.14** 年、ROI 4.0035→**4.0880**、首年收入 4,987,500→**5,014,991** 含 Δ_sto=**27,491**）；`storageEnergy=0` 场景**逐字节零 churn**（`sandbox-model.test` 焊点：E0 情景 gross 4,987,500 / net 3,030,500 / NPV 4,797,756 与 R2.4 一致）；**spread=0 ⟹ NPV 逐字节回落 4,277,409**（交叉验证：套利关断即等价旧引擎）。
+2. **§16.2 独立版本轴 `STORAGE_MODEL_VERSION`**：**未采纳**（授权内自主裁决，按宪法「冲突选更简单」）。`engineVersions` 保持 model/tech/finance 三轴不变：`TECH_VERSION` 仍 1.0.0（技术层零改动，SVE 是独立新模块 `storage-value.ts`）、财务原语零改动。SVE 口径的真源＝本模块头注 + 本文档；若创始人要求第四轴可后补（纯加性）。
+3. **§16.3 重录黄金样本**：✅ 全仓完成。storage>0 的 live 黄金全部按引擎真值重录（基线 NPV 4,277,409→**4,448,573**、IRR 23.7553→**24.3497**%、折现回收 5.28→**5.14** 年、ROI 4.0035→**4.0880**、首年收入 4,987,500→**5,014,991** 含 Δ_sto=**27,491**）；`storageEnergy=0` 场景**逐字节零 churn**（`project-model.test` 焊点：E0 情景 gross 4,987,500 / net 3,030,500 / NPV 4,797,756 与 R2.4 一致）；**spread=0 ⟹ NPV 逐字节回落 4,277,409**（交叉验证：套利关断即等价旧引擎）。
 4. **§16.4 历史版本不回改**：✅ v0.58.0 快照仅在 git 历史，新口径只在新版本生效。
 5. **§16.5 老项目版本戳策略**：❌ **未做，仍待创始人裁决**。既有已保存项目下次重算将按 1.1.0 新口径出数（`calcRef` 会变为 model@1.1.0，与旧 1.0.0 行可区分）；是否给老项目打「生成时版本」戳冻结展示，属持久化语义决定，本批不擅权。
 
 **实现清单**（§19 步骤 2–4 全部完成；步骤 5 敏感性解锁刻意延后）：
 
-- `sandbox-params.ts`：+5 个 SVE 键（`tech.storagePeakLoadShare` σ=40%、`tech.storageSocMin` 10%、`tech.storageSocMax` 90%、`tech.storageDegradation` 2.5%/年、`tech.storageDischargeWindowHours` 2h/日，全 `ASSUMPTION`、pro 档、占位假设 source），`SANDBOX_PARAMS_VERSION` 1.1.0→**1.2.0**。`region.peakValleySpread`（默认 0.6）首次被消费。
-- `sandbox-model.ts`：E3b 加性收入项 Δ_sto——逐年调 `storageValueDelta`（价格随通胀放大后传入，不再重复乘 inflFactor），`RevenueBreakdownY1` 新增必填 `storageValue` 列；6 个 SVE 键**仅在有储能时**校验（storage=0 缺键不报错——零 churn 前提）；notes 诚实输出 Δ_sto 值、S1 消纳腿为 0 的原因、SVE 被安全清零的逐年原因；`needsProfessionalReview` 保持 true。
-- `sandbox-view.ts`：`revenueItems` 末尾**条件性**追加「储能价值(套利)」分项（=0 不出现，视图层零 churn）。
-- 测试：`sandbox-model.test` 重录 + 新增「R9.0 Step2 · SVE 接线锚定」7 例（手算链 Δ_sto=112,000×0.245455=27,491、零 churn 焊点、spread=0 交叉验证、缺键 scoping、spread 阶梯 0→0.6→1.0→1.5 严格递增、elecPrice 耦合 ∂margin/∂p=1−1/η<0、FLIP 正贡献 +70,889）；`sandbox-causality` P1-2 钉桩改写为「基线经济下 NPV 仍随储能容量严格单调下降（真实经济信号：NPV=0 需 spread≈1.568）」+ P2-6 移除 spread + 新增 spread/FLIP 因果块 + 轴 C 改名「NPV 随电价下降」并收紧为严格单调断言（旧名「上升」与实际方向相反，属 v0.58.0 既有笔误）；`demo-linkage`/`demo`/`report-dynamic` 版本与镜像钉桩同步；`sandbox-store`（unit+integration）、`sandbox-demo`（integration）、`sandbox-solution-store`、`sandbox-solution-loop` 黄金重录。
+- `project-params.ts`：+5 个 SVE 键（`tech.storagePeakLoadShare` σ=40%、`tech.storageSocMin` 10%、`tech.storageSocMax` 90%、`tech.storageDegradation` 2.5%/年、`tech.storageDischargeWindowHours` 2h/日，全 `ASSUMPTION`、pro 档、占位假设 source），`PARAMS_VERSION` 1.1.0→**1.2.0**。`region.peakValleySpread`（默认 0.6）首次被消费。
+- `project-model.ts`：E3b 加性收入项 Δ_sto——逐年调 `storageValueDelta`（价格随通胀放大后传入，不再重复乘 inflFactor），`RevenueBreakdownY1` 新增必填 `storageValue` 列；6 个 SVE 键**仅在有储能时**校验（storage=0 缺键不报错——零 churn 前提）；notes 诚实输出 Δ_sto 值、S1 消纳腿为 0 的原因、SVE 被安全清零的逐年原因；`needsProfessionalReview` 保持 true。
+- `decision-view.ts`：`revenueItems` 末尾**条件性**追加「储能价值(套利)」分项（=0 不出现，视图层零 churn）。
+- 测试：`project-model.test` 重录 + 新增「R9.0 Step2 · SVE 接线锚定」7 例（手算链 Δ_sto=112,000×0.245455=27,491、零 churn 焊点、spread=0 交叉验证、缺键 scoping、spread 阶梯 0→0.6→1.0→1.5 严格递增、elecPrice 耦合 ∂margin/∂p=1−1/η<0、FLIP 正贡献 +70,889）；`causality` P1-2 钉桩改写为「基线经济下 NPV 仍随储能容量严格单调下降（真实经济信号：NPV=0 需 spread≈1.568）」+ P2-6 移除 spread + 新增 spread/FLIP 因果块 + 轴 C 改名「NPV 随电价下降」并收紧为严格单调断言（旧名「上升」与实际方向相反，属 v0.58.0 既有笔误）；`demo-linkage`/`demo`/`report-dynamic` 版本与镜像钉桩同步；`project-store`（unit+integration）、`demo-project`（integration）、`solution-store`、`solution-loop` 黄金重录。
 
 **刻意不做（本批边界）**：
 
@@ -393,7 +393,7 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 
 ## 十七、对现有代码的影响清单（实现期，非本期）
 
-只列触点，供确认后逐项实现：`sandbox-params.ts`（+5 新参数、版本++）→ `sandbox-tech.ts`（`storageAnnualThroughput` 升级或新建 `storageValue` 纯函数、`TECH_VERSION++`）→ 新建 `src/server/sandbox-storage-value.ts`（SVE：分配+两腿+账本，纯函数、可离线测死）→ `sandbox-model.ts`（E3 接入 Δ_sto、`engineVersions` 增列、`MODEL_VERSION++`、`needsProfessionalReview` 保持 true）→ `sandbox-view.ts`（收入卡拆分、可选边际曲线图）→ `sandbox-sensitivity.ts`（解锁参数、版本++）→ `sandbox-report.ts`（读 vm 自动带新分项，无需重算）。**不动**：`sandbox-finance.ts`、`parameter-engine.ts`、数据库/schema、认证/支付、R8.7 溯源管道。
+只列触点，供确认后逐项实现：`project-params.ts`（+5 新参数、版本++）→ `tech.ts`（`storageAnnualThroughput` 升级或新建 `storageValue` 纯函数、`TECH_VERSION++`）→ 新建 `src/server/storage-value.ts`（SVE：分配+两腿+账本，纯函数、可离线测死）→ `project-model.ts`（E3 接入 Δ_sto、`engineVersions` 增列、`MODEL_VERSION++`、`needsProfessionalReview` 保持 true）→ `decision-view.ts`（收入卡拆分、可选边际曲线图）→ `sensitivity.ts`（解锁参数、版本++）→ `decision-report.ts`（读 vm 自动带新分项，无需重算）。**不动**：`finance.ts`、`parameter-engine.ts`、数据库/schema、认证/支付、R8.7 溯源管道。
 
 ---
 
@@ -410,11 +410,11 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 ## 十九、最小实现任务树（口径获批准后，严格顺序，每步带测）
 
 0. **前置批准闸**：创始人确认 §16 五项（版本轴、黄金样本重录、老项目版本戳策略、是否上 headline 第 11 参）。未批不进入 1。
-1. `sandbox-storage-value.ts` 纯函数：`storageThroughputCapped`（§4.2 功率/SOC/衰减）+ `energyFlowLedger`（§6 分配+去重）+ `storageValueDelta`（§4.4 两腿）。**独立单测**：单位、边界、`η` 单调、`E/P` 双封顶、SOC 缩、衰减降、三条去重不变量、`storage=0 ⇒ Δ=0`、无 NaN/负。
-2. `sandbox-params.ts` 加 5 新参数（版本++）；`sandbox-tech.ts` 暴露新字段（版本++）；`sandbox-causality` 扩：加储能 NPV **不再单调恶化**的反向测试（替换 v0.58.0 钉死的"P1-2 现状"断言）；容量响应按 A 内部最优 / B 范围内持续上升 / C 范围内持续下降三态如实断言，**不预设必然存在 argmax**（ISSUE-3）。
-3. `sandbox-model.ts` E3 接 Δ_sto（`MODEL_VERSION++`、重录 storage>0 黄金样本）；命脉测试：改 `spread`/`storageCapex`/`storageEnergy` → NPV 变。
-4. `sandbox-view.ts`/`sandbox-report.ts` 呈现拆分；报告三情景（§13）结论不同、无硬编码。
-5. `sandbox-sensitivity.ts` 解锁参数（版本++）；边际曲线（§12）helper + 测。
+1. `storage-value.ts` 纯函数：`storageThroughputCapped`（§4.2 功率/SOC/衰减）+ `energyFlowLedger`（§6 分配+去重）+ `storageValueDelta`（§4.4 两腿）。**独立单测**：单位、边界、`η` 单调、`E/P` 双封顶、SOC 缩、衰减降、三条去重不变量、`storage=0 ⇒ Δ=0`、无 NaN/负。
+2. `project-params.ts` 加 5 新参数（版本++）；`tech.ts` 暴露新字段（版本++）；`causality` 扩：加储能 NPV **不再单调恶化**的反向测试（替换 v0.58.0 钉死的"P1-2 现状"断言）；容量响应按 A 内部最优 / B 范围内持续上升 / C 范围内持续下降三态如实断言，**不预设必然存在 argmax**（ISSUE-3）。
+3. `project-model.ts` E3 接 Δ_sto（`MODEL_VERSION++`、重录 storage>0 黄金样本）；命脉测试：改 `spread`/`storageCapex`/`storageEnergy` → NPV 变。
+4. `decision-view.ts`/`decision-report.ts` 呈现拆分；报告三情景（§13）结论不同、无硬编码。
+5. `sensitivity.ts` 解锁参数（版本++）；边际曲线（§12）helper + 测。
 6. 五门：`tsc` 0 / `eslint` 0 / `test:unit`（基线上净增，全绿）/ `build` 0（无新路由）/ 集成（纯函数不连库，应维持 134 不变）。
 7. `CHANGELOG`/`README`/`TESTING` 同步 + 一次提交。
 > 每步独立可回退、独立绿；步骤 1–2 为纯函数+测试，**不改经济口径**，可在闸 0 批准后先行合入（不 bump 任何 *_VERSION，不录黄金），步骤 3 起才触版本轴——便于分批人工放行。
@@ -427,6 +427,6 @@ MarginalIRR / MarginalPayback：以 (MarginalCAPEX, MarginalRevenue 序列) 为�
 
 ---
 
-**Step 1 已于 2026-09-08 收口（四项裁决落档 §十六·五）；Step 2/3 已于同日依创始人「按照你的思路推荐继续完成项目」指令接入生产并收口（落档 §十六·六，v0.59.0）。`MODEL_VERSION` 1.1.0、`SANDBOX_PARAMS_VERSION` 1.2.0、storage>0 黄金全仓重录、storage=0 零 churn 焊点锚定、spread=0 与旧引擎逐字节交叉验证。遗留待创始人：①老项目重算版本戳策略（§16.5）；②敏感性扫描集解锁 spread（§19 步骤 5，需 SENSITIVITY_VERSION++）；③消纳腿分时建模（S1 接口缺口）。融资模型（R8.8b）、逐时电价、E4 分时化均未动。**
+**Step 1 已于 2026-09-08 收口（四项裁决落档 §十六·五）；Step 2/3 已于同日依创始人「按照你的思路推荐继续完成项目」指令接入生产并收口（落档 §十六·六，v0.59.0）。`MODEL_VERSION` 1.1.0、`PARAMS_VERSION` 1.2.0、storage>0 黄金全仓重录、storage=0 零 churn 焊点锚定、spread=0 与旧引擎逐字节交叉验证。遗留待创始人：①老项目重算版本戳策略（§16.5）；②敏感性扫描集解锁 spread（§19 步骤 5，需 SENSITIVITY_VERSION++）；③消纳腿分时建模（S1 接口缺口）。融资模型（R8.8b）、逐时电价、E4 分时化均未动。**
 
 > **后续进展（2026-09-08）**：遗留②已随**阶段1「Spread 敏感性」**收口（创始人批准，v0.61.0）——`SENSITIVITY_VERSION` 1.2.0→1.3.0，spread 入默认扫描集（±15%），低/中/高合理性验收全过，E3/E4/finance 零改动（见 §十六·六"刻意不做"块的销项记录与 CHANGELOG v0.61.0）。遗留①已由创始人批准"历史项目生成时模型版本冻结策略"并落地（v0.60.0，STORE_VERSION 1.0.3，零 schema 迁移）；遗留③消纳腿分时建模仍待立项。

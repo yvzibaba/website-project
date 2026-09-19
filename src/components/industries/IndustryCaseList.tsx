@@ -108,7 +108,7 @@ export function IndustryCaseList({ slug, industryName }: { slug: string; industr
           description="案例经每日自动发现、筛选与人工审核后逐步发布。当前还没有已发布的案例（未预置任何示例数据）。"
         />
         <div className="flex justify-center">
-          <Button variant="secondary" href="/sandbox">
+          <Button variant="secondary" href="/workbench">
             先体验新能源决策沙盘 →
           </Button>
         </div>

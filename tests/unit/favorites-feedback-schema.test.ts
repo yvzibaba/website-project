@@ -46,9 +46,9 @@ describe("createFeedbackSchema (pure contract, no DB)", () => {
   });
 
   it("合法：SUGGESTION + page 来源路径", () => {
-    const r = createFeedbackSchema.safeParse({ kind: "SUGGESTION", message: "希望增加导出 Excel 功能", page: "/sandbox" });
+    const r = createFeedbackSchema.safeParse({ kind: "SUGGESTION", message: "希望增加导出 Excel 功能", page: "/workbench" });
     expect(r.success).toBe(true);
-    if (r.success) expect(r.data.page).toBe("/sandbox");
+    if (r.success) expect(r.data.page).toBe("/workbench");
   });
 
   it("拒绝：kind 不在白名单", () => {

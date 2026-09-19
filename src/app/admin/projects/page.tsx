@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container, Card, CardContent, Badge, Alert } from "@/components/ui";
 import { PageHeader } from "@/components/page";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
-import { listAllProjectsForAdmin } from "@app/kernel/server/sandbox-store";
+import { listAllProjectsForAdmin } from "@app/kernel/server/project-store";
 
 /**
  * /admin/projects — 后台沙盘项目列表（Phase 4 模块 C，**只读**）。

@@ -88,11 +88,11 @@ beforeChange: [({ data }) => {
 
 ## 4. 参数数据迁移（从 .ts 进数据库）
 
-当前参数在 `kernel/src/server/sandbox-regions.ts`（`values`）与 `sandbox-region-facts.ts`（逐值溯源目录）。迁移须**保证内核行为不变**。
+当前参数在 `kernel/src/server/regions.ts`（`values`）与 `region-facts.ts`（逐值溯源目录）。迁移须**保证内核行为不变**。
 
 **迁移步骤（顺序不可颠倒）**
 
-1. 写出**导出脚本**：把 `sandbox-regions.ts` 的 `values` 与 `sandbox-region-facts.ts` 的来源元数据合并成一份 JSON 快照，落盘留档。
+1. 写出**导出脚本**：把 `regions.ts` 的 `values` 与 `region-facts.ts` 的来源元数据合并成一份 JSON 快照，落盘留档。
 2. 在 Payload 定义 `RegionPack` / `RegionParam` 两个 collection。
 3. 导入 JSON → 数据库。**导入时所有条目必须保留 `confidence≤50` 与 `ASSUMPTION`**，不许顺手「升级」。
 4. 内核增加一个**参数读取适配层**：优先读数据库，读不到回退到 `.ts` 内置值（保证可回滚）。

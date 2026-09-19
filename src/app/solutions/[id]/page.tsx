@@ -10,9 +10,9 @@ import { getCurrentUser } from "@/server/authz";
 import { hasPaidEntitlement } from "@/server/orders";
 import { isFavorited } from "@/server/favorites";
 import { FavoriteButton } from "@/components/account/FavoriteButton";
-import { describeSandboxLineage } from "@app/kernel/lib/sandbox-solution-lineage";
-import { evaluateSandboxSolutionProvenance } from "@app/kernel/lib/sandbox-solution-provenance";
-import { readSandboxSourceFromFinancials, describeSandboxSource } from "@app/kernel/lib/sandbox-solution-source";
+import { describeSolutionLineage } from "@app/kernel/lib/solution-lineage";
+import { evaluateSolutionProvenance } from "@app/kernel/lib/solution-provenance";
+import { readSolutionSourceFromFinancials, describeSolutionSource } from "@app/kernel/lib/solution-source";
 import type { ParsedSolutionBody } from "@app/kernel/server/solution-body";
 import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
@@ -75,11 +75,11 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
   const favorited = user ? await isFavorited(user.id, "SOLUTION", s.id) : false;
   const loginHref = `/login?callbackUrl=${encodeURIComponent(`/solutions/${s.id}${includeDemo ? "?demo=1" : ""}`)}`;
   // 沙盘来源识别（R8.3）：只读已落库财务的溯源指纹，不重算——决定是否为买家额外挂一条诚实声明。
-  const lineage = describeSandboxLineage(s.financials);
+  const lineage = describeSolutionLineage(s.financials);
   // 溯源审计（R8.4）：仅对沙盘来源方案做「可复算 + 可追溯」只读体检（比存量、不重跑引擎、不写库）。
-  const provenance = lineage ? evaluateSandboxSolutionProvenance(s.financials) : null;
+  const provenance = lineage ? evaluateSolutionProvenance(s.financials) : null;
   // 来源关联（R8.6）：该沙盘方案是否记录了指回「导出它的那个已保存沙盘情景 / 项目」的指针（只读、不重算、不查库）。
-  const sandboxSourceText = lineage ? describeSandboxSource(readSandboxSourceFromFinancials(s.financials)) : null;
+  const sourceText = lineage ? describeSolutionSource(readSolutionSourceFromFinancials(s.financials)) : null;
 
   return (
     <Container size="lg" className="py-10 flex flex-col gap-8">
@@ -174,9 +174,9 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
                 : " 复算校验发现异常，该方案在数据修复并复核前不应对外销售。"}
             </span>
           ) : null}
-          {sandboxSourceText ? (
+          {sourceText ? (
             <span className="mt-2 block border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
-              来源关联：本方案{sandboxSourceText}（可在沙盘侧反向追溯到它导出过的方案）。
+              来源关联：本方案{sourceText}（可在沙盘侧反向追溯到它导出过的方案）。
             </span>
           ) : null}
         </Alert>
@@ -232,7 +232,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
             即时得到 CAPEX/OPEX/NPV/IRR/回收期与敏感性扫描。与上方数字使用同一套确定性计算内核。
           </p>
         </div>
-        <Button variant="secondary" href="/sandbox">
+        <Button variant="secondary" href="/workbench">
           进入决策沙盘 →
         </Button>
       </section>

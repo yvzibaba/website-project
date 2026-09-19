@@ -4,7 +4,7 @@ import type { UserRole } from "@app/kernel/lib/validation";
  * 身份视图契约 + 角色原语（**纯模块**：零 I/O、零框架、零副作用、零环境依赖）。
  *
  * 为什么单独成文件（R9.1 内核解耦）：
- *   内核的 `sandbox-projects` / `sandbox-solution-source` 需要做**资源级授权判定**——「这个项目
+ *   内核的 `project-service` / `solution-source` 需要做**资源级授权判定**——「这个项目
  *   归谁、谁能看」。但判定只需要两样东西：**调用者是谁**（`SessionUser`）与**哪些角色算员工**
  *   （`STAFF_ROLES`）。原先这两个符号住在壳层的 `server/authz.ts`，而该文件第一行就从认证
  *   框架的入口模块取 `auth`，会把整个 `next-auth` 拖进内核的传递闭包，

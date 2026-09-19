@@ -1,7 +1,7 @@
 # MODEL_AUDIT_REPORT — 沙盘经济模型全面代码审计（阶段4 · 第一阶段）
 
 > 生成日期：2026-09-09（Asia/Shanghai）
-> 审计范围：`src/server/sandbox-*.ts`、`src/server/parameter-engine.ts`、`src/lib/sandbox-{view,report}.ts`、`src/app/api/sandbox/**`、相关 UI 组件。
+> 审计范围：内核技术经济与决策模块（`kernel/src/server/**`、`kernel/src/lib/**`）、`src/app/api/workbench/**`、相关 UI 组件。
 > 审计纪律：**只报告，不修改核心模型**（开发原则第 1 条）。本报告未触碰任何引擎代码、版本号、黄金样本或迁移。
 > 实证方式：临时审计探针 `tests/unit/audit-probe-temp.test.ts`（独立复算 E1–E8 + 假联动实证 + 角点扫描 + 储能寿命 + 龙卷风呈现 + 信任边界，共 **64 项断言全绿**），跑完已按回收站纪律删除，不入库。所有结论均可复现。
 > 前置基线：本报告是 `docs/MODEL_CAUSALITY_AUDIT_V1.md`（2026-09-08 因果审计）的**深化与实证确认**，并对 R9.0（储能价值引擎 v0.59.0）之后的当前状态（v0.64.1）重新盘点。
@@ -22,7 +22,7 @@
 
 ## 1. 输入参数全景（沙盘到底吃哪些参数）
 
-参数单一真源 = `src/server/sandbox-params.ts` 的 `SANDBOX_PARAMETER_SPECS`（`SANDBOX_PARAMS_VERSION=1.2.0`）：**46 个数值参数 + 1 个布尔（`project.includeStorage`）+ 3 个派生（derived）**。按层分：
+参数单一真源 = `src/server/project-params.ts` 的 `PARAMETER_SPECS`（`PARAMS_VERSION=1.2.0`）：**46 个数值参数 + 1 个布尔（`project.includeStorage`）+ 3 个派生（derived）**。按层分：
 
 | 层 | 代表参数 | 数量级 | 是否进入 E 层计算 |
 |---|---|---|---|
@@ -58,7 +58,7 @@
 | F-2g | `finance.loanRate` | 4.5 | % | 15 | 贷款利率不产生利息、不影响 IRR/NPV |
 | **F-2h** | **`project.includeStorage`（布尔）** | **1** | — | **0** | **"是否配储能"开关被彻底忽略**：置 0 后储能 CAPEX 与套利收入照算（见 F-3） |
 
-> ⚠️ F-2h 是最隐蔽的假联动：`sandbox-model.ts` 判定 `hasStorage = storageEnergy>0 && storagePower>0 && tech.storageIncluded`，**从不读 `project.includeStorage` 这个用户可见的布尔开关**。用户以为关掉了储能，账上却仍有一整套储能投资与收益。
+> ⚠️ F-2h 是最隐蔽的假联动：`project-model.ts` 判定 `hasStorage = storageEnergy>0 && storagePower>0 && tech.storageIncluded`，**从不读 `project.includeStorage` 这个用户可见的布尔开关**。用户以为关掉了储能，账上却仍有一整套储能投资与收益。
 
 ---
 
@@ -74,7 +74,7 @@
 | E4 购电 | Imp0 × elecPrice（平价，未分时） | ✅ |
 | E5–E8 | 逐年通胀、光伏 (1−deg)^(y−1)、储能 (1−δ)^(y−1)、正净额征税、末年加残值、Σ/(1+rate)^t | ✅ NPV 吻合 |
 
-**结论：E1–E8 数学正确，无公式错误。** 唯一残差见 F-9（舍入顺序）。IRR（二分法）、回收期（线性插值）、ROI（inflow/capex 倍数）数学亦经 `sandbox-finance.ts` 审阅确认正确，且对无解/多解/不回本诚实返回（no_sign_change / multipleRootsPossible / null）。
+**结论：E1–E8 数学正确，无公式错误。** 唯一残差见 F-9（舍入顺序）。IRR（二分法）、回收期（线性插值）、ROI（inflow/capex 倍数）数学亦经 `finance.ts` 审阅确认正确，且对无解/多解/不回本诚实返回（no_sign_change / multipleRootsPossible / null）。
 
 ---
 
@@ -103,10 +103,10 @@
 
 ## 6. 页面展示 vs 计算结果一致性
 
-- ✅ **视图层 `sandbox-view.ts` 零重算**：所有卡片值直接投影自 `CalcResult`；`formatMoney/formatPct/formatYears`（null→"从不回本"）；NaN/null 诚实显示 "—"。
-- ✅ **报告层 `sandbox-report.ts` 零重算**：只重排/引用指标卡值，绝不重算 NPV/IRR/回收期/ROI（§16 单一真源遵守）。
-- ❌ **F-6 龙卷风图呈现与实际不符（P2）**：`sandbox-sensitivity.ts` 的 `TornadoRow.highInput/lowInput = baseInput×(1±delta)` **未裁剪**，但实际 `runSandboxModel` 会裁剪。探针 E 实证：chargingPrice 基线 2.9、+15% 显示 `highInput=3.335`，而引擎实际按上限 **3.0** 计算——**图上标的扰动值 ≠ 真正跑的扰动值**，读者会被误导。
-- ⚠️ **F-11 UI 硬编码默认值重复（P3）**：`SandboxDemoPanel.tsx:276` 写死 `(0.7)` 作电价默认提示、`SandboxWorkbench.tsx:173` 写死 `?? 8` 作折现率兜底。二者当前与引擎默认（0.7 / 8）一致，但是**字面量副本**，一旦引擎默认变更即漂移。应改为从参数目录单一真源读取。
+- ✅ **视图层 `decision-view.ts` 零重算**：所有卡片值直接投影自 `CalcResult`；`formatMoney/formatPct/formatYears`（null→"从不回本"）；NaN/null 诚实显示 "—"。
+- ✅ **报告层 `decision-report.ts` 零重算**：只重排/引用指标卡值，绝不重算 NPV/IRR/回收期/ROI（§16 单一真源遵守）。
+- ❌ **F-6 龙卷风图呈现与实际不符（P2）**：`sensitivity.ts` 的 `TornadoRow.highInput/lowInput = baseInput×(1±delta)` **未裁剪**，但实际 `runProjectModel` 会裁剪。探针 E 实证：chargingPrice 基线 2.9、+15% 显示 `highInput=3.335`，而引擎实际按上限 **3.0** 计算——**图上标的扰动值 ≠ 真正跑的扰动值**，读者会被误导。
+- ⚠️ **F-11 UI 硬编码默认值重复（P3）**：`DemoProjectPanel.tsx:276` 写死 `(0.7)` 作电价默认提示、`ProjectWorkbench.tsx:173` 写死 `?? 8` 作折现率兜底。二者当前与引擎默认（0.7 / 8）一致，但是**字面量副本**，一旦引擎默认变更即漂移。应改为从参数目录单一真源读取。
 
 ---
 
@@ -117,20 +117,20 @@
 
 | ID | 严重度 | 问题 | 证据（file:line） | 修复性质 | 建议 |
 |---|---|---|---|---|---|
-| **F-1** | **P1** | `layers` 入参几乎未校验：`z.record(z.string(), z.any())`，客户端可注入任意 region/policy 层与 `now` 时钟 | `src/server/sandbox-projects.ts`（layersSchema）；`src/server/sandbox-store.ts` `toEngineLayers` | **校验** | 服务端对 layers 做 schema 白名单校验；`now` 强制服务端时钟，不接受客户端传入 |
+| **F-1** | **P1** | `layers` 入参几乎未校验：`z.record(z.string(), z.any())`，客户端可注入任意 region/policy 层与 `now` 时钟 | `src/server/project-service.ts`（layersSchema）；`src/server/project-store.ts` `toEngineLayers` | **校验** | 服务端对 layers 做 schema 白名单校验；`now` 强制服务端时钟，不接受客户端传入 |
 | **F-1b** | **P1** | R8.7 诚实闸门只验 URL **格式**（`^https?://` + 无空格），**不验真伪**：客户端可把任意 ASSUMPTION 自封 `evidenceKind=FACT` + 伪造 https 链接即被承认 | `src/server/parameter-engine.ts` `usableHttpUrl`；探针 F 实证 | **校验** | FACT 来源须走服务端可信白名单/人工核实；客户端提交的 evidenceKind 一律降级为 ASSUMPTION 待核 |
-| **F-2h** | **P1** | `project.includeStorage` 布尔开关被彻底忽略：置 0 后储能 CAPEX+套利收入照算 | `src/server/sandbox-model.ts` `hasStorage`（不读该布尔）；探针 B | **接线** | `hasStorage` 应 `&& project.includeStorage===1`；或从 UI 移除该开关避免误导 |
-| **F-3** | **P1** | 公交/市政画像声明 `includeStorage=0`（"场站多依谷电、未必配储能"），但 presetValues **未归零** storageEnergy/storagePower → 全局默认 400kWh/200kW 仍生效，账上有整套储能且还在赚套利 | `src/server/sandbox-profiles.ts` TRANSIT_PROFILE（presetValues）；探针 B 实证 `capex.storage>0 && storageValue>0` | **接线/数据** | TRANSIT presetValues 补 `storageEnergy:0, storagePower:0`；或依赖 F-2h 修好后由 includeStorage=0 生效 |
-| **F-2c** | **P2** | 需量电价 `region.demandCharge`（40 元/kW·月）完全未计入购电成本——中国工商业电费的**大头**缺失，导致购电成本低估、NPV 偏乐观 | `sandbox-params.ts`；E4 只用 `Imp0×elecPrice`（平价）；探针 B 实证 | **改经济模型** | 需创始人批准后接入 E4（需量费 = 峰值需量 kW × demandCharge × 12）；同时把 E4 从平价升级为分时（配合 spread） |
+| **F-2h** | **P1** | `project.includeStorage` 布尔开关被彻底忽略：置 0 后储能 CAPEX+套利收入照算 | `src/server/project-model.ts` `hasStorage`（不读该布尔）；探针 B | **接线** | `hasStorage` 应 `&& project.includeStorage===1`；或从 UI 移除该开关避免误导 |
+| **F-3** | **P1** | 公交/市政画像声明 `includeStorage=0`（"场站多依谷电、未必配储能"），但 presetValues **未归零** storageEnergy/storagePower → 全局默认 400kWh/200kW 仍生效，账上有整套储能且还在赚套利 | `src/server/profiles.ts` TRANSIT_PROFILE（presetValues）；探针 B 实证 `capex.storage>0 && storageValue>0` | **接线/数据** | TRANSIT presetValues 补 `storageEnergy:0, storagePower:0`；或依赖 F-2h 修好后由 includeStorage=0 生效 |
+| **F-2c** | **P2** | 需量电价 `region.demandCharge`（40 元/kW·月）完全未计入购电成本——中国工商业电费的**大头**缺失，导致购电成本低估、NPV 偏乐观 | `project-params.ts`；E4 只用 `Imp0×elecPrice`（平价）；探针 B 实证 | **改经济模型** | 需创始人批准后接入 E4（需量费 = 峰值需量 kW × demandCharge × 12）；同时把 E4 从平价升级为分时（配合 spread） |
 | **F-2e** | **P2** | 碳价 `policy.carbonPrice`（80 元/tCO₂）未计入——绿电/储能的环境价值（碳收益）缺失，对"新能源"项目是核心卖点却没算 | 同上；探针 B | **改经济模型** | 批准后接入 E3（碳收益 = 替代火电量 × 排放因子 × carbonPrice） |
-| **F-2f/g** | **P2** | 融资结构缺失：`equityRatio`/`loanRate` 不产生利息、不影响 IRR/NPV/资本金回报——投资类用户（INVESTOR 画像设了 equityRatio）看不到杠杆效果 | `sandbox-model.ts` E5–E8 无融资腿；探针 B | **改经济模型** | 批准后新增融资腿（利息税盾 + Equity IRR）；高风险，须创始人拍板口径（已记 R8.8b 遗留） |
-| **F-2a/b/d** | **P3** | chargerUtilization / gridCapacity / landRent 未接线（前审计 P1-1/P1-3 遗留） | `sandbox-params.ts`；探针 B | **接线/改模型** | gridCapacity 建议接功率约束校验（超限报错）；landRent 接 OPEX；chargerUtilization 若 V1 不接则从 UI 隐藏避免误导 |
-| **F-4** | **P2** | 储能超日历寿命仍计价值：`annualCycles` 上限 = cycleLife/calendarLife 只限**每年**循环数，不限**总年限**；计算期 20 年 / 日历寿命 10 年时，第 11–20 年"死电池"仍产出套利价值且**无更换 CAPEX** | `sandbox-storage-value.ts`；探针 D 实证 laterDelta>0 | **改经济模型** | 批准后：超日历寿命年 either 归零储能价值 or 计入更换 CAPEX；口径须创始人定 |
-| **F-6** | **P2** | 龙卷风图 `highInput/lowInput` 显示未裁剪值，实际按裁剪值计算，呈现≠事实 | `sandbox-sensitivity.ts` `computeTornado`；探针 E 实证 | **呈现** | row 记录实际生效（裁剪后）值，或标注"已裁剪至上限"；纯呈现层修复，不动模型 |
-| **F-7** | **P2** | 敏感性默认扫描集**缺中国关键参数**：feedInTariff（上网电价）、demandCharge（需量）、carbonPrice（碳价）、loanRate（融资）均缺席；且沿用"龙卷风图"西方咨询隐喻 | `sandbox-sensitivity.ts` `DEFAULT_SENSITIVITY_PARAMS`；探针 E 实证 | **呈现 + 接线** | 见 §8 创始人裁决与 `PRODUCT_V2_DESIGN.md` 中国化重构方案 |
-| **F-9** | **P3** | 舍入顺序：技术层 `firstYear.*` 全部 `round(x,0)`（0 位小数）后才被经济循环消费，独立复算若不镜像此舍入会差 2.23 元 NPV。**非计算错误**，是口径观察 | `sandbox-tech.ts` firstYear；`sandbox-model.ts` 年度循环；探针 A 修正后逐位吻合 | **口径** | 建议技术层保留更高精度、仅在展示层舍入；或明确文档化"引擎按 0 位小数舍入后再折现"。改动会影响黄金样本，须谨慎 |
-| **F-10** | **P3** | `feedInTariff` 只在 `exp0>0`（光伏余电上网）时进入收入；基线 pvCapacity=500 下 acLoad>pvGen，exp0=0，故上网电价腿在基线不激活（正确，但需文档说明避免"以为没用"） | `sandbox-model.ts` E3；探针 A | **口径/文档** | 无需改代码，报告/文档标注"余电上网腿仅在光伏>负荷时激活" |
-| **F-11** | **P3** | UI 硬编码默认值重复（0.7 / 8），漂移风险 | `SandboxDemoPanel.tsx:276`、`SandboxWorkbench.tsx:173` | **呈现** | 改从参数目录单一真源读取默认值 |
+| **F-2f/g** | **P2** | 融资结构缺失：`equityRatio`/`loanRate` 不产生利息、不影响 IRR/NPV/资本金回报——投资类用户（INVESTOR 画像设了 equityRatio）看不到杠杆效果 | `project-model.ts` E5–E8 无融资腿；探针 B | **改经济模型** | 批准后新增融资腿（利息税盾 + Equity IRR）；高风险，须创始人拍板口径（已记 R8.8b 遗留） |
+| **F-2a/b/d** | **P3** | chargerUtilization / gridCapacity / landRent 未接线（前审计 P1-1/P1-3 遗留） | `project-params.ts`；探针 B | **接线/改模型** | gridCapacity 建议接功率约束校验（超限报错）；landRent 接 OPEX；chargerUtilization 若 V1 不接则从 UI 隐藏避免误导 |
+| **F-4** | **P2** | 储能超日历寿命仍计价值：`annualCycles` 上限 = cycleLife/calendarLife 只限**每年**循环数，不限**总年限**；计算期 20 年 / 日历寿命 10 年时，第 11–20 年"死电池"仍产出套利价值且**无更换 CAPEX** | `storage-value.ts`；探针 D 实证 laterDelta>0 | **改经济模型** | 批准后：超日历寿命年 either 归零储能价值 or 计入更换 CAPEX；口径须创始人定 |
+| **F-6** | **P2** | 龙卷风图 `highInput/lowInput` 显示未裁剪值，实际按裁剪值计算，呈现≠事实 | `sensitivity.ts` `computeTornado`；探针 E 实证 | **呈现** | row 记录实际生效（裁剪后）值，或标注"已裁剪至上限"；纯呈现层修复，不动模型 |
+| **F-7** | **P2** | 敏感性默认扫描集**缺中国关键参数**：feedInTariff（上网电价）、demandCharge（需量）、carbonPrice（碳价）、loanRate（融资）均缺席；且沿用"龙卷风图"西方咨询隐喻 | `sensitivity.ts` `DEFAULT_SENSITIVITY_PARAMS`；探针 E 实证 | **呈现 + 接线** | 见 §8 创始人裁决与 `PRODUCT_V2_DESIGN.md` 中国化重构方案 |
+| **F-9** | **P3** | 舍入顺序：技术层 `firstYear.*` 全部 `round(x,0)`（0 位小数）后才被经济循环消费，独立复算若不镜像此舍入会差 2.23 元 NPV。**非计算错误**，是口径观察 | `tech.ts` firstYear；`project-model.ts` 年度循环；探针 A 修正后逐位吻合 | **口径** | 建议技术层保留更高精度、仅在展示层舍入；或明确文档化"引擎按 0 位小数舍入后再折现"。改动会影响黄金样本，须谨慎 |
+| **F-10** | **P3** | `feedInTariff` 只在 `exp0>0`（光伏余电上网）时进入收入；基线 pvCapacity=500 下 acLoad>pvGen，exp0=0，故上网电价腿在基线不激活（正确，但需文档说明避免"以为没用"） | `project-model.ts` E3；探针 A | **口径/文档** | 无需改代码，报告/文档标注"余电上网腿仅在光伏>负荷时激活" |
+| **F-11** | **P3** | UI 硬编码默认值重复（0.7 / 8），漂移风险 | `DemoProjectPanel.tsx:276`、`ProjectWorkbench.tsx:173` | **呈现** | 改从参数目录单一真源读取默认值 |
 
 **未发现**：P0 级问题（无数据造假、无导致错误决策的数学错误）。经济内核数学与单位均正确。
 
@@ -143,7 +143,7 @@
 **解读与落地边界**：
 1. **删除"龙卷风图"这一西方咨询隐喻的呈现**——中国读者不熟悉 tornado chart，改为中国工商业投资决策语境下的敏感性呈现（如"关键因素影响力排行 / 盈亏平衡敏感度 / 逐项±摆动对回本的影响"条形榜单）。**这属呈现层重命名/重排，不动经济模型，可立即小步实施**（列入首批修改方案第 1 项）。
 2. **补齐中国关键影响参数**——`demandCharge`（需量电价，工商业电费大头）、`carbonPrice`（碳价/绿电环境价值）、`loanRate`+`equityRatio`（融资结构，决定资本金回报）、`feedInTariff`（上网电价）。**其中 demandCharge/carbonPrice/融资结构目前根本没接入 E 层（F-2c/e/f/g），"加入敏感性扫描"的前提是先接线——这属改经济模型，须创始人逐项批准口径后方可实施**，本报告只登记不擅自接线。
-3. **技术约束**：`sandbox-sensitivity.ts` 内部函数名 `computeTornado` / 类型 `TornadoRow` / 常量 `SENSITIVITY_VERSION` 属**已冻结的溯源口径**（V1_FREEZE 未直接冻结此文件，但改函数名会牵动 calcRef 与黄金样本）。建议**保留内部标识符**（避免破坏溯源），**仅改用户可见文案与图表形态**——即"内核叫 tornado 无所谓，用户看到的必须是中国话"。
+3. **技术约束**：`sensitivity.ts` 内部函数名 `computeTornado` / 类型 `TornadoRow` / 常量 `SENSITIVITY_VERSION` 属**已冻结的溯源口径**（V1_FREEZE 未直接冻结此文件，但改函数名会牵动 calcRef 与黄金样本）。建议**保留内部标识符**（避免破坏溯源），**仅改用户可见文案与图表形态**——即"内核叫 tornado 无所谓，用户看到的必须是中国话"。
 
 ---
 

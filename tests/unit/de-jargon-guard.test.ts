@@ -16,7 +16,7 @@ import * as path from "node:path";
  *
  * 命中 = 该文案里出现禁用 token → 失败并列出文件:行。
  * 白名单（非文案的函数/组件名，P3 记录在案）：
- *   - `sandbox-solution` 模块名（`buildSandboxSolutionDraft` 等函数名不是文案）。
+ *   - `solution-draft` 模块名（`buildSolutionDraft` 等函数名不是文案）。
  *
  * 新增内部术语进入用户可见层的正确做法：改文案为人话；确需内部术语展示 → 放管理后台。
  */

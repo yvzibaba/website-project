@@ -147,5 +147,5 @@ docs/ai-rules/**         # 本规范集
 
 > **注意**：`src/lib/**` 与 `src/server/**` 现在只剩**壳层**文件。
 > 内核模块**不得**在这两个目录下出现第二份（铁律 1）。
-> 判断方法：`ls src/server` 里若出现 `sandbox-*` / `scoring` / `parameter-engine`，
+> 判断方法：`ls src/server` 里若出现 `project-*` / `decision-*` / `solution-*` / `scoring` / `parameter-engine`，
 > 就是有人又在建副本了。

@@ -7,9 +7,9 @@
 
 | 模块 | 冻结范围 | 冻结依据 |
 | --- | --- | --- |
-| 沙盘引擎与经济口径 | `sandbox-model.ts`（MODEL_VERSION 1.1.0）、E1–E8 透明简化、R9.0 年度代理口径、储能经济公式、finance 原语 | 审计三：S/M/L 黄金样本回归 29/29 绿；引擎文件自 v0.63.0 零触碰 |
+| 沙盘引擎与经济口径 | `project-model.ts`（MODEL_VERSION 1.1.0）、E1–E8 透明简化、R9.0 年度代理口径、储能经济公式、finance 原语 | 审计三：S/M/L 黄金样本回归 29/29 绿；引擎文件自 v0.63.0 零触碰 |
 | 黄金样本回归 | `tests/fixtures/regression/scenarios-sml.json` + 对应回归测试 | 历史结果冻结纪律 |
-| 地区条款 FACT 管道 | `sandbox-region-facts.ts`（1.1.0）+ `makeVerifiedFact` 管道 + DATA_CONFLICT 原样保留 | 条款≠数值边界已诚实标注 |
+| 地区条款 FACT 管道 | `region-facts.ts`（1.1.0）+ `makeVerifiedFact` 管道 + DATA_CONFLICT 原样保留 | 条款≠数值边界已诚实标注 |
 | 购买状态机 | Order PENDING/PAID/REFUNDED/CANCELED、服务端价快照、人工凭证流（无自动支付） | 审计二③：真实 HTTP 全链绿 |
 | 权益门控 | `hasPaidEntitlement` + 方案详情 locked/unlocked | 审计二③：PAID 后解锁验证绿 |
 | 项目版本策略 | 历史版本不被新模型静默覆盖（冻结策略）、复制=服务端现算新 id | 审计二②：复制产生独立 id/版本线 |

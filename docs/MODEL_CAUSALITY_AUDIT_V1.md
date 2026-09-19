@@ -10,19 +10,19 @@
 
 | 段 | 上游 → 下游 | 是否贯通 | 依据（file:line） |
 |---|---|---|---|
-| A1 | 车队 `truckCount × mileage × energyPer100km` → `chargePerTruck` | ✅ 通过 R8.8a 映射层 | `sandbox-demo.ts:253 fleetChargePerTruckDaily` |
-| A2 | `trucksPerDay × chargePerTruck` → `derived.dailyChargeEnergy` | ✅ | `sandbox-params.ts:174` |
-| A3 | `dailyChargeEnergy × operatingDays` → 年电池侧充电量 | ✅ | `sandbox-tech.ts:96` |
-| A4 | 电池侧 ÷ 充电效率 → 交流侧负荷 | ✅ | `sandbox-tech.ts:105` |
-| A5 | 光伏 `kWp × eqHours × PR` → 首年 PV 能量 | ✅ | `sandbox-tech.ts:75` |
-| A6 | 逐年 PV 衰减 `(1−deg)^(y−1)` → 重平衡自用/上网/下网 | ✅ | `sandbox-model.ts:244–247` |
-| A7 | 储能容量 → 年吞吐上界（cycles × kWh × rte） | ⚠️ **算出但未回灌经济层** → F2 P1 | `sandbox-tech.ts:150` 与 `sandbox-model.ts` 通读 |
-| A8 | 收入 = 电池侧电量 × 充电价 + 上网 × 上网价 + 电池侧 × 补贴 | ✅ | `sandbox-model.ts:222–226` |
-| A9 | 购电成本 = 下网 × 电价 | ✅ | `sandbox-model.ts:227` |
-| A10 | OPEX = PV+储能+桩运维+固定 | ✅ | `sandbox-model.ts:215–219` |
-| A11 | CAPEX = PV kWp×1000×元/W + 储能 kWh×1000×元/Wh + 桩 kW×元/kW，减建设补贴 | ✅ | `sandbox-model.ts:207–212` |
-| A12 | 逐年 税后净现金流 + 末年残值 → flows | ✅ | `sandbox-model.ts:241–259` |
-| A13 | flows → NPV / IRR / 回收期 / ROI | ✅ | `sandbox-finance.ts` 全程 |
+| A1 | 车队 `truckCount × mileage × energyPer100km` → `chargePerTruck` | ✅ 通过 R8.8a 映射层 | `demo-project.ts:253 fleetChargePerTruckDaily` |
+| A2 | `trucksPerDay × chargePerTruck` → `derived.dailyChargeEnergy` | ✅ | `project-params.ts:174` |
+| A3 | `dailyChargeEnergy × operatingDays` → 年电池侧充电量 | ✅ | `tech.ts:96` |
+| A4 | 电池侧 ÷ 充电效率 → 交流侧负荷 | ✅ | `tech.ts:105` |
+| A5 | 光伏 `kWp × eqHours × PR` → 首年 PV 能量 | ✅ | `tech.ts:75` |
+| A6 | 逐年 PV 衰减 `(1−deg)^(y−1)` → 重平衡自用/上网/下网 | ✅ | `project-model.ts:244–247` |
+| A7 | 储能容量 → 年吞吐上界（cycles × kWh × rte） | ⚠️ **算出但未回灌经济层** → F2 P1 | `tech.ts:150` 与 `project-model.ts` 通读 |
+| A8 | 收入 = 电池侧电量 × 充电价 + 上网 × 上网价 + 电池侧 × 补贴 | ✅ | `project-model.ts:222–226` |
+| A9 | 购电成本 = 下网 × 电价 | ✅ | `project-model.ts:227` |
+| A10 | OPEX = PV+储能+桩运维+固定 | ✅ | `project-model.ts:215–219` |
+| A11 | CAPEX = PV kWp×1000×元/W + 储能 kWh×1000×元/Wh + 桩 kW×元/kW，减建设补贴 | ✅ | `project-model.ts:207–212` |
+| A12 | 逐年 税后净现金流 + 末年残值 → flows | ✅ | `project-model.ts:241–259` |
+| A13 | flows → NPV / IRR / 回收期 / ROI | ✅ | `finance.ts` 全程 |
 
 单位一致性：kWp↔元/W、kWh↔元/Wh、kW↔元/kW、kWh↔元/kWh 全部按 1000 系数桥接一致；年/日/月口径统一（`operatingDays` 只在 A3 出现一次）；无重复乘除。
 
@@ -32,20 +32,20 @@
 
 ### P0（阻断使用 / 明显错误）
 
-**无。** 主链 12 段端到端跑通、量纲正确、无 NaN/Infinity/负能量硬缺陷。基线 NPV 正值可复算，黄金样本 `sandbox-model.test.ts` 已焊死。
+**无。** 主链 12 段端到端跑通、量纲正确、无 NaN/Infinity/负能量硬缺陷。基线 NPV 正值可复算，黄金样本 `project-model.test.ts` 已焊死。
 
 ### P1（直接影响使用 · 因果断裂 · 假联动）
 
 - **P1-1 · 「车辆利用率」滑块改了但计算完全不动**
-  键 `project.chargerUtilization`（默认 35%，advanced 露出）在 `SANDBOX_PARAMS` 有声明、在参数面板可拖，但**未被任何 tech / finance / model 公式读取**（grep 全仓无消费方）。用户拖动即"改了个数字，NPV/IRR 一点不变" —— 正是 TASK 3 创始人点名的"假联动"反模式。
+  键 `project.chargerUtilization`（默认 35%，advanced 露出）在 `PROJECT_PARAMS` 有声明、在参数面板可拖，但**未被任何 tech / finance / model 公式读取**（grep 全仓无消费方）。用户拖动即"改了个数字，NPV/IRR 一点不变" —— 正是 TASK 3 创始人点名的"假联动"反模式。
   根因：V1 采用"年能量平衡法"，直接用 `trucksPerDay × chargePerTruck × operatingDays` 定义需求，`chargerUtilization` 语义上冗余（要么定义"日均服务重卡数"要么定义"桩利用率"，不能同时定义）。
   处置：**不改口径原则下不能接线**（会改 E3 收入 / E1 CAPEX 定义），故 TASK 2 显式加"利用率扰动 → NPV 不变"回归测试**把它作为已知缺陷钉住**；建议后续把该参数从面板摘除或降为 `editable:false` + 注明"V1 未接入 · 待 S1 逐时曲线"（**留给创始人**，属"改参数暴露面"的语义决定）。
 
 - **P1-2 · 「储能」只有成本没有收益，参数改动永远让 NPV 变差** —— ✅ **已闭合（R9.0 Step 2，v0.59.0，2026-09-08）**
-  `storageAnnualThroughput` 在 tech 层被算出（`annualDischargeThroughputKwh`），但 `sandbox-model.ts` 的 E3/E4 **完全没读它** —— 储能只在 CAPEX/OPEX 里出现，从不参与"削峰填谷套利的钱在财务/编排层结算"。文件头注释说"钱在 E 层结算"，实际**未在 E 层结算**。
+  `storageAnnualThroughput` 在 tech 层被算出（`annualDischargeThroughputKwh`），但 `project-model.ts` 的 E3/E4 **完全没读它** —— 储能只在 CAPEX/OPEX 里出现，从不参与"削峰填谷套利的钱在财务/编排层结算"。文件头注释说"钱在 E 层结算"，实际**未在 E 层结算**。
   结果：拖动 `storageEnergy` → CAPEX↑ OPEX↑ → NPV↓；不存在"加储能 → 靠峰谷价差挣钱 → NPV↑"的因果。这既违反物理直觉（储能的核心经济意义就是套利），也违反 TASK 1「因果关系是否合理」的检验意图。
   处置：修复需引入 `region.peakValleySpread` 到 E3/E4 或新增峰谷套利现金流，属**改变经济口径 · 高风险** → 记 P1，**留给创始人**（对应 R8.8b 债务/DSCR/Equity IRR 同一批准闸口）。TASK 2 显式加"加储能 NPV 单调恶化"回归测试钉住当前行为，防止"以为储能会正贡献"的假象。
-  **闭合记录（2026-09-08）**：经创始人批准，SVE 储能套利价值 Δ_sto 已作为加性收入项接入 E3b（`storageValueDelta` 逐年结算，E4/财务原语零改动），`MODEL_VERSION` 1.0.0→1.1.0、`SANDBOX_PARAMS_VERSION` 1.1.0→1.2.0（+5 个 SVE ASSUMPTION 键），storage>0 黄金全仓重录、storage=0 零 churn、spread=0 与旧引擎逐字节交叉验证。设计口径/裁决/边界见 `docs/STORAGE_VALUE_ENGINE_R9_0.md` §十六·六。**注意**：基线参数（spread=0.6、capex=1.3 元/Wh）下 NPV 仍随储能容量严格单调下降——这是真实经济信号（套利价值 < 边际 CAPEX，NPV=0 需 spread≈1.568）而非缺陷复现；正向贡献场景已由 FLIP 测试锚定（spread 1.0 + capex 0.6 → +70,889）。原"加储能 NPV 单调恶化"钉桩改写为上述现状钉桩；消纳腿因 S1 年度平衡互斥恒为 0（已诚实标注，待分时立项）。
+  **闭合记录（2026-09-08）**：经创始人批准，SVE 储能套利价值 Δ_sto 已作为加性收入项接入 E3b（`storageValueDelta` 逐年结算，E4/财务原语零改动），`MODEL_VERSION` 1.0.0→1.1.0、`PARAMS_VERSION` 1.1.0→1.2.0（+5 个 SVE ASSUMPTION 键），storage>0 黄金全仓重录、storage=0 零 churn、spread=0 与旧引擎逐字节交叉验证。设计口径/裁决/边界见 `docs/STORAGE_VALUE_ENGINE_R9_0.md` §十六·六。**注意**：基线参数（spread=0.6、capex=1.3 元/Wh）下 NPV 仍随储能容量严格单调下降——这是真实经济信号（套利价值 < 边际 CAPEX，NPV=0 需 spread≈1.568）而非缺陷复现；正向贡献场景已由 FLIP 测试锚定（spread 1.0 + capex 0.6 → +70,889）。原"加储能 NPV 单调恶化"钉桩改写为上述现状钉桩；消纳腿因 S1 年度平衡互斥恒为 0（已诚实标注，待分时立项）。
 
 - **P1-3 · 「并网报装容量」`project.gridCapacity` 未参与任何功率约束**
   声明 2000 kW，但 tech 层无功率上限校验：即便 `derived.chargerTotalPower`（桩总装机）大于并网容量，模型不会警告也不会裁剪。
@@ -78,7 +78,7 @@
 - **P3-1** 无 8760h 逐时曲线（S1）、无 SOH/温度/弃电（S5）、无充电需求增长曲线：文件头已明示，属 V1 有意留白。
 - **P3-2** 无折旧抵税 shield（E6）：偏保守，已 notes 提示。
 - **P3-3** IRR 多解只报其中一根（区间二分法）：已 `multipleRootsPossible=true` 示警。
-- **P3-4** ROI 是全周期简单比率（未年化）：已在 sandbox-finance 文件头声明，UI 显示"投资回报率"未强推年化解读。
+- **P3-4** ROI 是全周期简单比率（未年化）：已在 finance 文件头声明，UI 显示"投资回报率"未强推年化解读。
 
 ---
 
@@ -107,9 +107,9 @@
 
 ## 四、下一步 TASK 的落点
 
-- **TASK 2（真实性网格测试）**：加 `tests/unit/sandbox-causality.test.ts` 显式测 (a) 车辆/里程/电耗/光伏/电价 5 轴单调性与量级；(b) 无 NaN/Infinity；(c) 无"参数变→结果不变"（除已明确 P1-1/P1-2/P1-3 未接线项，用反向断言钉住现状）；(d) 光伏>负荷时上网量正向；(e) 桩功率>储能功率时的因果边界。
-- **TASK 3（DEMO 10 参数真联动）**：加 `tests/unit/sandbox-demo-linkage.test.ts` 遍历 `DEMO_HEADLINE_SPECS` 8 个可操作字段，逐一 touched → `resolved.numeric` 有对应键变化 → `calc.capex.gross` 或 `calc.metrics.npv` 变化 → `vm.cards` 至少一张 value 字符串变化 → `report.sections` 有对应段落值变化。
-- **TASK 4（动态报告）**：加 `tests/unit/sandbox-report-dynamic.test.ts`，跑 3 组显著不同参数（基线 / 车队×5 / 高光伏+高电价），断言 4 张核心卡 NPV/IRR/回收期/ROI 值字符串至少 3 张互不相同，且报告"投资结构 / 敏感性 / 假设"节都反映新数字。
+- **TASK 2（真实性网格测试）**：加 `tests/unit/causality.test.ts` 显式测 (a) 车辆/里程/电耗/光伏/电价 5 轴单调性与量级；(b) 无 NaN/Infinity；(c) 无"参数变→结果不变"（除已明确 P1-1/P1-2/P1-3 未接线项，用反向断言钉住现状）；(d) 光伏>负荷时上网量正向；(e) 桩功率>储能功率时的因果边界。
+- **TASK 3（DEMO 10 参数真联动）**：加 `tests/unit/demo-project-linkage.test.ts` 遍历 `DEMO_HEADLINE_SPECS` 8 个可操作字段，逐一 touched → `resolved.numeric` 有对应键变化 → `calc.capex.gross` 或 `calc.metrics.npv` 变化 → `vm.cards` 至少一张 value 字符串变化 → `report.sections` 有对应段落值变化。
+- **TASK 4（动态报告）**：加 `tests/unit/decision-report-dynamic.test.ts`，跑 3 组显著不同参数（基线 / 车队×5 / 高光伏+高电价），断言 4 张核心卡 NPV/IRR/回收期/ROI 值字符串至少 3 张互不相同，且报告"投资结构 / 敏感性 / 假设"节都反映新数字。
 - **TASK 5（敏感性 TOP5）**：现有 8 项默认集不含储能 CAPEX 与里程代理；最小扩展加 `tech.storageCapex`（deltaPct 20%）与 `project.chargePerTruck`（deltaPct 20%，作里程代理）。校验既有"最敏感=充电单价"仍成立，否则收窄新项 delta 或降位。
 
 ---

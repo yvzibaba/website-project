@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Badge, Button } from "@/components/ui";
-import { SandboxUpgradePanel } from "@/components/sandbox/SandboxUpgradePanel";
+import { UpgradePanel } from "@/components/workbench/UpgradePanel";
 import { JsonLd } from "@/components/seo";
 import { seoMetadata } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
@@ -10,7 +10,7 @@ import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
  * 首页 `/`（V1.1 批次 P3 · 三屏定位首页，方案 §3.2）。
  *
  * 定位从「产业案例引擎」门户收敛为**光储充投资决策软件**的着陆页，三屏：
- *   ① 一句话价值 + 主 CTA「免费算一个项目」（直达 /sandbox 一级沙盘，免登录）
+ *   ① 一句话价值 + 主 CTA「免费算一个项目」（直达 /workbench 一级沙盘，免登录）
  *   ② 三个真实商业问题卡（值不值得建 / 银行看什么 / 什么最怕），各配沙盘结果示例（示意数据·明确标注）
  *   ③ 真实案例验证区（诚实空态，不编造案例）+ 次级入口条（案例库 / 方案库 / 企业画像 / 行业）
  *
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
 
 /**
  * ② 三问卡的示意数据 = 沙盘当前示例参数（车队 60 台 / 桩 8×360kW / 光伏 500kWp / 储能 200kW/400kWh，
- * 山西·需量免征主情景）的引擎输出，与回归黄金逐字同源（tests/unit/sandbox-model.test.ts、
- * tests/unit/sandbox-store.test.ts 钉桩：NPV 4,448,573 / IRR 24.35% / 折现回收 5.14 年 /
+ * 山西·需量免征主情景）的引擎输出，与回归黄金逐字同源（tests/unit/project-model.test.ts、
+ * tests/unit/project-store.test.ts 钉桩：NPV 4,448,573 / IRR 24.35% / 折现回收 5.14 年 /
  * 净投资 3,524,500 / 盈亏平衡充电单价 0.7431 元/kWh）。**展示前四舍五入到口语精度，并标「示意数据」。**
  */
 const QUESTION_CARDS = [
@@ -101,7 +101,7 @@ export default function Home() {
             示例值（未经逐条核实），结论需专业人工确认——它是帮你把问题问全的工具，不是替你拍板的顾问。
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button href="/sandbox" variant="primary" size="lg">免费算一个项目 →</Button>
+            <Button href="/workbench" variant="primary" size="lg">免费算一个项目 →</Button>
             <Button href="/enterprise" variant="secondary" size="lg">先选我的企业类型</Button>
           </div>
         </Container>
@@ -154,7 +154,7 @@ export default function Home() {
               下面列出升级到企业 / 人工尽调时才多出来的东西，全部真实可用或明确标注为人工交付，没有点了没反应的假功能。
             </p>
           </div>
-          <SandboxUpgradePanel level="basic" contactAnchorHint="企业页 / 沙盘报告尾的留资表单" />
+          <UpgradePanel level="basic" contactAnchorHint="企业页 / 沙盘报告尾的留资表单" />
         </Container>
       </section>
 
@@ -170,7 +170,7 @@ export default function Home() {
               <strong className="text-foreground">首批用户将获得免费企业适配与人工复核通道</strong>。
             </p>
             <div>
-              <Button href="/sandbox" variant="secondary">现在就算我的项目 →</Button>
+              <Button href="/workbench" variant="secondary">现在就算我的项目 →</Button>
             </div>
           </div>
 

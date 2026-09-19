@@ -2,7 +2,7 @@
 
 > 依据：宪法 §30（基准可信）/ §33（单省验证优先）/ §34（诚实成本）
 > 配套：`docs/ai-rules/04-DATA-PROVENANCE.md` §4.4（分类判据）、`docs/SHANXI_VERIFIED_DATA_CANDIDATES.md`（A 类 9 项）
-> 清单来源：`kernel/src/server/sandbox-params.ts` 的 `SANDBOX_PARAMS`（目录版本 **1.5.0**，共 50 项）**机械导出**，非人工列举
+> 清单来源：`kernel/src/server/project-params.ts` 的 `PROJECT_PARAMS`（目录版本 **1.5.0**，共 50 项）**机械导出**，非人工列举
 > 建立日期：2026-09-18
 
 ---
@@ -64,7 +64,7 @@
 | `derived.storageDuration` | = 容量 ÷ 功率 | 同上（kWh ÷ kW = h）；且 **1.5.0 已把名实修正为「储能满功率放电时长」** |
 
 **动作**：把这三项的 `source` 文案从「【占位假设·待核实】…须逐项替换为可追溯来源」改为
-「【派生值】由 A/B 类参数计算得出，无可外部核验的独立来源；正确性由 `SANDBOX_DERIVED` 公式复核保证」。
+「【派生值】由 A/B 类参数计算得出，无可外部核验的独立来源；正确性由 `DERIVED` 公式复核保证」。
 **这是一项诚实性缺陷**：现在读起来像是"还没找到来源"，实际是"这类参数本来就没有来源"。
 
 ### 3.1 B1 · 场景输入（9 项）—— 需要客户/设计给定

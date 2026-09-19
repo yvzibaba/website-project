@@ -36,7 +36,7 @@ describe("sanitizeCallbackUrl", () => {
     expect(sanitizeCallbackUrl("/login")).toBe(LOGIN_FALLBACK);
     expect(sanitizeCallbackUrl("/api/health")).toBe(LOGIN_FALLBACK);
     expect(sanitizeCallbackUrl("/")).toBe(LOGIN_FALLBACK);
-    expect(sanitizeCallbackUrl("/sandbox")).toBe(LOGIN_FALLBACK);
+    expect(sanitizeCallbackUrl("/workbench")).toBe(LOGIN_FALLBACK);
   });
 
   it("空串 / 纯空白 / 非字符串 / null / undefined 一律回落", () => {

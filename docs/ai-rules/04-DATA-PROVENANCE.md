@@ -16,7 +16,7 @@
 
 ```ts
 type ParamValue = {
-  key: string;              // 参数键，必须与 SANDBOX_PARAMS 已注册键一致
+  key: string;              // 参数键，必须与 PROJECT_PARAMS 已注册键一致
   regionId: string;         // 所属区域包
   value: number;            // 数值
   unit: string;             // 单位
@@ -74,7 +74,7 @@ type ParamValue = {
 
 | | 规模 | 含义 |
 |---|---|---|
-| **参数目录**（`SANDBOX_PARAMS`） | **50 个** | 声明了哪些可调参数。这是「欠功课」的**分母** |
+| **参数目录**（`PROJECT_PARAMS`） | **50 个** | 声明了哪些可调参数。这是「欠功课」的**分母** |
 | **地区覆写层**（`SHANXI_PACK`） | **9 条** | 山西包实际写进值的条目。这是**分子** |
 
 **目录规模 ≠ 覆写规模。** 说「一个省做完功课」指的是**目录里那些参数在该省的取值都已核实**，
@@ -103,7 +103,7 @@ type ParamValue = {
 | 已升 FACT | **1 条**：`region.demandCharge` 44 → 0（《山西交规划发〔2026〕52号》「2030 年前集中式充换电免需量电费」字面直传） |
 | 其余 | **8 条全部 `ASSUMPTION`、`confidence≤50`** |
 | 条款级 FACT 目录 | 5 条（`SHANXI_CLAUSE_FACTS`） |
-| 存储位置 | **硬编码在 `kernel/src/server/sandbox-regions.ts`**，**不在数据库** |
+| 存储位置 | **硬编码在 `kernel/src/server/regions.ts`**，**不在数据库** |
 
 ### 4.4 欠功课清单（按「去哪儿拿证据」分成两类）
 
@@ -191,7 +191,7 @@ type ParamValue = {
 
 ```bash
 # 1) 内核里是否还有 source 带【示例·待核实】但被当作事实使用的路径
-grep -rn '待核实' kernel/src/server/sandbox-regions.ts | head
+grep -rn '待核实' kernel/src/server/regions.ts | head
 
 # 2) 是否有编造的 sourceUrl（应全部为空或指向真实域名）
 grep -rnoP 'sourceUrl:\s*"https?://[^"]+"' kernel/src | head -20

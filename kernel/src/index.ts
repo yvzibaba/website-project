@@ -8,19 +8,23 @@
  *
  * ## 为什么用命名空间导出而不是 `export *`
  *
- * 内核有 40 个模块、导出面数百个符号，且 lib 与 server 下存在同名模块
- * （`sandbox-solution-source` 两侧各一个：一个是 client-safe 的纯映射，一个是服务端查库编排）。
+ * 内核有 40 个模块、导出面数百个符号。历史上 `lib/` 与 `server/` 下曾存在**同名**模块
+ * （`sandbox-solution-source` 两侧各一个：一个是 client-safe 的纯映射，一个是服务端查库编排），
  * 平铺 `export *` 会静默丢失重名符号（TS 不报错，运行时拿到 `undefined`）——
  * 这是最阴险的一类缺陷。命名空间导出把这种碰撞变成**编译期不可能**。
+ *
+ * V2 P-1 已把服务端那一侧改名（`solution-source-server`），当前两侧**已无重名模块**；
+ * 命名空间导出照旧保留——它不只是修当时的 bug，而是**结构性防再犯**：把公开 API 面钉在
+ * 「命名空间.符号」，日后新增同名模块或拆分模块都不会悄悄改变既有调用点的含义。
  *
  * ## 两种消费方式
  *
  * ```ts
  * // 方式一：从 barrel 取（推荐，公开 API 面稳定）
- * import { sandboxParams, parameterEngine } from "@app/kernel";
+ * import { projectParams, parameterEngine } from "@app/kernel";
  *
  * // 方式二：深路径直取（细粒度、tree-shaking 友好；由 package.json exports 的 "./*" 支持）
- * import { SANDBOX_PARAMS_VERSION } from "@app/kernel/server/sandbox-params";
+ * import { PARAMS_VERSION } from "@app/kernel/server/project-params";
  * ```
  *
  * ## 边界（不可越）
@@ -40,14 +44,14 @@ export * as password from "./lib/password";
 export * as prisma from "./lib/prisma";
 export * as roles from "./lib/roles";
 export * as validation from "./lib/validation";
-export * as sandboxProjectRestore from "./lib/sandbox-project-restore";
-export * as sandboxReport from "./lib/sandbox-report";
-export * as sandboxSolutionLineage from "./lib/sandbox-solution-lineage";
-export * as sandboxSolutionProvenance from "./lib/sandbox-solution-provenance";
-/** client-safe 的纯映射（可进浏览器 bundle）。服务端查库编排见下方 `sandboxSolutionSourceServer`。 */
-export * as sandboxSolutionSource from "./lib/sandbox-solution-source";
-export * as sandboxSolution from "./lib/sandbox-solution";
-export * as sandboxView from "./lib/sandbox-view";
+export * as projectRestore from "./lib/project-restore";
+export * as decisionReport from "./lib/decision-report";
+export * as solutionLineage from "./lib/solution-lineage";
+export * as solutionProvenance from "./lib/solution-provenance";
+/** client-safe 的纯映射（可进浏览器 bundle）。服务端查库编排见下方 `solutionSourceServer`。 */
+export * as solutionSource from "./lib/solution-source";
+export * as solutionDraft from "./lib/solution-draft";
+export * as decisionView from "./lib/decision-view";
 
 /* ───────────────────────────── server（服务端领域逻辑，直接 import prisma） ───────────────────────────── */
 
@@ -56,23 +60,23 @@ export * as deepseekProvider from "./server/deepseek-provider";
 export * as modelRouter from "./server/model-router";
 export * as parameterEngine from "./server/parameter-engine";
 export * as researchPipeline from "./server/research-pipeline";
-export * as sandboxDemo from "./server/sandbox-demo";
-export * as sandboxExplain from "./server/sandbox-explain";
-export * as sandboxFinance from "./server/sandbox-finance";
-export * as sandboxModel from "./server/sandbox-model";
-export * as sandboxParams from "./server/sandbox-params";
-export * as sandboxProfiles from "./server/sandbox-profiles";
-export * as sandboxProjects from "./server/sandbox-projects";
-export * as sandboxProvenanceStore from "./server/sandbox-provenance-store";
-export * as sandboxRegionFacts from "./server/sandbox-region-facts";
-export * as sandboxRegions from "./server/sandbox-regions";
-export * as sandboxSensitivity from "./server/sandbox-sensitivity";
+export * as demoProject from "./server/demo-project";
+export * as decisionExplain from "./server/decision-explain";
+export * as finance from "./server/finance";
+export * as projectModel from "./server/project-model";
+export * as projectParams from "./server/project-params";
+export * as profiles from "./server/profiles";
+export * as projectService from "./server/project-service";
+export * as provenanceStore from "./server/provenance-store";
+export * as regionFacts from "./server/region-facts";
+export * as regions from "./server/regions";
+export * as sensitivity from "./server/sensitivity";
 /** 服务端查库编排（与上方 client-safe 同名模块配对）。 */
-export * as sandboxSolutionSourceServer from "./server/sandbox-solution-source";
-export * as sandboxSolutionStore from "./server/sandbox-solution-store";
-export * as sandboxStorageValue from "./server/sandbox-storage-value";
-export * as sandboxStore from "./server/sandbox-store";
-export * as sandboxTech from "./server/sandbox-tech";
+export * as solutionSourceServer from "./server/solution-source-server";
+export * as solutionStore from "./server/solution-store";
+export * as storageValue from "./server/storage-value";
+export * as projectStore from "./server/project-store";
+export * as tech from "./server/tech";
 export * as scoring from "./server/scoring";
 export * as scout from "./server/scout";
 export * as scoutGithub from "./server/scout-github";

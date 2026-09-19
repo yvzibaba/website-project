@@ -53,7 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/solutions" className="hover:underline">
                 方案
               </Link>
-              <Link href="/sandbox" className="hover:underline">
+              <Link href="/workbench" className="hover:underline">
                 沙盘
               </Link>
               <Link href="/search" className="hidden hover:underline md:inline">
@@ -98,7 +98,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/solutions" className="hover:underline">
                 方案
               </Link>
-              <Link href="/sandbox" className="hover:underline">
+              <Link href="/workbench" className="hover:underline">
                 沙盘
               </Link>
               <Link href="/search" className="hover:underline">

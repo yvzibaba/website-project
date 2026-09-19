@@ -4,16 +4,16 @@ import { redirect } from "next/navigation";
 import { Container, Card, CardContent, Badge, Alert } from "@/components/ui";
 import { PageHeader, Breadcrumb, EmptyState } from "@/components/page";
 import { getCurrentUser } from "@/server/authz";
-import { listSandboxProjects, type SandboxProjectListItem } from "@app/kernel/server/sandbox-projects";
+import { listProjects, type ProjectListItem } from "@app/kernel/server/project-service";
 import { ProjectCopyButton } from "@/components/account/ProjectCopyButton";
 
 /**
  * /account/projects — 我的项目（Phase 4 模块 B，创始人总指令 §四「用户项目」）。
  *
  * 受保护：无会话 → redirect /login（携 callbackUrl 回本页）。数据只取**当前会话用户自己**的
- * 沙盘项目（listSandboxProjects 以会话 user.id 为 owner 过滤，绝无他人项目）。
+ * 沙盘项目（listProjects 以会话 user.id 为 owner 过滤，绝无他人项目）。
  * 每张卡给到：名称、地区、落库状态、模型版本、基线情景 NPV/IRR/回收期/ROI 摘要（服务端引擎现算列，
- * 非页面数字）与更新时间；操作：「在沙盘打开」（/sandbox?project=id，按参数快照还原）与「复制」
+ * 非页面数字）与更新时间；操作：「在沙盘打开」（/workbench?project=id，按参数快照还原）与「复制」
  * （服务端现算重跑落新项目）。历史版本与回滚仍在沙盘保存面板内（不被本页静默覆盖）。
  * force-dynamic（依赖会话 + 实时数据）+ noindex。
  */
@@ -44,7 +44,7 @@ function fmtDate(iso: string): string {
   return Number.isNaN(d.getTime()) ? "—" : d.toISOString().slice(0, 10);
 }
 
-function ProjectCard({ p }: { p: SandboxProjectListItem }) {
+function ProjectCard({ p }: { p: ProjectListItem }) {
   const b = p.baseline;
   return (
     <Card>
@@ -86,7 +86,7 @@ function ProjectCard({ p }: { p: SandboxProjectListItem }) {
 
         <div className="flex flex-wrap items-center gap-2">
           <Link
-            href={`/sandbox?project=${encodeURIComponent(p.id)}`}
+            href={`/workbench?project=${encodeURIComponent(p.id)}`}
             className="text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
             在沙盘打开 →
@@ -111,7 +111,7 @@ export default async function AccountProjectsPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?callbackUrl=%2Faccount%2Fprojects");
 
-  const res = await listSandboxProjects({ user });
+  const res = await listProjects({ user });
   const projects = res.status === "ok" ? res.projects : [];
 
   return (
@@ -145,7 +145,7 @@ export default async function AccountProjectsPage() {
           />
           <div className="flex justify-center">
             <a
-              href="/sandbox"
+              href="/workbench"
               className="rounded-full border border-border px-5 py-2 text-sm font-medium transition-colors hover:border-ring"
             >
               去体验决策沙盘 →

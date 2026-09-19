@@ -67,17 +67,17 @@
 
 | 方案乙要求的能力 | 内核现有实现 | 版本 |
 |---|---|---|
-| 参数体系（id/单位/域/默认/范围/来源/置信度/可编辑/可见性） | `ParameterSpec` + `SANDBOX_PARAMS` **50 个参数 / 5 域** | `SANDBOX_PARAMS_VERSION 1.5.0` |
+| 参数体系（id/单位/域/默认/范围/来源/置信度/可编辑/可见性） | `ParameterSpec` + `PROJECT_PARAMS` **50 个参数 / 5 域** | `PARAMS_VERSION 1.5.0` |
 | 三层变量 UI（5–15 普通 / 30–60 高级 / 全量专业） | `exposure: basic 6 / advanced 21 / pro 23` | 同上 |
 | 变量分类（用户输入/高级/计算/外部/政策/默认） | `resolveParameters()` 的 `ValueLayer[]` 覆写机制 | 参数引擎 655 行 |
 | 情景分析 Base/Opt/Pessimistic | **A/B/C 三场景，参数覆写零代码分支** | — |
 | 敏感性 + Tornado + 风险 | `computeTornado()` / `deriveRiskFlags()` / `SENSITIVITY_VERSION 1.5.0` | — |
-| 技术模型（光伏/储能/充电/车辆） | `sandbox-tech` / `sandbox-model` / `sandbox-storage-value` | `MODEL_VERSION 1.4.0` |
-| 财务模型（CAPEX/OPEX/现金流/NPV/IRR/回收期） | `sandbox-finance` | — |
+| 技术模型（光伏/储能/充电/车辆） | `tech` / `project-model` / `storage-value` | `MODEL_VERSION 1.4.0` |
+| 财务模型（CAPEX/OPEX/现金流/NPV/IRR/回收期） | `finance` | — |
 | 电价模型（峰谷/需量/两部制） | `region.demandCharge` + `project.demandKc` 需用系数 | — |
 | 地区模型 | **2 个区域包**（全国兜底 + 山西），`regions@1.2.0` | — |
 | 证据与来源 | `evidenceKind` / `confidence` / `source` / `asOf` + S/A/B/C 分级 | — |
-| 模型与参数版本化 | `MODEL_VERSION` / `SANDBOX_PARAMS_VERSION` / `calcRef` 可复算引用 | — |
+| 模型与参数版本化 | `MODEL_VERSION` / `PARAMS_VERSION` / `calcRef` 可复算引用 | — |
 | 计算与 LLM 分离 | **已分离**：全部计算为程序确定性计算 | — |
 
 **测试基线（硬底线，只许升不许降）**
@@ -95,7 +95,7 @@ cd kernel && npx tsc --noEmit -p tsconfig.json → 0 错误
 | # | 缺口 | 为什么是缺口 | 归属 |
 |---|---|---|---|
 | **1** | **参数数据全是占位** | 山西包 31 项全部 `confidence≤50` / `ASSUMPTION`；只有 1 条升到 S 级（demandCharge 44→0，山西交规划发〔2026〕52号） | L1 |
-| **2** | **参数硬编码在 TypeScript** | 在 `sandbox-regions.ts` 的 `values` 里 —— 改一个 `confidence` 要改代码 + 重新部署 | L1 |
+| **2** | **参数硬编码在 TypeScript** | 在 `regions.ts` 的 `values` 里 —— 改一个 `confidence` 要改代码 + 重新部署 | L1 |
 | **3** | **参数无编辑界面** | 无录入/校验/版本/发布能力 | L1 |
 | **4** | **可视化前端缺失** | 方案乙 §17 要求的能源流图 / 光伏发电曲线 / 储能 SOC 曲线 / 充电负荷曲线 / 电价曲线 / 现金流 / 收益结构 / 成本结构 / Tornado / 场景对比 | L2 |
 | **5** | **动态报告未绑定模型** | 报告须读取 `simulation_result` 而非静态文字 | L2 |
@@ -223,7 +223,7 @@ editable · exposure(basic|advanced|pro) · inactive/inactiveReason
 | Technology Matching / GitHub Scout | **L1 上游能力** | 保留许可证审查能力（方案甲 §14 完整保留） |
 | China Localization | **L1 上游能力** | 保留 |
 | Solution Builder | **L2 产品层** | 改为「基于仿真结果生成报告」，不再是文案工厂 |
-| **Finance Agent** | **内核**（不是 LLM Agent） | **方案甲 §8 已写明「重要计算必须由程序完成」→ 它就是现有 `sandbox-finance`，不是 Agent** |
+| **Finance Agent** | **内核**（不是 LLM Agent） | **方案甲 §8 已写明「重要计算必须由程序完成」→ 它就是现有 `finance`，不是 Agent** |
 | Bull / Bear / Judge | **L2/L3 质量机制** | 关键方案必须走四方对抗（方案甲 §33 保留） |
 | QA Agent | **L2/L3 质量机制** | 检查来源/数字/逻辑/许可证/幻觉；低于阈值退回 |
 

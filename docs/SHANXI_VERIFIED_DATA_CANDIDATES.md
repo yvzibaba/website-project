@@ -4,7 +4,7 @@
 >
 > 机器可读数据层：[docs/verified-data/shanxi-v1.json](./verified-data/shanxi-v1.json)（meta + items[] + gaps[]，质量门禁：`tests/unit/verified-data-schema.test.ts`，11 项检查全绿）。
 >
-> **本候选集未接入任何模型代码：** 不 import 进 src/、不改 sandbox-params 默认值、不改 E3/E4/finance、不改 MODEL_VERSION/TECH_VERSION、不重录黄金样本。所有条目升级 FACT 须经创始人人工复核（指令第九节）。
+> **本候选集未接入任何模型代码：** 不 import 进 src/、不改 project-params 默认值、不改 E3/E4/finance、不改 MODEL_VERSION/TECH_VERSION、不重录黄金样本。所有条目升级 FACT 须经创始人人工复核（指令第九节）。
 
 ---
 

@@ -623,7 +623,7 @@ export interface InputProvenance {
 
 /**
  * 把一次解析结果收敛成「键 → 溯源摘要」的扁平表（纯函数、无副作用、可离线测死）。
- * R8.7「真实数据接入」的对内接缝：`runSandboxModel` 过去只取 `resolved.numeric` 丢弃了溯源，
+ * R8.7「真实数据接入」的对内接缝：`runProjectModel` 过去只取 `resolved.numeric` 丢弃了溯源，
  * 本函数把被丢弃的逐值来源重新暴露出来，供方案草案 `sourceUrl` / 报告「数据来源」/ R8.5 升级写路径使用。
  * 非法解析（ok:false）→ 空表（诚实「无从汇总」，不抛）。
  */

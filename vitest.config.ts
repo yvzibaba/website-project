@@ -5,7 +5,7 @@ import path from "node:path";
  * Vitest 配置。
  *
  * 环境：node（骨架阶段无 UI 组件测试；Phase 5 引入 React 组件测试时再加 jsdom）。
- * 超时：60s（原 30s）。跨太平洋连 Neon us-east-1、冷启动首查 ~1s，且个别重活用例（如 sandbox-store 版本冻结+回滚，
+ * 超时：60s（原 30s）。跨太平洋连 Neon us-east-1、冷启动首查 ~1s，且个别重活用例（如 project-store 版本冻结+回滚，
  *   单跑即 ~28s）在全量文件级串行、连接池争用下会逼近 30s 偶发超时——这是**纯 harness 时延余量**上调，不改任何断言。
  * Pool：forks，避免 Prisma Engine 在 worker_threads 里偶发段错误。
  *

@@ -1,0 +1,615 @@
+{
+  "sha": "6e33e58b1e553a41fe22e6b941a7229a002de361",
+  "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/6e33e58b1e553a41fe22e6b941a7229a002de361",
+  "tree": [
+    {
+      "path": ".env.example",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa45b7c727e221f5beb7412520733092527222ab",
+      "size": 300,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/aa45b7c727e221f5beb7412520733092527222ab"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1eaa60565ad62ef843f793da0a954e3cf90f320",
+      "size": 429,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/b1eaa60565ad62ef843f793da0a954e3cf90f320"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3ddd8d1dc451ce51bf5ea1464e7ba9b4465ad2a",
+      "size": 1063,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/b3ddd8d1dc451ce51bf5ea1464e7ba9b4465ad2a"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "093d91d2eb3c310f802a459e6bfdb69cd6cee7fd",
+      "size": 3785,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/093d91d2eb3c310f802a459e6bfdb69cd6cee7fd"
+    },
+    {
+      "path": "app",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8c5300e4e077498ab6f956dff37e38f711704095",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/8c5300e4e077498ab6f956dff37e38f711704095"
+    },
+    {
+      "path": "app/(dashboard)",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "365d0c6d5e9d4537f20f5880ab94697b4933ec2e",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/365d0c6d5e9d4537f20f5880ab94697b4933ec2e"
+    },
+    {
+      "path": "app/(dashboard)/dashboard",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bf790f2e0f33748e10c71600a066d89ae9db70ea",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/bf790f2e0f33748e10c71600a066d89ae9db70ea"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/activity",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "914d7ccfd8c90485fc1909fe754ca6cb5f1fe8d9",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/914d7ccfd8c90485fc1909fe754ca6cb5f1fe8d9"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/activity/loading.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "965f34cb5661d009b15ced05123778712d2f9d34",
+      "size": 483,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/965f34cb5661d009b15ced05123778712d2f9d34"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/activity/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "68ada9699bd8758557f7a5a15d99d4878093badb",
+      "size": 4238,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/68ada9699bd8758557f7a5a15d99d4878093badb"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/general",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "aaaf3198bef69c61e3af3fabfdca3db4e7222e8c",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/aaaf3198bef69c61e3af3fabfdca3db4e7222e8c"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/general/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3e0165aa2cb9026166418219a412b071af407df",
+      "size": 3068,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/e3e0165aa2cb9026166418219a412b071af407df"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be03968665f99b4e3fcb12fb1a7b88d85429a608",
+      "size": 2606,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/be03968665f99b4e3fcb12fb1a7b88d85429a608"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60475a858721f7c1bd0c3db4e5bc18e16f31c120",
+      "size": 8696,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/60475a858721f7c1bd0c3db4e5bc18e16f31c120"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/security",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "68e7813a35d4533b2c0a72f26035ce72849467ce",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/68e7813a35d4533b2c0a72f26035ce72849467ce"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/security/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "642b072dafce70e29bdec9021cd4961c625fa0d8",
+      "size": 5120,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/642b072dafce70e29bdec9021cd4961c625fa0d8"
+    },
+    {
+      "path": "app/(dashboard)/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e1d0b1b2dbbf309c3309cea522d057089a9be72",
+      "size": 3199,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/5e1d0b1b2dbbf309c3309cea522d057089a9be72"
+    },
+    {
+      "path": "app/(dashboard)/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07e3b487f379095da55d703d0865c57fb776ebf7",
+      "size": 8135,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/07e3b487f379095da55d703d0865c57fb776ebf7"
+    },
+    {
+      "path": "app/(dashboard)/pricing",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3b3db8853d22e448ac1926607678b681d187a6d8",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/3b3db8853d22e448ac1926607678b681d187a6d8"
+    },
+    {
+      "path": "app/(dashboard)/pricing/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "234cbf5ed0e87737d2d27436fce93e37f686f9da",
+      "size": 2860,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/234cbf5ed0e87737d2d27436fce93e37f686f9da"
+    },
+    {
+      "path": "app/(dashboard)/pricing/submit-button.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa04ea9db94aaa7e6b9dc8b08d7314b24ad3a287",
+      "size": 629,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/aa04ea9db94aaa7e6b9dc8b08d7314b24ad3a287"
+    },
+    {
+      "path": "app/(dashboard)/terminal.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a80112317c4e966b941a8ba636c5ea2b3053aed5",
+      "size": 2077,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/a80112317c4e966b941a8ba636c5ea2b3053aed5"
+    },
+    {
+      "path": "app/(login)",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "37998c62a24a9e2b5ceb8976f422fa716adcc351",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/37998c62a24a9e2b5ceb8976f422fa716adcc351"
+    },
+    {
+      "path": "app/(login)/actions.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "532adc0ef412c8a0a92cc49770d461471d07f821",
+      "size": 11321,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/532adc0ef412c8a0a92cc49770d461471d07f821"
+    },
+    {
+      "path": "app/(login)/login.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86c7e280d8cc0cead702cb4868b855ba1e04e57f",
+      "size": 5479,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/86c7e280d8cc0cead702cb4868b855ba1e04e57f"
+    },
+    {
+      "path": "app/(login)/sign-in",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e6dbb1a708749d957a4242eb8d49fbb57fcc888e",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/e6dbb1a708749d957a4242eb8d49fbb57fcc888e"
+    },
+    {
+      "path": "app/(login)/sign-in/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed47e387e3dc7fb9b37275f22b8462ece28e18d8",
+      "size": 187,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/ed47e387e3dc7fb9b37275f22b8462ece28e18d8"
+    },
+    {
+      "path": "app/(login)/sign-up",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f990e9854dfd00a231f4aa7be246bfd3d122351f",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/f990e9854dfd00a231f4aa7be246bfd3d122351f"
+    },
+    {
+      "path": "app/(login)/sign-up/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10ff615dbb7cafa2b540c429c27aeaf5b09171b3",
+      "size": 187,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/10ff615dbb7cafa2b540c429c27aeaf5b09171b3"
+    },
+    {
+      "path": "app/api",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b2824517c0b37cf7af1eb2e4b106ec6377e42440",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/b2824517c0b37cf7af1eb2e4b106ec6377e42440"
+    },
+    {
+      "path": "app/api/stripe",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "27dce7a2689b91fec21535450dbaf8ef06dc5798",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/27dce7a2689b91fec21535450dbaf8ef06dc5798"
+    },
+    {
+      "path": "app/api/stripe/checkout",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4c2eeedb86122227d66bd5a1e68aadb85ed23a78",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/4c2eeedb86122227d66bd5a1e68aadb85ed23a78"
+    },
+    {
+      "path": "app/api/stripe/checkout/route.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1eba26fd0f8697f2e2b994bae9e66eb2e457736",
+      "size": 2824,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/d1eba26fd0f8697f2e2b994bae9e66eb2e457736"
+    },
+    {
+      "path": "app/api/stripe/webhook",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e4d4e177f2641b6ae498825680eb94948ee096fe",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/e4d4e177f2641b6ae498825680eb94948ee096fe"
+    },
+    {
+      "path": "app/api/stripe/webhook/route.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "970d9ec3ec8ebc5cd8e281dccaf7bab8fd3e3922",
+      "size": 1072,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/970d9ec3ec8ebc5cd8e281dccaf7bab8fd3e3922"
+    },
+    {
+      "path": "app/api/team",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1e3543f3ff6cbceb518a33cb4f89d8a9ef86fdcb",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/1e3543f3ff6cbceb518a33cb4f89d8a9ef86fdcb"
+    },
+    {
+      "path": "app/api/team/route.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0659e7f8b833238e8c4039ce9118a30cc6d9761f",
+      "size": 153,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/0659e7f8b833238e8c4039ce9118a30cc6d9761f"
+    },
+    {
+      "path": "app/api/user",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ae2f9b0af7a5ab21ce2c2503e0b30d74b25d89d8",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/ae2f9b0af7a5ab21ce2c2503e0b30d74b25d89d8"
+    },
+    {
+      "path": "app/api/user/route.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c3dc014c85165062e157bd0f14d1cd59c6b6aab",
+      "size": 139,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/6c3dc014c85165062e157bd0f14d1cd59c6b6aab"
+    },
+    {
+      "path": "app/favicon.ico",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "718d6fea4835ec2d246af9800eddb7ffb276240c",
+      "size": 25931,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/718d6fea4835ec2d246af9800eddb7ffb276240c"
+    },
+    {
+      "path": "app/globals.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "794a380a2f603bc556560cf0bfea0fdaf0fd26ce",
+      "size": 7954,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/794a380a2f603bc556560cf0bfea0fdaf0fd26ce"
+    },
+    {
+      "path": "app/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9c2596780bcafc1a4d65a0b01c310f70ebed476f",
+      "size": 1099,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/9c2596780bcafc1a4d65a0b01c310f70ebed476f"
+    },
+    {
+      "path": "app/not-found.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7aad74b69a79415cb07236c4f1d737178d44a1ee",
+      "size": 1035,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/7aad74b69a79415cb07236c4f1d737178d44a1ee"
+    },
+    {
+      "path": "components.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a3c7506d04ec327bedd759a52abc127316cc1d1",
+      "size": 423,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/5a3c7506d04ec327bedd759a52abc127316cc1d1"
+    },
+    {
+      "path": "components",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "00a341665fd0958da50c2172a29335efbe6d6436",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/00a341665fd0958da50c2172a29335efbe6d6436"
+    },
+    {
+      "path": "components/ui",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3d9cafc82f5cd7a1f7612897fbf3a12bc0d8db36",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/3d9cafc82f5cd7a1f7612897fbf3a12bc0d8db36"
+    },
+    {
+      "path": "components/ui/avatar.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "852cb27a65181c47ecc727fdb5be3255a6fd84b4",
+      "size": 1101,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/852cb27a65181c47ecc727fdb5be3255a6fd84b4"
+    },
+    {
+      "path": "components/ui/button.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82cad4b47fd7b00b1e6c1f476818bf6cdfeb2398",
+      "size": 2147,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/82cad4b47fd7b00b1e6c1f476818bf6cdfeb2398"
+    },
+    {
+      "path": "components/ui/card.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4733d58441f4497153d8441c425e29f126d213cc",
+      "size": 1998,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/4733d58441f4497153d8441c425e29f126d213cc"
+    },
+    {
+      "path": "components/ui/dropdown-menu.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f84f00586c4d61d8523935173adc9fe7ac033d82",
+      "size": 8303,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/f84f00586c4d61d8523935173adc9fe7ac033d82"
+    },
+    {
+      "path": "components/ui/input.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0316cc455f244d40671e7a11dae29bca78190b81",
+      "size": 971,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/0316cc455f244d40671e7a11dae29bca78190b81"
+    },
+    {
+      "path": "components/ui/label.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "387e860dd377d3e40d66469247a3ea9a68545b9c",
+      "size": 613,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/387e860dd377d3e40d66469247a3ea9a68545b9c"
+    },
+    {
+      "path": "components/ui/radio-group.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cdf5e9dd5c947d178050b4edccfb91b3ec33bee5",
+      "size": 1469,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/cdf5e9dd5c947d178050b4edccfb91b3ec33bee5"
+    },
+    {
+      "path": "drizzle.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f6cc8873255b07235dc2bdb577fb217cb778f76",
+      "size": 228,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/6f6cc8873255b07235dc2bdb577fb217cb778f76"
+    },
+    {
+      "path": "lib",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "158f34a81be59436e451365fa803d04274b5ad93",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/158f34a81be59436e451365fa803d04274b5ad93"
+    },
+    {
+      "path": "lib/auth",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "87e286286714ee91d61c68b74139c1e31f28b825",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/87e286286714ee91d61c68b74139c1e31f28b825"
+    },
+    {
+      "path": "lib/auth/middleware.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a17f25e0d300c99bbfffdd719010556192a89cef",
+      "size": 1977,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/a17f25e0d300c99bbfffdd719010556192a89cef"
+    },
+    {
+      "path": "lib/auth/session.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c474c70aa6dbd563b824785080ae202582a5765",
+      "size": 1560,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/0c474c70aa6dbd563b824785080ae202582a5765"
+    },
+    {
+      "path": "lib/db",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "870e7a457ff24d6abfd6e21dbe868622ed558e08",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/870e7a457ff24d6abfd6e21dbe868622ed558e08"
+    },
+    {
+      "path": "lib/db/drizzle.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dc4a1b4fe5491614ca1d4343449f1475adaad0d",
+      "size": 376,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/7dc4a1b4fe5491614ca1d4343449f1475adaad0d"
+    },
+    {
+      "path": "lib/db/migrations",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3e5917b858820fe20b64561a52d454831b1f7310",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/3e5917b858820fe20b64561a52d454831b1f7310"
+    },
+    {
+      "path": "lib/db/migrations/0000_soft_the_anarchist.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3dae05095f9108ce8bd5bfdb2fa5b7a67071fb2",
+      "size": 3337,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/b3dae05095f9108ce8bd5bfdb2fa5b7a67071fb2"
+    },
+    {
+      "path": "lib/db/migrations/meta",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3bd9eb37a10345d4f3010a278fcd92c0444dc88d",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/3bd9eb37a10345d4f3010a278fcd92c0444dc88d"
+    },
+    {
+      "path": "lib/db/migrations/meta/0000_snapshot.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "622eb97794a3c0f926fcd8c35c60b9c1dea0b31d",
+      "size": 9772,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/622eb97794a3c0f926fcd8c35c60b9c1dea0b31d"
+    },
+    {
+      "path": "lib/db/migrations/meta/_journal.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd44474175c0d4bdb56029695173250e133ea9b0",
+      "size": 212,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/fd44474175c0d4bdb56029695173250e133ea9b0"
+    },
+    {
+      "path": "lib/db/queries.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bcdf644b9552d6ba36559574454f8feee0f73b9",
+      "size": 2900,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/1bcdf644b9552d6ba36559574454f8feee0f73b9"
+    },
+    {
+      "path": "lib/db/schema.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d047ce6614313dc465ebe710862d05fdbd87fb8",
+      "size": 4532,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/1d047ce6614313dc465ebe710862d05fdbd87fb8"
+    },
+    {
+      "path": "lib/db/seed.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b62ab31eaff7fecc279830d60d2ad0dcd623e8e",
+      "size": 1823,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/4b62ab31eaff7fecc279830d60d2ad0dcd623e8e"
+    },
+    {
+      "path": "lib/db/setup.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c23d7d4fa282d01d28a1333f1f3ccdd23b71b2c8",
+      "size": 6306,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/c23d7d4fa282d01d28a1333f1f3ccdd23b71b2c8"
+    },
+    {
+      "path": "lib/payments",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f93179a67d990e49ebd63246b699fea65dd4af10",
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/trees/f93179a67d990e49ebd63246b699fea65dd4af10"
+    },
+    {
+      "path": "lib/payments/actions.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26492c19ee45e7ef37864e95be1b43d26bf26e77",
+      "size": 536,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/26492c19ee45e7ef37864e95be1b43d26bf26e77"
+    },
+    {
+      "path": "lib/payments/stripe.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f24b794dc701743bab2b0b9a6f21d479bf94fbc",
+      "size": 4914,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/6f24b794dc701743bab2b0b9a6f21d479bf94fbc"
+    },
+    {
+      "path": "lib/utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd0c391ddd1088e9067844c48835bf4abcd61783",
+      "size": 166,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/bd0c391ddd1088e9067844c48835bf4abcd61783"
+    },
+    {
+      "path": "middleware.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c8a638e4ce1f8dd6bd61fe88d4505c6c369f830",
+      "size": 1403,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/1c8a638e4ce1f8dd6bd61fe88d4505c6c369f830"
+    },
+    {
+      "path": "next.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4617d5c9a65b901f8d3748d349268e9d3b8be92",
+      "size": 171,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/e4617d5c9a65b901f8d3748d349268e9d3b8be92"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7db3e406358057d122d97344aa0114fa8ba6c7b4",
+      "size": 1132,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/7db3e406358057d122d97344aa0114fa8ba6c7b4"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95de5d4ba54b7443da30bf506379ade55b389ef7",
+      "size": 154750,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/95de5d4ba54b7443da30bf506379ade55b389ef7"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a34a3d560dc9b4387f995bc4692208c8a1f2381f",
+      "size": 70,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/a34a3d560dc9b4387f995bc4692208c8a1f2381f"
+    },
+    {
+      "path": "tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f969d125d7f948c311648ab281763327ba890903",
+      "size": 686,
+      "url": "https://api.github.com/repos/nextjs/saas-starter/git/blobs/f969d125d7f948c311648ab281763327ba890903"
+    }
+  ],
+  "truncated": false
+}

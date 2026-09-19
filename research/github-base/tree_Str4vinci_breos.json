@@ -1,0 +1,3188 @@
+{
+  "sha": "ca57e5b55f384ee74b9c085732cf979db6fdf63f",
+  "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/ca57e5b55f384ee74b9c085732cf979db6fdf63f",
+  "tree": [
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45f3a493a23afc49a5b1aa8e3e1142d0a9564346",
+      "size": 125,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/45f3a493a23afc49a5b1aa8e3e1142d0a9564346"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2097b6c8dcf0b4647e0adad4c7f1acb1a52ea862",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/2097b6c8dcf0b4647e0adad4c7f1acb1a52ea862"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "10bb25c8554fe6235e395b9d752f66032a6bd063",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/10bb25c8554fe6235e395b9d752f66032a6bd063"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7658092e44578144800eff16082c23475150d6ec",
+      "size": 714,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7658092e44578144800eff16082c23475150d6ec"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e06660cbde56a9cc2c9fbfd99516a7ff50cd5dbc",
+      "size": 640,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e06660cbde56a9cc2c9fbfd99516a7ff50cd5dbc"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6b0efc597bcc1f2977c2cb3f7de9920452cb1ea",
+      "size": 451,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b6b0efc597bcc1f2977c2cb3f7de9920452cb1ea"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b198dca65d075239086ce9ce650084cc86ae934",
+      "size": 148,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9b198dca65d075239086ce9ce650084cc86ae934"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "01429cb7bbb525a7ae9a450c67f90e53354dabde",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/01429cb7bbb525a7ae9a450c67f90e53354dabde"
+    },
+    {
+      "path": ".github/workflows/publish.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "452dfb3ee9739c0fb04e45f15ef17a14b95dcf32",
+      "size": 1876,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/452dfb3ee9739c0fb04e45f15ef17a14b95dcf32"
+    },
+    {
+      "path": ".github/workflows/tests.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3023a2ad2a7fb09a724d035ce407da6effd32b5e",
+      "size": 4866,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3023a2ad2a7fb09a724d035ce407da6effd32b5e"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41585f90ea3a3e2c626353016dfad1e8052fb096",
+      "size": 339,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/41585f90ea3a3e2c626353016dfad1e8052fb096"
+    },
+    {
+      "path": ".readthedocs.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b26f59d4e9b740e406311dbe37e1b6980a0afd9",
+      "size": 223,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7b26f59d4e9b740e406311dbe37e1b6980a0afd9"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a04d9f7c8ef8916a26f2d9a7ec3a0c10819a396",
+      "size": 2005,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0a04d9f7c8ef8916a26f2d9a7ec3a0c10819a396"
+    },
+    {
+      "path": "ATTRIBUTIONS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "571e64c9287be563d3d5b8770a21a68fdadf3c82",
+      "size": 7961,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/571e64c9287be563d3d5b8770a21a68fdadf3c82"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20f6edc2613326520e295c0366e2301d16d99aa5",
+      "size": 55582,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/20f6edc2613326520e295c0366e2301d16d99aa5"
+    },
+    {
+      "path": "CITATION.cff",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b8c735dfc1f7190d00f43839309785e5e018e732",
+      "size": 2044,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b8c735dfc1f7190d00f43839309785e5e018e732"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f21bf8fab9f00472e6ddda4ee488bd451ab75c4a",
+      "size": 1505,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f21bf8fab9f00472e6ddda4ee488bd451ab75c4a"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73dc7a9dcde6405f63443f2301ff9b5691814b0a",
+      "size": 3939,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/73dc7a9dcde6405f63443f2301ff9b5691814b0a"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45fd38f9216e2808bf8c03b752def1c8d9b6e42d",
+      "size": 1526,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/45fd38f9216e2808bf8c03b752def1c8d9b6e42d"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b423d89c54b3ff58f4fb4ea14d1318b18420ca71",
+      "size": 7533,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b423d89c54b3ff58f4fb4ea14d1318b18420ca71"
+    },
+    {
+      "path": "ROADMAP.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a41a9dc65e2e3bf6a93283610f3e5f3834b5e24",
+      "size": 7757,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6a41a9dc65e2e3bf6a93283610f3e5f3834b5e24"
+    },
+    {
+      "path": "SECURITY.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e11d6a03af844a3147f5e1d0f690b7165f96f475",
+      "size": 1180,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e11d6a03af844a3147f5e1d0f690b7165f96f475"
+    },
+    {
+      "path": "breos",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cae4f4dc124b689d94e9e97acea8e94f1068f1c2",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/cae4f4dc124b689d94e9e97acea8e94f1068f1c2"
+    },
+    {
+      "path": "breos/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5a91098e655abed8b9cd786e05a35c38e6ba419",
+      "size": 8599,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d5a91098e655abed8b9cd786e05a35c38e6ba419"
+    },
+    {
+      "path": "breos/_numba_dispatch.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e05d3a97529b79a1ca464ae45d02265db1e91c1e",
+      "size": 9592,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e05d3a97529b79a1ca464ae45d02265db1e91c1e"
+    },
+    {
+      "path": "breos/_numba_dispatch_kernels.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1cd99cac4835a95802f4e68c41569c64772db534",
+      "size": 19470,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1cd99cac4835a95802f4e68c41569c64772db534"
+    },
+    {
+      "path": "breos/app.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b53d4fab6518d8b6b2fdc36aa3d1e8dff2c6534",
+      "size": 2835,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5b53d4fab6518d8b6b2fdc36aa3d1e8dff2c6534"
+    },
+    {
+      "path": "breos/app_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea018f13cfb55b535c41c03039166a201c431b08",
+      "size": 46526,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ea018f13cfb55b535c41c03039166a201c431b08"
+    },
+    {
+      "path": "breos/app_inputs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f19f2d7e62c26da8006f31e2fce6dd9cb5138d58",
+      "size": 9763,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f19f2d7e62c26da8006f31e2fce6dd9cb5138d58"
+    },
+    {
+      "path": "breos/app_results.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e35795f3eb604073debf672dac5b01cd81598c8",
+      "size": 11053,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3e35795f3eb604073debf672dac5b01cd81598c8"
+    },
+    {
+      "path": "breos/battery.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a016dbcb455bbc47d8618de74aeef3dea45234f",
+      "size": 118373,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2a016dbcb455bbc47d8618de74aeef3dea45234f"
+    },
+    {
+      "path": "breos/cec_fit.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9170960195227e702cb1b7c9d275060980193de8",
+      "size": 16308,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9170960195227e702cb1b7c9d275060980193de8"
+    },
+    {
+      "path": "breos/cli.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ad6991ac7ccc5f3d80b3698cc1b452e18c81c96",
+      "size": 29754,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3ad6991ac7ccc5f3d80b3698cc1b452e18c81c96"
+    },
+    {
+      "path": "breos/constants.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4d9e55a0ac53dfaf702f6316b0f6dade797704a",
+      "size": 5035,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c4d9e55a0ac53dfaf702f6316b0f6dade797704a"
+    },
+    {
+      "path": "breos/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c6428e6759a055d25b928f642d23442e710ec962",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/c6428e6759a055d25b928f642d23442e710ec962"
+    },
+    {
+      "path": "breos/data/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2dff3f851713ba47ffd7b0773fdbfc33270cabce",
+      "size": 39,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2dff3f851713ba47ffd7b0773fdbfc33270cabce"
+    },
+    {
+      "path": "breos/data/configs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f0138eadff2ae36a1f04a625bb79639b41bf6afe",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/f0138eadff2ae36a1f04a625bb79639b41bf6afe"
+    },
+    {
+      "path": "breos/data/configs/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff48862076d0a96c91670dfe3a595896219307ca",
+      "size": 39,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ff48862076d0a96c91670dfe3a595896219307ca"
+    },
+    {
+      "path": "breos/data/configs/costs.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97b11357c946ea19ecf2219e62238f71b0370625",
+      "size": 1717,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/97b11357c946ea19ecf2219e62238f71b0370625"
+    },
+    {
+      "path": "breos/data/configs/electricity.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cf7435f301bb77725b38e075a0fbc5821c2dc65",
+      "size": 5480,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0cf7435f301bb77725b38e075a0fbc5821c2dc65"
+    },
+    {
+      "path": "breos/data/configs/emissions.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19911fa0696fedfbeef0dbe2857984cc8bb84072",
+      "size": 6898,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/19911fa0696fedfbeef0dbe2857984cc8bb84072"
+    },
+    {
+      "path": "breos/data/configs/financials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10fa18a6afe1ca5ae23bfd4d0ea08dc543beac81",
+      "size": 153,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/10fa18a6afe1ca5ae23bfd4d0ea08dc543beac81"
+    },
+    {
+      "path": "breos/data/configs/locations.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21917c1076f6636e9b3f7cd02c3802f89fe6e473",
+      "size": 1131,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/21917c1076f6636e9b3f7cd02c3802f89fe6e473"
+    },
+    {
+      "path": "breos/data/rlp",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a7dfc0b5fb32db532290e1bb279bfb566b9f09d7",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/a7dfc0b5fb32db532290e1bb279bfb566b9f09d7"
+    },
+    {
+      "path": "breos/data/rlp/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08293fb19d4bd6f9ea826b94bb3899f393d54148",
+      "size": 40,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/08293fb19d4bd6f9ea826b94bb3899f393d54148"
+    },
+    {
+      "path": "breos/data/rlp/h0SLP_demandlib_1000kwh_15min.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "695b29cbc7e66f94c00a8adaddc3a41bed973a7c",
+      "size": 1396763,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/695b29cbc7e66f94c00a8adaddc3a41bed973a7c"
+    },
+    {
+      "path": "breos/data/rlp/h0SLP_demandlib_1000kwh_hourly.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a6ae234dea7b4c6b02e41f47a4ccbed983e2d7d",
+      "size": 337404,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5a6ae234dea7b4c6b02e41f47a4ccbed983e2d7d"
+    },
+    {
+      "path": "breos/degradation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e953fd3db504035527521deb00ccff01a6765bed",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/e953fd3db504035527521deb00ccff01a6765bed"
+    },
+    {
+      "path": "breos/degradation/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4d90e20d5cc3aed81b4dbeb0d802f41f7e4a33f",
+      "size": 359,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e4d90e20d5cc3aed81b4dbeb0d802f41f7e4a33f"
+    },
+    {
+      "path": "breos/degradation/blast",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "60d50949bd497b8a3fcee4e3eb1bd1d973454dc6",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/60d50949bd497b8a3fcee4e3eb1bd1d973454dc6"
+    },
+    {
+      "path": "breos/degradation/blast/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e79284ec837e48cbdcf7f64db866ef779ea947d",
+      "size": 1522,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9e79284ec837e48cbdcf7f64db866ef779ea947d"
+    },
+    {
+      "path": "breos/degradation/blast/NOTICE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa5c9b4e97b936f576a7385c0467b1d1d2f48dc1",
+      "size": 1354,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/aa5c9b4e97b936f576a7385c0467b1d1d2f48dc1"
+    },
+    {
+      "path": "breos/degradation/blast/VENDORED.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5087437058d172c7ae419bfce69c0f4ccd248ce6",
+      "size": 9303,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5087437058d172c7ae419bfce69c0f4ccd248ce6"
+    },
+    {
+      "path": "breos/degradation/blast/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab2ce19f68c214ba3838582e4ca6ac1621f69b82",
+      "size": 173,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ab2ce19f68c214ba3838582e4ca6ac1621f69b82"
+    },
+    {
+      "path": "breos/degradation/blast/degradation_model.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32165d470f5665f869d5d6971836f299ff81855f",
+      "size": 27296,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/32165d470f5665f869d5d6971836f299ff81855f"
+    },
+    {
+      "path": "breos/degradation/blast/functions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47515a2b776264d8ec3c70aa47b7408c3cacf2a0",
+      "size": 421,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/47515a2b776264d8ec3c70aa47b7408c3cacf2a0"
+    },
+    {
+      "path": "breos/degradation/blast/models",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "63d1e8ade1ead583c2f04624a117c10f817a06e2",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/63d1e8ade1ead583c2f04624a117c10f817a06e2"
+    },
+    {
+      "path": "breos/degradation/blast/models/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b90d55fa2c59e88203f1e22f44f75ea1e8191a2",
+      "size": 1520,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1b90d55fa2c59e88203f1e22f44f75ea1e8191a2"
+    },
+    {
+      "path": "breos/degradation/blast/models/_available_models.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31f2ea2f13df61bd7d5b7ca2fa1b4573f7a9cc5f",
+      "size": 268,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/31f2ea2f13df61bd7d5b7ca2fa1b4573f7a9cc5f"
+    },
+    {
+      "path": "breos/degradation/blast/models/lfp_gr_250AhPrismatic_2019.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73aa94f5edb69825e31d76127fccdc2318d35403",
+      "size": 7383,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/73aa94f5edb69825e31d76127fccdc2318d35403"
+    },
+    {
+      "path": "breos/degradation/blast/models/lfp_gr_SonyMurata3Ah_2018.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98d0b9d9476df6569f8f136dff0f8189b082e99b",
+      "size": 13035,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/98d0b9d9476df6569f8f136dff0f8189b082e99b"
+    },
+    {
+      "path": "breos/degradation/blast/models/lmo_gr_NissanLeaf66Ah_2ndLife_2020.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ab94128fada9e9db0373d1a873b3cc47239ee9c",
+      "size": 6388,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6ab94128fada9e9db0373d1a873b3cc47239ee9c"
+    },
+    {
+      "path": "breos/degradation/blast/models/nca_gr_Panasonic3Ah_2018.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2fd83126f0f3c18f24ad5e0ec40c511fcf65877",
+      "size": 7214,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c2fd83126f0f3c18f24ad5e0ec40c511fcf65877"
+    },
+    {
+      "path": "breos/degradation/blast/models/nca_grsi_SonyMurata2p5Ah_2023.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17f28c01af544805d3c1bc89fbca70b32cb47fc2",
+      "size": 16142,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/17f28c01af544805d3c1bc89fbca70b32cb47fc2"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc111_gr_Kokam75Ah_2017.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7bba86a691c9940a611e9896e49987959241fef",
+      "size": 10781,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e7bba86a691c9940a611e9896e49987959241fef"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc111_gr_Sanyo2Ah_2014.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2461d96ac9932e77e9428b7494c0549c9ece9008",
+      "size": 12222,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2461d96ac9932e77e9428b7494c0549c9ece9008"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc622_gr_DENSO50Ah_2021.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02aafa58dccdc7793c8573b3523c54099e91bea6",
+      "size": 10938,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/02aafa58dccdc7793c8573b3523c54099e91bea6"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc811_grSi_LGM50_5Ah_2021.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31e64ca55821b9f7cd4830d091b4d6f4c4adf9ce",
+      "size": 9997,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/31e64ca55821b9f7cd4830d091b4d6f4c4adf9ce"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc811_grSi_LGMJ1_4Ah_2020.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15edfc24b92d8b84a7849f4a8f01d8c1859fe482",
+      "size": 6954,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/15edfc24b92d8b84a7849f4a8f01d8c1859fe482"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc_gr_50Ah_B1_2020.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41690b11026b19db0451ba8dc6b055fe064ac9c9",
+      "size": 6949,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/41690b11026b19db0451ba8dc6b055fe064ac9c9"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc_gr_50Ah_B2_2020.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "526caea08254a2d87e9932ad676130266a98e6b7",
+      "size": 7232,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/526caea08254a2d87e9932ad676130266a98e6b7"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc_gr_75Ah_A_2019.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "affb882e5800b0765d131bad5dce355734ba07e4",
+      "size": 6926,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/affb882e5800b0765d131bad5dce355734ba07e4"
+    },
+    {
+      "path": "breos/degradation/blast/models/nmc_lto_10Ah_2020.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d0d036a308c4dde81c19b31a512610a30421f2d",
+      "size": 7207,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6d0d036a308c4dde81c19b31a512610a30421f2d"
+    },
+    {
+      "path": "breos/degradation/blast/rainflow.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ec7e7b8eab1d2bcc2d54924c63706246b7cdfaf",
+      "size": 5120,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5ec7e7b8eab1d2bcc2d54924c63706246b7cdfaf"
+    },
+    {
+      "path": "breos/degradation/engine.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "162e9ba08afb5deb0084ed2cbf58c48e956443b9",
+      "size": 8802,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/162e9ba08afb5deb0084ed2cbf58c48e956443b9"
+    },
+    {
+      "path": "breos/degradation/profiles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42099b79dfcc43e3799d7a8880d4bb11422c4119",
+      "size": 15176,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/42099b79dfcc43e3799d7a8880d4bb11422c4119"
+    },
+    {
+      "path": "breos/degradation/protocol.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7138e0e5a905b49a04b62b0b697bebe86aa61af6",
+      "size": 10793,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7138e0e5a905b49a04b62b0b697bebe86aa61af6"
+    },
+    {
+      "path": "breos/degradation/results.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3335321b125862bda6596544322ea9595e65de8b",
+      "size": 3268,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3335321b125862bda6596544322ea9595e65de8b"
+    },
+    {
+      "path": "breos/degradation/validation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5d8358f4500707cdc213f180e19d50d340eb724",
+      "size": 5934,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f5d8358f4500707cdc213f180e19d50d340eb724"
+    },
+    {
+      "path": "breos/economics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c990f3b3ffe9dff89036cd3de8ec0fbbb1f9da0",
+      "size": 28262,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0c990f3b3ffe9dff89036cd3de8ec0fbbb1f9da0"
+    },
+    {
+      "path": "breos/emissions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49428fc6253b473685b828a81df71f9f6cac2481",
+      "size": 5760,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/49428fc6253b473685b828a81df71f9f6cac2481"
+    },
+    {
+      "path": "breos/execution.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ca25994d9e85f49a1cd64554b046ab78eea289c",
+      "size": 6607,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3ca25994d9e85f49a1cd64554b046ab78eea289c"
+    },
+    {
+      "path": "breos/inverter.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbc5590aea6d3a4c1b0bc461a228b6dcf6cde2a5",
+      "size": 19997,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/cbc5590aea6d3a4c1b0bc461a228b6dcf6cde2a5"
+    },
+    {
+      "path": "breos/io.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54f3e84337c762bd42da9ef1a840e4fc6fc5fcd6",
+      "size": 6270,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/54f3e84337c762bd42da9ef1a840e4fc6fc5fcd6"
+    },
+    {
+      "path": "breos/load_profiles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f198f27496259f986c59d4a904750be0e63e55f5",
+      "size": 17512,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f198f27496259f986c59d4a904750be0e63e55f5"
+    },
+    {
+      "path": "breos/montecarlo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2d2222da9a23d08186d85fd75ff68621d03a63a",
+      "size": 35513,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d2d2222da9a23d08186d85fd75ff68621d03a63a"
+    },
+    {
+      "path": "breos/optimization.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82febfb72d870468690908596232e11b78171a9a",
+      "size": 75263,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/82febfb72d870468690908596232e11b78171a9a"
+    },
+    {
+      "path": "breos/plotting.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "871e9c200c75e2d36850ecb948b908843d26d7c1",
+      "size": 104888,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/871e9c200c75e2d36850ecb948b908843d26d7c1"
+    },
+    {
+      "path": "breos/pv",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7add84ac619211832e87ca17b9cf3537e0ac9825",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/7add84ac619211832e87ca17b9cf3537e0ac9825"
+    },
+    {
+      "path": "breos/pv/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ac81ec5d49fff5af71d90f1635b7c91c774e9b3",
+      "size": 275,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7ac81ec5d49fff5af71d90f1635b7c91c774e9b3"
+    },
+    {
+      "path": "breos/pv/horizon.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab90e627826da9166a738cd1c3b0cb4d82cf72e5",
+      "size": 7475,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ab90e627826da9166a738cd1c3b0cb4d82cf72e5"
+    },
+    {
+      "path": "breos/pv/iam.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a5ebc0807a2548eef83e69519eda787dd3709c3",
+      "size": 5310,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8a5ebc0807a2548eef83e69519eda787dd3709c3"
+    },
+    {
+      "path": "breos/pv/model_options.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "751bd7db94e62451f02809910e21d8af919511c1",
+      "size": 16946,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/751bd7db94e62451f02809910e21d8af919511c1"
+    },
+    {
+      "path": "breos/pv/temperature.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08c4881d26400ec561bedd59a128b2c26595f922",
+      "size": 7027,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/08c4881d26400ec561bedd59a128b2c26595f922"
+    },
+    {
+      "path": "breos/pv_modules.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a7950f97535181bbccd6202fce21b91049f1909",
+      "size": 7484,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8a7950f97535181bbccd6202fce21b91049f1909"
+    },
+    {
+      "path": "breos/resources.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b69227de3697364e2c4291c31d1953824699523",
+      "size": 582,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5b69227de3697364e2c4291c31d1953824699523"
+    },
+    {
+      "path": "breos/runners",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b1c6c80ce6fca38493bf50c9858d1c8f974f29b0",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/b1c6c80ce6fca38493bf50c9858d1c8f974f29b0"
+    },
+    {
+      "path": "breos/runners/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5619da738dba735ae2d10921867d38886242d19e",
+      "size": 197,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5619da738dba735ae2d10921867d38886242d19e"
+    },
+    {
+      "path": "breos/runners/app.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0657ed2e90e568d21ecf11f7f8c3b9a87bd6f0d",
+      "size": 23524,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a0657ed2e90e568d21ecf11f7f8c3b9a87bd6f0d"
+    },
+    {
+      "path": "breos/solar.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9cdb696558086dd268d1d69a2982cee4fa1d9a55",
+      "size": 59266,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9cdb696558086dd268d1d69a2982cee4fa1d9a55"
+    },
+    {
+      "path": "breos/utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84c755d3ef1ea3ba4b09bebc84f72f65190b36fc",
+      "size": 5813,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/84c755d3ef1ea3ba4b09bebc84f72f65190b36fc"
+    },
+    {
+      "path": "breos/weather.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "063cfe05d1b7b059b238083f77a34bc6c33853ca",
+      "size": 47662,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/063cfe05d1b7b059b238083f77a34bc6c33853ca"
+    },
+    {
+      "path": "configs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c805b96b2d81374fe938836e731d82fbf2499fdf",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/c805b96b2d81374fe938836e731d82fbf2499fdf"
+    },
+    {
+      "path": "configs/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3cfacf2c96e4e0a840ecdc3224292abb6e277fa9",
+      "size": 6293,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3cfacf2c96e4e0a840ecdc3224292abb6e277fa9"
+    },
+    {
+      "path": "configs/base",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "780c0fa0df8bb79f1d4298c2b23af06c9da421e5",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/780c0fa0df8bb79f1d4298c2b23af06c9da421e5"
+    },
+    {
+      "path": "configs/base/costs.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97b11357c946ea19ecf2219e62238f71b0370625",
+      "size": 1717,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/97b11357c946ea19ecf2219e62238f71b0370625"
+    },
+    {
+      "path": "configs/base/electricity.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0cf7435f301bb77725b38e075a0fbc5821c2dc65",
+      "size": 5480,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0cf7435f301bb77725b38e075a0fbc5821c2dc65"
+    },
+    {
+      "path": "configs/base/emissions.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19911fa0696fedfbeef0dbe2857984cc8bb84072",
+      "size": 6898,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/19911fa0696fedfbeef0dbe2857984cc8bb84072"
+    },
+    {
+      "path": "configs/base/financials.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10fa18a6afe1ca5ae23bfd4d0ea08dc543beac81",
+      "size": 153,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/10fa18a6afe1ca5ae23bfd4d0ea08dc543beac81"
+    },
+    {
+      "path": "configs/base/locations.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21917c1076f6636e9b3f7cd02c3802f89fe6e473",
+      "size": 1131,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/21917c1076f6636e9b3f7cd02c3802f89fe6e473"
+    },
+    {
+      "path": "configs/examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7ce3ecc4a3b75f27be8e5e25335231d7bad97b30",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/7ce3ecc4a3b75f27be8e5e25335231d7bad97b30"
+    },
+    {
+      "path": "configs/examples/bifacial-ground-mount.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da327e7f038ed545f8597f031a714661ad4315b1",
+      "size": 641,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/da327e7f038ed545f8597f031a714661ad4315b1"
+    },
+    {
+      "path": "configs/examples/east-west-roof.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2df6522d90a197a2cbac68f089c1d371a5cffd82",
+      "size": 808,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2df6522d90a197a2cbac68f089c1d371a5cffd82"
+    },
+    {
+      "path": "configs/examples/external-rlp.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7c27ae3aa98221108917b37080124f8cb326ca5",
+      "size": 518,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e7c27ae3aa98221108917b37080124f8cb326ca5"
+    },
+    {
+      "path": "configs/examples/germany-berlin.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b044b9dcc25c103dcf3e4327d99d7624affcd88c",
+      "size": 506,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b044b9dcc25c103dcf3e4327d99d7624affcd88c"
+    },
+    {
+      "path": "configs/examples/montecarlo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7afdd4ca9a0403e8a0d2e1347f517f858b1e3880",
+      "size": 1873,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7afdd4ca9a0403e8a0d2e1347f517f858b1e3880"
+    },
+    {
+      "path": "configs/examples/pv-only.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a9a3b0c7243c0d00d22a18a5f4913d2eda40a245",
+      "size": 495,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a9a3b0c7243c0d00d22a18a5f4913d2eda40a245"
+    },
+    {
+      "path": "configs/examples/pv-plus-battery.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "306350482d97163f0a5ea91a275d3f9c3fe0c31b",
+      "size": 3550,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/306350482d97163f0a5ea91a275d3f9c3fe0c31b"
+    },
+    {
+      "path": "configs/examples/quickstart.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84e0d6b88b195c1045a0c5ee0d71ca336b304f49",
+      "size": 207,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/84e0d6b88b195c1045a0c5ee0d71ca336b304f49"
+    },
+    {
+      "path": "configs/examples/recommended-pv.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ce9fe6f768f312c58e216a124ea5d83339657d0",
+      "size": 1127,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9ce9fe6f768f312c58e216a124ea5d83339657d0"
+    },
+    {
+      "path": "configs/examples/sweep.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4bcf0add8f8a0dc6809dcd625b3ffc766c3a8c8",
+      "size": 703,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e4bcf0add8f8a0dc6809dcd625b3ffc766c3a8c8"
+    },
+    {
+      "path": "configs/optimization",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0f26f8394ebd1e179b0f413b74939ba9e5f94777",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/0f26f8394ebd1e179b0f413b74939ba9e5f94777"
+    },
+    {
+      "path": "configs/optimization/projected-optimization.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e27661caedebdf4c53406dddffae61197992e25e",
+      "size": 3504,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e27661caedebdf4c53406dddffae61197992e25e"
+    },
+    {
+      "path": "design",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "52927a01829186c1de5c8f4001f20a53c42d29fd",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/52927a01829186c1de5c8f4001f20a53c42d29fd"
+    },
+    {
+      "path": "design/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79a89a62e7827e1e93ad8a9aab16be6ab31ee392",
+      "size": 568,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/79a89a62e7827e1e93ad8a9aab16be6ab31ee392"
+    },
+    {
+      "path": "design/adr",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bfcdc27825b7358ff3b0e2f142db555be8ab51f0",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/bfcdc27825b7358ff3b0e2f142db555be8ab51f0"
+    },
+    {
+      "path": "design/adr/0001-docs-architecture.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c77e892b73041810de160464c41ad8ae3b61d24e",
+      "size": 1267,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c77e892b73041810de160464c41ad8ae3b61d24e"
+    },
+    {
+      "path": "design/adr/0002-tariffs-and-smart-charging.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "968616e60636d21f4e98a304529c594fa91a94d8",
+      "size": 10648,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/968616e60636d21f4e98a304529c594fa91a94d8"
+    },
+    {
+      "path": "design/adr/index.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a7f9d13fb4d98445fefe1dbad5a3de80ad02a39",
+      "size": 289,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6a7f9d13fb4d98445fefe1dbad5a3de80ad02a39"
+    },
+    {
+      "path": "design/architecture",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f5b2e0c3c4cf86094a5b3d70656cc1000079de07",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/f5b2e0c3c4cf86094a5b3d70656cc1000079de07"
+    },
+    {
+      "path": "design/architecture/0.4x-refactor-plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64ca83dcff34b4d520dc8cfbd9671134ffad0ee7",
+      "size": 11976,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/64ca83dcff34b4d520dc8cfbd9671134ffad0ee7"
+    },
+    {
+      "path": "design/architecture/0.5x-cleanup-plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc0b352c1734db4eb822921d543f91c9a34d2934",
+      "size": 24049,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dc0b352c1734db4eb822921d543f91c9a34d2934"
+    },
+    {
+      "path": "design/architecture/0.5x-deprecation-audit.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9964f30b0bed2c46a635627267a959cd4d5d0eb9",
+      "size": 2771,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9964f30b0bed2c46a635627267a959cd4d5d0eb9"
+    },
+    {
+      "path": "design/architecture/0.6x-numba-dispatch.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d67b81114846524c0227adf692473c6696a0f41",
+      "size": 4539,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9d67b81114846524c0227adf692473c6696a0f41"
+    },
+    {
+      "path": "design/architecture/0.6x-projected-optimization-plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7334f9f68b1d7eae55af834c13d61836035c2c9",
+      "size": 13311,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a7334f9f68b1d7eae55af834c13d61836035c2c9"
+    },
+    {
+      "path": "design/architecture/0.7x-tariffs-and-smart-charging-plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d9e847d0234fc1bc808cd65b1023d63ae461d74",
+      "size": 30242,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2d9e847d0234fc1bc808cd65b1023d63ae461d74"
+    },
+    {
+      "path": "design/architecture/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b95e8f746af0baa9252c73b7a55ff41b0311a04b",
+      "size": 1468,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b95e8f746af0baa9252c73b7a55ff41b0311a04b"
+    },
+    {
+      "path": "design/architecture/battery-degradation-policy.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff8e6d605ece283a77b210de75d0c4fcd3d4584d",
+      "size": 5086,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ff8e6d605ece283a77b210de75d0c4fcd3d4584d"
+    },
+    {
+      "path": "design/architecture/blast-degradation-engine.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65291269aac22700a1e810eb502c7a45a2f00dc5",
+      "size": 21083,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/65291269aac22700a1e810eb502c7a45a2f00dc5"
+    },
+    {
+      "path": "design/architecture/string-inverter-sizing.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9cf160672d079430ae30966c1a9075446cf7008",
+      "size": 6516,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f9cf160672d079430ae30966c1a9075446cf7008"
+    },
+    {
+      "path": "design/architecture/third-party-wrapping.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5f33310559d945855e9ef9ee10164ed632e088b",
+      "size": 7163,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a5f33310559d945855e9ef9ee10164ed632e088b"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eb55650d35842cca17454c5142fc2cbb507cb34c",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/eb55650d35842cca17454c5142fc2cbb507cb34c"
+    },
+    {
+      "path": "docs/_static",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dad53f6759b77e3f3c36de6aa0172dbc470a11f7",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/dad53f6759b77e3f3c36de6aa0172dbc470a11f7"
+    },
+    {
+      "path": "docs/_static/BREOS.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3eec9e123fd1042a176c4a964a2f3ee87585d010",
+      "size": 448963,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3eec9e123fd1042a176c4a964a2f3ee87585d010"
+    },
+    {
+      "path": "docs/_static/BREOS_black.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51226ee66f3fae8434b2b48c097b2fea24d2670a",
+      "size": 424861,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/51226ee66f3fae8434b2b48c097b2fea24d2670a"
+    },
+    {
+      "path": "docs/_static/BREOS_black.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca8394bc082e3b44f6f40bbc6728baca7167fa9f",
+      "size": 29549,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ca8394bc082e3b44f6f40bbc6728baca7167fa9f"
+    },
+    {
+      "path": "docs/_static/switcher.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28c90de64aaaccbd6e3ba0387a5343e3227104f4",
+      "size": 135,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/28c90de64aaaccbd6e3ba0387a5343e3227104f4"
+    },
+    {
+      "path": "docs/api",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "216fe1935332f5f67395b9c7abf213ef8eebd0eb",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/216fe1935332f5f67395b9c7abf213ef8eebd0eb"
+    },
+    {
+      "path": "docs/api/appendix.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d8e2bb933d7981fdf60274dc9d505920b437396",
+      "size": 288,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3d8e2bb933d7981fdf60274dc9d505920b437396"
+    },
+    {
+      "path": "docs/api/battery.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f40bade2cb3bcaf94a2eb9ab33378d4b79488af",
+      "size": 2162,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8f40bade2cb3bcaf94a2eb9ab33378d4b79488af"
+    },
+    {
+      "path": "docs/api/cost-analysis.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea5a044ff7191b2ba4e6cbe1af1f87709d01167d",
+      "size": 955,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ea5a044ff7191b2ba4e6cbe1af1f87709d01167d"
+    },
+    {
+      "path": "docs/api/degradation-models.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e44ef67ecca39f2c115d4f547be6e801549dc605",
+      "size": 3636,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e44ef67ecca39f2c115d4f547be6e801549dc605"
+    },
+    {
+      "path": "docs/api/energy-balance.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45bc37abf4c664143f53cb9128a61cbf8c281d14",
+      "size": 4785,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/45bc37abf4c664143f53cb9128a61cbf8c281d14"
+    },
+    {
+      "path": "docs/api/generated",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "787c4f213793a6ed78edb8571a2c3e677bbc3ed6",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/787c4f213793a6ed78edb8571a2c3e677bbc3ed6"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.BatteryConfig.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f5c35cd078c6490b29c3d7e43a5fbe912a11166",
+      "size": 1157,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0f5c35cd078c6490b29c3d7e43a5fbe912a11166"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.apply_indoor_temperature_model.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b1122d3df711a409c7e18077139c32b5715fa6d",
+      "size": 182,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8b1122d3df711a409c7e18077139c32b5715fa6d"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.compute_cell_temperature.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0ee14bfcd5a0fae4f3e3d7ca0e1b559f5775146",
+      "size": 162,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b0ee14bfcd5a0fae4f3e3d7ca0e1b559f5775146"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.detect_cycles_rainflow.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20a4d1996e7c727155f85552257875d935b79ffa",
+      "size": 156,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/20a4d1996e7c727155f85552257875d935b79ffa"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.detect_half_cycles_from_soc_series.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aca58ff434820684f6cbb6b0c1c26987d6ab7e4d",
+      "size": 198,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/aca58ff434820684f6cbb6b0c1c26987d6ab7e4d"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.resistance_to_efficiency.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3a50e53070c5a22ea58f40f707c0dbb417bfc13",
+      "size": 162,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c3a50e53070c5a22ea58f40f707c0dbb417bfc13"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.simulate_energy_balance.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "baba3f5e041e07d5b7ecad04446ef6aedd24e3ee",
+      "size": 159,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/baba3f5e041e07d5b7ecad04446ef6aedd24e3ee"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.update_battery_resistance_calendar.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dfa566fdb03b91ef64e40f36355ba795c22fea9a",
+      "size": 194,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dfa566fdb03b91ef64e40f36355ba795c22fea9a"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.update_battery_resistance_cyclewise.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46c430d5e7edb160ab4c7c8496abd739571beb72",
+      "size": 197,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/46c430d5e7edb160ab4c7c8496abd739571beb72"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.update_battery_soh_calendar.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06a7b1fe9af147cba17fef3e1e11e5a294480e03",
+      "size": 173,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/06a7b1fe9af147cba17fef3e1e11e5a294480e03"
+    },
+    {
+      "path": "docs/api/generated/breos.battery.update_battery_soh_cyclewise.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2846d0f428bc91665aefc68a6bb1d80a5694622",
+      "size": 176,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d2846d0f428bc91665aefc68a6bb1d80a5694622"
+    },
+    {
+      "path": "docs/api/generated/breos.constants.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c25aa713469826187c660adb3e5333e223a24d7f",
+      "size": 72,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c25aa713469826187c660adb3e5333e223a24d7f"
+    },
+    {
+      "path": "docs/api/generated/breos.economics.CostParams.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80470cd30aca8396aa7f63bf731d4355a6219754",
+      "size": 1063,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/80470cd30aca8396aa7f63bf731d4355a6219754"
+    },
+    {
+      "path": "docs/api/generated/breos.economics.calculate_costs.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b8647f1e9544f7d06bf8230f9798ee22de5e42b9",
+      "size": 139,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b8647f1e9544f7d06bf8230f9798ee22de5e42b9"
+    },
+    {
+      "path": "docs/api/generated/breos.economics.calculate_lcoe.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c949c010eeaf0be87e0623270eb554d4aa28bd54",
+      "size": 136,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c949c010eeaf0be87e0623270eb554d4aa28bd54"
+    },
+    {
+      "path": "docs/api/generated/breos.economics.cost_analysis_projection.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64c48956303120f4aef20901983e08ed6812dd33",
+      "size": 168,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/64c48956303120f4aef20901983e08ed6812dd33"
+    },
+    {
+      "path": "docs/api/generated/breos.economics.cost_params_from_config.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06865a0342012db6f80960e9867b7764559e0cf0",
+      "size": 167,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/06865a0342012db6f80960e9867b7764559e0cf0"
+    },
+    {
+      "path": "docs/api/generated/breos.economics.find_payback_year.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f528ce8259764865f4ec0346c068fc7660be2c5f",
+      "size": 147,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f528ce8259764865f4ec0346c068fc7660be2c5f"
+    },
+    {
+      "path": "docs/api/generated/breos.emissions.EmissionsParams.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e5ecc6678fff7fe20f3576d0a1ffee1ccdf2c5f",
+      "size": 858,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7e5ecc6678fff7fe20f3576d0a1ffee1ccdf2c5f"
+    },
+    {
+      "path": "docs/api/generated/breos.emissions.calculate_co2_projection.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e54495ee787ce717170a3282f6e05d0123b5889",
+      "size": 168,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3e54495ee787ce717170a3282f6e05d0123b5889"
+    },
+    {
+      "path": "docs/api/generated/breos.emissions.calculate_co2_savings.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4bbcd252d8b638294eb4926721c0a90acac1180",
+      "size": 159,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c4bbcd252d8b638294eb4926721c0a90acac1180"
+    },
+    {
+      "path": "docs/api/generated/breos.inverter.InverterConfig.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a34971817a3282f5a3866e4fe717d9d76762946",
+      "size": 1002,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4a34971817a3282f5a3866e4fe717d9d76762946"
+    },
+    {
+      "path": "docs/api/generated/breos.inverter.get_inverter_preset.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b6746bf66f9cadf47fb2d1c23a523175144c6e0",
+      "size": 150,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2b6746bf66f9cadf47fb2d1c23a523175144c6e0"
+    },
+    {
+      "path": "docs/api/generated/breos.io.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12f718a5d6ad5529d663a0dbddc5de171a9802ab",
+      "size": 193,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/12f718a5d6ad5529d663a0dbddc5de171a9802ab"
+    },
+    {
+      "path": "docs/api/generated/breos.load_profiles.align_load_to_pv.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f76638c524be8955b79bd6de4c1aa50e7cb6be86",
+      "size": 160,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f76638c524be8955b79bd6de4c1aa50e7cb6be86"
+    },
+    {
+      "path": "docs/api/generated/breos.load_profiles.load_profile.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca77d3b5948eae184eb173e79e3db7df5b4c71e1",
+      "size": 144,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ca77d3b5948eae184eb173e79e3db7df5b4c71e1"
+    },
+    {
+      "path": "docs/api/generated/breos.load_profiles.scale_to_annual_consumption.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fd0c54f79574a30bf817c91d9d9565d6cfc301d",
+      "size": 193,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2fd0c54f79574a30bf817c91d9d9565d6cfc301d"
+    },
+    {
+      "path": "docs/api/generated/breos.optimization.OptimizationResult.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2551b0ecf330c51a5944153afc8678935237ea9c",
+      "size": 502,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2551b0ecf330c51a5944153afc8678935237ea9c"
+    },
+    {
+      "path": "docs/api/generated/breos.optimization.optimize_battery_size.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ffe64357b432c13056345f92f8470c07ccbdb14",
+      "size": 168,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1ffe64357b432c13056345f92f8470c07ccbdb14"
+    },
+    {
+      "path": "docs/api/generated/breos.optimization.optimize_tilt.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5dbeff54a915ca78bf13d0a25e41d816d5067b5",
+      "size": 142,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d5dbeff54a915ca78bf13d0a25e41d816d5067b5"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.create_cost_plots.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5cb19d6823f1df36d021a40587496262d0d6d81c",
+      "size": 144,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5cb19d6823f1df36d021a40587496262d0d6d81c"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.degradation_plots.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d57fdb4b6ebd59df3437fd8e6a627475e683657",
+      "size": 142,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8d57fdb4b6ebd59df3437fd8e6a627475e683657"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.monthly_graphs.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c73d1431f3ee3b0bfe7c8226f2e280b3412f15af",
+      "size": 133,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c73d1431f3ee3b0bfe7c8226f2e280b3412f15af"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_azitilt_ew_1d.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80c029939eb0f903277eece9cd7928d72029e2c5",
+      "size": 149,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/80c029939eb0f903277eece9cd7928d72029e2c5"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_azitilt_landscape_2d.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aec23f1542826920667b900d77ba2ab816393a8a",
+      "size": 170,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/aec23f1542826920667b900d77ba2ab816393a8a"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_azitilt_landscape_3d.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d13174927d58ac0fd3914174fb75597e954ddd95",
+      "size": 170,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d13174927d58ac0fd3914174fb75597e954ddd95"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_battery_soh_timeseries.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "460499799921f6e471e0534ada8fc962a7b5de58",
+      "size": 176,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/460499799921f6e471e0534ada8fc962a7b5de58"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_breakeven.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42393661b38a79a3537e646c50aab26c5e8a19c9",
+      "size": 133,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/42393661b38a79a3537e646c50aab26c5e8a19c9"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_breakeven_comparison.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7615798a8f8acb64d3425534714845b80d1639d0",
+      "size": 168,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7615798a8f8acb64d3425534714845b80d1639d0"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_breakeven_two.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4eb40b1e58ee78791abc7aa4173ba5dfe0e17cbe",
+      "size": 147,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4eb40b1e58ee78791abc7aa4173ba5dfe0e17cbe"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_calendar_aging_sensitivity.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81608ba14dfa58c462fd05a8af5fce030e669c19",
+      "size": 188,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/81608ba14dfa58c462fd05a8af5fce030e669c19"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_cell_temperature.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19f77d5bb71d8817414e02db22cf721f4b2202f0",
+      "size": 156,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/19f77d5bb71d8817414e02db22cf721f4b2202f0"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_co2_savings.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e09c9de8965f392e4e0cdbe43ffb5137129ee670",
+      "size": 141,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e09c9de8965f392e4e0cdbe43ffb5137129ee670"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_grid_independence_heatmap.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31cbf092ce6f6a98d5f79638604ffd5fc3e232b1",
+      "size": 185,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/31cbf092ce6f6a98d5f79638604ffd5fc3e232b1"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_location_comparison_delta.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6bc8d8a8178dbc2066ea221e797480f104c728f1",
+      "size": 185,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6bc8d8a8178dbc2066ea221e797480f104c728f1"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_montecarlo_grid_independence_distribution.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d98a6e49c6cf3de01243b6bdf15069fced866110",
+      "size": 235,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d98a6e49c6cf3de01243b6bdf15069fced866110"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_montecarlo_npv_distribution.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1772daa13361331799a7898395ae7638190c55d2",
+      "size": 191,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1772daa13361331799a7898395ae7638190c55d2"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_monthly_balance.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f8b83ae467da8d239a1544301e1602a27a02ed7a",
+      "size": 153,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f8b83ae467da8d239a1544301e1602a27a02ed7a"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_monthly_comparison.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ddafc84e5b586d1d1f38db51e88739c4c356c00",
+      "size": 162,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7ddafc84e5b586d1d1f38db51e88739c4c356c00"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_pareto_front_analysis.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5af808caaa0c2598f2f7e080403e45d342444f49",
+      "size": 173,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5af808caaa0c2598f2f7e080403e45d342444f49"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_resistance_and_efficiency.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4033551ee9d8cb872b04839260b57f96d0f0c58a",
+      "size": 185,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4033551ee9d8cb872b04839260b57f96d0f0c58a"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_tilt_optimization.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e49fab9e398d0051bd571ad322362d2b55c53746",
+      "size": 159,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e49fab9e398d0051bd571ad322362d2b55c53746"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_timeseries.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc0d9a567c8d83bf930b5b470d33e08c5c8e8dd9",
+      "size": 136,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dc0d9a567c8d83bf930b5b470d33e08c5c8e8dd9"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_validation_degradation_split.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3335e3693ebe0b6197429a440a30535407ac627c",
+      "size": 194,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3335e3693ebe0b6197429a440a30535407ac627c"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_validation_multi_system.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06afe5f16fd17615ab960b29d3dda44793a35db2",
+      "size": 179,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/06afe5f16fd17615ab960b29d3dda44793a35db2"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_validation_parity.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "70c1cdd9c511fb7603da6a0f804e925c3c7d96d6",
+      "size": 159,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/70c1cdd9c511fb7603da6a0f804e925c3c7d96d6"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_validation_residuals.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7856512bc9a1e5cea21d565820c5a3f1d14431dc",
+      "size": 168,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7856512bc9a1e5cea21d565820c5a3f1d14431dc"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_validation_soh_comparison.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b704fb08a75f831347de65f932825a8650d530c",
+      "size": 185,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8b704fb08a75f831347de65f932825a8650d530c"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_weather_annual_ghi_distribution.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "214092776940891c74118fdb27c3af89d9c38ffa",
+      "size": 205,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/214092776940891c74118fdb27c3af89d9c38ffa"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.plot_weather_monthly_comparison.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1f8e8ad90ce672ec44730e5c87fa99917359339",
+      "size": 188,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a1f8e8ad90ce672ec44730e5c87fa99917359339"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.set_presentation_mode.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8586cb0a20948fcb437c021c89eae54b2a68f58b",
+      "size": 156,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8586cb0a20948fcb437c021c89eae54b2a68f58b"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.weekly_graphs.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54a895efc196094c04f2b6e881dfda1af2f217bf",
+      "size": 130,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/54a895efc196094c04f2b6e881dfda1af2f217bf"
+    },
+    {
+      "path": "docs/api/generated/breos.plotting.yearly_graphs.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eaa74a621a082481dc7997483c802632cef13112",
+      "size": 130,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/eaa74a621a082481dc7997483c802632cef13112"
+    },
+    {
+      "path": "docs/api/generated/breos.pv_modules.get_module.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b7d8ed8cb42c9d71c9b1bb5bc90f7de6f72bb64d",
+      "size": 129,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b7d8ed8cb42c9d71c9b1bb5bc90f7de6f72bb64d"
+    },
+    {
+      "path": "docs/api/generated/breos.pv_modules.get_module_info.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30f4907b5ede9dc4e8cb74f2dfe6f0bff2495af0",
+      "size": 146,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/30f4907b5ede9dc4e8cb74f2dfe6f0bff2495af0"
+    },
+    {
+      "path": "docs/api/generated/breos.pv_modules.list_modules.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b996bd2f10df28e0bccc6ff1b9889f0c19b8bcca",
+      "size": 135,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b996bd2f10df28e0bccc6ff1b9889f0c19b8bcca"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.PVModuleParams.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e0197d31a573344219b9df36810c43775bd91c3f",
+      "size": 830,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e0197d31a573344219b9df36810c43775bd91c3f"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.calculate_multi_array_production.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19a70d7f300d71c9aa10007c6e5433ac7348cead",
+      "size": 182,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/19a70d7f300d71c9aa10007c6e5433ac7348cead"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.calculate_pv_production_ac.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b4df9e653db51e412080deb400d3da9f9d0b7b8d",
+      "size": 164,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b4df9e653db51e412080deb400d3da9f9d0b7b8d"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.calculate_pv_production_dc.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e60a541afb809bc3cb6df45565f8da645d06b760",
+      "size": 164,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e60a541afb809bc3cb6df45565f8da645d06b760"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.dc_to_ac.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eb26d41f4b523e73c9641bbb9d4afaedb79db039",
+      "size": 108,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/eb26d41f4b523e73c9641bbb9d4afaedb79db039"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.default_azimuth.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52b449a05f2e14b3e8347d0cfe66e8a1c05f2476",
+      "size": 127,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/52b449a05f2e14b3e8347d0cfe66e8a1c05f2476"
+    },
+    {
+      "path": "docs/api/generated/breos.solar.estimate_optimal_tilt.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "754983aea184a2dbca9b6fbaf9ad0de0a70d12f7",
+      "size": 147,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/754983aea184a2dbca9b6fbaf9ad0de0a70d12f7"
+    },
+    {
+      "path": "docs/api/generated/breos.utils.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ec94f7144736a1b79c655e265bbc16698bad338d",
+      "size": 261,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ec94f7144736a1b79c655e265bbc16698bad338d"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.extract_ambient_temperature.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "776099f63ec420a2d5b15f7df0a92e4a2c6dc474",
+      "size": 171,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/776099f63ec420a2d5b15f7df0a92e4a2c6dc474"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.fetch_tmy_weather_data.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2eb57f10b5bd50f4021aa7b4328d9b6de257db4a",
+      "size": 158,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2eb57f10b5bd50f4021aa7b4328d9b6de257db4a"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.fetch_weather_data.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f72b1366380c874b5e08e91392bf46edc98cd6d",
+      "size": 144,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8f72b1366380c874b5e08e91392bf46edc98cd6d"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.load_weather.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e510cc6d56e1f0735996269c4a4a2b49c06f4929",
+      "size": 124,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e510cc6d56e1f0735996269c4a4a2b49c06f4929"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.parse_weather_filename.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a9fc9493677232794e5e8451d94fc75464c2a02",
+      "size": 156,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0a9fc9493677232794e5e8451d94fc75464c2a02"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.preload_weather_by_year.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e3a542579bb32a80e35e17402e66e7944db7a82",
+      "size": 161,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4e3a542579bb32a80e35e17402e66e7944db7a82"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.read_epw_file.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc89dba0892c9ed1022069f4b5d76d974bcfd252",
+      "size": 129,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/bc89dba0892c9ed1022069f4b5d76d974bcfd252"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.resample_tmy_to_15min.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a64c2aab67dac0314c88bf389c629a38115816d7",
+      "size": 155,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a64c2aab67dac0314c88bf389c629a38115816d7"
+    },
+    {
+      "path": "docs/api/generated/breos.weather.resample_to_15min.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de5b7132c0869b8334d99dd330bd41ae7694c357",
+      "size": 141,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/de5b7132c0869b8334d99dd330bd41ae7694c357"
+    },
+    {
+      "path": "docs/api/index.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "355fe8d8c90e4446c1cc78fb200085fb56015c12",
+      "size": 2379,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/355fe8d8c90e4446c1cc78fb200085fb56015c12"
+    },
+    {
+      "path": "docs/api/load-profiles.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a54e2e8b422d6bbb3d36e23603e27826e2a76261",
+      "size": 1349,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a54e2e8b422d6bbb3d36e23603e27826e2a76261"
+    },
+    {
+      "path": "docs/api/optimization.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c7d218491e83f2dde59e3900783b9a6639957f9",
+      "size": 7082,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7c7d218491e83f2dde59e3900783b9a6639957f9"
+    },
+    {
+      "path": "docs/api/plotting.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5b34a001ca6b0943778daceca42ba5d8a7e468b",
+      "size": 2736,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f5b34a001ca6b0943778daceca42ba5d8a7e468b"
+    },
+    {
+      "path": "docs/api/pv.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f751732e7eb7c9d19d07bb13116570080402013",
+      "size": 2300,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1f751732e7eb7c9d19d07bb13116570080402013"
+    },
+    {
+      "path": "docs/api/weather.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bba6e85264903cfb919d24a341375ef2055eb8be",
+      "size": 3472,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/bba6e85264903cfb919d24a341375ef2055eb8be"
+    },
+    {
+      "path": "docs/changelog.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "762b3da6baad13e83dedd2b92260328f0836c1a1",
+      "size": 61,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/762b3da6baad13e83dedd2b92260328f0836c1a1"
+    },
+    {
+      "path": "docs/conf.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d3fabbcda37807a2d9cc284f8987e31d3fe5f52",
+      "size": 3514,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5d3fabbcda37807a2d9cc284f8987e31d3fe5f52"
+    },
+    {
+      "path": "docs/getting-started",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8267b7cf90f366e99d7e09630f01af7bec0180d4",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/8267b7cf90f366e99d7e09630f01af7bec0180d4"
+    },
+    {
+      "path": "docs/getting-started/configuration.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a3d6451dcd56a2d4f273aaec09800028071d1a0",
+      "size": 22833,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9a3d6451dcd56a2d4f273aaec09800028071d1a0"
+    },
+    {
+      "path": "docs/getting-started/index.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ad7e1fa9c1ffa5cfe3416d3605b654e55de032f",
+      "size": 2320,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9ad7e1fa9c1ffa5cfe3416d3605b654e55de032f"
+    },
+    {
+      "path": "docs/getting-started/inputs.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3faa2c319f6b66faf64768f1becdb5f88855ebff",
+      "size": 2785,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3faa2c319f6b66faf64768f1becdb5f88855ebff"
+    },
+    {
+      "path": "docs/getting-started/installation.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20a500c4c2b70875420a690d270b875db220c9e7",
+      "size": 2243,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/20a500c4c2b70875420a690d270b875db220c9e7"
+    },
+    {
+      "path": "docs/getting-started/interpreting-results.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b0105167579de3903882554813142c2d1e1c11b",
+      "size": 5794,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9b0105167579de3903882554813142c2d1e1c11b"
+    },
+    {
+      "path": "docs/getting-started/monte-carlo.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9c5302d488748c06fd3080f80dc05c58444e2d34",
+      "size": 4550,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9c5302d488748c06fd3080f80dc05c58444e2d34"
+    },
+    {
+      "path": "docs/getting-started/optimization.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdfd15c1c264f89f1816cb2541dece87242fb559",
+      "size": 5997,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/fdfd15c1c264f89f1816cb2541dece87242fb559"
+    },
+    {
+      "path": "docs/getting-started/options.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2058d9d3785246fa6d8e57ff50b06a11e733ff7",
+      "size": 4592,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b2058d9d3785246fa6d8e57ff50b06a11e733ff7"
+    },
+    {
+      "path": "docs/getting-started/quickstart.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf652f111155c2e68465cb6d832973130de43262",
+      "size": 6044,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/cf652f111155c2e68465cb6d832973130de43262"
+    },
+    {
+      "path": "docs/getting-started/recipes.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "396bcace4192d4169090014aa5583e22bdd79fc9",
+      "size": 10219,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/396bcace4192d4169090014aa5583e22bdd79fc9"
+    },
+    {
+      "path": "docs/getting-started/troubleshooting.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d321203dfbee73cce4598783dce4d6c06e33223",
+      "size": 4407,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5d321203dfbee73cce4598783dce4d6c06e33223"
+    },
+    {
+      "path": "docs/index.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ad6bbe22adc875f0313e0da66a3117e6846bdb8",
+      "size": 3708,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8ad6bbe22adc875f0313e0da66a3117e6846bdb8"
+    },
+    {
+      "path": "docs/legal",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "92b995be5e1172795c84d908e3a40693413b7e7e",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/92b995be5e1172795c84d908e3a40693413b7e7e"
+    },
+    {
+      "path": "docs/legal/load-profile-data.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06028a23b4db587d156aaf09b5495f2b65613cc6",
+      "size": 3959,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/06028a23b4db587d156aaf09b5495f2b65613cc6"
+    },
+    {
+      "path": "docs/modeling",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d3a0f34f43755df943ed585015a728feac0261ef",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/d3a0f34f43755df943ed585015a728feac0261ef"
+    },
+    {
+      "path": "docs/modeling/index.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "118d6439f114e1a4a8d8dfd39fb05f743b7abde1",
+      "size": 1775,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/118d6439f114e1a4a8d8dfd39fb05f743b7abde1"
+    },
+    {
+      "path": "docs/resources.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebceeabb96dd12ccb866c30cbd6dde041b7fa3a0",
+      "size": 5389,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ebceeabb96dd12ccb866c30cbd6dde041b7fa3a0"
+    },
+    {
+      "path": "maintainers",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5c51214bc43e35c0cb01178c19943ccb2387876d",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/5c51214bc43e35c0cb01178c19943ccb2387876d"
+    },
+    {
+      "path": "maintainers/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc27a20acacc7ada6d7d835317aa5be67620eba8",
+      "size": 164,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dc27a20acacc7ada6d7d835317aa5be67620eba8"
+    },
+    {
+      "path": "maintainers/release-checklist.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c84dacfee28916dc8745f445f42be1da9eefea7b",
+      "size": 9526,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c84dacfee28916dc8745f445f42be1da9eefea7b"
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80a94c208b58b42d7783a1ad7b814022c4b83e07",
+      "size": 3927,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/80a94c208b58b42d7783a1ad7b814022c4b83e07"
+    },
+    {
+      "path": "rlp",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c78e77092007399cfbb2ee81ebad38a45630e489",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/c78e77092007399cfbb2ee81ebad38a45630e489"
+    },
+    {
+      "path": "rlp/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fccae6eade2e7b1d16e7ca5e547921995c4a5cf",
+      "size": 914,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9fccae6eade2e7b1d16e7ca5e547921995c4a5cf"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3345e62fc0d2f06dbadfbd3b22b76acbf14b64cb",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/3345e62fc0d2f06dbadfbd3b22b76acbf14b64cb"
+    },
+    {
+      "path": "tests/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eaf968662609150401aa876dc08dc11e75668e35",
+      "size": 6389,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/eaf968662609150401aa876dc08dc11e75668e35"
+    },
+    {
+      "path": "tests/fixtures",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3a81a6ca24c772ef3caef5500460ccdd42d9b9e7",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/3a81a6ca24c772ef3caef5500460ccdd42d9b9e7"
+    },
+    {
+      "path": "tests/fixtures/blast",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b4e904b622d5e868ff2e7609f64cc65182b97bbf",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/b4e904b622d5e868ff2e7609f64cc65182b97bbf"
+    },
+    {
+      "path": "tests/fixtures/blast/blast_golden_soh_100d.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5150c2b8d93a470d283fd02276a54196f5961073",
+      "size": 99766,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5150c2b8d93a470d283fd02276a54196f5961073"
+    },
+    {
+      "path": "tests/fixtures/blast/blast_parity_multicondition.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57551ef6810c2bcedb3f77d674271005f09cff14",
+      "size": 163437,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/57551ef6810c2bcedb3f77d674271005f09cff14"
+    },
+    {
+      "path": "tests/fixtures/blast/blast_parity_multicondition.manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ac2ea081ccf6f375b396f0ce686b659daabfbce",
+      "size": 1825,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5ac2ea081ccf6f375b396f0ce686b659daabfbce"
+    },
+    {
+      "path": "tests/fixtures/blast/synthetic_field_year.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb227f0604ddfcf081e25c761de2751cf737fcba",
+      "size": 318843,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/cb227f0604ddfcf081e25c761de2751cf737fcba"
+    },
+    {
+      "path": "tests/test_ac_output_scale.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31b5f2cf0c72d7d34d01401acc203f4c597edb12",
+      "size": 31028,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/31b5f2cf0c72d7d34d01401acc203f4c597edb12"
+    },
+    {
+      "path": "tests/test_app.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ded4419a9ddb1d1cf46a975a7492fb0dd45e788f",
+      "size": 47947,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ded4419a9ddb1d1cf46a975a7492fb0dd45e788f"
+    },
+    {
+      "path": "tests/test_app_config_registry.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a94c4325db3c0fd11c592f80b614eb3b9b28197e",
+      "size": 6577,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a94c4325db3c0fd11c592f80b614eb3b9b28197e"
+    },
+    {
+      "path": "tests/test_app_inputs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3518f6f4ecfd81d6973909396e442fe1f9d8befb",
+      "size": 3577,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3518f6f4ecfd81d6973909396e442fe1f9d8befb"
+    },
+    {
+      "path": "tests/test_app_validation_correctness.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f38f1b72a33e25efdc91a39b5425c4e6792c6bb",
+      "size": 4787,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9f38f1b72a33e25efdc91a39b5425c4e6792c6bb"
+    },
+    {
+      "path": "tests/test_article1_bundle_tools.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "efd6a65d1ef564b4f3e35c28a87fe3a753902618",
+      "size": 11060,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/efd6a65d1ef564b4f3e35c28a87fe3a753902618"
+    },
+    {
+      "path": "tests/test_article1_context.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcdd07216d4b003d842cc1c6038687d735905f9e",
+      "size": 2914,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dcdd07216d4b003d842cc1c6038687d735905f9e"
+    },
+    {
+      "path": "tests/test_article1_montecarlo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "066f0970cde51cdbc1b13fcc44cdf55a83df727e",
+      "size": 4138,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/066f0970cde51cdbc1b13fcc44cdf55a83df727e"
+    },
+    {
+      "path": "tests/test_article1_reproduction.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2162caf9a03679db89dcefe163a646f6b656600",
+      "size": 5654,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e2162caf9a03679db89dcefe163a646f6b656600"
+    },
+    {
+      "path": "tests/test_article1_weather_treatments.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b30e8ce9f2e795a3e2e7c65b7e1c0b546713c3df",
+      "size": 1393,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b30e8ce9f2e795a3e2e7c65b7e1c0b546713c3df"
+    },
+    {
+      "path": "tests/test_battery.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90c212a9e5fa664ccf408380be1bad2d85de9065",
+      "size": 68374,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/90c212a9e5fa664ccf408380be1bad2d85de9065"
+    },
+    {
+      "path": "tests/test_battery_profiles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f73d314cc193ab6b9c0f6d40405011d697ea4ac",
+      "size": 5741,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6f73d314cc193ab6b9c0f6d40405011d697ea4ac"
+    },
+    {
+      "path": "tests/test_blast_endurance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bb6365278c3e9719dcc669ab797eb620a47509a",
+      "size": 6281,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5bb6365278c3e9719dcc669ab797eb620a47509a"
+    },
+    {
+      "path": "tests/test_blast_engine.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee020691eb4877bebfe22906892fec4a9e64ce33",
+      "size": 18202,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ee020691eb4877bebfe22906892fec4a9e64ce33"
+    },
+    {
+      "path": "tests/test_blast_integration.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "614c65c046b6d74fe23aae22d0f0496ba920a24a",
+      "size": 16296,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/614c65c046b6d74fe23aae22d0f0496ba920a24a"
+    },
+    {
+      "path": "tests/test_blast_multicondition_parity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51e156ceb19b6a043d4e1da69284249906075afa",
+      "size": 2508,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/51e156ceb19b6a043d4e1da69284249906075afa"
+    },
+    {
+      "path": "tests/test_blast_parity_tooling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8987c0d1baf8dd4acac2818b566d267962384739",
+      "size": 3863,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8987c0d1baf8dd4acac2818b566d267962384739"
+    },
+    {
+      "path": "tests/test_blast_vendoring.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed13b52b54742c86873496a9e9fef38aeb81022d",
+      "size": 5591,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ed13b52b54742c86873496a9e9fef38aeb81022d"
+    },
+    {
+      "path": "tests/test_cec_fit.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a458ee278931a23fd28788e6e6fa3691f329db5a",
+      "size": 4880,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a458ee278931a23fd28788e6e6fa3691f329db5a"
+    },
+    {
+      "path": "tests/test_cli.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1574739de86ce740b4c751e6c361d9435fc3d222",
+      "size": 16921,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1574739de86ce740b4c751e6c361d9435fc3d222"
+    },
+    {
+      "path": "tests/test_cli_correctness.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e679fd30bf273ba00d96bce536db8e46ad3ad14d",
+      "size": 1363,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e679fd30bf273ba00d96bce536db8e46ad3ad14d"
+    },
+    {
+      "path": "tests/test_compare_results_tool.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b6cf08bbd3791731a574aafdb974c620f5ae0ae",
+      "size": 2296,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5b6cf08bbd3791731a574aafdb974c620f5ae0ae"
+    },
+    {
+      "path": "tests/test_degradation_protocol.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "467327647971bfdb7fea8593392e48f44f6e317a",
+      "size": 4658,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/467327647971bfdb7fea8593392e48f44f6e317a"
+    },
+    {
+      "path": "tests/test_degradation_results.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9671a25bdf557fd57e04d66cba936c48b07b3808",
+      "size": 2932,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9671a25bdf557fd57e04d66cba936c48b07b3808"
+    },
+    {
+      "path": "tests/test_degradation_validation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c90bb5b6de04a0f6d56ee3ea7ec214225fb9ea7",
+      "size": 1595,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0c90bb5b6de04a0f6d56ee3ea7ec214225fb9ea7"
+    },
+    {
+      "path": "tests/test_docs_content.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18437f5efa939ef29a3ca9f7c6dbe9ac33360626",
+      "size": 1640,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/18437f5efa939ef29a3ca9f7c6dbe9ac33360626"
+    },
+    {
+      "path": "tests/test_docs_options.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d040c41ec50e2cd8ba550dacbc8e07d0901c4c4b",
+      "size": 465,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d040c41ec50e2cd8ba550dacbc8e07d0901c4c4b"
+    },
+    {
+      "path": "tests/test_economics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e7ff83796489f88329b521b707600b2de0547f4",
+      "size": 13324,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4e7ff83796489f88329b521b707600b2de0547f4"
+    },
+    {
+      "path": "tests/test_emissions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ced4f301e0a16bb490b9698cf8ceef0e1101aabc",
+      "size": 4081,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ced4f301e0a16bb490b9698cf8ceef0e1101aabc"
+    },
+    {
+      "path": "tests/test_execution_backend.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b56cf70a7e991c0b99e25bcf2d1e17424df6cc7b",
+      "size": 12876,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b56cf70a7e991c0b99e25bcf2d1e17424df6cc7b"
+    },
+    {
+      "path": "tests/test_execution_backend_propagation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26a0ceb3478c541d9011f06fef5668a2650891ab",
+      "size": 11956,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/26a0ceb3478c541d9011f06fef5668a2650891ab"
+    },
+    {
+      "path": "tests/test_golden_outputs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1d0de7465cb438fe4f512a0ae6bbd728598c4f8",
+      "size": 7310,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d1d0de7465cb438fe4f512a0ae6bbd728598c4f8"
+    },
+    {
+      "path": "tests/test_horizon.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4aa1fa7baa46b94b8dc14ccd42f93b688ee6585",
+      "size": 5946,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a4aa1fa7baa46b94b8dc14ccd42f93b688ee6585"
+    },
+    {
+      "path": "tests/test_inverter.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8f58beace205a0407d0f3ba02226e14691d4ba8",
+      "size": 6654,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d8f58beace205a0407d0f3ba02226e14691d4ba8"
+    },
+    {
+      "path": "tests/test_load_profiles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6b8f4d097fffc24f654a691c74821e0dc8499e9",
+      "size": 5044,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f6b8f4d097fffc24f654a691c74821e0dc8499e9"
+    },
+    {
+      "path": "tests/test_montecarlo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b46c1fa36a289f5ea01df608b179650dec05bad",
+      "size": 17745,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1b46c1fa36a289f5ea01df608b179650dec05bad"
+    },
+    {
+      "path": "tests/test_montecarlo_plotting.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f96358c0d9c2273a91edbd7f7ef150b5871becaf",
+      "size": 1241,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f96358c0d9c2273a91edbd7f7ef150b5871becaf"
+    },
+    {
+      "path": "tests/test_numba_dispatch_parity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa0bfe5255955337d5c22a75f5916a150dfbc640",
+      "size": 15416,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/aa0bfe5255955337d5c22a75f5916a150dfbc640"
+    },
+    {
+      "path": "tests/test_optimization.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "324a67769b5cdf87c83e880e0bd6645467df4338",
+      "size": 20132,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/324a67769b5cdf87c83e880e0bd6645467df4338"
+    },
+    {
+      "path": "tests/test_optimization_parity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9dbc92687eb8b0423eec590e9134c96d428218df",
+      "size": 11803,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9dbc92687eb8b0423eec590e9134c96d428218df"
+    },
+    {
+      "path": "tests/test_optimization_public.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "babb7938a751c33b8980d071adcd45b0391dee82",
+      "size": 1369,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/babb7938a751c33b8980d071adcd45b0391dee82"
+    },
+    {
+      "path": "tests/test_plotting.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "508a8967eff6692bf1ba6e309610489b9fcd8d50",
+      "size": 2863,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/508a8967eff6692bf1ba6e309610489b9fcd8d50"
+    },
+    {
+      "path": "tests/test_projected_optimization.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5dc9d098d95758d3323cfb282f630f5ccba6426b",
+      "size": 15993,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/5dc9d098d95758d3323cfb282f630f5ccba6426b"
+    },
+    {
+      "path": "tests/test_public_api.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96acd5a5d8000e17299ee5a40ecf1254e3d437da",
+      "size": 2938,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/96acd5a5d8000e17299ee5a40ecf1254e3d437da"
+    },
+    {
+      "path": "tests/test_pv_model_core.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03288899a7dcdd3a2852932a29be7ed554714c7c",
+      "size": 10369,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/03288899a7dcdd3a2852932a29be7ed554714c7c"
+    },
+    {
+      "path": "tests/test_pv_modules.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "282dd5d7c75d982a4a82c34c28eb471d9e9307bd",
+      "size": 3041,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/282dd5d7c75d982a4a82c34c28eb471d9e9307bd"
+    },
+    {
+      "path": "tests/test_release_smoke.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22bf1d7defc56214a067212084e1297205e8c6cb",
+      "size": 3610,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/22bf1d7defc56214a067212084e1297205e8c6cb"
+    },
+    {
+      "path": "tests/test_run_article1_tool.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1d81a71f20de6430639e60480c7137587878683",
+      "size": 2632,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b1d81a71f20de6430639e60480c7137587878683"
+    },
+    {
+      "path": "tests/test_runners.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12ecfe33897457cd9f9a967bb7176b72741461ab",
+      "size": 7093,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/12ecfe33897457cd9f9a967bb7176b72741461ab"
+    },
+    {
+      "path": "tests/test_solar.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4228dc52ff8c2ece43925855be7aa87f73bc0c36",
+      "size": 41827,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4228dc52ff8c2ece43925855be7aa87f73bc0c36"
+    },
+    {
+      "path": "tests/test_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56afd6a9a2c629e7b5ec3105fa4dcf4c54aafa8e",
+      "size": 2122,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/56afd6a9a2c629e7b5ec3105fa4dcf4c54aafa8e"
+    },
+    {
+      "path": "tests/test_validation_drift.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "662eb17f2ea731d22a8238c1cf2c1ba43f0a38ff",
+      "size": 6558,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/662eb17f2ea731d22a8238c1cf2c1ba43f0a38ff"
+    },
+    {
+      "path": "tests/test_weather.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ad2caf80c5747ae5b70d39bb1a571dbf6f61911",
+      "size": 23045,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9ad2caf80c5747ae5b70d39bb1a571dbf6f61911"
+    },
+    {
+      "path": "tools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "662aef0be5537f79f06b51850a6bffb68d8b6787",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/662aef0be5537f79f06b51850a6bffb68d8b6787"
+    },
+    {
+      "path": "tools/add_location.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a61c0bc08fb25046e7a514f62128211c7e092f38",
+      "size": 2981,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a61c0bc08fb25046e7a514f62128211c7e092f38"
+    },
+    {
+      "path": "tools/azitilt_optimizer.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "198310069d4cfb930fa76aead6515f47943a99a1",
+      "size": 18697,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/198310069d4cfb930fa76aead6515f47943a99a1"
+    },
+    {
+      "path": "tools/batch_compare_locations.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bac280b06c5d4af8ca3fb92bf455b87ba5417073",
+      "size": 32999,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/bac280b06c5d4af8ca3fb92bf455b87ba5417073"
+    },
+    {
+      "path": "tools/benchmark_montecarlo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48fa7579b31b44de925b1f2fa33bf7aa83ead362",
+      "size": 8624,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/48fa7579b31b44de925b1f2fa33bf7aa83ead362"
+    },
+    {
+      "path": "tools/compare_article1_radiation_treatments.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43bbc57fb3a05f7bfe019d48a33f9d1fa43e4322",
+      "size": 8131,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/43bbc57fb3a05f7bfe019d48a33f9d1fa43e4322"
+    },
+    {
+      "path": "tools/compare_results.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95449762ec2134512881b0e06174a455a543615e",
+      "size": 4170,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/95449762ec2134512881b0e06174a455a543615e"
+    },
+    {
+      "path": "tools/fetch_historical_weather.py",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "80e67e371780bd5b546384e9085c9e42ed4552ed",
+      "size": 5814,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/80e67e371780bd5b546384e9085c9e42ed4552ed"
+    },
+    {
+      "path": "tools/fetch_weather.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2e0cad442a08be47a897277a26aed72087b5d66",
+      "size": 5823,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b2e0cad442a08be47a897277a26aed72087b5d66"
+    },
+    {
+      "path": "tools/generate_blast_parity_fixture.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b188274411abbf05ec24c9ee419e83743dd04c90",
+      "size": 15998,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b188274411abbf05ec24c9ee419e83743dd04c90"
+    },
+    {
+      "path": "tools/generate_option_docs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e5d9636cb0db65cf03bde04dc8f63138d36f74d",
+      "size": 6099,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/7e5d9636cb0db65cf03bde04dc8f63138d36f74d"
+    },
+    {
+      "path": "tools/generate_synthetic_field_year.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd159cd3671828f19e835ba26bd173aac23b9eca",
+      "size": 3514,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/cd159cd3671828f19e835ba26bd173aac23b9eca"
+    },
+    {
+      "path": "tools/parity",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b7f600652c63eca6e1b448a0d2d9fdcc714b2221",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/b7f600652c63eca6e1b448a0d2d9fdcc714b2221"
+    },
+    {
+      "path": "tools/parity/app_parity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31931506a603747ce162a969250205db7595d36f",
+      "size": 7010,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/31931506a603747ce162a969250205db7595d36f"
+    },
+    {
+      "path": "tools/parity/bundle_compare.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd39bdbc7d0dc7136733edfd65c6d6ec3850d1fb",
+      "size": 5794,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dd39bdbc7d0dc7136733edfd65c6d6ec3850d1fb"
+    },
+    {
+      "path": "tools/parity/compare.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f30fde6bbe234f4ffd1bb435780c7794704d5a07",
+      "size": 1840,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f30fde6bbe234f4ffd1bb435780c7794704d5a07"
+    },
+    {
+      "path": "tools/parity/detailed_vs_summary.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d979d519f3e21a002d8648f09a2fd3ac286a414",
+      "size": 4317,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6d979d519f3e21a002d8648f09a2fd3ac286a414"
+    },
+    {
+      "path": "tools/parity/harness.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79f820b98891731b7693d08aa23d1919b58cdce6",
+      "size": 8404,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/79f820b98891731b7693d08aa23d1919b58cdce6"
+    },
+    {
+      "path": "tools/parity/montecarlo_parity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87329d7f6c45a27e7b7fc2739d4691820787bf20",
+      "size": 4538,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/87329d7f6c45a27e7b7fc2739d4691820787bf20"
+    },
+    {
+      "path": "tools/preflight_article1_inputs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d2468f6c548371ab7ad569f58fdad2b8a10761d",
+      "size": 5270,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8d2468f6c548371ab7ad569f58fdad2b8a10761d"
+    },
+    {
+      "path": "tools/recalculate_economics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9d2298553f0826614bd32d532c7e7bb95d0b95c",
+      "size": 7990,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e9d2298553f0826614bd32d532c7e7bb95d0b95c"
+    },
+    {
+      "path": "tools/reproduce_article1.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b124dfbe217349c6f08bfaf4b81e9d53b851732",
+      "size": 22148,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2b124dfbe217349c6f08bfaf4b81e9d53b851732"
+    },
+    {
+      "path": "tools/reproduce_article1_context.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69f093dcc3b780ed03990c429b135e93f7d761bd",
+      "size": 17386,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/69f093dcc3b780ed03990c429b135e93f7d761bd"
+    },
+    {
+      "path": "tools/reproduce_article1_montecarlo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "805c3c031f5d7e2377a23507a6646c6ed50ee5d9",
+      "size": 9796,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/805c3c031f5d7e2377a23507a6646c6ed50ee5d9"
+    },
+    {
+      "path": "tools/run_article1.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c54b92b49b886b2e6134a28d66980b1432c0566",
+      "size": 17089,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2c54b92b49b886b2e6134a28d66980b1432c0566"
+    },
+    {
+      "path": "tools/validate_cec_fit.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59fa2fd4fb98c689b24b840c6ef567842d6f8bb4",
+      "size": 6652,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/59fa2fd4fb98c689b24b840c6ef567842d6f8bb4"
+    },
+    {
+      "path": "tools/verify_article1_bundle.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd20df863e2f700355be770b391051b692a3e84e",
+      "size": 23532,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/cd20df863e2f700355be770b391051b692a3e84e"
+    },
+    {
+      "path": "tools/verify_release_artifacts.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c711fc6801773f99caab03827d5bbd708a4b8dfe",
+      "size": 9379,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/c711fc6801773f99caab03827d5bbd708a4b8dfe"
+    },
+    {
+      "path": "uv.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa96198e8e934863b7aa6c8a0a3bb7ea9ceebb47",
+      "size": 475907,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/fa96198e8e934863b7aa6c8a0a3bb7ea9ceebb47"
+    },
+    {
+      "path": "validation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8628ce249dfe851e5c042a1d8bbc3b702decec59",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/8628ce249dfe851e5c042a1d8bbc3b702decec59"
+    },
+    {
+      "path": "validation/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e05e5a13c8a0bf31367f1d9aa61cff0945f8201",
+      "size": 5666,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9e05e5a13c8a0bf31367f1d9aa61cff0945f8201"
+    },
+    {
+      "path": "validation/REPORT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f006514c479f71a1a9cc1961c2f6116247697475",
+      "size": 7649,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/f006514c479f71a1a9cc1961c2f6116247697475"
+    },
+    {
+      "path": "validation/article1",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "494d19f5b1e8b6a4f2484f4c020436a42f3d1351",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/494d19f5b1e8b6a4f2484f4c020436a42f3d1351"
+    },
+    {
+      "path": "validation/article1/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dda7ba847c4ae669c2256bf03a5743c59493e778",
+      "size": 5909,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/dda7ba847c4ae669c2256bf03a5743c59493e778"
+    },
+    {
+      "path": "validation/article1/article1-montecarlo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa77ed6b7ad97432a9ac95d3d4501bbe153f83b2",
+      "size": 2956,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/fa77ed6b7ad97432a9ac95d3d4501bbe153f83b2"
+    },
+    {
+      "path": "validation/article1/article1-projected-optimization.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "daf0214f62d1f88f705ffc7034578aafeef3f2d1",
+      "size": 3866,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/daf0214f62d1f88f705ffc7034578aafeef3f2d1"
+    },
+    {
+      "path": "validation/article1/input-metadata",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "85e43a260fb71866db6f6836ec2c7cdbd20c222c",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/85e43a260fb71866db6f6836ec2c7cdbd20c222c"
+    },
+    {
+      "path": "validation/article1/input-metadata/porto_historical_2005_2024_openmeteo.csv.metadata.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ed530429ee076d359b9ce0a30fc333f7d6c41b1",
+      "size": 1704,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3ed530429ee076d359b9ce0a30fc333f7d6c41b1"
+    },
+    {
+      "path": "validation/article1/manuscript-v2-audit.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95aa3326f6b9f8c9dd7bfe09afc421914937e9a1",
+      "size": 8824,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/95aa3326f6b9f8c9dd7bfe09afc421914937e9a1"
+    },
+    {
+      "path": "validation/article1/no-thermal-model",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "171bcad67c3c15ea5ff3cd5fc6cceb6d7d13afb9",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/171bcad67c3c15ea5ff3cd5fc6cceb6d7d13afb9"
+    },
+    {
+      "path": "validation/article1/no-thermal-model/article1-montecarlo.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef71ef0bdd728f6b3e4b9e96e95197098cc93213",
+      "size": 2561,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ef71ef0bdd728f6b3e4b9e96e95197098cc93213"
+    },
+    {
+      "path": "validation/article1/no-thermal-model/article1-projected-optimization.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6b59e62c5cced9ea05654789f06ff3e5742e1df",
+      "size": 3485,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/a6b59e62c5cced9ea05654789f06ff3e5742e1df"
+    },
+    {
+      "path": "validation/article1/runbook.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2767e307689ef275f6f5e2c4f7ab140f541ec4a4",
+      "size": 4148,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/2767e307689ef275f6f5e2c4f7ab140f541ec4a4"
+    },
+    {
+      "path": "validation/baselines",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0422e27eb59efbf6395f23320795012c6fe405b0",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/0422e27eb59efbf6395f23320795012c6fe405b0"
+    },
+    {
+      "path": "validation/baselines/breos_baseline.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e06bd0f07b72ce5118ebedfdd45c3deeacd17de8",
+      "size": 34097,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e06bd0f07b72ce5118ebedfdd45c3deeacd17de8"
+    },
+    {
+      "path": "validation/common.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c1b49d18650df236891608510c295e723eacd76",
+      "size": 5101,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/3c1b49d18650df236891608510c295e723eacd76"
+    },
+    {
+      "path": "validation/compare.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99535619982134696d48ce8bafb4b2fc43978e92",
+      "size": 13644,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/99535619982134696d48ce8bafb4b2fc43978e92"
+    },
+    {
+      "path": "validation/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f4e6e6af493734ab33cc5d27f1d14cfa1873a4ae",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/f4e6e6af493734ab33cc5d27f1d14cfa1873a4ae"
+    },
+    {
+      "path": "validation/data/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e39452b7a716fec7e5f75b29c3a298327ad58bd1",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/e39452b7a716fec7e5f75b29c3a298327ad58bd1"
+    },
+    {
+      "path": "validation/data/references/berlin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76699ccf7a0daeaf0dc6df9f71d08b8bf83646f1",
+      "size": 1917,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/76699ccf7a0daeaf0dc6df9f71d08b8bf83646f1"
+    },
+    {
+      "path": "validation/data/references/golden_colorado.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "830533067e36e90ee8eeb3e0ace64fabc58f2411",
+      "size": 1961,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/830533067e36e90ee8eeb3e0ace64fabc58f2411"
+    },
+    {
+      "path": "validation/data/references/melbourne.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee9bfc3607b3d3b91b2855a0c698d278b51a479a",
+      "size": 1939,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/ee9bfc3607b3d3b91b2855a0c698d278b51a479a"
+    },
+    {
+      "path": "validation/data/references/nairobi.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8d58c5a1306627f5a3899ba4160cd1268c860ea",
+      "size": 1932,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d8d58c5a1306627f5a3899ba4160cd1268c860ea"
+    },
+    {
+      "path": "validation/data/references/new_delhi.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b725a4819e24692c2396aea64c0db6f777183551",
+      "size": 1926,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b725a4819e24692c2396aea64c0db6f777183551"
+    },
+    {
+      "path": "validation/data/references/porto.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75747f420b15aa0e6e9806c01d6197db7270bba2",
+      "size": 1926,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/75747f420b15aa0e6e9806c01d6197db7270bba2"
+    },
+    {
+      "path": "validation/data/references/sao_paulo.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e57d569d19ebbbc6c924d1e00ffc481e2e5d83ac",
+      "size": 1945,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e57d569d19ebbbc6c924d1e00ffc481e2e5d83ac"
+    },
+    {
+      "path": "validation/data/weather",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "41b1794b06f2e3c92ac906aec508c418e1b7eff5",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/41b1794b06f2e3c92ac906aec508c418e1b7eff5"
+    },
+    {
+      "path": "validation/data/weather/berlin_tmy_2005_2023_pvgis-sarah3.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9c61ddde7d9495fcb31732bdf4e9b5e4bc1a03e3",
+      "size": 85674,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/9c61ddde7d9495fcb31732bdf4e9b5e4bc1a03e3"
+    },
+    {
+      "path": "validation/data/weather/golden_colorado_tmy_2005_2023_pvgis-era5.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8422c225e04b9eb297e7eae38d83d9fedd88c0a8",
+      "size": 94445,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/8422c225e04b9eb297e7eae38d83d9fedd88c0a8"
+    },
+    {
+      "path": "validation/data/weather/melbourne_tmy_2005_2023_pvgis-era5.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0797247743d1732edfcc27972961f0d80e0a578f",
+      "size": 95047,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/0797247743d1732edfcc27972961f0d80e0a578f"
+    },
+    {
+      "path": "validation/data/weather/nairobi_tmy_2005_2023_pvgis-sarah3.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc488dcf1e4f858e5d0aacf4ebd1825fe7087376",
+      "size": 86930,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/cc488dcf1e4f858e5d0aacf4ebd1825fe7087376"
+    },
+    {
+      "path": "validation/data/weather/new_delhi_tmy_2005_2023_pvgis-era5.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a5e2c22d18824da999dbe31235b692f9d92be57",
+      "size": 92374,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1a5e2c22d18824da999dbe31235b692f9d92be57"
+    },
+    {
+      "path": "validation/data/weather/porto_tmy_2005_2023_pvgis-sarah3.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b3abb90e23aaaa4bc42b3ea94640b0b86344378",
+      "size": 89275,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/1b3abb90e23aaaa4bc42b3ea94640b0b86344378"
+    },
+    {
+      "path": "validation/data/weather/porto_tmy_2005_2023_pvgis-sarah3.csv.gz.metadata.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2fdb79f9d47e7103aae922c99f24b64fc2a26ce",
+      "size": 792,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/b2fdb79f9d47e7103aae922c99f24b64fc2a26ce"
+    },
+    {
+      "path": "validation/data/weather/sao_paulo_tmy_2005_2023_pvgis-sarah3.csv.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "238c92714177bb541c5f70cfa9938716be0bf3c0",
+      "size": 86408,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/238c92714177bb541c5f70cfa9938716be0bf3c0"
+    },
+    {
+      "path": "validation/external",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "83e7fa9283513c7eedc596f87f359694d67b436d",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/83e7fa9283513c7eedc596f87f359694d67b436d"
+    },
+    {
+      "path": "validation/external/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e26a2d5f19dc406a1b9908f419420ef013e4f5cb",
+      "size": 6116,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/e26a2d5f19dc406a1b9908f419420ef013e4f5cb"
+    },
+    {
+      "path": "validation/fetch_references.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2a954ea72a63ce0a29b95b3cb06ff21d008ea76",
+      "size": 12073,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/d2a954ea72a63ce0a29b95b3cb06ff21d008ea76"
+    },
+    {
+      "path": "validation/locations.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a8c0e2399761685f2dffc3182ed5ac3b551eda5",
+      "size": 1904,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4a8c0e2399761685f2dffc3182ed5ac3b551eda5"
+    },
+    {
+      "path": "validation/run_breos.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ad3c8b51bd309afbdb058bc2d007e1dc894f18d",
+      "size": 4586,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/4ad3c8b51bd309afbdb058bc2d007e1dc894f18d"
+    },
+    {
+      "path": "weather",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b8b33c54153821f295e38ce088baec4012f1f5fe",
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/trees/b8b33c54153821f295e38ce088baec4012f1f5fe"
+    },
+    {
+      "path": "weather/.gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d83e0b79655b2479c3e115f4a22b2b4e98b2f82",
+      "size": 249,
+      "url": "https://api.github.com/repos/Str4vinci/breos/git/blobs/6d83e0b79655b2479c3e115f4a22b2b4e98b2f82"
+    }
+  ],
+  "truncated": false
+}

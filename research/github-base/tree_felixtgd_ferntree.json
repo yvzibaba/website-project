@@ -1,0 +1,1410 @@
+{
+  "sha": "e6ed28f6c398e073472a89458e65df804a5d0db7",
+  "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/e6ed28f6c398e073472a89458e65df804a5d0db7",
+  "tree": [
+    {
+      "path": ".devcontainer",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4af97ca2f5d19d7f5433c370f138cf02ab54740e",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/4af97ca2f5d19d7f5433c370f138cf02ab54740e"
+    },
+    {
+      "path": ".devcontainer/baseupdateContent.sh",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94ce869cfecb06865fce9016b9536b1049293200",
+      "size": 940,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/94ce869cfecb06865fce9016b9536b1049293200"
+    },
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3788d31ab25a18dcd69cbd4f57415c3f002d5400",
+      "size": 1296,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/3788d31ab25a18dcd69cbd4f57415c3f002d5400"
+    },
+    {
+      "path": ".devcontainer/postCreateCommand.sh",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a6640afbe69637db2c7d9920718c3cc214f61aa",
+      "size": 203,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/8a6640afbe69637db2c7d9920718c3cc214f61aa"
+    },
+    {
+      "path": ".devcontainer/updateContentCommand.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d634882e52b32521ba1d1124e0fa354755365049",
+      "size": 99,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/d634882e52b32521ba1d1124e0fa354755365049"
+    },
+    {
+      "path": ".dockerignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d007db4ae68995c86f1f11339cb7d5cb5ef5acef",
+      "size": 601,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/d007db4ae68995c86f1f11339cb7d5cb5ef5acef"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f058d83e1fa51663e901bf762cdbb9f3797f28e",
+      "size": 1135,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/4f058d83e1fa51663e901bf762cdbb9f3797f28e"
+    },
+    {
+      "path": ".opencode",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0819075dd5cd1c6a9e6ee3cf8a6057f440969368",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/0819075dd5cd1c6a9e6ee3cf8a6057f440969368"
+    },
+    {
+      "path": ".opencode/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c13a9ea4226be665771b7da47984b360a83a6c95",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/c13a9ea4226be665771b7da47984b360a83a6c95"
+    },
+    {
+      "path": ".opencode/agents/orchestrator-planning.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5cde3e21e129524c52c7beedcc3c69992e9c44aa",
+      "size": 1383,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/5cde3e21e129524c52c7beedcc3c69992e9c44aa"
+    },
+    {
+      "path": ".opencode/agents/orchestrator-synthesis.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08f14dd4d10a74ad40a800c4ad356dcfb8a5c0ac",
+      "size": 1004,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/08f14dd4d10a74ad40a800c4ad356dcfb8a5c0ac"
+    },
+    {
+      "path": ".opencode/agents/orchestrator.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2deca4904fdd60a90b2e6f0afc95d8f63125c0b",
+      "size": 2983,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/f2deca4904fdd60a90b2e6f0afc95d8f63125c0b"
+    },
+    {
+      "path": ".opencode/agents/reviewer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "064b2b74f5b4ca9abaadd07b431e3b230e18533f",
+      "size": 2003,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/064b2b74f5b4ca9abaadd07b431e3b230e18533f"
+    },
+    {
+      "path": ".opencode/agents/specialist-coding-style.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aea25899807ae31f74b144c428a088199094d550",
+      "size": 1159,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/aea25899807ae31f74b144c428a088199094d550"
+    },
+    {
+      "path": ".opencode/agents/specialist-duplication.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "008e936d847c25819a7054cea95b33f039ab56ba",
+      "size": 1142,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/008e936d847c25819a7054cea95b33f039ab56ba"
+    },
+    {
+      "path": ".opencode/agents/specialist-functionality.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "037dacf8b14f75ff8690915ae97138de26ec4069",
+      "size": 1125,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/037dacf8b14f75ff8690915ae97138de26ec4069"
+    },
+    {
+      "path": ".opencode/agents/specialist-performance.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d47f61d2d875aff5747df3bd3fe26552e39722f5",
+      "size": 1158,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/d47f61d2d875aff5747df3bd3fe26552e39722f5"
+    },
+    {
+      "path": ".opencode/agents/specialist-security.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "569e2b961852c8b14d84e1333e5f5f3bdcde558e",
+      "size": 1135,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/569e2b961852c8b14d84e1333e5f5f3bdcde558e"
+    },
+    {
+      "path": ".opencode/commands",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2734ced8b123a85920394fb7d078021d750285ef",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/2734ced8b123a85920394fb7d078021d750285ef"
+    },
+    {
+      "path": ".opencode/commands/review.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1257d027ae1c23fb70bf0250cb760ef396acfcb7",
+      "size": 671,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/1257d027ae1c23fb70bf0250cb760ef396acfcb7"
+    },
+    {
+      "path": ".opencode/opencode.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fff094a07d210dc2c67913fec4d15c37c242d1ed",
+      "size": 227,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/fff094a07d210dc2c67913fec4d15c37c242d1ed"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f3c2ed45e9859f2d0bc584d368ddd8e1d3d36a6",
+      "size": 1027,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/0f3c2ed45e9859f2d0bc584d368ddd8e1d3d36a6"
+    },
+    {
+      "path": ".vscode",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bab4fcec26edee911f19725f783ae8835bddbd42",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/bab4fcec26edee911f19725f783ae8835bddbd42"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed40ac583f0a6e76fcabb88a08b4e12cd7792548",
+      "size": 1034,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ed40ac583f0a6e76fcabb88a08b4e12cd7792548"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "210b0ac4d7a77d6f8b25bc526911abbdf28bf071",
+      "size": 575,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/210b0ac4d7a77d6f8b25bc526911abbdf28bf071"
+    },
+    {
+      "path": "Caddyfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17f11086f97473a7c6e186536fa1b78abf037983",
+      "size": 163,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/17f11086f97473a7c6e186536fa1b78abf037983"
+    },
+    {
+      "path": "Dockerfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "63efc85fa3a0b423b011b833acc04a9654da45c7",
+      "size": 1091,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/63efc85fa3a0b423b011b833acc04a9654da45c7"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62f4c4886485e1c402e6b5e8c80f8f7f96f5b61a",
+      "size": 1077,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/62f4c4886485e1c402e6b5e8c80f8f7f96f5b61a"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "858cba4a383ecac02318050ee8f0f2c57a2db15f",
+      "size": 1510,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/858cba4a383ecac02318050ee8f0f2c57a2db15f"
+    },
+    {
+      "path": "backend",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0366f0be75f64d1a0d85dcc58f4fa9092100208d",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/0366f0be75f64d1a0d85dcc58f4fa9092100208d"
+    },
+    {
+      "path": "backend/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab6fbf419ab3e3bba71071bb15f106e0c936a382",
+      "size": 2527,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ab6fbf419ab3e3bba71071bb15f106e0c936a382"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "234a718ac07fc2c6a6e2d178e3ebf2bf4f212add",
+      "size": 1881,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/234a718ac07fc2c6a6e2d178e3ebf2bf4f212add"
+    },
+    {
+      "path": "backend/schema.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57a48b57a0c1ccf8863fd289cacd6f7295198964",
+      "size": 7484,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/57a48b57a0c1ccf8863fd289cacd6f7295198964"
+    },
+    {
+      "path": "backend/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a6d72bb6e099b2c56fb524d687c47a0c8b32d201",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/a6d72bb6e099b2c56fb524d687c47a0c8b32d201"
+    },
+    {
+      "path": "backend/src/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/api",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d1a64ed5dccddba0195629c3ff5d5f6578b46ec7",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d1a64ed5dccddba0195629c3ff5d5f6578b46ec7"
+    },
+    {
+      "path": "backend/src/api/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/api/dependencies.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9be74c4922939e24544ad4234da97775d4d710a4",
+      "size": 1761,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/9be74c4922939e24544ad4234da97775d4d710a4"
+    },
+    {
+      "path": "backend/src/api/main.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c441b905d3797e42209ca853f8a8f49fc937567a",
+      "size": 1252,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c441b905d3797e42209ca853f8a8f49fc937567a"
+    },
+    {
+      "path": "backend/src/api/routers",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "075d98e809becc72e570098522806d86a322f418",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/075d98e809becc72e570098522806d86a322f418"
+    },
+    {
+      "path": "backend/src/api/routers/finances_router.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae45a04546c8820394ceb7776b1975d42748ca34",
+      "size": 5423,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ae45a04546c8820394ceb7776b1975d42748ca34"
+    },
+    {
+      "path": "backend/src/api/routers/models_router.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a127b1086f3f5b02f016968bf8a352a1b7c30c66",
+      "size": 3627,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/a127b1086f3f5b02f016968bf8a352a1b7c30c66"
+    },
+    {
+      "path": "backend/src/api/routers/simulations_router.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "70e4eb006849ad42ab9b2c684dd02f90316a64e1",
+      "size": 7597,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/70e4eb006849ad42ab9b2c684dd02f90316a64e1"
+    },
+    {
+      "path": "backend/src/db",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8de173a016c4ff2060d9f88302bc7b310eb8bd98",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/8de173a016c4ff2060d9f88302bc7b310eb8bd98"
+    },
+    {
+      "path": "backend/src/db/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/db/async_client",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a752c4edf61f95aa5ae2d40c9ea23af6c32d25d6",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/a752c4edf61f95aa5ae2d40c9ea23af6c32d25d6"
+    },
+    {
+      "path": "backend/src/db/async_client/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ecde5e63f066273676df5d932c257cbd69e97acc",
+      "size": 55,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ecde5e63f066273676df5d932c257cbd69e97acc"
+    },
+    {
+      "path": "backend/src/db/async_client/client.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6e4f65f15aca6932006d8d4cdd58c881c692977",
+      "size": 468,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/f6e4f65f15aca6932006d8d4cdd58c881c692977"
+    },
+    {
+      "path": "backend/src/db/async_client/pool.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ede254114d785dfae4d7fa5417a5405da885944f",
+      "size": 277,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ede254114d785dfae4d7fa5417a5405da885944f"
+    },
+    {
+      "path": "backend/src/db/async_client/repositories",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6c27497c74ed4ceda8827b94af39ae4e37e07c83",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/6c27497c74ed4ceda8827b94af39ae4e37e07c83"
+    },
+    {
+      "path": "backend/src/db/async_client/repositories/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "265f4669c132eb4e46677fd8bcff966d5a1486fe",
+      "size": 63,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/265f4669c132eb4e46677fd8bcff966d5a1486fe"
+    },
+    {
+      "path": "backend/src/db/async_client/repositories/base.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ef0ff074be0e78a3f212030e26805c8519ce228",
+      "size": 6782,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/8ef0ff074be0e78a3f212030e26805c8519ce228"
+    },
+    {
+      "path": "backend/src/db/async_client/repositories/finance_repo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c15bcfc90c2fa105da92821e068864e7ae67410c",
+      "size": 8629,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c15bcfc90c2fa105da92821e068864e7ae67410c"
+    },
+    {
+      "path": "backend/src/db/async_client/repositories/models_repo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1275c590529c09fd94fd1a8f42cf1ce8ec57d542",
+      "size": 5696,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/1275c590529c09fd94fd1a8f42cf1ce8ec57d542"
+    },
+    {
+      "path": "backend/src/db/async_client/repositories/simulation_repo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "579af681dae926e4f39f917739fce4268e68d3a4",
+      "size": 8491,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/579af681dae926e4f39f917739fce4268e68d3a4"
+    },
+    {
+      "path": "backend/src/db/config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6e79bcf7227197bdbc04980900e4c4ac5603ce3",
+      "size": 188,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c6e79bcf7227197bdbc04980900e4c4ac5603ce3"
+    },
+    {
+      "path": "backend/src/db/schemas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bedfbeed220af1baa97fff686647ca87820ed8ef",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/bedfbeed220af1baa97fff686647ca87820ed8ef"
+    },
+    {
+      "path": "backend/src/db/schemas/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8e862c45a506724a9ffc43bab343c123f17fa3d",
+      "size": 945,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/d8e862c45a506724a9ffc43bab343c123f17fa3d"
+    },
+    {
+      "path": "backend/src/db/schemas/base.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0361c831eeb8aac5aee709c08b1dfb1952797d99",
+      "size": 848,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/0361c831eeb8aac5aee709c08b1dfb1952797d99"
+    },
+    {
+      "path": "backend/src/db/schemas/energy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09b29e124f613f2f2f6fc0a6b70a709cef0d881c",
+      "size": 1843,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/09b29e124f613f2f2f6fc0a6b70a709cef0d881c"
+    },
+    {
+      "path": "backend/src/db/schemas/finances.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8bb7841a6c9091dacb4ba3e0bf7aa672beb86306",
+      "size": 3568,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/8bb7841a6c9091dacb4ba3e0bf7aa672beb86306"
+    },
+    {
+      "path": "backend/src/db/schemas/models.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba2ddbdc88073375c4c4aaab23797c2fc3864e72",
+      "size": 4246,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ba2ddbdc88073375c4c4aaab23797c2fc3864e72"
+    },
+    {
+      "path": "backend/src/db/schemas/simulation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "421659af621050449a81ba8fee71e95440bbfe6a",
+      "size": 4110,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/421659af621050449a81ba8fee71e95440bbfe6a"
+    },
+    {
+      "path": "backend/src/db/sync_client",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0fb8589161addca832d7610d19d35d2e5c24e455",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/0fb8589161addca832d7610d19d35d2e5c24e455"
+    },
+    {
+      "path": "backend/src/db/sync_client/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1fbe55762244cb91cfd4da66de312bf9988beed6",
+      "size": 67,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/1fbe55762244cb91cfd4da66de312bf9988beed6"
+    },
+    {
+      "path": "backend/src/db/sync_client/client.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "956ac20393ed122d13b22f9c9f02661bf4d02055",
+      "size": 7208,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/956ac20393ed122d13b22f9c9f02661bf4d02055"
+    },
+    {
+      "path": "backend/src/domains",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fe7cbae622b90d373b499522ed0b23bc0e983d6f",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/fe7cbae622b90d373b499522ed0b23bc0e983d6f"
+    },
+    {
+      "path": "backend/src/domains/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/energy",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0a1bbceac157c102e8f21c0deee47b4b953a4261",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/0a1bbceac157c102e8f21c0deee47b4b953a4261"
+    },
+    {
+      "path": "backend/src/domains/energy/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/energy/funcs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c21e09f4778f493b5ae989a1d9e25be10a1a41e4",
+      "size": 5701,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c21e09f4778f493b5ae989a1d9e25be10a1a41e4"
+    },
+    {
+      "path": "backend/src/domains/energy/ports.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fcf10fe3ed3371c8872d8e297c7b72745e916bfb",
+      "size": 876,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/fcf10fe3ed3371c8872d8e297c7b72745e916bfb"
+    },
+    {
+      "path": "backend/src/domains/ferntree",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2d15466ec953b9195cae2119f3bcb47bf016f92c",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/2d15466ec953b9195cae2119f3bcb47bf016f92c"
+    },
+    {
+      "path": "backend/src/domains/ferntree/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "234781471fe2d051f050548379c59d978f356754",
+      "size": 2568,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/234781471fe2d051f050548379c59d978f356754"
+    },
+    {
+      "path": "backend/src/domains/ferntree/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7836758d7d549a788aec1c20c7b79c44eeb1d989",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/7836758d7d549a788aec1c20c7b79c44eeb1d989"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/ctrl",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "775041a4cd28020cb71dcf15ad30ef89a87d5d58",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/775041a4cd28020cb71dcf15ad30ef89a87d5d58"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/ctrl/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/ctrl/battery_ctrl.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd783d3100ef4d8ffc5674f469ba62a0357c485b",
+      "size": 10598,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/cd783d3100ef4d8ffc5674f469ba62a0357c485b"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/ctrl/heating_ctrl.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78673c94d28e0633e3c5ae943c4c872a3deeb6ea",
+      "size": 2522,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/78673c94d28e0633e3c5ae943c4c872a3deeb6ea"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "60b93fe4724bc72ded548ac2cfb39b94b5b0ab1d",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/60b93fe4724bc72ded548ac2cfb39b94b5b0ab1d"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/baseload.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "61940b82ed668bc32e6cd5a4d5c5c775b1830b63",
+      "size": 2236,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/61940b82ed668bc32e6cd5a4d5c5c775b1830b63"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/battery_dev.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcf1e04f420b10e9ac91079fe222226263360591",
+      "size": 2091,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/dcf1e04f420b10e9ac91079fe222226263360591"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/device.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7a4d64ec0d4c8024187ed372f0477e781aef7ad",
+      "size": 1034,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c7a4d64ec0d4c8024187ed372f0477e781aef7ad"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/heating_dev.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08638a790a9a2e7dabc175bcbfcc6398a80fb716",
+      "size": 2205,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/08638a790a9a2e7dabc175bcbfcc6398a80fb716"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/heating_sys.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d32ac62e62dbae68b6c5213e1f850ae2edbb4a7",
+      "size": 5879,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/3d32ac62e62dbae68b6c5213e1f850ae2edbb4a7"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/pv_sys.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24a785ef0b77ee802550a9a6835b47c48823c843",
+      "size": 1393,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/24a785ef0b77ee802550a9a6835b47c48823c843"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/sf_house.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b5199777bf22c62c9efef525e3fd345513b803dd",
+      "size": 2977,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/b5199777bf22c62c9efef525e3fd345513b803dd"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/dev/smart_meter.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d7ed7b0047ad0f41a0f4631a67f5fbc292e18da",
+      "size": 4947,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/9d7ed7b0047ad0f41a0f4631a67f5fbc292e18da"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/host",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d085cce521c2db3a53d570b7cb2d8a8309de5a22",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d085cce521c2db3a53d570b7cb2d8a8309de5a22"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/host/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/host/sim_host.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55868c29c45b1c427050ca6abb280a1d05044c70",
+      "size": 4626,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/55868c29c45b1c427050ca6abb280a1d05044c70"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/models",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1b72fa98658a76ac0d50633f6ff1bc01b0cff346",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/1b72fa98658a76ac0d50633f6ff1bc01b0cff346"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/models/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/models/linear_regression.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c31c99a918685bbfcf7cd9cc15e772132a25ff55",
+      "size": 8589,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c31c99a918685bbfcf7cd9cc15e772132a25ff55"
+    },
+    {
+      "path": "backend/src/domains/ferntree/components/models/thermal_model.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f01644dc84e40fba72cd2fb1a7eaad80c7dcf73",
+      "size": 7213,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/1f01644dc84e40fba72cd2fb1a7eaad80c7dcf73"
+    },
+    {
+      "path": "backend/src/domains/ferntree/main.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9157bbb2712cc12e40cb532a50220f8d5bd6e99",
+      "size": 1729,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/b9157bbb2712cc12e40cb532a50220f8d5bd6e99"
+    },
+    {
+      "path": "backend/src/domains/ferntree/sim_builder.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f34a561c473e13662a2309eb4be59fd419ebfd31",
+      "size": 5367,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/f34a561c473e13662a2309eb4be59fd419ebfd31"
+    },
+    {
+      "path": "backend/src/domains/finances",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "db022affec8fb3f6725f2910fd315ec7b2847ea6",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/db022affec8fb3f6725f2910fd315ec7b2847ea6"
+    },
+    {
+      "path": "backend/src/domains/finances/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/finances/funcs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dde7d37104ecc10a0237ee8b64a896922d1f96f0",
+      "size": 7562,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/dde7d37104ecc10a0237ee8b64a896922d1f96f0"
+    },
+    {
+      "path": "backend/src/domains/finances/ports.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b82dabcab129949a349057e1cf1a96a3ce95b1b",
+      "size": 1001,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/6b82dabcab129949a349057e1cf1a96a3ce95b1b"
+    },
+    {
+      "path": "backend/src/domains/loadprofiles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4b081ff200f50a27fb85f23d02cb1761331caff5",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/4b081ff200f50a27fb85f23d02cb1761331caff5"
+    },
+    {
+      "path": "backend/src/domains/loadprofiles/gaussian_profile.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e292e213366837e8835e6e4464443faa5c83928d",
+      "size": 3385,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e292e213366837e8835e6e4464443faa5c83928d"
+    },
+    {
+      "path": "backend/src/domains/simulation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4b8347913c21e7b09ebad22e85a3d17a95326872",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/4b8347913c21e7b09ebad22e85a3d17a95326872"
+    },
+    {
+      "path": "backend/src/domains/simulation/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/simulation/funcs.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2157a3c4690705e66be6ad79cbda559dfa0517a6",
+      "size": 3366,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/2157a3c4690705e66be6ad79cbda559dfa0517a6"
+    },
+    {
+      "path": "backend/src/domains/solar",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d335f2d6b079470d215c9299b1cb139d3d1a69c1",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d335f2d6b079470d215c9299b1cb139d3d1a69c1"
+    },
+    {
+      "path": "backend/src/domains/solar/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/domains/solar/geolocator.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91e286fa88a591e0c1585046d595f96e564da787",
+      "size": 4134,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/91e286fa88a591e0c1585046d595f96e564da787"
+    },
+    {
+      "path": "backend/src/domains/solar/pvgis_api.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86152b42d4002bac4f7d23d1329d648c039dd3d7",
+      "size": 7779,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/86152b42d4002bac4f7d23d1329d648c039dd3d7"
+    },
+    {
+      "path": "backend/src/workers",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3f2af2522d71e3931b5e22070c8b6dde2002b5c6",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/3f2af2522d71e3931b5e22070c8b6dde2002b5c6"
+    },
+    {
+      "path": "backend/src/workers/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "backend/src/workers/simulation_runner.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9730b17b9e7f398245a30282951969f3a85fd9e3",
+      "size": 525,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/9730b17b9e7f398245a30282951969f3a85fd9e3"
+    },
+    {
+      "path": "backend/tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d99dfa3b97a373bac77c47037a166c29222544b1",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d99dfa3b97a373bac77c47037a166c29222544b1"
+    },
+    {
+      "path": "backend/tests/test_data_layer.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae1033d46da65264b80140a5f5b1754ed4802da0",
+      "size": 5353,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ae1033d46da65264b80140a5f5b1754ed4802da0"
+    },
+    {
+      "path": "backend/tests/test_gaussian_profile.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "397ede1e7825279cb010b11413d8c4a7921980c3",
+      "size": 1512,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/397ede1e7825279cb010b11413d8c4a7921980c3"
+    },
+    {
+      "path": "backend/tests/test_simulation_engine.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "471be1a8a4e71b1e4c13fcbd01c8e1282b9036c3",
+      "size": 2353,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/471be1a8a4e71b1e4c13fcbd01c8e1282b9036c3"
+    },
+    {
+      "path": "backend/tests/test_simulation_runner.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99c8b32ff28ca6f38ffde003e8db1f75f1e3da7d",
+      "size": 1283,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/99c8b32ff28ca6f38ffde003e8db1f75f1e3da7d"
+    },
+    {
+      "path": "backend/uv.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d0ee6c786f8a5b5cd01c15776e5509ee562d5c8",
+      "size": 366890,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/9d0ee6c786f8a5b5cd01c15776e5509ee562d5c8"
+    },
+    {
+      "path": "compose.prod.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32481da1899adf59d668824e9c26a27125fe7cb1",
+      "size": 1072,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/32481da1899adf59d668824e9c26a27125fe7cb1"
+    },
+    {
+      "path": "compose.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25ce91abe593d9c919f864645865cd254289213b",
+      "size": 1406,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/25ce91abe593d9c919f864645865cd254289213b"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9ee8bd3ed88d57b1a3a1703596f7aef2d0724fc3",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/9ee8bd3ed88d57b1a3a1703596f7aef2d0724fc3"
+    },
+    {
+      "path": "docs/architecture",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6c63cbc5e390cdf6e0ef5acaeb66cbe561e5224e",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/6c63cbc5e390cdf6e0ef5acaeb66cbe561e5224e"
+    },
+    {
+      "path": "docs/architecture/principles.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dccab0f8c5c4122700c92394a215a4e985e13132",
+      "size": 28490,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/dccab0f8c5c4122700c92394a215a4e985e13132"
+    },
+    {
+      "path": "docs/deployment",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d27259e67fd28206f99787b5d50613eb95958d1a",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d27259e67fd28206f99787b5d50613eb95958d1a"
+    },
+    {
+      "path": "docs/deployment/architecture.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bfe7bf4330adaa04ddcca8bcd12c27de01ccb5a5",
+      "size": 14512,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/bfe7bf4330adaa04ddcca8bcd12c27de01ccb5a5"
+    },
+    {
+      "path": "frontend",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d1690d4fd79e8e6503ede428f5ab3fca7d27d7fa",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d1690d4fd79e8e6503ede428f5ab3fca7d27d7fa"
+    },
+    {
+      "path": "frontend/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a95ad165fd486fb0e1d8f2548f06861a51eb56fe",
+      "size": 540,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/a95ad165fd486fb0e1d8f2548f06861a51eb56fe"
+    },
+    {
+      "path": "frontend/mock-plugin.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d0db784b821b45eee99c8e81250c1a433e6f9ad",
+      "size": 6737,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/9d0db784b821b45eee99c8e81250c1a433e6f9ad"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eff6a84a63af314d968fcdd508c3cc959ee3c20f",
+      "size": 37127,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/eff6a84a63af314d968fcdd508c3cc959ee3c20f"
+    },
+    {
+      "path": "frontend/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7048bc513c9f765bbd19cc945db889004e64c074",
+      "size": 397,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/7048bc513c9f765bbd19cc945db889004e64c074"
+    },
+    {
+      "path": "frontend/public",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "af842693763c2f34715c811fd45882f10572df89",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/af842693763c2f34715c811fd45882f10572df89"
+    },
+    {
+      "path": "frontend/public/fonts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "533a94124e8d0254cce9e4beb1bdb6ef33174793",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/533a94124e8d0254cce9e4beb1bdb6ef33174793"
+    },
+    {
+      "path": "frontend/public/fonts/inter",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d9b7553120e8edfa2e43311e9b6026c2281ec60e",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d9b7553120e8edfa2e43311e9b6026c2281ec60e"
+    },
+    {
+      "path": "frontend/public/fonts/inter/inter-latin.woff2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a8d3e72ad7ffb62af3b146e1b1f54ab5813a212",
+      "size": 352240,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/5a8d3e72ad7ffb62af3b146e1b1f54ab5813a212"
+    },
+    {
+      "path": "frontend/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f517c6bca8803dd05967b3beb89d6e99c7336a89",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/f517c6bca8803dd05967b3beb89d6e99c7336a89"
+    },
+    {
+      "path": "frontend/src/api.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "410643cd8775c0f512612add0dbbd7162fc40e48",
+      "size": 6660,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/410643cd8775c0f512612add0dbbd7162fc40e48"
+    },
+    {
+      "path": "frontend/src/chart-theme.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ba2bfb1054746eded14c636ca5d363adb16dfb5",
+      "size": 1599,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/2ba2bfb1054746eded14c636ca5d363adb16dfb5"
+    },
+    {
+      "path": "frontend/src/config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d6e4841a92c224cf812a473f3f79ecb378bb9b7",
+      "size": 194,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/0d6e4841a92c224cf812a473f3f79ecb378bb9b7"
+    },
+    {
+      "path": "frontend/src/main.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e82f38ff990b309ace3105b0315a765f1c6fbaa1",
+      "size": 5034,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/e82f38ff990b309ace3105b0315a765f1c6fbaa1"
+    },
+    {
+      "path": "frontend/src/overlay.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd6c7bc18c8b60ae6b6e1b36df3079a2062dccdb",
+      "size": 549,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/fd6c7bc18c8b60ae6b6e1b36df3079a2062dccdb"
+    },
+    {
+      "path": "frontend/src/pages",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3d53ec575ab05b8123318c7aab75855dadfdf551",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/3d53ec575ab05b8123318c7aab75855dadfdf551"
+    },
+    {
+      "path": "frontend/src/pages/finances.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e1772560842a6006e629eea315952a2c7202f10",
+      "size": 29202,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/4e1772560842a6006e629eea315952a2c7202f10"
+    },
+    {
+      "path": "frontend/src/pages/landing.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "06dd13bdde2ef0786c4599c8c0f6ee5eb3a25939",
+      "size": 590,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/06dd13bdde2ef0786c4599c8c0f6ee5eb3a25939"
+    },
+    {
+      "path": "frontend/src/pages/models.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "983b8eaf9454d8b383eda537e689a344c5775452",
+      "size": 19808,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/983b8eaf9454d8b383eda537e689a344c5775452"
+    },
+    {
+      "path": "frontend/src/pages/simulations.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed31a41b51bd103809e75889048ef580ab804cad",
+      "size": 27805,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ed31a41b51bd103809e75889048ef580ab804cad"
+    },
+    {
+      "path": "frontend/src/pages/workspace.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22adaca71f79e655f76569650a890e8456e51586",
+      "size": 1387,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/22adaca71f79e655f76569650a890e8456e51586"
+    },
+    {
+      "path": "frontend/src/router.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "662f5a1a3feae0c8bff3ffb70443736dd673afa1",
+      "size": 4304,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/662f5a1a3feae0c8bff3ffb70443736dd673afa1"
+    },
+    {
+      "path": "frontend/src/styles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d0bac8259e28e777364cd977eba8cc9a024c48c9",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/d0bac8259e28e777364cd977eba8cc9a024c48c9"
+    },
+    {
+      "path": "frontend/src/styles/global.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bce8830d547f9b5f9e19de957dee22cbbaaef660",
+      "size": 24899,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/bce8830d547f9b5f9e19de957dee22cbbaaef660"
+    },
+    {
+      "path": "frontend/src/types.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d830835d7d624e3c3a8e39fda02874096e6d2496",
+      "size": 2455,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/d830835d7d624e3c3a8e39fda02874096e6d2496"
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b6cdd0601d0da407faa3cb6c0c00d37dab4abd8",
+      "size": 231,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/4b6cdd0601d0da407faa3cb6c0c00d37dab4abd8"
+    },
+    {
+      "path": "frontend/tsconfig.node.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c68c1a2813445bf74ced57ffbfc7c092f2c9dd7f",
+      "size": 253,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c68c1a2813445bf74ced57ffbfc7c092f2c9dd7f"
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09ce55606acb9223e6d0262d9005575990e3dca4",
+      "size": 258,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/09ce55606acb9223e6d0262d9005575990e3dca4"
+    },
+    {
+      "path": "infra",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a8cfa71e4d43ff3a550cbbf3536e9e46bab65b48",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/a8cfa71e4d43ff3a550cbbf3536e9e46bab65b48"
+    },
+    {
+      "path": "infra/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a0072e6c16028e281954757e9db14e3e511b19ce",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/a0072e6c16028e281954757e9db14e3e511b19ce"
+    },
+    {
+      "path": "infra/main/backend.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "efd53b3d11a53183b7c61cf365310b6b7dc77604",
+      "size": 369,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/efd53b3d11a53183b7c61cf365310b6b7dc77604"
+    },
+    {
+      "path": "infra/main/firewall.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12dc7252ddc203ccd1e512ca2b06a1f2584be657",
+      "size": 1225,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/12dc7252ddc203ccd1e512ca2b06a1f2584be657"
+    },
+    {
+      "path": "infra/main/main.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7fde00b31dac7f91f0e3a64786ce760cd0ee807",
+      "size": 59,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/f7fde00b31dac7f91f0e3a64786ce760cd0ee807"
+    },
+    {
+      "path": "infra/main/provider.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "318ee894f1a7cd54b498d119b01a9a6962c736f6",
+      "size": 449,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/318ee894f1a7cd54b498d119b01a9a6962c736f6"
+    },
+    {
+      "path": "infra/main/server.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8997370ee404abfdf77d8eacc67d53ee40648d26",
+      "size": 933,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/8997370ee404abfdf77d8eacc67d53ee40648d26"
+    },
+    {
+      "path": "infra/main/storage.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8aedbdf1fa072e17f520f67a327ff2400a277d2",
+      "size": 292,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/c8aedbdf1fa072e17f520f67a327ff2400a277d2"
+    },
+    {
+      "path": "infra/main/variables.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ac22bfb376b3497ea33ed4a6e3c19c20f7a3772",
+      "size": 380,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/0ac22bfb376b3497ea33ed4a6e3c19c20f7a3772"
+    },
+    {
+      "path": "infra/modules",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7008a0580e8aa208c0e3893570fd05b60653a90d",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/7008a0580e8aa208c0e3893570fd05b60653a90d"
+    },
+    {
+      "path": "infra/modules/firewall",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5c78ad52460d642d2a4f455496f43506512e9714",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/5c78ad52460d642d2a4f455496f43506512e9714"
+    },
+    {
+      "path": "infra/modules/firewall/main.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a8f55f519d1abff55ecc5372fb4cad8a5639dc2",
+      "size": 704,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/2a8f55f519d1abff55ecc5372fb4cad8a5639dc2"
+    },
+    {
+      "path": "infra/modules/firewall/variables.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d846bf323033656a0526034a22991fdaea7b751",
+      "size": 401,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/5d846bf323033656a0526034a22991fdaea7b751"
+    },
+    {
+      "path": "infra/modules/server",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "62b358d0713a9639281f6f9cb9ffa17efe6ea0f3",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/62b358d0713a9639281f6f9cb9ffa17efe6ea0f3"
+    },
+    {
+      "path": "infra/modules/server/cloud-init.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a40eeffa2c77c8e1fabdd89b103b34cd3befccf",
+      "size": 2806,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/9a40eeffa2c77c8e1fabdd89b103b34cd3befccf"
+    },
+    {
+      "path": "infra/modules/server/main.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea8c85013a3603d7027f5d9427f1eb5fdad9d403",
+      "size": 1073,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ea8c85013a3603d7027f5d9427f1eb5fdad9d403"
+    },
+    {
+      "path": "infra/modules/server/variables.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db68f9a25bc0926b88ad75f5866cab614ba97c47",
+      "size": 986,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/db68f9a25bc0926b88ad75f5866cab614ba97c47"
+    },
+    {
+      "path": "infra/modules/storage",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "756d99cbb2ac130538b7bbba9a26b71663805cab",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/756d99cbb2ac130538b7bbba9a26b71663805cab"
+    },
+    {
+      "path": "infra/modules/storage/main.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab459958a9aa80d16fe87a93b3e57eed32dcff83",
+      "size": 491,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/ab459958a9aa80d16fe87a93b3e57eed32dcff83"
+    },
+    {
+      "path": "infra/modules/storage/variables.tf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1956e6c0ef4501374e4090879338dca63245349a",
+      "size": 306,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/1956e6c0ef4501374e4090879338dca63245349a"
+    },
+    {
+      "path": "infra/scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "38edbb7dcf11cf05e161155858e290aa7c0c2e96",
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/trees/38edbb7dcf11cf05e161155858e290aa7c0c2e96"
+    },
+    {
+      "path": "infra/scripts/create-state-store.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "4f1bac0aeabf9d4ca37cc1e996579230418e2845",
+      "size": 979,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/4f1bac0aeabf9d4ca37cc1e996579230418e2845"
+    },
+    {
+      "path": "infra/scripts/deploy-app.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3802d17c3d4c5ed7b48cc8fd05686330f8ba252e",
+      "size": 3095,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/3802d17c3d4c5ed7b48cc8fd05686330f8ba252e"
+    },
+    {
+      "path": "infra/scripts/redeploy-server.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "6928993a9d6271be3dcf05ba88330f37e1c3e7f2",
+      "size": 908,
+      "url": "https://api.github.com/repos/felixtgd/ferntree/git/blobs/6928993a9d6271be3dcf05ba88330f37e1c3e7f2"
+    }
+  ],
+  "truncated": false
+}

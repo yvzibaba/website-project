@@ -1,0 +1,4112 @@
+{
+  "sha": "b0e0b07fd77652a586b0b6aba1bac77b6683573a",
+  "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/b0e0b07fd77652a586b0b6aba1bac77b6683573a",
+  "tree": [
+    {
+      "path": ".flake8",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51f9dac45fb4b2d260000cad85f0c629f1ea5295",
+      "size": 48,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/51f9dac45fb4b2d260000cad85f0c629f1ea5295"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f32b4e16d4bb9f5ae24f3d18ff149670d6c5d9ea",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/f32b4e16d4bb9f5ae24f3d18ff149670d6c5d9ea"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6db636ac70b7e84f25c172fef975802ba6d368a",
+      "size": 20,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d6db636ac70b7e84f25c172fef975802ba6d368a"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bdcb5676d400ea4dea0599b7678c12da0d3e8498",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/bdcb5676d400ea4dea0599b7678c12da0d3e8498"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/documentation_request.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73ade80a55cb80ebd84f1c69331e18cdeee78b6d",
+      "size": 235,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/73ade80a55cb80ebd84f1c69331e18cdeee78b6d"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11fc491ef1dae316f2b06bbb40eaba9c757fdfd1",
+      "size": 604,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/11fc491ef1dae316f2b06bbb40eaba9c757fdfd1"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/question.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd706ea836f01f217fbc3b181df96c781ec3fd16",
+      "size": 508,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dd706ea836f01f217fbc3b181df96c781ec3fd16"
+    },
+    {
+      "path": ".github/actions",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5e8b1290a6c88eb84049f3e4fd79623556854567",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/5e8b1290a6c88eb84049f3e4fd79623556854567"
+    },
+    {
+      "path": ".github/actions/setup-python-build-env",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6051d51c53db1f6dd3a4dca49410831da1c4c513",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/6051d51c53db1f6dd3a4dca49410831da1c4c513"
+    },
+    {
+      "path": ".github/actions/setup-python-build-env/action.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f4f16fd791b3139edbf55e2121f50d30507c3a6",
+      "size": 197,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1f4f16fd791b3139edbf55e2121f50d30507c3a6"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e8477f4bdde632aba97e92e2d9d1621468bb337",
+      "size": 499,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2e8477f4bdde632aba97e92e2d9d1621468bb337"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f1ab33087807ba4cc2f7245137b319e2444f3f7e",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/f1ab33087807ba4cc2f7245137b319e2444f3f7e"
+    },
+    {
+      "path": ".github/workflows/inactive-issue.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c84cd8a3869b14c631e2d41df32b7f0457f193c0",
+      "size": 704,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c84cd8a3869b14c631e2d41df32b7f0457f193c0"
+    },
+    {
+      "path": ".github/workflows/publish-to-pypi.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d4afa92568257e5e09c08849d6644a9489104bc",
+      "size": 1110,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1d4afa92568257e5e09c08849d6644a9489104bc"
+    },
+    {
+      "path": ".github/workflows/pull-request.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4445b661ea0f8b5a3935c1038e933cafe53aebf5",
+      "size": 683,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4445b661ea0f8b5a3935c1038e933cafe53aebf5"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "168585dc3b78a8a1ef36a8442d2c5240bfcd17aa",
+      "size": 1285,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/168585dc3b78a8a1ef36a8442d2c5240bfcd17aa"
+    },
+    {
+      "path": ".readthedocs.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e952a46c9516ffc40123749924c23e70941b2c95",
+      "size": 1035,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e952a46c9516ffc40123749924c23e70941b2c95"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e0a3fea65a53b5442ce335d7973d63906b4aeac",
+      "size": 29910,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4e0a3fea65a53b5442ce335d7973d63906b4aeac"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86a3913514375c7c5a6a14bd2325804e58ba43d9",
+      "size": 3220,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/86a3913514375c7c5a6a14bd2325804e58ba43d9"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f46484ef7ec6e2feb7c5a4485132f4e9a79ac00",
+      "size": 2013,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0f46484ef7ec6e2feb7c5a4485132f4e9a79ac00"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9072c121d795d4a27bef1c94fa2b95bda036237",
+      "size": 1075,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d9072c121d795d4a27bef1c94fa2b95bda036237"
+    },
+    {
+      "path": "MANIFEST.in",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1a88990e99b02b37f51802e5b73cd2a84a097d8",
+      "size": 110,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c1a88990e99b02b37f51802e5b73cd2a84a097d8"
+    },
+    {
+      "path": "Makefile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01bc03c44ba0244da83f3ca336e7919e4e66ee18",
+      "size": 2060,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/01bc03c44ba0244da83f3ca336e7919e4e66ee18"
+    },
+    {
+      "path": "README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1fa0d194afce984ac35522aa645f9c9f320c5309",
+      "size": 2663,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1fa0d194afce984ac35522aa645f9c9f320c5309"
+    },
+    {
+      "path": "SECURITY.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cab2779933352d3006d157a50f24f41075d75a16",
+      "size": 1206,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/cab2779933352d3006d157a50f24f41075d75a16"
+    },
+    {
+      "path": "SUPPORT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72b64a6c6272558102798b4e72a4234cefe56865",
+      "size": 1342,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/72b64a6c6272558102798b4e72a4234cefe56865"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c66db4dfceccddd95693d69e1547b2cacd5752b8",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/c66db4dfceccddd95693d69e1547b2cacd5752b8"
+    },
+    {
+      "path": "docs/requirements.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c17ae3074caa85b2a0401be55173c1daa41b6f45",
+      "size": 38,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c17ae3074caa85b2a0401be55173c1daa41b6f45"
+    },
+    {
+      "path": "docs/source",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "42be32eb2c0aa54740e9261e2019a4f0e4eb561f",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/42be32eb2c0aa54740e9261e2019a4f0e4eb561f"
+    },
+    {
+      "path": "docs/source/conf.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "035be7023135d2022b142d0b6d3a934109e6878e",
+      "size": 1052,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/035be7023135d2022b142d0b6d3a934109e6878e"
+    },
+    {
+      "path": "docs/source/debugging.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fcf4e5631b2f37dc1e6e88d2b41e78811b4730e8",
+      "size": 705,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fcf4e5631b2f37dc1e6e88d2b41e78811b4730e8"
+    },
+    {
+      "path": "docs/source/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94b8bb6e00bd5811d320fa0ce40fa77bcd549289",
+      "size": 533,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/94b8bb6e00bd5811d320fa0ce40fa77bcd549289"
+    },
+    {
+      "path": "docs/source/installation.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "021d877280c359ee4f3e6f9fa5f5528b13c3e696",
+      "size": 446,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/021d877280c359ee4f3e6f9fa5f5528b13c3e696"
+    },
+    {
+      "path": "docs/source/usage",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9f447a20b651ee40a90e6ac4a10b928aae15a1f5",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/9f447a20b651ee40a90e6ac4a10b928aae15a1f5"
+    },
+    {
+      "path": "docs/source/usage/client_side.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ff42eb39bd30bfdbe6996fac850711a09cfa420",
+      "size": 4293,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2ff42eb39bd30bfdbe6996fac850711a09cfa420"
+    },
+    {
+      "path": "docs/source/usage/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "883cc5695f06b2210c88558dd79fe8ec0e4357c4",
+      "size": 690,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/883cc5695f06b2210c88558dd79fe8ec0e4357c4"
+    },
+    {
+      "path": "docs/source/usage/server_side.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2480e69b448795646a162c77a232c5c35179783",
+      "size": 6819,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e2480e69b448795646a162c77a232c5c35179783"
+    },
+    {
+      "path": "docs/v16",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b868201129152b959699491b609ecbefbfbf609e",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/b868201129152b959699491b609ecbefbfbf609e"
+    },
+    {
+      "path": "docs/v16/ocpp-1.6 edition 2.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1e8d2d6c9381123753ac1855a754856f3ca7424",
+      "size": 2478486,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b1e8d2d6c9381123753ac1855a754856f3ca7424"
+    },
+    {
+      "path": "docs/v16/ocpp-1.6-errata-sheet.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "852b203fd15cf962c060dc3b4dd7020a5e04d6bb",
+      "size": 841890,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/852b203fd15cf962c060dc3b4dd7020a5e04d6bb"
+    },
+    {
+      "path": "docs/v16/ocpp-1.6-security-whitepaper-edition-2.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "701e31e779cb2e162a607020d3ca3bb419b8b174",
+      "size": 1442309,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/701e31e779cb2e162a607020d3ca3bb419b8b174"
+    },
+    {
+      "path": "docs/v16/ocpp-1.6.pdf",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "96d43a53b22ff8dd5b6adbbf704344f45155d5b7",
+      "size": 10722168,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/96d43a53b22ff8dd5b6adbbf704344f45155d5b7"
+    },
+    {
+      "path": "docs/v16/ocpp-j-1.6-errata-sheet.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "082e06ac148b5ebab8a02b067cb847e89d1bfb95",
+      "size": 189606,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/082e06ac148b5ebab8a02b067cb847e89d1bfb95"
+    },
+    {
+      "path": "docs/v16/ocpp-j-1.6-specification.pdf",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3ff28cabe11fd8eec01f42f6334aa46f80c1b1ef",
+      "size": 369149,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3ff28cabe11fd8eec01f42f6334aa46f80c1b1ef"
+    },
+    {
+      "path": "docs/v201",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "717c0647d2907b283fb9ddc36bb7b5efb257b1ec",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/717c0647d2907b283fb9ddc36bb7b5efb257b1ec"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_edition2_errata_2023-12.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b55afbbc21fcda9553f6030b77cc93dcaceef64",
+      "size": 1996553,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/9b55afbbc21fcda9553f6030b77cc93dcaceef64"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part0_introduction.pdf",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "55e9b2368f3f4cccfaa1867943cca8ce6f59bd2a",
+      "size": 525304,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/55e9b2368f3f4cccfaa1867943cca8ce6f59bd2a"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part1_architecture_topology.pdf",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0dd6baedb1e518b7f905aba9615d6fa67427ef3d",
+      "size": 1201947,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0dd6baedb1e518b7f905aba9615d6fa67427ef3d"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part2_appendices_v13.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bceb5e573aff4da5947fed6cb508370286b53fa",
+      "size": 1299333,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5bceb5e573aff4da5947fed6cb508370286b53fa"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part2_errata_v20.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e508f11f2fa8c611eca284e913cfd08b9ff35ce3",
+      "size": 4603170,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e508f11f2fa8c611eca284e913cfd08b9ff35ce3"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part2_specification_edition2.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a08ce388497e05fd01baa1e951b44ec1515d66f",
+      "size": 13522002,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7a08ce388497e05fd01baa1e951b44ec1515d66f"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part4_ocpp-j-specification.pdf",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "141c3152f99f91c0fa95ba92bbfd4a5b91e9ca02",
+      "size": 457414,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/141c3152f99f91c0fa95ba92bbfd4a5b91e9ca02"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part5_certification_profiles.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01a26c6f88b2d9adaa617ca5b2cc468481812e7e",
+      "size": 1506057,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/01a26c6f88b2d9adaa617ca5b2cc468481812e7e"
+    },
+    {
+      "path": "docs/v201/OCPP-2.0.1_part6_test_cases.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a90ca6c91399447f7dbcaacf203f9d88a760f67",
+      "size": 1895882,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2a90ca6c91399447f7dbcaacf203f9d88a760f67"
+    },
+    {
+      "path": "docs/v21",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "93bc6c3c72e1400e96431a3923586d8ea08066f9",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/93bc6c3c72e1400e96431a3923586d8ea08066f9"
+    },
+    {
+      "path": "docs/v21/OCPP-2.1_edition1_part0_introduction.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89889ec22b2b313ba63f7b050d36461722716b70",
+      "size": 1345178,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/89889ec22b2b313ba63f7b050d36461722716b70"
+    },
+    {
+      "path": "docs/v21/OCPP-2.1_edition1_part1_architecture_topology.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0577f35e21b0c2c64da485e36ab7be9384dd0f9c",
+      "size": 1184412,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0577f35e21b0c2c64da485e36ab7be9384dd0f9c"
+    },
+    {
+      "path": "docs/v21/OCPP-2.1_edition1_part2_specification.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "458f4a52c7a481b0537df8fee68656c81ff74ddc",
+      "size": 24020095,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/458f4a52c7a481b0537df8fee68656c81ff74ddc"
+    },
+    {
+      "path": "docs/v21/OCPP-2.1_edition1_part4_ocpp-j-specification.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a675b24191d93041ad0b25ec675de037d10df98b",
+      "size": 1161822,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a675b24191d93041ad0b25ec675de037d10df98b"
+    },
+    {
+      "path": "docs/v21/OCPP-2.1_part2_appendices_v20.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58a46b9da52eddc170b5deff388167ae22713621",
+      "size": 2584335,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/58a46b9da52eddc170b5deff388167ae22713621"
+    },
+    {
+      "path": "examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b9aa54c67be54ffefdfd0a6220200b1f808ec92a",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/b9aa54c67be54ffefdfd0a6220200b1f808ec92a"
+    },
+    {
+      "path": "examples/v16",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "13d64bf25e5f29eb479fe1232a2002899598fe81",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/13d64bf25e5f29eb479fe1232a2002899598fe81"
+    },
+    {
+      "path": "examples/v16/central_system.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65aec984a301312fa5074253564639c568921821",
+      "size": 2615,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/65aec984a301312fa5074253564639c568921821"
+    },
+    {
+      "path": "examples/v16/charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc37e0ddc5e158f1610cb04a0e39bc93b283d0de",
+      "size": 1152,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc37e0ddc5e158f1610cb04a0e39bc93b283d0de"
+    },
+    {
+      "path": "examples/v201",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a882143eee92eb53c2ecc4a2345985a979f3ea5f",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/a882143eee92eb53c2ecc4a2345985a979f3ea5f"
+    },
+    {
+      "path": "examples/v201/central_system.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a3a70f71605c8f938d2ed3ff436cc60fdb1ce5f",
+      "size": 2838,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5a3a70f71605c8f938d2ed3ff436cc60fdb1ce5f"
+    },
+    {
+      "path": "examples/v201/charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43db1e2ad98d900dce27286c965cba727f9ed070",
+      "size": 1409,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/43db1e2ad98d900dce27286c965cba727f9ed070"
+    },
+    {
+      "path": "examples/v21",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "13ec2936d3a21e19cef843b5fecffb4197fcedf2",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/13ec2936d3a21e19cef843b5fecffb4197fcedf2"
+    },
+    {
+      "path": "examples/v21/central_system.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d5c0bde465054d958187a85d26f1f6e23a9aec9",
+      "size": 2833,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8d5c0bde465054d958187a85d26f1f6e23a9aec9"
+    },
+    {
+      "path": "examples/v21/charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f72a59a9b97f95158bb60dc12315cb3fc945833",
+      "size": 1523,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7f72a59a9b97f95158bb60dc12315cb3fc945833"
+    },
+    {
+      "path": "ocpp",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ac20f1de806ec0fe77ec749badab6008fe34c821",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/ac20f1de806ec0fe77ec749badab6008fe34c821"
+    },
+    {
+      "path": "ocpp/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "ocpp/charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e045134b4f236b3f9469ef61f5a37edec1717633",
+      "size": 18541,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e045134b4f236b3f9469ef61f5a37edec1717633"
+    },
+    {
+      "path": "ocpp/exceptions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c678442b943f5f75d372bd70e889186edce17997",
+      "size": 4455,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c678442b943f5f75d372bd70e889186edce17997"
+    },
+    {
+      "path": "ocpp/experimental",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "01ea54b38c5ed69a1ff461612fac186c35a7bae2",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/01ea54b38c5ed69a1ff461612fac186c35a7bae2"
+    },
+    {
+      "path": "ocpp/experimental/v21",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a17b11a2dbb0cd65d035467beed907bd3c5973f2",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/a17b11a2dbb0cd65d035467beed907bd3c5973f2"
+    },
+    {
+      "path": "ocpp/experimental/v21/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "634c2abd6d8c68e644e4734276d0872c7bd7e6ff",
+      "size": 221,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/634c2abd6d8c68e644e4734276d0872c7bd7e6ff"
+    },
+    {
+      "path": "ocpp/messages.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "743aa89044f458aa71903ce72d004083ccd9d670",
+      "size": 15212,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/743aa89044f458aa71903ce72d004083ccd9d670"
+    },
+    {
+      "path": "ocpp/routing.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9b4c311fc3b3c71a3d255b54b2c6eeb5b07a77e",
+      "size": 4738,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d9b4c311fc3b3c71a3d255b54b2c6eeb5b07a77e"
+    },
+    {
+      "path": "ocpp/v16",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e17f9176e64abf7c735f04a28943d335e3a2db04",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/e17f9176e64abf7c735f04a28943d335e3a2db04"
+    },
+    {
+      "path": "ocpp/v16/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17cb361588c591cc700c27e4a330e13e56ba04fb",
+      "size": 186,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/17cb361588c591cc700c27e4a330e13e56ba04fb"
+    },
+    {
+      "path": "ocpp/v16/call.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cfae189cfe9b8d8d2bd5ef2fe6e571654febc77",
+      "size": 5784,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2cfae189cfe9b8d8d2bd5ef2fe6e571654febc77"
+    },
+    {
+      "path": "ocpp/v16/call_result.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b2910ab1ccdfc43f6e8f9c4e0cfebfa17596a13",
+      "size": 4153,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8b2910ab1ccdfc43f6e8f9c4e0cfebfa17596a13"
+    },
+    {
+      "path": "ocpp/v16/datatypes.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "944f7c45770ba538de5d9176cfadd6cd1b4d063b",
+      "size": 3783,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/944f7c45770ba538de5d9176cfadd6cd1b4d063b"
+    },
+    {
+      "path": "ocpp/v16/enums.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56aed63df7b31ad3b8a5c1064bc18a7aca277f99",
+      "size": 21528,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/56aed63df7b31ad3b8a5c1064bc18a7aca277f99"
+    },
+    {
+      "path": "ocpp/v16/schemas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f29b1022e183feb7997645d5566f1a51720c25f1",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/f29b1022e183feb7997645d5566f1a51720c25f1"
+    },
+    {
+      "path": "ocpp/v16/schemas/Authorize.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c4fda5f65ddb101c4bdf7fc3ee63da4b4bea1ab",
+      "size": 306,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7c4fda5f65ddb101c4bdf7fc3ee63da4b4bea1ab"
+    },
+    {
+      "path": "ocpp/v16/schemas/AuthorizeResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "620ea51909c160238072e7498604b393b9720046",
+      "size": 1062,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/620ea51909c160238072e7498604b393b9720046"
+    },
+    {
+      "path": "ocpp/v16/schemas/BootNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8515558b206593ed7a6ab22fbafb2509c9f7c170",
+      "size": 1139,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8515558b206593ed7a6ab22fbafb2509c9f7c170"
+    },
+    {
+      "path": "ocpp/v16/schemas/BootNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7caadc9ac128f5d04c3e200f9de7a1febe35997a",
+      "size": 655,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7caadc9ac128f5d04c3e200f9de7a1febe35997a"
+    },
+    {
+      "path": "ocpp/v16/schemas/CancelReservation.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c09db4559ba75aa9303bece03cfe883be3aefbda",
+      "size": 302,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c09db4559ba75aa9303bece03cfe883be3aefbda"
+    },
+    {
+      "path": "ocpp/v16/schemas/CancelReservationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "507e67fd13e3ab1094119d03bb9273d884765f55",
+      "size": 423,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/507e67fd13e3ab1094119d03bb9273d884765f55"
+    },
+    {
+      "path": "ocpp/v16/schemas/CertificateSigned.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8a323ff36554a0884a3cce377ce1afa9cc87d3a",
+      "size": 352,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e8a323ff36554a0884a3cce377ce1afa9cc87d3a"
+    },
+    {
+      "path": "ocpp/v16/schemas/CertificateSignedResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49070304cc7a12760c689c8ac9be77fd33245ef1",
+      "size": 505,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/49070304cc7a12760c689c8ac9be77fd33245ef1"
+    },
+    {
+      "path": "ocpp/v16/schemas/ChangeAvailability.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "485615ef708b9465784ae76adae934f72aee3f33",
+      "size": 512,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/485615ef708b9465784ae76adae934f72aee3f33"
+    },
+    {
+      "path": "ocpp/v16/schemas/ChangeAvailabilityResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6eb4884dcbf5dbbf87050a4b165b42b49a8d33ac",
+      "size": 453,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6eb4884dcbf5dbbf87050a4b165b42b49a8d33ac"
+    },
+    {
+      "path": "ocpp/v16/schemas/ChangeConfiguration.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "890f2e2a60c7af057897f2d875201cd53ce018ec",
+      "size": 418,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/890f2e2a60c7af057897f2d875201cd53ce018ec"
+    },
+    {
+      "path": "ocpp/v16/schemas/ChangeConfigurationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "771399cc2efc4a347cfd301040ce8b248bd46965",
+      "size": 491,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/771399cc2efc4a347cfd301040ce8b248bd46965"
+    },
+    {
+      "path": "ocpp/v16/schemas/ClearCache.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcf80514c2ab9bcaeeed0896140e23352d2a8cdf",
+      "size": 174,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bcf80514c2ab9bcaeeed0896140e23352d2a8cdf"
+    },
+    {
+      "path": "ocpp/v16/schemas/ClearCacheResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee617ca72b67d435cfe93a37d9d015b9f9ce7527",
+      "size": 416,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ee617ca72b67d435cfe93a37d9d015b9f9ce7527"
+    },
+    {
+      "path": "ocpp/v16/schemas/ClearChargingProfile.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7dff950cdf3e2ff7cde254a3f04520cd642d30d",
+      "size": 637,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a7dff950cdf3e2ff7cde254a3f04520cd642d30d"
+    },
+    {
+      "path": "ocpp/v16/schemas/ClearChargingProfileResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6219ffdef1d2a6c6edc27e87425f5689e9eae5ac",
+      "size": 425,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6219ffdef1d2a6c6edc27e87425f5689e9eae5ac"
+    },
+    {
+      "path": "ocpp/v16/schemas/DataTransfer.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8181221012739014a189018f870cb843c4f78416",
+      "size": 466,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8181221012739014a189018f870cb843c4f78416"
+    },
+    {
+      "path": "ocpp/v16/schemas/DataTransferResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc33f4c3c8fb64db639e95bdf457e9529f471fd1",
+      "size": 547,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dc33f4c3c8fb64db639e95bdf457e9529f471fd1"
+    },
+    {
+      "path": "ocpp/v16/schemas/DeleteCertificate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0d5ad8ae7f7c42bcba9382c44da7034447e13e2",
+      "size": 1156,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a0d5ad8ae7f7c42bcba9382c44da7034447e13e2"
+    },
+    {
+      "path": "ocpp/v16/schemas/DeleteCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75c30a2a815cd2cf76c91d1477eb1badefb7819a",
+      "size": 523,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/75c30a2a815cd2cf76c91d1477eb1badefb7819a"
+    },
+    {
+      "path": "ocpp/v16/schemas/DiagnosticsStatusNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6b1d7d6c91a62902f476d6e4eb827ae7444b308",
+      "size": 491,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e6b1d7d6c91a62902f476d6e4eb827ae7444b308"
+    },
+    {
+      "path": "ocpp/v16/schemas/DiagnosticsStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe2a39f94c7257c0d9a8b8e65b0c3cccf979d7dc",
+      "size": 194,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fe2a39f94c7257c0d9a8b8e65b0c3cccf979d7dc"
+    },
+    {
+      "path": "ocpp/v16/schemas/ExtendedTriggerMessage.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02735dd5e9baf2f42735a87c0ddc503a12fb4dde",
+      "size": 760,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/02735dd5e9baf2f42735a87c0ddc503a12fb4dde"
+    },
+    {
+      "path": "ocpp/v16/schemas/ExtendedTriggerMessageResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a32f4c6ca36d1f2d977f0a12deb2f0b18dda8365",
+      "size": 530,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a32f4c6ca36d1f2d977f0a12deb2f0b18dda8365"
+    },
+    {
+      "path": "ocpp/v16/schemas/FirmwareStatusNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "add5ee35434c5933aa3a9b8365554cd34914bd1e",
+      "size": 591,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/add5ee35434c5933aa3a9b8365554cd34914bd1e"
+    },
+    {
+      "path": "ocpp/v16/schemas/FirmwareStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ba1f893b24b3cb8289afad17ddbe1645e5dafe0",
+      "size": 191,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2ba1f893b24b3cb8289afad17ddbe1645e5dafe0"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetCompositeSchedule.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ce203faf808c7d99677ceb2969fd73e27abb4ca",
+      "size": 539,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1ce203faf808c7d99677ceb2969fd73e27abb4ca"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetCompositeScheduleResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b4d62a9218baa0589b1e1e5b3cec76e0eba9ab74",
+      "size": 2139,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b4d62a9218baa0589b1e1e5b3cec76e0eba9ab74"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetConfiguration.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72b9f749f2017598bbb44946bff0db44041e2c07",
+      "size": 344,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/72b9f749f2017598bbb44946bff0db44041e2c07"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetConfigurationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37f96b5b700e195bb23366f85e734be6b899490f",
+      "size": 1066,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/37f96b5b700e195bb23366f85e734be6b899490f"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetDiagnostics.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b1c56b50ee5d6f11fb024dc21117fda262c6bb1",
+      "size": 642,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0b1c56b50ee5d6f11fb024dc21117fda262c6bb1"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetDiagnosticsResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80892f58744cba50e35bc9742b4bad4f0256f2ea",
+      "size": 275,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/80892f58744cba50e35bc9742b4bad4f0256f2ea"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetInstalledCertificateIds.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3c91f19782556a71bf1681f96c3495882a5dc07",
+      "size": 552,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b3c91f19782556a71bf1681f96c3495882a5dc07"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetInstalledCertificateIdsResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e78d76ed265f226e9d48c71ded8e7494fb1d572",
+      "size": 1566,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2e78d76ed265f226e9d48c71ded8e7494fb1d572"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetLocalListVersion.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a58446fb380ab01d2fb567e3e73e0380df479a7",
+      "size": 183,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2a58446fb380ab01d2fb567e3e73e0380df479a7"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetLocalListVersionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14bd1863a4906d959b5928fe5322a191c667fc96",
+      "size": 301,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/14bd1863a4906d959b5928fe5322a191c667fc96"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetLog.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f58a1a2c38fb869b20c23b9443cf9a781c2de1dc",
+      "size": 1184,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f58a1a2c38fb869b20c23b9443cf9a781c2de1dc"
+    },
+    {
+      "path": "ocpp/v16/schemas/GetLogResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31003df99150fff5368aae82f0c0e721dd62b990",
+      "size": 566,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/31003df99150fff5368aae82f0c0e721dd62b990"
+    },
+    {
+      "path": "ocpp/v16/schemas/Heartbeat.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d5701cfc10909c994a95ce8c065a86719c6927e",
+      "size": 173,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2d5701cfc10909c994a95ce8c065a86719c6927e"
+    },
+    {
+      "path": "ocpp/v16/schemas/HeartbeatResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "39f09f496dd9f1f42bc452e02fc0d1833d375d2b",
+      "size": 325,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/39f09f496dd9f1f42bc452e02fc0d1833d375d2b"
+    },
+    {
+      "path": "ocpp/v16/schemas/InstallCertificate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a99159351574c8c1e8e87cbe4287bc215b155a35",
+      "size": 639,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a99159351574c8c1e8e87cbe4287bc215b155a35"
+    },
+    {
+      "path": "ocpp/v16/schemas/InstallCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7afcb56967e0eac1226b116578dcddf96304982",
+      "size": 526,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f7afcb56967e0eac1226b116578dcddf96304982"
+    },
+    {
+      "path": "ocpp/v16/schemas/LogStatusNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b3ea7ee66f6d2e4d25e7e9ec464f8d966c073c9",
+      "size": 667,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6b3ea7ee66f6d2e4d25e7e9ec464f8d966c073c9"
+    },
+    {
+      "path": "ocpp/v16/schemas/LogStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2685517b383bb4fe9c2b53d6b34ec215effd819b",
+      "size": 173,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2685517b383bb4fe9c2b53d6b34ec215effd819b"
+    },
+    {
+      "path": "ocpp/v16/schemas/MeterValues.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2461a3187e506503a723eee693968ce494eb33d",
+      "size": 6758,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b2461a3187e506503a723eee693968ce494eb33d"
+    },
+    {
+      "path": "ocpp/v16/schemas/MeterValuesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b8d9fc56aede7c2eccba57f59e0e10ce5be8992",
+      "size": 176,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3b8d9fc56aede7c2eccba57f59e0e10ce5be8992"
+    },
+    {
+      "path": "ocpp/v16/schemas/RemoteStartTransaction.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fbde1c459da5cd51908aaabd35d5cfb26ddca95",
+      "size": 4383,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2fbde1c459da5cd51908aaabd35d5cfb26ddca95"
+    },
+    {
+      "path": "ocpp/v16/schemas/RemoteStartTransactionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8abc6e5963e3c9866559048bb1833e19a76babbb",
+      "size": 428,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8abc6e5963e3c9866559048bb1833e19a76babbb"
+    },
+    {
+      "path": "ocpp/v16/schemas/RemoteStopTransaction.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f8c7c51dd4dc16c680f24f5e83178b8c092bcd11",
+      "size": 306,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f8c7c51dd4dc16c680f24f5e83178b8c092bcd11"
+    },
+    {
+      "path": "ocpp/v16/schemas/RemoteStopTransactionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ab84578d0d0120e7128fd2b2468f4a8345a39f4",
+      "size": 427,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7ab84578d0d0120e7128fd2b2468f4a8345a39f4"
+    },
+    {
+      "path": "ocpp/v16/schemas/ReserveNow.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "baa39d2747d508678cd038d38bf1a7bdc663701d",
+      "size": 704,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/baa39d2747d508678cd038d38bf1a7bdc663701d"
+    },
+    {
+      "path": "ocpp/v16/schemas/ReserveNowResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0e55d31d3199f1bf7192ea14e0c0ad43074fe2a",
+      "size": 502,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c0e55d31d3199f1bf7192ea14e0c0ad43074fe2a"
+    },
+    {
+      "path": "ocpp/v16/schemas/Reset.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7d2ec099500c1334fa19e31c2b3fec7559af23e",
+      "size": 398,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e7d2ec099500c1334fa19e31c2b3fec7559af23e"
+    },
+    {
+      "path": "ocpp/v16/schemas/ResetResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c32850554caffa05b30de384d830d8fcb7748537",
+      "size": 411,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c32850554caffa05b30de384d830d8fcb7748537"
+    },
+    {
+      "path": "ocpp/v16/schemas/SecurityEventNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1e484f6e5318713e5de49ba58e627342979f040",
+      "size": 464,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f1e484f6e5318713e5de49ba58e627342979f040"
+    },
+    {
+      "path": "ocpp/v16/schemas/SecurityEventNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "244ff7453e404919ebff4915175616b4013c698a",
+      "size": 177,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/244ff7453e404919ebff4915175616b4013c698a"
+    },
+    {
+      "path": "ocpp/v16/schemas/SendLocalList.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1739312b75568911fdb1c58d7269ed40dc64992",
+      "size": 2146,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a1739312b75568911fdb1c58d7269ed40dc64992"
+    },
+    {
+      "path": "ocpp/v16/schemas/SendLocalListResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9300924dc79483bfb5c863bfc8d6b15295a8b90",
+      "size": 484,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f9300924dc79483bfb5c863bfc8d6b15295a8b90"
+    },
+    {
+      "path": "ocpp/v16/schemas/SetChargingProfile.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1defcb7e5fe669bd7d49e2321cb6bd83ce8dd973",
+      "size": 4310,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1defcb7e5fe669bd7d49e2321cb6bd83ce8dd973"
+    },
+    {
+      "path": "ocpp/v16/schemas/SetChargingProfileResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "895ae72c01416587e55635a7b1522faad4963777",
+      "size": 456,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/895ae72c01416587e55635a7b1522faad4963777"
+    },
+    {
+      "path": "ocpp/v16/schemas/SignCertificate.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b27650e9573362995582a99cc7d5f1be4e789f4f",
+      "size": 287,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b27650e9573362995582a99cc7d5f1be4e789f4f"
+    },
+    {
+      "path": "ocpp/v16/schemas/SignCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "449d5ff4dfaaf3f47a7a9b76855a3be8acfcf939",
+      "size": 483,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/449d5ff4dfaaf3f47a7a9b76855a3be8acfcf939"
+    },
+    {
+      "path": "ocpp/v16/schemas/SignedFirmwareStatusNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0ce83c2dcdd0a840a58cc406780696d107bcc73",
+      "size": 876,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a0ce83c2dcdd0a840a58cc406780696d107bcc73"
+    },
+    {
+      "path": "ocpp/v16/schemas/SignedFirmwareStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d9499e0c78e25574172fbc04001552b43a0437e",
+      "size": 184,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3d9499e0c78e25574172fbc04001552b43a0437e"
+    },
+    {
+      "path": "ocpp/v16/schemas/SignedUpdateFirmware.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "756c149cc1b95cde81d645de7156d0169c05cb47",
+      "size": 1212,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/756c149cc1b95cde81d645de7156d0169c05cb47"
+    },
+    {
+      "path": "ocpp/v16/schemas/SignedUpdateFirmwareResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e18d6b255c292c16f5a49eed43b7fee51be0aefb",
+      "size": 590,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e18d6b255c292c16f5a49eed43b7fee51be0aefb"
+    },
+    {
+      "path": "ocpp/v16/schemas/StartTransaction.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aebe5fc4cf0392d58e70740e78ea6167da8962c3",
+      "size": 676,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/aebe5fc4cf0392d58e70740e78ea6167da8962c3"
+    },
+    {
+      "path": "ocpp/v16/schemas/StartTransactionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c34ef7ef44f69c24bd47af57cdd7bec72fd52a69",
+      "size": 1162,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c34ef7ef44f69c24bd47af57cdd7bec72fd52a69"
+    },
+    {
+      "path": "ocpp/v16/schemas/StatusNotification.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67cec05e04c76675e2e30ba5fad6b4ce99f1ea6c",
+      "size": 1805,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/67cec05e04c76675e2e30ba5fad6b4ce99f1ea6c"
+    },
+    {
+      "path": "ocpp/v16/schemas/StatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78a742330f1c75904047325248d22009b590aff5",
+      "size": 183,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/78a742330f1c75904047325248d22009b590aff5"
+    },
+    {
+      "path": "ocpp/v16/schemas/StopTransaction.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1f2b0373f1da74b797348e592b75333e37f6be6",
+      "size": 7313,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b1f2b0373f1da74b797348e592b75333e37f6be6"
+    },
+    {
+      "path": "ocpp/v16/schemas/StopTransactionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18177f71bd20892fe212e03127397359cf9d5a22",
+      "size": 1023,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/18177f71bd20892fe212e03127397359cf9d5a22"
+    },
+    {
+      "path": "ocpp/v16/schemas/TriggerMessage.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ace3b8092e9e27f49f0297a685200d8d61d2eb74",
+      "size": 678,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ace3b8092e9e27f49f0297a685200d8d61d2eb74"
+    },
+    {
+      "path": "ocpp/v16/schemas/TriggerMessageResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe6857a21a8753f0bfc3021478dd687ae93314cd",
+      "size": 454,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fe6857a21a8753f0bfc3021478dd687ae93314cd"
+    },
+    {
+      "path": "ocpp/v16/schemas/UnlockConnector.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15686d02c7807e2339b5c487449d984b842207a6",
+      "size": 296,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/15686d02c7807e2339b5c487449d984b842207a6"
+    },
+    {
+      "path": "ocpp/v16/schemas/UnlockConnectorResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6343081a8f4ac2fc245dbddf4aaf18670a4b87d",
+      "size": 457,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b6343081a8f4ac2fc245dbddf4aaf18670a4b87d"
+    },
+    {
+      "path": "ocpp/v16/schemas/UpdateFirmware.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "724f2cc651b96eabc94ee0c74900f7942dcf93d7",
+      "size": 572,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/724f2cc651b96eabc94ee0c74900f7942dcf93d7"
+    },
+    {
+      "path": "ocpp/v16/schemas/UpdateFirmwareResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "370600ff57d96e94fe880f77b42592bd29cb0c9b",
+      "size": 179,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/370600ff57d96e94fe880f77b42592bd29cb0c9b"
+    },
+    {
+      "path": "ocpp/v201",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ceb0742e08465b009667277e06821b9ac6408ad9",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/ceb0742e08465b009667277e06821b9ac6408ad9"
+    },
+    {
+      "path": "ocpp/v201/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae4a68763315617daf83734cadd04ad7789ad83b",
+      "size": 189,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ae4a68763315617daf83734cadd04ad7789ad83b"
+    },
+    {
+      "path": "ocpp/v201/call.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0dad3ab1a02311a2d06ff02a21b0de29dfd8fb1d",
+      "size": 12146,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0dad3ab1a02311a2d06ff02a21b0de29dfd8fb1d"
+    },
+    {
+      "path": "ocpp/v201/call_result.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e0f91fe488d5ef6cb8720c801e465c0aa66b8c47",
+      "size": 10902,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e0f91fe488d5ef6cb8720c801e465c0aa66b8c47"
+    },
+    {
+      "path": "ocpp/v201/datatypes.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2e6502894400d495504f4d1a74de2d661ed6078",
+      "size": 22321,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a2e6502894400d495504f4d1a74de2d661ed6078"
+    },
+    {
+      "path": "ocpp/v201/enums.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bcd2b1622b7f72b08b8a7327ca2e609ab2422ba",
+      "size": 78213,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2bcd2b1622b7f72b08b8a7327ca2e609ab2422ba"
+    },
+    {
+      "path": "ocpp/v201/schemas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a250675f97b768cae87fea37997e97990c2fe552",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/a250675f97b768cae87fea37997e97990c2fe552"
+    },
+    {
+      "path": "ocpp/v201/schemas/AuthorizeRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "b16e9c1f9dadb9cc955f960ac9dfd561d3488216",
+      "size": 4203,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b16e9c1f9dadb9cc955f960ac9dfd561d3488216"
+    },
+    {
+      "path": "ocpp/v201/schemas/AuthorizeResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "11ca15c242b3e547b77c9097e04547f2377ed4b7",
+      "size": 7208,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/11ca15c242b3e547b77c9097e04547f2377ed4b7"
+    },
+    {
+      "path": "ocpp/v201/schemas/BootNotificationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "5a25f23795b848959a9bbf7d43f0fd96eeaaa57d",
+      "size": 3161,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5a25f23795b848959a9bbf7d43f0fd96eeaaa57d"
+    },
+    {
+      "path": "ocpp/v201/schemas/BootNotificationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "39eb0303e6b48a3142ecdcc676f0305b752ae0f1",
+      "size": 2270,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/39eb0303e6b48a3142ecdcc676f0305b752ae0f1"
+    },
+    {
+      "path": "ocpp/v201/schemas/CancelReservationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "1fd05c7d29d8907e9f9a035397cfc1ea4391b8c4",
+      "size": 775,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1fd05c7d29d8907e9f9a035397cfc1ea4391b8c4"
+    },
+    {
+      "path": "ocpp/v201/schemas/CancelReservationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "67b8a0a93ebd4b99e48b770eb57e97649faddaa5",
+      "size": 1758,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/67b8a0a93ebd4b99e48b770eb57e97649faddaa5"
+    },
+    {
+      "path": "ocpp/v201/schemas/CertificateSignedRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "63ab6d0cc797e9b749dc2c0b0006a6ea2ea45c67",
+      "size": 1914,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/63ab6d0cc797e9b749dc2c0b0006a6ea2ea45c67"
+    },
+    {
+      "path": "ocpp/v201/schemas/CertificateSignedResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ff16ca041e92861d84ec5f700aa0d39458f8b12b",
+      "size": 1752,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ff16ca041e92861d84ec5f700aa0d39458f8b12b"
+    },
+    {
+      "path": "ocpp/v201/schemas/ChangeAvailabilityRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "731d948edf050e022c9c4cc0c50f0648d1bd01c9",
+      "size": 1811,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/731d948edf050e022c9c4cc0c50f0648d1bd01c9"
+    },
+    {
+      "path": "ocpp/v201/schemas/ChangeAvailabilityResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "62150b2e0e96b9781d3eaaa5af01e94984d218b7",
+      "size": 1783,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/62150b2e0e96b9781d3eaaa5af01e94984d218b7"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearCacheRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearCacheResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "b4c801486e2a488c6fcc399490152a2f918496b9",
+      "size": 1735,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b4c801486e2a488c6fcc399490152a2f918496b9"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearChargingProfileRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "71c94324b0b18077ae0251218599141897c866c4",
+      "size": 2574,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/71c94324b0b18077ae0251218599141897c866c4"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearChargingProfileResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "52b0dae70d9f30fc9670c124589671edbd5433d5",
+      "size": 1752,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/52b0dae70d9f30fc9670c124589671edbd5433d5"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearDisplayMessageRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7c1fd720166bfdf76a8691d2e16881f2f61221d7",
+      "size": 787,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7c1fd720166bfdf76a8691d2e16881f2f61221d7"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearDisplayMessageResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a86805b5be4269c08b8b07180e1b4ea7aff75557",
+      "size": 1735,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a86805b5be4269c08b8b07180e1b4ea7aff75557"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearVariableMonitoringRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "06b74e24659096d8c7868118f479c983a2d5493e",
+      "size": 865,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/06b74e24659096d8c7868118f479c983a2d5493e"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearVariableMonitoringResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "5b9465c39420180d8a4a8a143e4d639789e5c7c9",
+      "size": 2327,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5b9465c39420180d8a4a8a143e4d639789e5c7c9"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearedChargingLimitRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "57379617db64781f3257a453a3adfc94c2a82145",
+      "size": 1087,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/57379617db64781f3257a453a3adfc94c2a82145"
+    },
+    {
+      "path": "ocpp/v201/schemas/ClearedChargingLimitResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/CostUpdatedRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "9bc4d070f68ca23d0480268d18f068b08213a788",
+      "size": 1121,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/9bc4d070f68ca23d0480268d18f068b08213a788"
+    },
+    {
+      "path": "ocpp/v201/schemas/CostUpdatedResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/CustomerInformationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0e76be40f7e36334cae907808c7a15898e83f6fa",
+      "size": 4659,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0e76be40f7e36334cae907808c7a15898e83f6fa"
+    },
+    {
+      "path": "ocpp/v201/schemas/CustomerInformationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "bd9848618b36467b6e2cecceba7b75401e3abd87",
+      "size": 1740,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bd9848618b36467b6e2cecceba7b75401e3abd87"
+    },
+    {
+      "path": "ocpp/v201/schemas/DataTransferRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3fdfa4dc1eead0a63b6e982b501a097f4f00a496",
+      "size": 1101,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3fdfa4dc1eead0a63b6e982b501a097f4f00a496"
+    },
+    {
+      "path": "ocpp/v201/schemas/DataTransferResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "f0cf0ddcfd81e0c84aa365652523875868f68973",
+      "size": 1869,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f0cf0ddcfd81e0c84aa365652523875868f68973"
+    },
+    {
+      "path": "ocpp/v201/schemas/DeleteCertificateRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "f9e72685de0b08baa98172eb426ced833a971fba",
+      "size": 1808,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f9e72685de0b08baa98172eb426ced833a971fba"
+    },
+    {
+      "path": "ocpp/v201/schemas/DeleteCertificateResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "63c2a5dc72778b73f8cdb402377db7c5d299ad47",
+      "size": 1747,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/63c2a5dc72778b73f8cdb402377db7c5d299ad47"
+    },
+    {
+      "path": "ocpp/v201/schemas/FirmwareStatusNotificationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "2a994adb932c242ea35843351d64e46cf097caf9",
+      "size": 1539,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2a994adb932c242ea35843351d64e46cf097caf9"
+    },
+    {
+      "path": "ocpp/v201/schemas/FirmwareStatusNotificationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/Get15118EVCertificateRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ddb9662490833eed8340c58c4d2d012288da044e",
+      "size": 1424,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ddb9662490833eed8340c58c4d2d012288da044e"
+    },
+    {
+      "path": "ocpp/v201/schemas/Get15118EVCertificateResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "55e9d1bcf12d78b6ed771fed91bcb93d861a5468",
+      "size": 1915,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/55e9d1bcf12d78b6ed771fed91bcb93d861a5468"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetBaseReportRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a7f3941a90d97d9fe13ec3b24e35fe24a3441c47",
+      "size": 1105,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a7f3941a90d97d9fe13ec3b24e35fe24a3441c47"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetBaseReportResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "8605807fe7e8bafecbaaca74b8649f46e1fb86e6",
+      "size": 1794,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8605807fe7e8bafecbaaca74b8649f46e1fb86e6"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetCertificateStatusRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0e550be44865b13b012e7d46eff8b45f4509014d",
+      "size": 1957,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0e550be44865b13b012e7d46eff8b45f4509014d"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetCertificateStatusResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "2aac012e6cc0564959668117d5602d6b6dde68a2",
+      "size": 2089,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2aac012e6cc0564959668117d5602d6b6dde68a2"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetChargingProfilesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "67d5d2ada682259defeb5944445f2741788f1612",
+      "size": 3622,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/67d5d2ada682259defeb5944445f2741788f1612"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetChargingProfilesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "23992823a1895755af260439b1bf94439a50306f",
+      "size": 1859,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/23992823a1895755af260439b1bf94439a50306f"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetCompositeScheduleRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d5cf998fcaa62295094c1568960bf714da1c309b",
+      "size": 1329,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d5cf998fcaa62295094c1568960bf714da1c309b"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetCompositeScheduleResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "b96b89a75b563fa2fc757c8b9f81b7964819af1c",
+      "size": 5095,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b96b89a75b563fa2fc757c8b9f81b7964819af1c"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetDisplayMessagesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "355dc0a4303ce635014d96ed6ac8eb6c07cbdbeb",
+      "size": 1874,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/355dc0a4303ce635014d96ed6ac8eb6c07cbdbeb"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetDisplayMessagesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "b36efb288ba8d0a0fa6531f18d7cabf8a81c34e6",
+      "size": 1841,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b36efb288ba8d0a0fa6531f18d7cabf8a81c34e6"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetInstalledCertificateIdsRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "206efec1422abc60c4bfe3abd32fed9f39bf8fe9",
+      "size": 1204,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/206efec1422abc60c4bfe3abd32fed9f39bf8fe9"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetInstalledCertificateIdsResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "79605132d1b33558527cf04b9bfc4b175ceee5cc",
+      "size": 3997,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/79605132d1b33558527cf04b9bfc4b175ceee5cc"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetLocalListVersionRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetLocalListVersionResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "e5116fc9d79423add369ce71e7acd0c5ed4558f6",
+      "size": 840,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e5116fc9d79423add369ce71e7acd0c5ed4558f6"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetLogRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7b2585338aca6aef563553db9cd7be50a40caf70",
+      "size": 2802,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7b2585338aca6aef563553db9cd7be50a40caf70"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetLogResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "357b3ec945ba4a2a58ba4cc24bddd33b5f03894f",
+      "size": 1954,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/357b3ec945ba4a2a58ba4cc24bddd33b5f03894f"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetMonitoringReportRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "f2e807ec2d4d92ad04a729cdae684a7123a050e0",
+      "size": 4175,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f2e807ec2d4d92ad04a729cdae684a7123a050e0"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetMonitoringReportResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "211534293d8c35ad56da131714e7c6bcf8b6fe40",
+      "size": 1800,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/211534293d8c35ad56da131714e7c6bcf8b6fe40"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetReportRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "c42c4be116b6d849ec20129842b3af8193b8c4cb",
+      "size": 4143,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c42c4be116b6d849ec20129842b3af8193b8c4cb"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetReportResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "211534293d8c35ad56da131714e7c6bcf8b6fe40",
+      "size": 1800,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/211534293d8c35ad56da131714e7c6bcf8b6fe40"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetTransactionStatusRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d438bbeaaff3950fbb6305825d65800dbe836f1b",
+      "size": 784,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d438bbeaaff3950fbb6305825d65800dbe836f1b"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetTransactionStatusResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "2dab648dd3e07d509dcaf477cf327f0442820b60",
+      "size": 910,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2dab648dd3e07d509dcaf477cf327f0442820b60"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetVariablesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "79fcd0fdfd8d3073061e2893c9750f5f31bffd53",
+      "size": 3931,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/79fcd0fdfd8d3073061e2893c9750f5f31bffd53"
+    },
+    {
+      "path": "ocpp/v201/schemas/GetVariablesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "52c8061dd56f995e1d0d298b7d7edbdbba22b484",
+      "size": 5581,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/52c8061dd56f995e1d0d298b7d7edbdbba22b484"
+    },
+    {
+      "path": "ocpp/v201/schemas/HeartbeatRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/HeartbeatResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "938f21f84dae7f20ebce2c0677cb77b32c0ddb7c",
+      "size": 802,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/938f21f84dae7f20ebce2c0677cb77b32c0ddb7c"
+    },
+    {
+      "path": "ocpp/v201/schemas/InstallCertificateRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "bf0f098b996e5cd8f88f8c400f7c3d4cc1934e98",
+      "size": 1226,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bf0f098b996e5cd8f88f8c400f7c3d4cc1934e98"
+    },
+    {
+      "path": "ocpp/v201/schemas/InstallCertificateResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "eb25922219936b97fdc79b114329d27f65433f80",
+      "size": 1751,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/eb25922219936b97fdc79b114329d27f65433f80"
+    },
+    {
+      "path": "ocpp/v201/schemas/LogStatusNotificationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "45a371ab0fa47c9c4b5132b2f212073e179d9488",
+      "size": 1361,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/45a371ab0fa47c9c4b5132b2f212073e179d9488"
+    },
+    {
+      "path": "ocpp/v201/schemas/LogStatusNotificationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/MeterValuesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "dbef5628534f496793363e1a1dd4028117b7b71d",
+      "size": 7709,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dbef5628534f496793363e1a1dd4028117b7b71d"
+    },
+    {
+      "path": "ocpp/v201/schemas/MeterValuesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyChargingLimitRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "86475c959c0484fb8a2fcb3d8bf0c40481840053",
+      "size": 11333,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/86475c959c0484fb8a2fcb3d8bf0c40481840053"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyChargingLimitResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyCustomerInformationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "db7792f2c885c8e6dfe99b33db907a58d340acd0",
+      "size": 1542,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/db7792f2c885c8e6dfe99b33db907a58d340acd0"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyCustomerInformationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyDisplayMessagesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "5cf8bf70d6103c366ddbc9aafad3a3839678c34d",
+      "size": 6512,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5cf8bf70d6103c366ddbc9aafad3a3839678c34d"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyDisplayMessagesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyEVChargingNeedsRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ea93c8655d6dfb0939341b8cea3fdd5639e39dee",
+      "size": 5943,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ea93c8655d6dfb0939341b8cea3fdd5639e39dee"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyEVChargingNeedsResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0e038b3f888ceee4e23fefc026b9b7f24a29fb70",
+      "size": 1870,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0e038b3f888ceee4e23fefc026b9b7f24a29fb70"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyEVChargingScheduleRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3f1fb58e3e27c2474d9aa22d9be331b34d516bc1",
+      "size": 10370,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3f1fb58e3e27c2474d9aa22d9be331b34d516bc1"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyEVChargingScheduleResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a290e72689b00acaf28a5787ffd76c6967a78d36",
+      "size": 1780,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a290e72689b00acaf28a5787ffd76c6967a78d36"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyEventRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "735bc22ddaa7d324856e621710d16a79f6680abc",
+      "size": 6614,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/735bc22ddaa7d324856e621710d16a79f6680abc"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyEventResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyMonitoringReportRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d7d5810b5ddc7fcf176a17b86e361cda0ddc9338",
+      "size": 7005,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d7d5810b5ddc7fcf176a17b86e361cda0ddc9338"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyMonitoringReportResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyReportRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "12f15c027aafe8f3d8e6e05318d7afe8f533fc38",
+      "size": 8608,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/12f15c027aafe8f3d8e6e05318d7afe8f533fc38"
+    },
+    {
+      "path": "ocpp/v201/schemas/NotifyReportResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/PublishFirmwareRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "57c8d56851b5cd38aada43b4f699bc8625722b78",
+      "size": 1668,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/57c8d56851b5cd38aada43b4f699bc8625722b78"
+    },
+    {
+      "path": "ocpp/v201/schemas/PublishFirmwareResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d876189a9db58884bab77960fd1c539c685d697f",
+      "size": 1691,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d876189a9db58884bab77960fd1c539c685d697f"
+    },
+    {
+      "path": "ocpp/v201/schemas/PublishFirmwareStatusNotificationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "138c76a338d6d7ee5d0b47e87554fa2e91fcd723",
+      "size": 1631,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/138c76a338d6d7ee5d0b47e87554fa2e91fcd723"
+    },
+    {
+      "path": "ocpp/v201/schemas/PublishFirmwareStatusNotificationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/ReportChargingProfilesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "db9664d20ec5bec4903ce62d76b4302805c29ca8",
+      "size": 14700,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/db9664d20ec5bec4903ce62d76b4302805c29ca8"
+    },
+    {
+      "path": "ocpp/v201/schemas/ReportChargingProfilesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/RequestStartTransactionRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7bad4353d2d23fb9f8a0def9299a29d4e9aa4de2",
+      "size": 15964,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7bad4353d2d23fb9f8a0def9299a29d4e9aa4de2"
+    },
+    {
+      "path": "ocpp/v201/schemas/RequestStartTransactionResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "643c255bb39e37686172366cbe7dabd963c646e2",
+      "size": 2080,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/643c255bb39e37686172366cbe7dabd963c646e2"
+    },
+    {
+      "path": "ocpp/v201/schemas/RequestStopTransactionRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "faa4d81d8148041a5473e4ef7dbe181aa0a45701",
+      "size": 844,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/faa4d81d8148041a5473e4ef7dbe181aa0a45701"
+    },
+    {
+      "path": "ocpp/v201/schemas/RequestStopTransactionResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "c269b76c7e311a3bb6780087b73a139e07fc9515",
+      "size": 1760,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c269b76c7e311a3bb6780087b73a139e07fc9515"
+    },
+    {
+      "path": "ocpp/v201/schemas/ReservationStatusUpdateRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a0b9f485f96da11e522c43f9723cbed2b7567394",
+      "size": 1133,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a0b9f485f96da11e522c43f9723cbed2b7567394"
+    },
+    {
+      "path": "ocpp/v201/schemas/ReservationStatusUpdateResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/ReserveNowRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "afb001a200a561d26dd4dab03ec347ce977ade47",
+      "size": 3649,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/afb001a200a561d26dd4dab03ec347ce977ade47"
+    },
+    {
+      "path": "ocpp/v201/schemas/ReserveNowResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d6e4ece72e0ea164f46a429aaec8017e9b874939",
+      "size": 1758,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d6e4ece72e0ea164f46a429aaec8017e9b874939"
+    },
+    {
+      "path": "ocpp/v201/schemas/ResetRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "5c9c7e55c19b8915b1eb8f485d46494591ac8c6c",
+      "size": 1144,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5c9c7e55c19b8915b1eb8f485d46494591ac8c6c"
+    },
+    {
+      "path": "ocpp/v201/schemas/ResetResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "f8c213b4e314a62a4a3abc2d935f5fd7726fd45b",
+      "size": 1730,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f8c213b4e314a62a4a3abc2d935f5fd7726fd45b"
+    },
+    {
+      "path": "ocpp/v201/schemas/SecurityEventNotificationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "04b5a3bbaeb59c32e1542acc99afc7be01cc96bf",
+      "size": 1120,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/04b5a3bbaeb59c32e1542acc99afc7be01cc96bf"
+    },
+    {
+      "path": "ocpp/v201/schemas/SecurityEventNotificationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/SendLocalListRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "088f278f55c64ae0e1276e5fdf9bfa2f4148c908",
+      "size": 7733,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/088f278f55c64ae0e1276e5fdf9bfa2f4148c908"
+    },
+    {
+      "path": "ocpp/v201/schemas/SendLocalListResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "23aa569f3f703a64e50797b69bf109a196546aa5",
+      "size": 1810,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/23aa569f3f703a64e50797b69bf109a196546aa5"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetChargingProfileRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "c99ef989ab0a18520b1934d499c3007f0077e5fb",
+      "size": 13730,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c99ef989ab0a18520b1934d499c3007f0077e5fb"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetChargingProfileResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "55fb7a3fe71952e3cfc2733987f345be945c4a9d",
+      "size": 1913,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/55fb7a3fe71952e3cfc2733987f345be945c4a9d"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetDisplayMessageRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a69c7e1d9d17bcad3553d1f6e12c2b7c6d72f121",
+      "size": 5989,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a69c7e1d9d17bcad3553d1f6e12c2b7c6d72f121"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetDisplayMessageResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "70da3a7199e5166b02e4ed5a647b0e22d01b9965",
+      "size": 1848,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/70da3a7199e5166b02e4ed5a647b0e22d01b9965"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetMonitoringBaseRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "a6af76cd4f5a8e07a5d8953c8011f09363a53759",
+      "size": 1005,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a6af76cd4f5a8e07a5d8953c8011f09363a53759"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetMonitoringBaseResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0b5466ac08db1e18075762107034942d9d8cda39",
+      "size": 1789,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0b5466ac08db1e18075762107034942d9d8cda39"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetMonitoringLevelRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7bcc8e2a8a7a6fb23c8a5c606979b0e109811331",
+      "size": 2087,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7bcc8e2a8a7a6fb23c8a5c606979b0e109811331"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetMonitoringLevelResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0c25fc06baa6b80fc869028d7f71bc983c96ec7b",
+      "size": 1718,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0c25fc06baa6b80fc869028d7f71bc983c96ec7b"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetNetworkProfileRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0e1df5a4f0f7a904f0a3e29f70ff3c59ad100bdb",
+      "size": 7613,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0e1df5a4f0f7a904f0a3e29f70ff3c59ad100bdb"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetNetworkProfileResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "5d73b481b446d095902d801ebae1880dc84e161f",
+      "size": 1710,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5d73b481b446d095902d801ebae1880dc84e161f"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetVariableMonitoringRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7ae5495cbc56d0c133da26e4a8c9872c8fba53b6",
+      "size": 5959,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7ae5495cbc56d0c133da26e4a8c9872c8fba53b6"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetVariableMonitoringResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "4bc5a4fe8a17847ab03f52d69fd47d6065424993",
+      "size": 6923,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4bc5a4fe8a17847ab03f52d69fd47d6065424993"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetVariablesRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ad74659ea1b9ad47910a16646fa0e0f60666bcf6",
+      "size": 4272,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ad74659ea1b9ad47910a16646fa0e0f60666bcf6"
+    },
+    {
+      "path": "ocpp/v201/schemas/SetVariablesResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3ed334305f624060c53a31e9057f5dedde46baab",
+      "size": 5035,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3ed334305f624060c53a31e9057f5dedde46baab"
+    },
+    {
+      "path": "ocpp/v201/schemas/SignCertificateRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "397ff8ae0213f7c04fa39f898328b9dfd43d3a89",
+      "size": 1481,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/397ff8ae0213f7c04fa39f898328b9dfd43d3a89"
+    },
+    {
+      "path": "ocpp/v201/schemas/SignCertificateResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "86eda6a5e6f22b73c4e2d4c62d19361d0a8883d0",
+      "size": 1699,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/86eda6a5e6f22b73c4e2d4c62d19361d0a8883d0"
+    },
+    {
+      "path": "ocpp/v201/schemas/StatusNotificationRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "da9a5dd88f82a1e95bc350646b834026fbe20891",
+      "size": 1570,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/da9a5dd88f82a1e95bc350646b834026fbe20891"
+    },
+    {
+      "path": "ocpp/v201/schemas/StatusNotificationResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62",
+      "size": 634,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc3fc1d2fb1520fe414f7b02ae69d7e248a59e62"
+    },
+    {
+      "path": "ocpp/v201/schemas/TransactionEventRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "3bdd571680c8d108b5c9d166930338facab6fd8a",
+      "size": 14824,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3bdd571680c8d108b5c9d166930338facab6fd8a"
+    },
+    {
+      "path": "ocpp/v201/schemas/TransactionEventResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "b814022a1d75733f2357a8c93f8ba537ab6d4eb4",
+      "size": 7606,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b814022a1d75733f2357a8c93f8ba537ab6d4eb4"
+    },
+    {
+      "path": "ocpp/v201/schemas/TriggerMessageRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7a58fc9ba0622621c56f295d9b56b320f273de2e",
+      "size": 1996,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7a58fc9ba0622621c56f295d9b56b320f273de2e"
+    },
+    {
+      "path": "ocpp/v201/schemas/TriggerMessageResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "319bf4b48bb31e3a6990ddf51e0328ec476d7c6f",
+      "size": 1772,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/319bf4b48bb31e3a6990ddf51e0328ec476d7c6f"
+    },
+    {
+      "path": "ocpp/v201/schemas/UnlockConnectorRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "73854a6b11537e0744cc06e9eba63de09b2a3cdc",
+      "size": 970,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/73854a6b11537e0744cc06e9eba63de09b2a3cdc"
+    },
+    {
+      "path": "ocpp/v201/schemas/UnlockConnectorResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "e7ec0450359ef4ed4804a80c093e2f8320560f5d",
+      "size": 1776,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e7ec0450359ef4ed4804a80c093e2f8320560f5d"
+    },
+    {
+      "path": "ocpp/v201/schemas/UnpublishFirmwareRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "08cb083bbaee50b43a6821f46a3afc6854d6f973",
+      "size": 837,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/08cb083bbaee50b43a6821f46a3afc6854d6f973"
+    },
+    {
+      "path": "ocpp/v201/schemas/UnpublishFirmwareResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "cf4acaea7eebca8ca485ce3154929c180414df0a",
+      "size": 1059,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/cf4acaea7eebca8ca485ce3154929c180414df0a"
+    },
+    {
+      "path": "ocpp/v201/schemas/UpdateFirmwareRequest.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "61617e99d74620118e9ce654cc9d142ccc5a4875",
+      "size": 2765,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/61617e99d74620118e9ce654cc9d142ccc5a4875"
+    },
+    {
+      "path": "ocpp/v201/schemas/UpdateFirmwareResponse.json",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "b8fda9ab660316382f2e724ac12b9f59f48e0d27",
+      "size": 1824,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b8fda9ab660316382f2e724ac12b9f59f48e0d27"
+    },
+    {
+      "path": "ocpp/v21",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1e1c4a70699c4b07c8b96f57d2f35b0ed3d069b1",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/1e1c4a70699c4b07c8b96f57d2f35b0ed3d069b1"
+    },
+    {
+      "path": "ocpp/v21/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6f6d628038d153f5b1972cce720ad3b80e22f3c",
+      "size": 186,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d6f6d628038d153f5b1972cce720ad3b80e22f3c"
+    },
+    {
+      "path": "ocpp/v21/call.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f594bade922d1a11640b4cfd0aefa77cc98a872",
+      "size": 19360,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5f594bade922d1a11640b4cfd0aefa77cc98a872"
+    },
+    {
+      "path": "ocpp/v21/call_result.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f82739f10b43d6516ef579e6ff0364e9ae54aadf",
+      "size": 16447,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f82739f10b43d6516ef579e6ff0364e9ae54aadf"
+    },
+    {
+      "path": "ocpp/v21/datatypes.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ae94a6f3ba27da116a1c6de2a9bf14e99e288dc",
+      "size": 36426,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5ae94a6f3ba27da116a1c6de2a9bf14e99e288dc"
+    },
+    {
+      "path": "ocpp/v21/enums.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35af70bf8f1313de2b26cf8e902443cee483f61a",
+      "size": 30105,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/35af70bf8f1313de2b26cf8e902443cee483f61a"
+    },
+    {
+      "path": "ocpp/v21/schemas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "982bec8a54ed79ead3864c876ca1f8cbca5f8fbd",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/982bec8a54ed79ead3864c876ca1f8cbca5f8fbd"
+    },
+    {
+      "path": "ocpp/v21/schemas/AFRRSignalRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03c73ac33fb25f22b6b2c856da2f1c7cadfafd87",
+      "size": 1329,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/03c73ac33fb25f22b6b2c856da2f1c7cadfafd87"
+    },
+    {
+      "path": "ocpp/v21/schemas/AFRRSignalResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "237b18c5f98e8c1137dafa1620bdc8ccb1881f13",
+      "size": 2394,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/237b18c5f98e8c1137dafa1620bdc8ccb1881f13"
+    },
+    {
+      "path": "ocpp/v21/schemas/AdjustPeriodicEventStreamRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e346a739df9a2440779e99f76bb0de4ad5291302",
+      "size": 1972,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e346a739df9a2440779e99f76bb0de4ad5291302"
+    },
+    {
+      "path": "ocpp/v21/schemas/AdjustPeriodicEventStreamResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0df28d91e0d193729b5ed5d1d7f474d6451e923",
+      "size": 2464,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f0df28d91e0d193729b5ed5d1d7f474d6451e923"
+    },
+    {
+      "path": "ocpp/v21/schemas/AuthorizeRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75add3198250b8f2f3d0f0c20af1b1110148d2f1",
+      "size": 6739,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/75add3198250b8f2f3d0f0c20af1b1110148d2f1"
+    },
+    {
+      "path": "ocpp/v21/schemas/AuthorizeResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d25d37145945131e78b0c5a0c39041bdf2d84f0",
+      "size": 32879,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2d25d37145945131e78b0c5a0c39041bdf2d84f0"
+    },
+    {
+      "path": "ocpp/v21/schemas/BatterySwapRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2273cf296d60d0698194daf984678250507d7297",
+      "size": 6424,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2273cf296d60d0698194daf984678250507d7297"
+    },
+    {
+      "path": "ocpp/v21/schemas/BatterySwapResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7539bca7b23414b97694c946b107ffc2c18f023",
+      "size": 1099,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e7539bca7b23414b97694c946b107ffc2c18f023"
+    },
+    {
+      "path": "ocpp/v21/schemas/BootNotificationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45ee52a6d67181ff6c0491af141937b73ad55894",
+      "size": 4115,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/45ee52a6d67181ff6c0491af141937b73ad55894"
+    },
+    {
+      "path": "ocpp/v21/schemas/BootNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73b4d4ce1c2c77a885c4214aa54a9c8346222ab2",
+      "size": 3161,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/73b4d4ce1c2c77a885c4214aa54a9c8346222ab2"
+    },
+    {
+      "path": "ocpp/v21/schemas/CancelReservationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62008ee5249f4f3a51bbd6fc4b350592b0f7ac84",
+      "size": 1183,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/62008ee5249f4f3a51bbd6fc4b350592b0f7ac84"
+    },
+    {
+      "path": "ocpp/v21/schemas/CancelReservationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dae793565dc67ea2522650e8a1ffbf493e880c0c",
+      "size": 2546,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dae793565dc67ea2522650e8a1ffbf493e880c0c"
+    },
+    {
+      "path": "ocpp/v21/schemas/CertificateSignedRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7b3d13cdf899e1076d23101ca3d5ee7ce495053",
+      "size": 2632,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c7b3d13cdf899e1076d23101ca3d5ee7ce495053"
+    },
+    {
+      "path": "ocpp/v21/schemas/CertificateSignedResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3dec6d6f281594b405070c63c67ef225b9751796",
+      "size": 2540,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3dec6d6f281594b405070c63c67ef225b9751796"
+    },
+    {
+      "path": "ocpp/v21/schemas/ChangeAvailabilityRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6fb4bba675cced3a0786177aff480c2ffbfec801",
+      "size": 2516,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6fb4bba675cced3a0786177aff480c2ffbfec801"
+    },
+    {
+      "path": "ocpp/v21/schemas/ChangeAvailabilityResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9d9fa54a96565f1060ae79803fcb852fc717b05",
+      "size": 2586,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b9d9fa54a96565f1060ae79803fcb852fc717b05"
+    },
+    {
+      "path": "ocpp/v21/schemas/ChangeTransactionTariffRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91c33f3cf993f3252bddfff089c3c4885eee0f1d",
+      "size": 25254,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/91c33f3cf993f3252bddfff089c3c4885eee0f1d"
+    },
+    {
+      "path": "ocpp/v21/schemas/ChangeTransactionTariffResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3fbf92390b394ef2e23aaf6708f56b21e56504ce",
+      "size": 2622,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3fbf92390b394ef2e23aaf6708f56b21e56504ce"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearCacheRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dac8481af0648ad2dcd22756d30822a130749ecb",
+      "size": 964,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dac8481af0648ad2dcd22756d30822a130749ecb"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearCacheResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16180e1baee9d5e24cd69c1fbfad9925ed57cf14",
+      "size": 2516,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/16180e1baee9d5e24cd69c1fbfad9925ed57cf14"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearChargingProfileRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a53f8ce34a3bafb528f20c1b23cd92b07c1dc25",
+      "size": 3166,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6a53f8ce34a3bafb528f20c1b23cd92b07c1dc25"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearChargingProfileResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c6fd1fd63cd10cf1fab34168f45c915bfeb2a83",
+      "size": 2543,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4c6fd1fd63cd10cf1fab34168f45c915bfeb2a83"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearDERControlRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d6a7f70f20e0b5e879bacf5b8a68eed29c50d67",
+      "size": 2469,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5d6a7f70f20e0b5e879bacf5b8a68eed29c50d67"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearDERControlResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c47257d9d5d12377f6f1184c3b70f7b03288be23",
+      "size": 2527,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c47257d9d5d12377f6f1184c3b70f7b03288be23"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearDisplayMessageRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7135b75eaad929a9e8a116e9455092472b721d06",
+      "size": 1197,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7135b75eaad929a9e8a116e9455092472b721d06"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearDisplayMessageResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1416422c3497230579fff7623a3c829e43448fc5",
+      "size": 2553,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1416422c3497230579fff7623a3c829e43448fc5"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearTariffsRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cc01e7651a4fc6c94e169b8302a77773e750544",
+      "size": 1506,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2cc01e7651a4fc6c94e169b8302a77773e750544"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearTariffsResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77074b9d3323654e9f29945b08fd847e79453b44",
+      "size": 3412,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/77074b9d3323654e9f29945b08fd847e79453b44"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearVariableMonitoringRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c43f674a9c10b26431a86c600fba45ada60ef03b",
+      "size": 1333,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c43f674a9c10b26431a86c600fba45ada60ef03b"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearVariableMonitoringResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4309a2213dd963c9d8c7bd56f3b3b6c3b78d10a",
+      "size": 3495,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c4309a2213dd963c9d8c7bd56f3b3b6c3b78d10a"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearedChargingLimitRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d802570577091b5706f146cc1aabf14c8b3a89e",
+      "size": 1408,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1d802570577091b5706f146cc1aabf14c8b3a89e"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClearedChargingLimitResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "13d9bc711bf9184a2e19888f3c1ea5366609b97a",
+      "size": 975,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/13d9bc711bf9184a2e19888f3c1ea5366609b97a"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClosePeriodicEventStreamRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17113773b1aff7b8c6aa3f075ad53c7b2dd1b5b3",
+      "size": 1158,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/17113773b1aff7b8c6aa3f075ad53c7b2dd1b5b3"
+    },
+    {
+      "path": "ocpp/v21/schemas/ClosePeriodicEventStreamResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad813bf19fdb66f129a681865015e8a0bb1abf5b",
+      "size": 979,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ad813bf19fdb66f129a681865015e8a0bb1abf5b"
+    },
+    {
+      "path": "ocpp/v21/schemas/CostUpdatedRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bc57be136cd260d0c31041e57ed78cbb95ead9d",
+      "size": 1543,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1bc57be136cd260d0c31041e57ed78cbb95ead9d"
+    },
+    {
+      "path": "ocpp/v21/schemas/CostUpdatedResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "703b637234df2be9ce88d4748b90a47207b6321a",
+      "size": 966,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/703b637234df2be9ce88d4748b90a47207b6321a"
+    },
+    {
+      "path": "ocpp/v21/schemas/CustomerInformationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00026d545c167af9e1b2d5fc8917f710958a602d",
+      "size": 6890,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/00026d545c167af9e1b2d5fc8917f710958a602d"
+    },
+    {
+      "path": "ocpp/v21/schemas/CustomerInformationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "116a54e4331d6b91973c4e3de818a828d8cc0e49",
+      "size": 2544,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/116a54e4331d6b91973c4e3de818a828d8cc0e49"
+    },
+    {
+      "path": "ocpp/v21/schemas/DataTransferRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5286974188a947225d381c88f3dd24149f797434",
+      "size": 1549,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5286974188a947225d381c88f3dd24149f797434"
+    },
+    {
+      "path": "ocpp/v21/schemas/DataTransferResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02be433bd2640a0eed3d77c23c07eb86f31e2789",
+      "size": 2703,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/02be433bd2640a0eed3d77c23c07eb86f31e2789"
+    },
+    {
+      "path": "ocpp/v21/schemas/DeleteCertificateRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17799e4d90865269cf402dd0699295cd85f6fa64",
+      "size": 3066,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/17799e4d90865269cf402dd0699295cd85f6fa64"
+    },
+    {
+      "path": "ocpp/v21/schemas/DeleteCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cf71ff2546b5bd70393a990decb956b2e35f026",
+      "size": 2549,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2cf71ff2546b5bd70393a990decb956b2e35f026"
+    },
+    {
+      "path": "ocpp/v21/schemas/FirmwareStatusNotificationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b87681f7dc174a5490143c6e810428ad06369b7c",
+      "size": 3258,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b87681f7dc174a5490143c6e810428ad06369b7c"
+    },
+    {
+      "path": "ocpp/v21/schemas/FirmwareStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afbc0423fa6d3b9877527001b3c89d008c7276a1",
+      "size": 981,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/afbc0423fa6d3b9877527001b3c89d008c7276a1"
+    },
+    {
+      "path": "ocpp/v21/schemas/Get15118EVCertificateRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a69c83299cded0988c8ae8c57792a40bc2c4188",
+      "size": 3095,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5a69c83299cded0988c8ae8c57792a40bc2c4188"
+    },
+    {
+      "path": "ocpp/v21/schemas/Get15118EVCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f57ae7fe5d548ecb58e40a69a69a68ad8c0a015e",
+      "size": 3244,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f57ae7fe5d548ecb58e40a69a69a68ad8c0a015e"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetBaseReportRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9a49d9faac584e3ba6cd288ef22002f7c661f7a",
+      "size": 1621,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f9a49d9faac584e3ba6cd288ef22002f7c661f7a"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetBaseReportResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce72f3a9aa359f421f7d39dec69ca9931e64a7a3",
+      "size": 2606,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ce72f3a9aa359f421f7d39dec69ca9931e64a7a3"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetCertificateChainStatusRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d2a5569f0905f3ff06555a7ad741b04c5889229",
+      "size": 4799,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4d2a5569f0905f3ff06555a7ad741b04c5889229"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetCertificateChainStatusResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee8163f901fca323d7108f504d16e808dbbe6692",
+      "size": 4995,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ee8163f901fca323d7108f504d16e808dbbe6692"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetCertificateStatusRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41892625a861f19283e3bdb591301120e9f08fe1",
+      "size": 3390,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/41892625a861f19283e3bdb591301120e9f08fe1"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetCertificateStatusResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73a0b024e0a7f9cd29a9de3cac34348e0eae3103",
+      "size": 3150,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/73a0b024e0a7f9cd29a9de3cac34348e0eae3103"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetChargingProfilesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56d3802d440b123217be1c5b73bec2cb9d27d7ad",
+      "size": 4559,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/56d3802d440b123217be1c5b73bec2cb9d27d7ad"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetChargingProfilesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1dd0fc06cceb349afe7d822c38b1b3367d87ec83",
+      "size": 2649,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1dd0fc06cceb349afe7d822c38b1b3367d87ec83"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetCompositeScheduleRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f0c2fdf4c2238553c214b74669f17d158990ae9",
+      "size": 1898,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7f0c2fdf4c2238553c214b74669f17d158990ae9"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetCompositeScheduleResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fef95fdcac8e7d5b675a063db82a9bc5f0c8c914",
+      "size": 14114,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fef95fdcac8e7d5b675a063db82a9bc5f0c8c914"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetDERControlRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "788abe830d1cbfdd9f761b8d4352e69e6d9912cb",
+      "size": 2601,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/788abe830d1cbfdd9f761b8d4352e69e6d9912cb"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetDERControlResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5df8c14132c0239e05884d948cddd1238e75561",
+      "size": 2525,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d5df8c14132c0239e05884d948cddd1238e75561"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetDisplayMessagesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1591037b270a14d31f02bcb787ce1cf8a55898f",
+      "size": 2709,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c1591037b270a14d31f02bcb787ce1cf8a55898f"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetDisplayMessagesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7aa7b69aa5dabc874f5b58ace86eebc9de16cd40",
+      "size": 2630,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7aa7b69aa5dabc874f5b58ace86eebc9de16cd40"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetInstalledCertificateIdsRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09cd0e25304b75d0dda85b6654635b35ad5e7fb3",
+      "size": 1799,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/09cd0e25304b75d0dda85b6654635b35ad5e7fb3"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetInstalledCertificateIdsResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7737b7d7e22a7329c4bcded812940d82379b5712",
+      "size": 6312,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7737b7d7e22a7329c4bcded812940d82379b5712"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetLocalListVersionRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e88b10028ff17ec60d08d1cdda446c5dcc2726b7",
+      "size": 973,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e88b10028ff17ec60d08d1cdda446c5dcc2726b7"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetLocalListVersionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f9f94f1012f1b246c9bbc0be0704d1e2993f38d",
+      "size": 1223,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6f9f94f1012f1b246c9bbc0be0704d1e2993f38d"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetLogRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bab8b92dc0a2b5e5997a9954dd3cc764a7e7840e",
+      "size": 3622,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bab8b92dc0a2b5e5997a9954dd3cc764a7e7840e"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetLogResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1cf82d9d3b9d43cfe068501b41c801d770bde57e",
+      "size": 2786,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1cf82d9d3b9d43cfe068501b41c801d770bde57e"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetMonitoringReportRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2135a0efde2220b59b615d4a389716671304e98",
+      "size": 5904,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d2135a0efde2220b59b615d4a389716671304e98"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetMonitoringReportResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ba91047149fc2ab3dc48b0bff1b19121ab970ca",
+      "size": 2618,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2ba91047149fc2ab3dc48b0bff1b19121ab970ca"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetPeriodicEventStreamRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2846a8d8d2d23ce4165050f462d4b1abd9556778",
+      "size": 1043,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2846a8d8d2d23ce4165050f462d4b1abd9556778"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetPeriodicEventStreamResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3118a1cbf1fa04e1eba36cdba9feffdb3e6d6c55",
+      "size": 2990,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3118a1cbf1fa04e1eba36cdba9feffdb3e6d6c55"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetReportRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8616f7cccc525cc0347dbf9904aa770e41d3a750",
+      "size": 5876,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8616f7cccc525cc0347dbf9904aa770e41d3a750"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetReportResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e9789f5b63c883e65f41a3c749905ac31fb7042",
+      "size": 2608,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8e9789f5b63c883e65f41a3c749905ac31fb7042"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetTariffsRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15d984102f0a1f7e31b9eb77f24bd28a6c0cbb2e",
+      "size": 1210,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/15d984102f0a1f7e31b9eb77f24bd28a6c0cbb2e"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetTariffsResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba3830e9ebce87c66c0ab2bafcfe4ed1bdd01e12",
+      "size": 4710,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ba3830e9ebce87c66c0ab2bafcfe4ed1bdd01e12"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetTransactionStatusRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4af5217bc56216fb275bd9aad06df1fabc1285bd",
+      "size": 1165,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4af5217bc56216fb275bd9aad06df1fabc1285bd"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetTransactionStatusResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb2b88bc3c9ea2bd7a5557c32205121231a4db23",
+      "size": 1326,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/cb2b88bc3c9ea2bd7a5557c32205121231a4db23"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetVariablesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "624bc979acd1c62fe3f208eb66e303e2751c0f07",
+      "size": 5620,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/624bc979acd1c62fe3f208eb66e303e2751c0f07"
+    },
+    {
+      "path": "ocpp/v21/schemas/GetVariablesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a11572dd26d798b436392cb1436bdc86ca69bc9a",
+      "size": 7688,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a11572dd26d798b436392cb1436bdc86ca69bc9a"
+    },
+    {
+      "path": "ocpp/v21/schemas/HeartbeatRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5573902cb65d5ce6bab1d72cc9fd4fe7ba4cd843",
+      "size": 963,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5573902cb65d5ce6bab1d72cc9fd4fe7ba4cd843"
+    },
+    {
+      "path": "ocpp/v21/schemas/HeartbeatResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f2e0792cb123bb131e695fefe09146a7c029f34",
+      "size": 1184,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5f2e0792cb123bb131e695fefe09146a7c029f34"
+    },
+    {
+      "path": "ocpp/v21/schemas/InstallCertificateRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fc8ecbea9b7f978ca9b4fee361726541cb9f99b",
+      "size": 1809,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4fc8ecbea9b7f978ca9b4fee361726541cb9f99b"
+    },
+    {
+      "path": "ocpp/v21/schemas/InstallCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36684abcbdcb03937dac49765ead684fee20256e",
+      "size": 2554,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/36684abcbdcb03937dac49765ead684fee20256e"
+    },
+    {
+      "path": "ocpp/v21/schemas/LogStatusNotificationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37ea41711ccf400b83cc4949014d7c87ec022bd8",
+      "size": 2991,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/37ea41711ccf400b83cc4949014d7c87ec022bd8"
+    },
+    {
+      "path": "ocpp/v21/schemas/LogStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e96ee2323d9768861f24ef69c38043d9fa10552b",
+      "size": 976,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e96ee2323d9768861f24ef69c38043d9fa10552b"
+    },
+    {
+      "path": "ocpp/v21/schemas/MeterValuesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ef5ed88e57b0dd284cf0f97e9e804f016216154",
+      "size": 11726,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6ef5ed88e57b0dd284cf0f97e9e804f016216154"
+    },
+    {
+      "path": "ocpp/v21/schemas/MeterValuesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "424c037a7480f790bc249dcb804e5606efda3a34",
+      "size": 966,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/424c037a7480f790bc249dcb804e5606efda3a34"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyAllowedEnergyTransferRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a4135a42f017ff5634bf888fcbc0783d7054fc3",
+      "size": 2110,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2a4135a42f017ff5634bf888fcbc0783d7054fc3"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyAllowedEnergyTransferResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "289ec7887069c2a1182ad66c06562f0c2d69a560",
+      "size": 2471,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/289ec7887069c2a1182ad66c06562f0c2d69a560"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyChargingLimitRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65f152b70db6bab20f358aabc2fa536e68786039",
+      "size": 40462,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/65f152b70db6bab20f358aabc2fa536e68786039"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyChargingLimitResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0708d39068b213ca5340dc950c1d52756fd47f43",
+      "size": 974,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0708d39068b213ca5340dc950c1d52756fd47f43"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyCustomerInformationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "157df572ed7f691794598a0c6e9c1eded883028c",
+      "size": 2168,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/157df572ed7f691794598a0c6e9c1eded883028c"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyCustomerInformationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b52068856902c4b8bcac3908a447aca8b40a1e37",
+      "size": 980,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b52068856902c4b8bcac3908a447aca8b40a1e37"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyDERAlarmRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa73a1546b3e7d9af5e9d08d35f38fc61c2e77d4",
+      "size": 3308,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/aa73a1546b3e7d9af5e9d08d35f38fc61c2e77d4"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyDERAlarmResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e349dbd7fc22fb85ea404b7219bf77870da461f9",
+      "size": 969,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e349dbd7fc22fb85ea404b7219bf77870da461f9"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyDERStartStopRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3db4963528621149d8d46172bac6d6caa3571e76",
+      "size": 1993,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3db4963528621149d8d46172bac6d6caa3571e76"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyDERStartStopResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9c7e19e1c30ac8fca945614e53c3a35fa2f6256",
+      "size": 973,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f9c7e19e1c30ac8fca945614e53c3a35fa2f6256"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyDisplayMessagesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d81a8c68c8c6ab6c931519b89b403ecd2d29f26",
+      "size": 8786,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5d81a8c68c8c6ab6c931519b89b403ecd2d29f26"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyDisplayMessagesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e09c123f9ae5dca10ac93514c6124df72158473",
+      "size": 976,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8e09c123f9ae5dca10ac93514c6124df72158473"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyEVChargingNeedsRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc8e0c041da738809a5afcbef9b3133394c160cd",
+      "size": 45395,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fc8e0c041da738809a5afcbef9b3133394c160cd"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyEVChargingNeedsResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcb1918f855b344326e30535421e0d2fd5125f2b",
+      "size": 2713,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bcb1918f855b344326e30535421e0d2fd5125f2b"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyEVChargingScheduleRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4e1900aef2c6e602dcb31d83a4a7365fc9d1257",
+      "size": 39857,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d4e1900aef2c6e602dcb31d83a4a7365fc9d1257"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyEVChargingScheduleResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42585c61102f7f7bf98c391c73ebb22863fce0b5",
+      "size": 2575,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/42585c61102f7f7bf98c391c73ebb22863fce0b5"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyEventRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "014d3a3be717d5b4cbae0a15a21d11bb522d9f43",
+      "size": 9668,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/014d3a3be717d5b4cbae0a15a21d11bb522d9f43"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyEventResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4672e2fd39ca3a75647118780d7189ec424a2555",
+      "size": 966,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4672e2fd39ca3a75647118780d7189ec424a2555"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyMonitoringReportRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9553a4b6c1b0518601b7983c683cf0c63a8a2b21",
+      "size": 10217,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/9553a4b6c1b0518601b7983c683cf0c63a8a2b21"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyMonitoringReportResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a71b9c65972a6a1c9fb4873896a4bf78b3fb905f",
+      "size": 977,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a71b9c65972a6a1c9fb4873896a4bf78b3fb905f"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyPeriodicEventStream.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a594be5f2903c048402129dae352164f373aa5f",
+      "size": 2505,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8a594be5f2903c048402129dae352164f373aa5f"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyPriorityChargingRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e7df57428ce3edd7aed1acef571664054d7064c",
+      "size": 1434,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3e7df57428ce3edd7aed1acef571664054d7064c"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyPriorityChargingResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08c33ce727677acd065a257e90d7df0eec694afd",
+      "size": 1044,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/08c33ce727677acd065a257e90d7df0eec694afd"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyReportRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99f8be97b6dbb5898cb163e9d159c1bc22d244eb",
+      "size": 12343,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/99f8be97b6dbb5898cb163e9d159c1bc22d244eb"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyReportResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d0265dd9d537f900c8dedd859ca81597ae3c089",
+      "size": 967,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4d0265dd9d537f900c8dedd859ca81597ae3c089"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifySettlementRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa95f65a44a6521d8209c0f7703aa262cd0e32b6",
+      "size": 4763,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fa95f65a44a6521d8209c0f7703aa262cd0e32b6"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifySettlementResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "983a4efe0d601b8900be2221db5aa6ece6f60ead",
+      "size": 1400,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/983a4efe0d601b8900be2221db5aa6ece6f60ead"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyWebPaymentStartedRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24497ef4472a3504b59565fdf8a700645b3b09f8",
+      "size": 1426,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/24497ef4472a3504b59565fdf8a700645b3b09f8"
+    },
+    {
+      "path": "ocpp/v21/schemas/NotifyWebPaymentStartedResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d123b1e51c02df387a625cacd8af0460fabe7b69",
+      "size": 978,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d123b1e51c02df387a625cacd8af0460fabe7b69"
+    },
+    {
+      "path": "ocpp/v21/schemas/OpenPeriodicEventStreamRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2f92ee87093dd4f1ed9b4914f50ec497dead7be",
+      "size": 2909,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d2f92ee87093dd4f1ed9b4914f50ec497dead7be"
+    },
+    {
+      "path": "ocpp/v21/schemas/OpenPeriodicEventStreamResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73da789dcae6d512259b0c197ad67805f65bafcd",
+      "size": 2460,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/73da789dcae6d512259b0c197ad67805f65bafcd"
+    },
+    {
+      "path": "ocpp/v21/schemas/PublishFirmwareRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e603acf3c0b3323ca9ebfe505cddea17f4336f8",
+      "size": 2337,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/5e603acf3c0b3323ca9ebfe505cddea17f4336f8"
+    },
+    {
+      "path": "ocpp/v21/schemas/PublishFirmwareResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6b13ab76e09d2eef6729c52000ff1a0136e3393",
+      "size": 2477,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d6b13ab76e09d2eef6729c52000ff1a0136e3393"
+    },
+    {
+      "path": "ocpp/v21/schemas/PublishFirmwareStatusNotificationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b9305dd6fe2fb5737591f2c2ab793e44c021a4b",
+      "size": 3429,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7b9305dd6fe2fb5737591f2c2ab793e44c021a4b"
+    },
+    {
+      "path": "ocpp/v21/schemas/PublishFirmwareStatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "494efc09393a0915392a2d73c453fc3e79b30ac9",
+      "size": 988,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/494efc09393a0915392a2d73c453fc3e79b30ac9"
+    },
+    {
+      "path": "ocpp/v21/schemas/PullDynamicScheduleUpdateRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80f82a432bc2553cb0a9c2fa482decd8e3c8843a",
+      "size": 1172,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/80f82a432bc2553cb0a9c2fa482decd8e3c8843a"
+    },
+    {
+      "path": "ocpp/v21/schemas/PullDynamicScheduleUpdateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2822f779e0d7263b0e0017b154229c2f18c1550f",
+      "size": 7163,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2822f779e0d7263b0e0017b154229c2f18c1550f"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReportChargingProfilesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd2d993fe29aa8fee4366460cfab149f95a19b20",
+      "size": 46958,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bd2d993fe29aa8fee4366460cfab149f95a19b20"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReportChargingProfilesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0c47bb2438360aa6396d20b129f209cf869daaf",
+      "size": 977,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b0c47bb2438360aa6396d20b129f209cf869daaf"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReportDERControlRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a9fcf622c0fd9acb964a7911360393eb82a3001",
+      "size": 28465,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7a9fcf622c0fd9acb964a7911360393eb82a3001"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReportDERControlResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "63e041143606a266f731c110a8571c1565bb1c72",
+      "size": 1033,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/63e041143606a266f731c110a8571c1565bb1c72"
+    },
+    {
+      "path": "ocpp/v21/schemas/RequestBatterySwapRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19780e363d941cee6c4651809de82adc070257ae",
+      "size": 3959,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/19780e363d941cee6c4651809de82adc070257ae"
+    },
+    {
+      "path": "ocpp/v21/schemas/RequestBatterySwapResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1da4c7ea0310a6f0f3b334bb3fea5d21db457f9",
+      "size": 2470,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f1da4c7ea0310a6f0f3b334bb3fea5d21db457f9"
+    },
+    {
+      "path": "ocpp/v21/schemas/RequestStartTransactionRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c1b7a893b2223b6149d836833779d4e8d6be126",
+      "size": 49030,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/1c1b7a893b2223b6149d836833779d4e8d6be126"
+    },
+    {
+      "path": "ocpp/v21/schemas/RequestStartTransactionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd34f9297db528003b23cc9fc9a104f7c86a14de",
+      "size": 2915,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bd34f9297db528003b23cc9fc9a104f7c86a14de"
+    },
+    {
+      "path": "ocpp/v21/schemas/RequestStopTransactionRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae5be3b766d81a22a5332972df651c49141db338",
+      "size": 1238,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ae5be3b766d81a22a5332972df651c49141db338"
+    },
+    {
+      "path": "ocpp/v21/schemas/RequestStopTransactionResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcd72dbbb9a32596e398f49c61be9ce19bf606fa",
+      "size": 2553,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dcd72dbbb9a32596e398f49c61be9ce19bf606fa"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReservationStatusUpdateRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b1fa6625610c450c0a97e5e9272cfcd0e0cfce8",
+      "size": 1706,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/9b1fa6625610c450c0a97e5e9272cfcd0e0cfce8"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReservationStatusUpdateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6067b522dea67ea1a01cc7010342f5d85a600785",
+      "size": 978,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/6067b522dea67ea1a01cc7010342f5d85a600785"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReserveNowRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c63f80c489f86afd6f4a2a9b1f955928511ce18f",
+      "size": 4625,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c63f80c489f86afd6f4a2a9b1f955928511ce18f"
+    },
+    {
+      "path": "ocpp/v21/schemas/ReserveNowResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64cd3818d2ac0dbc69c9ff9f106f7313d58bf181",
+      "size": 2581,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/64cd3818d2ac0dbc69c9ff9f106f7313d58bf181"
+    },
+    {
+      "path": "ocpp/v21/schemas/ResetRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "334e98239c85ba7c4d1fefec746968249d030669",
+      "size": 1697,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/334e98239c85ba7c4d1fefec746968249d030669"
+    },
+    {
+      "path": "ocpp/v21/schemas/ResetResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c172a31fe40a0d5ea118d1bc377c77e79ffb8173",
+      "size": 2520,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c172a31fe40a0d5ea118d1bc377c77e79ffb8173"
+    },
+    {
+      "path": "ocpp/v21/schemas/SecurityEventNotificationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ceb668c5887ad6f12b54879668cc2dbbb4769a87",
+      "size": 1606,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ceb668c5887ad6f12b54879668cc2dbbb4769a87"
+    },
+    {
+      "path": "ocpp/v21/schemas/SecurityEventNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f96bfd5c5af0c16d12236f1ead9169940a7654a5",
+      "size": 980,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f96bfd5c5af0c16d12236f1ead9169940a7654a5"
+    },
+    {
+      "path": "ocpp/v21/schemas/SendLocalListRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86d7497b9b8cd0f3badfeaf34e0b35c7f2e9e030",
+      "size": 10337,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/86d7497b9b8cd0f3badfeaf34e0b35c7f2e9e030"
+    },
+    {
+      "path": "ocpp/v21/schemas/SendLocalListResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "848c879a2069ab5ef96996f31b58c3ab4bd4e464",
+      "size": 2608,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/848c879a2069ab5ef96996f31b58c3ab4bd4e464"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetChargingProfileRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98df053117641892524cd5ec8be051f3f521fb02",
+      "size": 45945,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/98df053117641892524cd5ec8be051f3f521fb02"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetChargingProfileResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "829683389539ce81067add05e27a036d0288ec77",
+      "size": 2702,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/829683389539ce81067add05e27a036d0288ec77"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetDERControlRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e35ee0c4e73443b64db2039c7273856e9fd9a601",
+      "size": 20079,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e35ee0c4e73443b64db2039c7273856e9fd9a601"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetDERControlResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "044cfd935563dbb5cfd03c765bb448d5be4b4f9e",
+      "size": 2898,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/044cfd935563dbb5cfd03c765bb448d5be4b4f9e"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetDefaultTariffRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7597536337beb58756d37570d8f4b590723e4f16",
+      "size": 25289,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7597536337beb58756d37570d8f4b590723e4f16"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetDefaultTariffResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25185229d6a7bb05cbe0ce1275cf5a3eede03eee",
+      "size": 2519,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/25185229d6a7bb05cbe0ce1275cf5a3eede03eee"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetDisplayMessageRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b01ea7aa45b1c701f749187ab5c412e80243e8b2",
+      "size": 8136,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b01ea7aa45b1c701f749187ab5c412e80243e8b2"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetDisplayMessageResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "510cff8c7e72db0d82a88134f97629ac6bd49be2",
+      "size": 2732,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/510cff8c7e72db0d82a88134f97629ac6bd49be2"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetMonitoringBaseRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49bf0fa2a65e2ba1884f0320ad7d968b4d22074a",
+      "size": 1486,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/49bf0fa2a65e2ba1884f0320ad7d968b4d22074a"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetMonitoringBaseResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28e33adfaaf804de394e0f4fd1c5d012ed769ccc",
+      "size": 2605,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/28e33adfaaf804de394e0f4fd1c5d012ed769ccc"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetMonitoringLevelRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "286ceea93f24b5414062194d521589817836520f",
+      "size": 2496,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/286ceea93f24b5414062194d521589817836520f"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetMonitoringLevelResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d75f2392d88944c37106e74ede0f7625c81da69",
+      "size": 2507,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7d75f2392d88944c37106e74ede0f7625c81da69"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetNetworkProfileRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66872318ac577d6bfeca35f00876c57c3e8ef93b",
+      "size": 10328,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/66872318ac577d6bfeca35f00876c57c3e8ef93b"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetNetworkProfileResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca7958b9fed5ebaa08cbe6f7dd9dc260fc86f77e",
+      "size": 2512,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ca7958b9fed5ebaa08cbe6f7dd9dc260fc86f77e"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetVariableMonitoringRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e342c98eb589a19a801bf6111ac4242a8cf7b96",
+      "size": 8991,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8e342c98eb589a19a801bf6111ac4242a8cf7b96"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetVariableMonitoringResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc76301b20cebee6a98f0a75308652c28ebf72b1",
+      "size": 9468,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/dc76301b20cebee6a98f0a75308652c28ebf72b1"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetVariablesRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d859838dc3ab2fa8f71b1e042de606a4c2435f3a",
+      "size": 6098,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d859838dc3ab2fa8f71b1e042de606a4c2435f3a"
+    },
+    {
+      "path": "ocpp/v21/schemas/SetVariablesResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7416bc240b98e5c4d6fbb4b219c76f974e8a656b",
+      "size": 7267,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7416bc240b98e5c4d6fbb4b219c76f974e8a656b"
+    },
+    {
+      "path": "ocpp/v21/schemas/SignCertificateRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14ac5e431d29c165735cadaa77ca456373b49cd0",
+      "size": 4236,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/14ac5e431d29c165735cadaa77ca456373b49cd0"
+    },
+    {
+      "path": "ocpp/v21/schemas/SignCertificateResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e7a87139e0763572733bef214b9e1426428c4b5",
+      "size": 2485,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7e7a87139e0763572733bef214b9e1426428c4b5"
+    },
+    {
+      "path": "ocpp/v21/schemas/StatusNotificationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0690f25f2b5b9e27724493f884d4f873f4f24931",
+      "size": 2204,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0690f25f2b5b9e27724493f884d4f873f4f24931"
+    },
+    {
+      "path": "ocpp/v21/schemas/StatusNotificationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c618e0f868e1b99e45f23d7566d9d8c670e829c2",
+      "size": 973,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/c618e0f868e1b99e45f23d7566d9d8c670e829c2"
+    },
+    {
+      "path": "ocpp/v21/schemas/TransactionEventRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7db8c7342d4bf311cf1d51fab5be8d6d9e8ea71b",
+      "size": 36296,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7db8c7342d4bf311cf1d51fab5be8d6d9e8ea71b"
+    },
+    {
+      "path": "ocpp/v21/schemas/TransactionEventResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eceb9ce0cfd26b9d94ba95a394d8d76a0aa6b3eb",
+      "size": 11564,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/eceb9ce0cfd26b9d94ba95a394d8d76a0aa6b3eb"
+    },
+    {
+      "path": "ocpp/v21/schemas/TriggerMessageRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "420fd60fbc2aa73b8c7565493952734a2fa4d916",
+      "size": 3192,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/420fd60fbc2aa73b8c7565493952734a2fa4d916"
+    },
+    {
+      "path": "ocpp/v21/schemas/TriggerMessageResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a43e8fcfdc015bc24ffa30574c3cca6d8f1bd07c",
+      "size": 2571,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/a43e8fcfdc015bc24ffa30574c3cca6d8f1bd07c"
+    },
+    {
+      "path": "ocpp/v21/schemas/UnlockConnectorRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e000fd21d56376f26f1d5d73a3e59d376a3a8c5",
+      "size": 1443,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/4e000fd21d56376f26f1d5d73a3e59d376a3a8c5"
+    },
+    {
+      "path": "ocpp/v21/schemas/UnlockConnectorResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "39e7a58c6eb563d6c69b0e527923248a315bc98f",
+      "size": 2590,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/39e7a58c6eb563d6c69b0e527923248a315bc98f"
+    },
+    {
+      "path": "ocpp/v21/schemas/UnpublishFirmwareRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6f9b58cdc0637b4d2bfe9649ae3d1274a311bce",
+      "size": 1226,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b6f9b58cdc0637b4d2bfe9649ae3d1274a311bce"
+    },
+    {
+      "path": "ocpp/v21/schemas/UnpublishFirmwareResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb5b520b6008e028c17e889ec9a41dcfdee20774",
+      "size": 1541,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fb5b520b6008e028c17e889ec9a41dcfdee20774"
+    },
+    {
+      "path": "ocpp/v21/schemas/UpdateDynamicScheduleRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16756618cdded0b2dcd399f15928822622678143",
+      "size": 5935,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/16756618cdded0b2dcd399f15928822622678143"
+    },
+    {
+      "path": "ocpp/v21/schemas/UpdateDynamicScheduleResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bfd27fb29a45453b5ffb0bedebaf2a3a2ac33f9d",
+      "size": 2515,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/bfd27fb29a45453b5ffb0bedebaf2a3a2ac33f9d"
+    },
+    {
+      "path": "ocpp/v21/schemas/UpdateFirmwareRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afc997efb0fcf4eb81c311b6bc5af77b5a1abbfc",
+      "size": 3539,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/afc997efb0fcf4eb81c311b6bc5af77b5a1abbfc"
+    },
+    {
+      "path": "ocpp/v21/schemas/UpdateFirmwareResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fec9c1687cd1f47b3a66ed77b8f6f02ed9ea9f7",
+      "size": 2651,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8fec9c1687cd1f47b3a66ed77b8f6f02ed9ea9f7"
+    },
+    {
+      "path": "ocpp/v21/schemas/UsePriorityChargingRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0de9f880f0cc7d61946a98ba15c8e609e2b67e1b",
+      "size": 1410,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0de9f880f0cc7d61946a98ba15c8e609e2b67e1b"
+    },
+    {
+      "path": "ocpp/v21/schemas/UsePriorityChargingResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "382f80ea9e844271350cbe1c5ad7627a73a4aec7",
+      "size": 2516,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/382f80ea9e844271350cbe1c5ad7627a73a4aec7"
+    },
+    {
+      "path": "ocpp/v21/schemas/VatNumberValidationRequest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2dc7e4ca0d395507aca02e2e627b44ac78f36109",
+      "size": 1328,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2dc7e4ca0d395507aca02e2e627b44ac78f36109"
+    },
+    {
+      "path": "ocpp/v21/schemas/VatNumberValidationResponse.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbf05d97984ca6532a9d7b1f3e17ef6bf3b92d1b",
+      "size": 4462,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/cbf05d97984ca6532a9d7b1f3e17ef6bf3b92d1b"
+    },
+    {
+      "path": "poetry.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f4a5f084146b94f20dba9af162b0d9403e1cc0f",
+      "size": 93451,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8f4a5f084146b94f20dba9af162b0d9403e1cc0f"
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8437befbd690fe11ca1525e5e7eae83ccbf10bab",
+      "size": 1784,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/8437befbd690fe11ca1525e5e7eae83ccbf10bab"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b68b802c277ed4d789d2d8ce327856021c9830a0",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/b68b802c277ed4d789d2d8ce327856021c9830a0"
+    },
+    {
+      "path": "scripts/schema_to_dataclass.py",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7f6c3565583371e2a1fe894eb5cfd68e12a11256",
+      "size": 3875,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7f6c3565583371e2a1fe894eb5cfd68e12a11256"
+    },
+    {
+      "path": "scripts/schema_to_enums_v201.py",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "9145b2ac3739dc653dedef9947d3660f02ee461b",
+      "size": 3940,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/9145b2ac3739dc653dedef9947d3660f02ee461b"
+    },
+    {
+      "path": "scripts/v21",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "47d7835addecacadd29f4f601bfb58056c75b2a9",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/47d7835addecacadd29f4f601bfb58056c75b2a9"
+    },
+    {
+      "path": "scripts/v21/code_generator.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd429a915798a85d1adba65b95fe72c32513e0fb",
+      "size": 12398,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/cd429a915798a85d1adba65b95fe72c32513e0fb"
+    },
+    {
+      "path": "scripts/v21/generate_implementation.py",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "e7b3a12c2f92c4068a4249c9053049e17c139710",
+      "size": 3626,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e7b3a12c2f92c4068a4249c9053049e17c139710"
+    },
+    {
+      "path": "scripts/v21/json_schema_parser.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ae28203654f6f61ca405f9f114040dfb0978663",
+      "size": 7567,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/7ae28203654f6f61ca405f9f114040dfb0978663"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c9dbda9c6e213f02f351984ce4eca0c1e5fc8202",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/c9dbda9c6e213f02f351984ce4eca0c1e5fc8202"
+    },
+    {
+      "path": "tests/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51c17e22bc4abc5bb85c6d02c392120cda64bc9a",
+      "size": 210,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/51c17e22bc4abc5bb85c6d02c392120cda64bc9a"
+    },
+    {
+      "path": "tests/experimental",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e537a6cb0f533286f8a0f7c9f4c2d4867fbab325",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/e537a6cb0f533286f8a0f7c9f4c2d4867fbab325"
+    },
+    {
+      "path": "tests/experimental/v21",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "27987f76e3515c53fd0f9f4007671b8b644ee7db",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/27987f76e3515c53fd0f9f4007671b8b644ee7db"
+    },
+    {
+      "path": "tests/experimental/v21/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37f900022d06203d9b3040b30fb58638b9c9663d",
+      "size": 241,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/37f900022d06203d9b3040b30fb58638b9c9663d"
+    },
+    {
+      "path": "tests/test_charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eee073e1ade4a2612aab1c7aa50ac0f75e5c224e",
+      "size": 17925,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/eee073e1ade4a2612aab1c7aa50ac0f75e5c224e"
+    },
+    {
+      "path": "tests/test_charge_point_connection.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fab4f4a290ec6dca07ed51f0e3768942ad37c052",
+      "size": 5933,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/fab4f4a290ec6dca07ed51f0e3768942ad37c052"
+    },
+    {
+      "path": "tests/test_exceptions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f58060fb81cdcb7ea10a1b3cee98a11183ab251f",
+      "size": 1899,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/f58060fb81cdcb7ea10a1b3cee98a11183ab251f"
+    },
+    {
+      "path": "tests/test_messages.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ada09e0046d62753f4aac0f55f0f10de99fb87a",
+      "size": 12125,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0ada09e0046d62753f4aac0f55f0f10de99fb87a"
+    },
+    {
+      "path": "tests/test_routing.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b443a3c1ffa1f7176c2f96d2a1d0d75a066ec20b",
+      "size": 1022,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/b443a3c1ffa1f7176c2f96d2a1d0d75a066ec20b"
+    },
+    {
+      "path": "tests/v16",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7011d0a1b5c216b871e59f3d483765ef8ef9a787",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/7011d0a1b5c216b871e59f3d483765ef8ef9a787"
+    },
+    {
+      "path": "tests/v16/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d4006a4209f23d1bbfa47e09ef2f91fd7336493",
+      "size": 1894,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/3d4006a4209f23d1bbfa47e09ef2f91fd7336493"
+    },
+    {
+      "path": "tests/v16/test_v16_charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2490762332d0f62ec24d193cded711908592a885",
+      "size": 9088,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/2490762332d0f62ec24d193cded711908592a885"
+    },
+    {
+      "path": "tests/v16/test_v16_charging_profiles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8302e725eca7568c3c3e0bda7aa06ea0a856135",
+      "size": 5815,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/d8302e725eca7568c3c3e0bda7aa06ea0a856135"
+    },
+    {
+      "path": "tests/v16/test_v16_enums.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "077d7992a73c3b592934a46eca7bd54a4bed67be",
+      "size": 16181,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/077d7992a73c3b592934a46eca7bd54a4bed67be"
+    },
+    {
+      "path": "tests/v201",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7368a33bedb75f508d24e04e7c683ab601a2d5bb",
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/trees/7368a33bedb75f508d24e04e7c683ab601a2d5bb"
+    },
+    {
+      "path": "tests/v201/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf372bda5a572da047285528a10d14dbefd51893",
+      "size": 1613,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/cf372bda5a572da047285528a10d14dbefd51893"
+    },
+    {
+      "path": "tests/v201/test_v201_charge_point.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0961c0322b6634a6ed611f621fa22ea5cf0215cf",
+      "size": 3848,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/0961c0322b6634a6ed611f621fa22ea5cf0215cf"
+    },
+    {
+      "path": "tests/v201/test_v201_data_types.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30cffc55208e4a6e6d7ccad3203d290262869445",
+      "size": 34637,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/30cffc55208e4a6e6d7ccad3203d290262869445"
+    },
+    {
+      "path": "tests/v201/test_v201_enums.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce26e6576e59877b4fe1937fc86fa38651330a9e",
+      "size": 2369,
+      "url": "https://api.github.com/repos/mobilityhouse/ocpp/git/blobs/ce26e6576e59877b4fe1937fc86fa38651330a9e"
+    }
+  ],
+  "truncated": false
+}

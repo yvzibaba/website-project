@@ -1,0 +1,4134 @@
+{
+  "sha": "3da60241c5dab603f9075b16e58d2593ba3d79c8",
+  "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/3da60241c5dab603f9075b16e58d2593ba3d79c8",
+  "tree": [
+    {
+      "path": ".coveragerc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "350ed8ed415ec7ebf40a7056c7556f1df43df2ce",
+      "size": 29,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/350ed8ed415ec7ebf40a7056c7556f1df43df2ce"
+    },
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32b4a70e53a783a697772013fe622ba4baad7d08",
+      "size": 160,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/32b4a70e53a783a697772013fe622ba4baad7d08"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ad4f76ee930b74873909575ca391604407bbf79c",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/ad4f76ee930b74873909575ca391604407bbf79c"
+    },
+    {
+      "path": ".github/CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8da844d077528fa1a0c34da09969dc52dad0f5f",
+      "size": 205,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c8da844d077528fa1a0c34da09969dc52dad0f5f"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "16ec26c9621792c90cb52a5428ccffd16e36329e",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/16ec26c9621792c90cb52a5428ccffd16e36329e"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "071d9e4d2c41e1a3eaf19a28823d7b6c96a1e6a7",
+      "size": 581,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/071d9e4d2c41e1a3eaf19a28823d7b6c96a1e6a7"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "066b2d920a28db73b4ba3a0b35e6905eeeef5772",
+      "size": 560,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/066b2d920a28db73b4ba3a0b35e6905eeeef5772"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/support-question.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "19b9117bc7d224fda737d8204a8653fb044bb04b",
+      "size": 547,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/19b9117bc7d224fda737d8204a8653fb044bb04b"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b30846b3a78a29068e0bfaa0ca0315cd38969d29",
+      "size": 1621,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b30846b3a78a29068e0bfaa0ca0315cd38969d29"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6b3a84a3f703b85ecf6816588867b5ec6e61c272",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/6b3a84a3f703b85ecf6816588867b5ec6e61c272"
+    },
+    {
+      "path": ".github/workflows/asv_check.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20fe093d177cfb27b4f85da989f0ad72ed615b3d",
+      "size": 671,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/20fe093d177cfb27b4f85da989f0ad72ed615b3d"
+    },
+    {
+      "path": ".github/workflows/flake8-linter-matcher.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58c5dabcab377aca6970f83a88063b6facebdb60",
+      "size": 415,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/58c5dabcab377aca6970f83a88063b6facebdb60"
+    },
+    {
+      "path": ".github/workflows/flake8.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11718c37a42ef3e7e6ee9be704640a6ee3b84861",
+      "size": 968,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/11718c37a42ef3e7e6ee9be704640a6ee3b84861"
+    },
+    {
+      "path": ".github/workflows/publish.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12425b87b237a531d1f9ee21d90c7bc3eedd3928",
+      "size": 1838,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/12425b87b237a531d1f9ee21d90c7bc3eedd3928"
+    },
+    {
+      "path": ".github/workflows/pytest-remote-data.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b82d8720621d111f8453f953a6ce8a338b1e13ad",
+      "size": 5415,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b82d8720621d111f8453f953a6ce8a338b1e13ad"
+    },
+    {
+      "path": ".github/workflows/pytest.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0008571d2b48cfdc864950b9559ecbc31062f99e",
+      "size": 3071,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0008571d2b48cfdc864950b9559ecbc31062f99e"
+    },
+    {
+      "path": ".github/workflows/top-ranked-issues.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5845691d3432fccd58107e1f4cf7309d4574edd2",
+      "size": 838,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5845691d3432fccd58107e1f4cf7309d4574edd2"
+    },
+    {
+      "path": ".github/workflows/update_top_ranking_issues.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3608d43344f08caa834084be479229ae31973efd",
+      "size": 2280,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3608d43344f08caa834084be479229ae31973efd"
+    },
+    {
+      "path": ".github/workflows/welcome.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3007ec945345de2d9a1efa50cfa00b5833587263",
+      "size": 699,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3007ec945345de2d9a1efa50cfa00b5833587263"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0258b3975cfe4d467cddb8ac06feb715eecf154a",
+      "size": 1311,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0258b3975cfe4d467cddb8ac06feb715eecf154a"
+    },
+    {
+      "path": "AUTHORS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ac113dbf8bb1226169195398efcb8c1ec2883a4",
+      "size": 1474,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4ac113dbf8bb1226169195398efcb8c1ec2883a4"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1b63e8fee833198d286c108716ced9531e41a49",
+      "size": 3523,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f1b63e8fee833198d286c108716ced9531e41a49"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e66a4aa98ebef6b9ef2926f4ce01f8b725f70950",
+      "size": 1622,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e66a4aa98ebef6b9ef2926f4ce01f8b725f70950"
+    },
+    {
+      "path": "MANIFEST.in",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ec63fbc56cafa7ff391b0c4232dc75e1ae7197a",
+      "size": 581,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0ec63fbc56cafa7ff391b0c4232dc75e1ae7197a"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38d6e3ad2e4a6167db32050ad0bd3b654df110df",
+      "size": 6154,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/38d6e3ad2e4a6167db32050ad0bd3b654df110df"
+    },
+    {
+      "path": "benchmarks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "288e9f738ea83e7aca734707c5221772463ac17e",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/288e9f738ea83e7aca734707c5221772463ac17e"
+    },
+    {
+      "path": "benchmarks/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb9b97aa13c06761efd6738513222a6af68f086e",
+      "size": 2573,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cb9b97aa13c06761efd6738513222a6af68f086e"
+    },
+    {
+      "path": "benchmarks/asv.conf.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b2cee200e5feccdb146d01784dfb372762e5523",
+      "size": 7812,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3b2cee200e5feccdb146d01784dfb372762e5523"
+    },
+    {
+      "path": "benchmarks/benchmarks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "531871bff25f8299c3c385233c7cae5f5ced3635",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/531871bff25f8299c3c385233c7cae5f5ced3635"
+    },
+    {
+      "path": "benchmarks/benchmarks/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "benchmarks/benchmarks/detect_clearsky.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f2039f13c0ff468c8ced6bb937bacc56b3603b0",
+      "size": 1151,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7f2039f13c0ff468c8ced6bb937bacc56b3603b0"
+    },
+    {
+      "path": "benchmarks/benchmarks/infinite_sheds.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "755c2ec3ef26b342fceabccd52ae51454940cc48",
+      "size": 3975,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/755c2ec3ef26b342fceabccd52ae51454940cc48"
+    },
+    {
+      "path": "benchmarks/benchmarks/irradiance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75cf6e965f1cc453357448b2f3e7d407ffdbbf1d",
+      "size": 2710,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/75cf6e965f1cc453357448b2f3e7d407ffdbbf1d"
+    },
+    {
+      "path": "benchmarks/benchmarks/location.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57ce12584645acdb889ab18bc6022eaaa422e4ea",
+      "size": 1582,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/57ce12584645acdb889ab18bc6022eaaa422e4ea"
+    },
+    {
+      "path": "benchmarks/benchmarks/scaling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "feeb9c60e200b7ddb5ff71415b00d4a8ae57f357",
+      "size": 1215,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/feeb9c60e200b7ddb5ff71415b00d4a8ae57f357"
+    },
+    {
+      "path": "benchmarks/benchmarks/solarposition.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ccb379d8c43827c2d74a2b4defe583530316ea7",
+      "size": 2845,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0ccb379d8c43827c2d74a2b4defe583530316ea7"
+    },
+    {
+      "path": "benchmarks/benchmarks/solarposition_numba.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d4c277eb1f6c23e26dd418c9aea29398a44013a",
+      "size": 1447,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5d4c277eb1f6c23e26dd418c9aea29398a44013a"
+    },
+    {
+      "path": "benchmarks/benchmarks/temperature.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2ffe331f5a038eabfdbf1dab1d3f5ec786db90c",
+      "size": 1608,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a2ffe331f5a038eabfdbf1dab1d3f5ec786db90c"
+    },
+    {
+      "path": "benchmarks/benchmarks/tracking.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29f5ac4c6ebab2efb551fa9dcaadd8d3d73ba58d",
+      "size": 982,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/29f5ac4c6ebab2efb551fa9dcaadd8d3d73ba58d"
+    },
+    {
+      "path": "ci",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2a4c9979847f5a2c7f1c6f04b2a254ac959dbfe3",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/2a4c9979847f5a2c7f1c6f04b2a254ac959dbfe3"
+    },
+    {
+      "path": "ci/requirements-py3.10-min.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6fa18dffb939ad0425260fd88efd727fe026f6b",
+      "size": 468,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a6fa18dffb939ad0425260fd88efd727fe026f6b"
+    },
+    {
+      "path": "ci/requirements-py3.10.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "444b7b58fe8ff2f427bb6446572a8e9e26677ec6",
+      "size": 523,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/444b7b58fe8ff2f427bb6446572a8e9e26677ec6"
+    },
+    {
+      "path": "ci/requirements-py3.11.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c14676ab2ff4fa78a18b398d328982d0fee5fb45",
+      "size": 523,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c14676ab2ff4fa78a18b398d328982d0fee5fb45"
+    },
+    {
+      "path": "ci/requirements-py3.12.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1254dcb13259472d2d9adcbf2acb687d40f2ec32",
+      "size": 523,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1254dcb13259472d2d9adcbf2acb687d40f2ec32"
+    },
+    {
+      "path": "ci/requirements-py3.13.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6647d72196337d8d0f8889d47d91f347bf9aa256",
+      "size": 523,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6647d72196337d8d0f8889d47d91f347bf9aa256"
+    },
+    {
+      "path": "ci/requirements-py3.14.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b1501c66f4f5c4ae4cf2e6aabff31b64d3cde96",
+      "size": 619,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1b1501c66f4f5c4ae4cf2e6aabff31b64d3cde96"
+    },
+    {
+      "path": "codecov.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f5728b11f13c7765ef259c1fb7389a828a7c1fe",
+      "size": 1461,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2f5728b11f13c7765ef259c1fb7389a828a7c1fe"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "720654df913c5829d080b224cce7dfb1ee7bf37d",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/720654df913c5829d080b224cce7dfb1ee7bf37d"
+    },
+    {
+      "path": "docs/examples",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "72c1a925c9e121f73501c1ce7389572fa2eb818c",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/72c1a925c9e121f73501c1ce7389572fa2eb818c"
+    },
+    {
+      "path": "docs/examples/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "332e49d65e2be08810b5eb0a366d67aefca4494f",
+      "size": 144,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/332e49d65e2be08810b5eb0a366d67aefca4494f"
+    },
+    {
+      "path": "docs/examples/adr-pvarray",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a28445c318f51fb3cf175ec56ad27a591e3e3ae0",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/a28445c318f51fb3cf175ec56ad27a591e3e3ae0"
+    },
+    {
+      "path": "docs/examples/adr-pvarray/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0db64aa0465503bce20ccd1f1df769afc14974ab",
+      "size": 71,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0db64aa0465503bce20ccd1f1df769afc14974ab"
+    },
+    {
+      "path": "docs/examples/adr-pvarray/plot_fit_to_matrix.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fec2d5e3cdf51d2246d4466c6abc5b0ceeefbb6",
+      "size": 3482,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9fec2d5e3cdf51d2246d4466c6abc5b0ceeefbb6"
+    },
+    {
+      "path": "docs/examples/adr-pvarray/plot_simulate_fast.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "380744f626583f0ad6d0a6ddc004558f8e0380aa",
+      "size": 4914,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/380744f626583f0ad6d0a6ddc004558f8e0380aa"
+    },
+    {
+      "path": "docs/examples/adr-pvarray/plot_simulate_system.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0abede934f5edf56fd81e5dcd45881d00db3105",
+      "size": 4094,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b0abede934f5edf56fd81e5dcd45881d00db3105"
+    },
+    {
+      "path": "docs/examples/agrivoltaics",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6b458c913eb783da1b02878ab9b7510b41e897ee",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/6b458c913eb783da1b02878ab9b7510b41e897ee"
+    },
+    {
+      "path": "docs/examples/agrivoltaics/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9c3c2ad0454ccaa96aa5dfb4c7c9feab0cb4ef5d",
+      "size": 60,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9c3c2ad0454ccaa96aa5dfb4c7c9feab0cb4ef5d"
+    },
+    {
+      "path": "docs/examples/agrivoltaics/plot_agrivoltaics_ground_irradiance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6326129a5116993807f2e93c880028a9ec16dac6",
+      "size": 5215,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6326129a5116993807f2e93c880028a9ec16dac6"
+    },
+    {
+      "path": "docs/examples/agrivoltaics/plot_diffuse_PAR_Spitters_relationship.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31e80bd9a2f9bbcea6d951a498023d716960087a",
+      "size": 5558,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/31e80bd9a2f9bbcea6d951a498023d716960087a"
+    },
+    {
+      "path": "docs/examples/bifacial",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d4e8a66105baf92558a9c64d2416a540f4c1ba6f",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/d4e8a66105baf92558a9c64d2416a540f4c1ba6f"
+    },
+    {
+      "path": "docs/examples/bifacial/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c29b82ead93a578e4a841353c4ef80f03a4506e",
+      "size": 37,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1c29b82ead93a578e4a841353c4ef80f03a4506e"
+    },
+    {
+      "path": "docs/examples/bifacial/plot_bifi_model_mc.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f40e4e5d7b72c5a31c92a8ba7c8fc57a7e44f9ab",
+      "size": 4961,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f40e4e5d7b72c5a31c92a8ba7c8fc57a7e44f9ab"
+    },
+    {
+      "path": "docs/examples/bifacial/plot_bifi_model_pvwatts.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6a6a582fbf45aaec8ddcf96c1e9d715c04334eb",
+      "size": 4512,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b6a6a582fbf45aaec8ddcf96c1e9d715c04334eb"
+    },
+    {
+      "path": "docs/examples/bifacial/plot_irradiance_nonuniformity_loss.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "281f0954b5f34f7df828003a957587f8241bd254",
+      "size": 4234,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/281f0954b5f34f7df828003a957587f8241bd254"
+    },
+    {
+      "path": "docs/examples/bifacial/plot_pvfactors_fixed_tilt.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28b06110c210a4d2afe963e44a129da38a151c8a",
+      "size": 2370,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/28b06110c210a4d2afe963e44a129da38a151c8a"
+    },
+    {
+      "path": "docs/examples/floating-pv",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "39f0ca83b83e4101ceb39460773c92c8331d3be9",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/39f0ca83b83e4101ceb39460773c92c8331d3be9"
+    },
+    {
+      "path": "docs/examples/floating-pv/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac80e44268bab25967bd52967713fcc8c7df321e",
+      "size": 60,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ac80e44268bab25967bd52967713fcc8c7df321e"
+    },
+    {
+      "path": "docs/examples/floating-pv/plot_floating_pv_cell_temperature.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7ecbd7d88b3311a2dd07cade60250addc1941a8",
+      "size": 13374,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f7ecbd7d88b3311a2dd07cade60250addc1941a8"
+    },
+    {
+      "path": "docs/examples/irradiance-decomposition",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "48e2a79430d1dc59e5d313430fdab160a4e01fff",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/48e2a79430d1dc59e5d313430fdab160a4e01fff"
+    },
+    {
+      "path": "docs/examples/irradiance-decomposition/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95f18c9330ca18162ec0b557506474de505bf590",
+      "size": 51,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/95f18c9330ca18162ec0b557506474de505bf590"
+    },
+    {
+      "path": "docs/examples/irradiance-decomposition/plot_diffuse_fraction.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16b801b3c6912218742810ad878a2452e2165c9b",
+      "size": 8574,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/16b801b3c6912218742810ad878a2452e2165c9b"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "51abb9e7799f2d677ef3d3c10b7c90424f17a6b7",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/51abb9e7799f2d677ef3d3c10b7c90424f17a6b7"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1939eda33b9b4b8089d1ba40c23733354a09681",
+      "size": 51,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a1939eda33b9b4b8089d1ba40c23733354a09681"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_ghi_transposition.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5eeb27ca362ebb384d9c9c70a78af7ff770287ac",
+      "size": 3300,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5eeb27ca362ebb384d9c9c70a78af7ff770287ac"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_interval_transposition_error.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76adfed932b769e91d4eca7193bfa3f0976b91e8",
+      "size": 6815,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/76adfed932b769e91d4eca7193bfa3f0976b91e8"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_mixed_orientation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "987b4b4994314e11bf7a6c68c9191827be6d3813",
+      "size": 1602,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/987b4b4994314e11bf7a6c68c9191827be6d3813"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_rtranpose_limitations.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fca9557db2df41f7d70fa5e91809cef28c3db5a8",
+      "size": 5296,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/fca9557db2df41f7d70fa5e91809cef28c3db5a8"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_rtranpose_year.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b373ef1a259bf750ab87e8f31cd740c55477e688",
+      "size": 5059,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b373ef1a259bf750ab87e8f31cd740c55477e688"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_seasonal_tilt.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53e75cadc1022e005fbf90457ced168efc655fe1",
+      "size": 3662,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/53e75cadc1022e005fbf90457ced168efc655fe1"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/plot_transposition_gain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9e06126e6b3ac89b00b18f7e0cfe2391a0d6164",
+      "size": 5313,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b9e06126e6b3ac89b00b18f7e0cfe2391a0d6164"
+    },
+    {
+      "path": "docs/examples/irradiance-transposition/use_perez_modelchain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd0d12f2a5884ccead4fd61e2bb5a65d725fa400",
+      "size": 4589,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/dd0d12f2a5884ccead4fd61e2bb5a65d725fa400"
+    },
+    {
+      "path": "docs/examples/iv-modeling",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "515429b06b01036630686c2689feb4490893763c",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/515429b06b01036630686c2689feb4490893763c"
+    },
+    {
+      "path": "docs/examples/iv-modeling/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05f7d72b2ca79ddc7acfc520c63d5f3eccb08605",
+      "size": 27,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/05f7d72b2ca79ddc7acfc520c63d5f3eccb08605"
+    },
+    {
+      "path": "docs/examples/iv-modeling/plot_singlediode.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69c0079a20e620e81f9919dc37a82d6e1e2bd1fd",
+      "size": 4487,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/69c0079a20e620e81f9919dc37a82d6e1e2bd1fd"
+    },
+    {
+      "path": "docs/examples/reflections",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7bc63a45dffc9e7b1daa0e1036c936c9cfac7ec6",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/7bc63a45dffc9e7b1daa0e1036c936c9cfac7ec6"
+    },
+    {
+      "path": "docs/examples/reflections/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30b16e43d3c3f4796a9e30e4fe25e4653ad97d36",
+      "size": 25,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/30b16e43d3c3f4796a9e30e4fe25e4653ad97d36"
+    },
+    {
+      "path": "docs/examples/reflections/plot_convert_iam_models.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b0ec78ab3ae18e3be86945a1caf9bf70e12268c",
+      "size": 5927,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6b0ec78ab3ae18e3be86945a1caf9bf70e12268c"
+    },
+    {
+      "path": "docs/examples/reflections/plot_diffuse_aoi_correction.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5cd2f5cb410777f93900a5aa18dbb6c5e4391fb5",
+      "size": 4786,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5cd2f5cb410777f93900a5aa18dbb6c5e4391fb5"
+    },
+    {
+      "path": "docs/examples/reflections/plot_fit_iam_models.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6feb84423a2672afd750c374fc730cfd3e66b5b3",
+      "size": 3176,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6feb84423a2672afd750c374fc730cfd3e66b5b3"
+    },
+    {
+      "path": "docs/examples/shading",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fbca4797b94e6240011721769b6b55b5d058931e",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/fbca4797b94e6240011721769b6b55b5d058931e"
+    },
+    {
+      "path": "docs/examples/shading/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f13da4ff0ddfe7ed9ef90c16ab9be0920ee0c0e4",
+      "size": 16,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f13da4ff0ddfe7ed9ef90c16ab9be0920ee0c0e4"
+    },
+    {
+      "path": "docs/examples/shading/plot_martinez_shade_loss.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ebf3a73b5490111fc36a700dd6a170b8c8fd48e",
+      "size": 9852,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1ebf3a73b5490111fc36a700dd6a170b8c8fd48e"
+    },
+    {
+      "path": "docs/examples/shading/plot_partial_module_shading_simple.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40680f24b2daa90b84b056ee654b45db55fe8ff8",
+      "size": 13915,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/40680f24b2daa90b84b056ee654b45db55fe8ff8"
+    },
+    {
+      "path": "docs/examples/shading/plot_passias_diffuse_shading.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "828cf141a1fedc16d364fe0f2d2b9842d22d8ee6",
+      "size": 3190,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/828cf141a1fedc16d364fe0f2d2b9842d22d8ee6"
+    },
+    {
+      "path": "docs/examples/shading/plot_shaded_fraction1d_ns_hsat_example.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7eae2ed7aafb0135f85f1a4b67f74f3994e54975",
+      "size": 6262,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7eae2ed7aafb0135f85f1a4b67f74f3994e54975"
+    },
+    {
+      "path": "docs/examples/shading/plot_simple_irradiance_adjustment_for_horizon_shading.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7aa868fe6c170d60624a2c965ed7580e1e910cd4",
+      "size": 3992,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7aa868fe6c170d60624a2c965ed7580e1e910cd4"
+    },
+    {
+      "path": "docs/examples/soiling",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0e3bc3368abd1cc4d6a6167710c16b709ed823b8",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/0e3bc3368abd1cc4d6a6167710c16b709ed823b8"
+    },
+    {
+      "path": "docs/examples/soiling/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4df1dbbeb40b61f70ccb5d8d6678cf5525d6e285",
+      "size": 16,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4df1dbbeb40b61f70ccb5d8d6678cf5525d6e285"
+    },
+    {
+      "path": "docs/examples/soiling/plot_fig3A_hsu_soiling_example.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9103fa0207c0b6f6a15f5105990a1f6d21c14e67",
+      "size": 2664,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9103fa0207c0b6f6a15f5105990a1f6d21c14e67"
+    },
+    {
+      "path": "docs/examples/soiling/plot_greensboro_kimber_soiling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6565679f6d5fb445e2e0b3b1f31ca24fad3bc525",
+      "size": 2395,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6565679f6d5fb445e2e0b3b1f31ca24fad3bc525"
+    },
+    {
+      "path": "docs/examples/solar-position",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "500aa5620942b8a1d009c9f4d67c29b7ff40c0d4",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/500aa5620942b8a1d009c9f4d67c29b7ff40c0d4"
+    },
+    {
+      "path": "docs/examples/solar-position/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31c76521cf7509868658c6962b252106bb00d196",
+      "size": 31,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/31c76521cf7509868658c6962b252106bb00d196"
+    },
+    {
+      "path": "docs/examples/solar-position/plot_sunpath_diagrams.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "282a8dee43766205696e1d8ef7910a9edc861825",
+      "size": 6035,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/282a8dee43766205696e1d8ef7910a9edc861825"
+    },
+    {
+      "path": "docs/examples/solar-tracking",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e29764ba8a693737e47dc2eb00b4ff4a43e8656b",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/e29764ba8a693737e47dc2eb00b4ff4a43e8656b"
+    },
+    {
+      "path": "docs/examples/solar-tracking/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9f06dc00386643cee659f4bf53b4e8a272eeda7",
+      "size": 30,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b9f06dc00386643cee659f4bf53b4e8a272eeda7"
+    },
+    {
+      "path": "docs/examples/solar-tracking/plot_discontinuous_tracking.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f385675d578ed4ac019417692009ce8455cab32d",
+      "size": 3481,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f385675d578ed4ac019417692009ce8455cab32d"
+    },
+    {
+      "path": "docs/examples/solar-tracking/plot_dual_axis_tracking.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f51512726d52ce3851e7eee9edd14d995eec7bb",
+      "size": 1419,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8f51512726d52ce3851e7eee9edd14d995eec7bb"
+    },
+    {
+      "path": "docs/examples/solar-tracking/plot_single_axis_tracking.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f7d62cb80f978f951a1189390d0d9d0a6900d44",
+      "size": 2452,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4f7d62cb80f978f951a1189390d0d9d0a6900d44"
+    },
+    {
+      "path": "docs/examples/solar-tracking/plot_single_axis_tracking_on_sloped_terrain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3a204ce691cdaa7bcdd969a05e7eb5267e54f93",
+      "size": 7459,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b3a204ce691cdaa7bcdd969a05e7eb5267e54f93"
+    },
+    {
+      "path": "docs/examples/spectrum",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9a543fed78473920aa9b8d4095ab9b097942184b",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/9a543fed78473920aa9b8d4095ab9b097942184b"
+    },
+    {
+      "path": "docs/examples/spectrum/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b6c564f6f08adeace340e8936428bd7b116ffd4",
+      "size": 18,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3b6c564f6f08adeace340e8936428bd7b116ffd4"
+    },
+    {
+      "path": "docs/examples/spectrum/average_photon_energy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57918da3b568870ba480d436c2200beeaddaa581",
+      "size": 7975,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/57918da3b568870ba480d436c2200beeaddaa581"
+    },
+    {
+      "path": "docs/examples/spectrum/plot_spectrl2_fig51A.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a921aaf79f5876dc997f2332ba52516241b2b1d",
+      "size": 3619,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0a921aaf79f5876dc997f2332ba52516241b2b1d"
+    },
+    {
+      "path": "docs/examples/spectrum/plot_standard_ASTM_G173-03.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18570b9c6d93e92002861081ea09edd5cbc59f49",
+      "size": 901,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/18570b9c6d93e92002861081ea09edd5cbc59f49"
+    },
+    {
+      "path": "docs/examples/spectrum/spectral_factor.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83ee488fb4f17299fca2b5e845df39a9fac0282e",
+      "size": 5995,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/83ee488fb4f17299fca2b5e845df39a9fac0282e"
+    },
+    {
+      "path": "docs/examples/system-models",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0b3699003fedd5cda4c1564524d2882eeb9391fb",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/0b3699003fedd5cda4c1564524d2882eeb9391fb"
+    },
+    {
+      "path": "docs/examples/system-models/README.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c76ab49ae812da5ac294b6d73d89ee788565cd76",
+      "size": 27,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c76ab49ae812da5ac294b6d73d89ee788565cd76"
+    },
+    {
+      "path": "docs/examples/system-models/noplot_oedi_9068.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b3ed7f5068f329126e864a62496b1ae9fe7ff93",
+      "size": 10592,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7b3ed7f5068f329126e864a62496b1ae9fe7ff93"
+    },
+    {
+      "path": "docs/examples/system-models/plot_modelchain_model_variations.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6663119430facce9704f9d076a8ba0c30951f60",
+      "size": 5703,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f6663119430facce9704f9d076a8ba0c30951f60"
+    },
+    {
+      "path": "docs/notes",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c38aa4790b8a7f2e0ab41639378e986c477cd37c",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/c38aa4790b8a7f2e0ab41639378e986c477cd37c"
+    },
+    {
+      "path": "docs/notes/Determining the average view factor from a module.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c52f32d01c9a0358f54e17e98898ae93d16e48d",
+      "size": 172157,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1c52f32d01c9a0358f54e17e98898ae93d16e48d"
+    },
+    {
+      "path": "docs/sphinx",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ee460309c52e21c977c22371eca34ec995672690",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/ee460309c52e21c977c22371eca34ec995672690"
+    },
+    {
+      "path": "docs/sphinx/Makefile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ce74bc0144f2a971f6734086759bfb5b6f504a3",
+      "size": 6876,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6ce74bc0144f2a971f6734086759bfb5b6f504a3"
+    },
+    {
+      "path": "docs/sphinx/make.bat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "555f7d31c0377c72e211fc4e762dd27c5420f014",
+      "size": 1130,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/555f7d31c0377c72e211fc4e762dd27c5420f014"
+    },
+    {
+      "path": "docs/sphinx/source",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e59839d8f6a0b3bb3e007201255bb9d20ddae9c1",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/e59839d8f6a0b3bb3e007201255bb9d20ddae9c1"
+    },
+    {
+      "path": "docs/sphinx/source/_images",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3d7dfee9431f6e8b781b6aba587337ca562e04f3",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/3d7dfee9431f6e8b781b6aba587337ca562e04f3"
+    },
+    {
+      "path": "docs/sphinx/source/_images/Anderson_Jensen_2024_Fig3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d239d9d4f414d9d28a685fa5fee49a7a20db0dd8",
+      "size": 66997,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d239d9d4f414d9d28a685fa5fee49a7a20db0dd8"
+    },
+    {
+      "path": "docs/sphinx/source/_images/Anderson_Mikofski_2020_Fig5.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bd2ecc9960657d16e2c70608293b775a84a6dfa",
+      "size": 35024,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1bd2ecc9960657d16e2c70608293b775a84a6dfa"
+    },
+    {
+      "path": "docs/sphinx/source/_images/Coello_Boyle_2019_Fig3.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03e10d4c9434700bde3681c897ec0c9f81824962",
+      "size": 288782,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/03e10d4c9434700bde3681c897ec0c9f81824962"
+    },
+    {
+      "path": "docs/sphinx/source/_images/OEDI_9068_daily_timeseries.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f29fdc7ab46ec71c5657cd5db39481a740cf04ce",
+      "size": 171799,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f29fdc7ab46ec71c5657cd5db39481a740cf04ce"
+    },
+    {
+      "path": "docs/sphinx/source/_images/OEDI_9068_inverter1_comparison.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8c4fe24881729feee41800d79f2f59721f5b680",
+      "size": 237401,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a8c4fe24881729feee41800d79f2f59721f5b680"
+    },
+    {
+      "path": "docs/sphinx/source/_images/OEDI_9068_inverter2_comparison.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2885bc1f6e1090d489a596d4fbe7334b3e4d0ad0",
+      "size": 237138,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2885bc1f6e1090d489a596d4fbe7334b3e4d0ad0"
+    },
+    {
+      "path": "docs/sphinx/source/_images/PV_module_layout_cesardd.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "385fe8dcbb9bb301a0f68b570bb31a6ab12ca8d1",
+      "size": 307682,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/385fe8dcbb9bb301a0f68b570bb31a6ab12ca8d1"
+    },
+    {
+      "path": "docs/sphinx/source/_images/agrivoltaics_system.jpg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "099fffefe5e5c6805f0b94754fbfa5de4f6d933b",
+      "size": 1653693,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/099fffefe5e5c6805f0b94754fbfa5de4f6d933b"
+    },
+    {
+      "path": "docs/sphinx/source/_images/clonebutton.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1cd6c57325e50d0137455db8a58a00647d142abc",
+      "size": 250842,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1cd6c57325e50d0137455db8a58a00647d142abc"
+    },
+    {
+      "path": "docs/sphinx/source/_images/example_function_screenshot.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4728bd9e2ac1c6ef83b48e3dd4d08c8c4b452c5",
+      "size": 207405,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f4728bd9e2ac1c6ef83b48e3dd4d08c8c4b452c5"
+    },
+    {
+      "path": "docs/sphinx/source/_images/ground_slope_angle_convention.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0351c04bf0369fd88919fdc8d7c860b2d799af0",
+      "size": 14810,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f0351c04bf0369fd88919fdc8d7c860b2d799af0"
+    },
+    {
+      "path": "docs/sphinx/source/_images/pvlib_logo_horiz.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f104871e0bfe1fac4c96e604a3c5a0e1d9c1618",
+      "size": 83728,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9f104871e0bfe1fac4c96e604a3c5a0e1d9c1618"
+    },
+    {
+      "path": "docs/sphinx/source/_images/pvlib_logo_vert.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60ca0f2f2c18bf4c0d3e801835ede28991c193c0",
+      "size": 113918,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/60ca0f2f2c18bf4c0d3e801835ede28991c193c0"
+    },
+    {
+      "path": "docs/sphinx/source/_images/pvlib_powered_logo_horiz.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71dd1d35425bd97eb09855b8cb53ebfc26da6bda",
+      "size": 127851,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/71dd1d35425bd97eb09855b8cb53ebfc26da6bda"
+    },
+    {
+      "path": "docs/sphinx/source/_images/pvlib_powered_logo_vert.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f23697144a493057c428be97901028254f967b26",
+      "size": 111495,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f23697144a493057c428be97901028254f967b26"
+    },
+    {
+      "path": "docs/sphinx/source/_images/tracker_azimuth_angle_convention.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c7124bbf18e6d86727d00bdf54def3585898ef5",
+      "size": 39690,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2c7124bbf18e6d86727d00bdf54def3585898ef5"
+    },
+    {
+      "path": "docs/sphinx/source/_images/tracker_rotation_angle_convention.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a9c63ebcd8f9b3bad12c6f5f3361f0378eb6735",
+      "size": 110289,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4a9c63ebcd8f9b3bad12c6f5f3361f0378eb6735"
+    },
+    {
+      "path": "docs/sphinx/source/_static",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a71108a930badc1765c0d51115b6ee6406f48c1f",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/a71108a930badc1765c0d51115b6ee6406f48c1f"
+    },
+    {
+      "path": "docs/sphinx/source/_static/.gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/sphinx/source/_static/favicon-16x16.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6b8e9618a4ec789d07e1cca0967799bfd44adc7",
+      "size": 854,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c6b8e9618a4ec789d07e1cca0967799bfd44adc7"
+    },
+    {
+      "path": "docs/sphinx/source/_static/favicon-32x32.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae109e9a70795f7efe4c0016445d83ad56ae8d89",
+      "size": 2352,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ae109e9a70795f7efe4c0016445d83ad56ae8d89"
+    },
+    {
+      "path": "docs/sphinx/source/_static/no_scrollbars.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5177a66ac8bbaf5ad24e60975a9a3fde1d9e9719",
+      "size": 409,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5177a66ac8bbaf5ad24e60975a9a3fde1d9e9719"
+    },
+    {
+      "path": "docs/sphinx/source/_static/reference_format.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ebabc48488cf5026bdd11c3d87ddd8a3e9cda6c",
+      "size": 124,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8ebabc48488cf5026bdd11c3d87ddd8a3e9cda6c"
+    },
+    {
+      "path": "docs/sphinx/source/_static/tooltipster_color_theming.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5804459549ad304664f7103416583ad0cb56ac86",
+      "size": 506,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5804459549ad304664f7103416583ad0cb56ac86"
+    },
+    {
+      "path": "docs/sphinx/source/_static/version-alert.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09f142d3d02e7d801812f38b648d602e10866693",
+      "size": 2984,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/09f142d3d02e7d801812f38b648d602e10866693"
+    },
+    {
+      "path": "docs/sphinx/source/_templates",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2cd6cdb2e1c3ed6b235509770a810861c319ea88",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/2cd6cdb2e1c3ed6b235509770a810861c319ea88"
+    },
+    {
+      "path": "docs/sphinx/source/_templates/autosummary",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ddd3df05693e7fc7a3961fbd182926600258ff79",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/ddd3df05693e7fc7a3961fbd182926600258ff79"
+    },
+    {
+      "path": "docs/sphinx/source/_templates/autosummary/class.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "847f14f8e4c8d85604032e8c75d7c181007b4bea",
+      "size": 767,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/847f14f8e4c8d85604032e8c75d7c181007b4bea"
+    },
+    {
+      "path": "docs/sphinx/source/_templates/autosummary/function.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0786b8611178088f150502a9de751939295c8f2",
+      "size": 334,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c0786b8611178088f150502a9de751939295c8f2"
+    },
+    {
+      "path": "docs/sphinx/source/_templates/autosummary/method.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14fd32a638e3fd9522c11a3e38bfc2d5e5f8f0be",
+      "size": 332,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/14fd32a638e3fd9522c11a3e38bfc2d5e5f8f0be"
+    },
+    {
+      "path": "docs/sphinx/source/_templates/edit-this-page.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e70e0b2de2dad424b0c5a2cfdd8c11dc8bf4efb",
+      "size": 575,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0e70e0b2de2dad424b0c5a2cfdd8c11dc8bf4efb"
+    },
+    {
+      "path": "docs/sphinx/source/conf.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90c2f0a3a5bdda6206789cfa5394786cd72497de",
+      "size": 19141,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/90c2f0a3a5bdda6206789cfa5394786cd72497de"
+    },
+    {
+      "path": "docs/sphinx/source/contributing",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bbf358b412f11d788478eb6e5b4231a665bc20a1",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/bbf358b412f11d788478eb6e5b4231a665bc20a1"
+    },
+    {
+      "path": "docs/sphinx/source/contributing/how_to_contribute_new_code.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5a4546baae0f3d72bb7514e617c06743a769d0f1",
+      "size": 7277,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5a4546baae0f3d72bb7514e617c06743a769d0f1"
+    },
+    {
+      "path": "docs/sphinx/source/contributing/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e02098ea79e9d87b3414dfd8e4ef455ba46bbb55",
+      "size": 178,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e02098ea79e9d87b3414dfd8e4ef455ba46bbb55"
+    },
+    {
+      "path": "docs/sphinx/source/contributing/introduction_to_contributing.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1b45a59fcfe5e4a21873541c64b95a1efa94d56",
+      "size": 3068,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a1b45a59fcfe5e4a21873541c64b95a1efa94d56"
+    },
+    {
+      "path": "docs/sphinx/source/contributing/style_guide.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be329e64e74a8845b63da93353c66434831d2c1f",
+      "size": 12947,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/be329e64e74a8845b63da93353c66434831d2c1f"
+    },
+    {
+      "path": "docs/sphinx/source/contributing/testing.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88152963f7a4e0e6870ca8b173e3c593f0ceaa93",
+      "size": 7428,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/88152963f7a4e0e6870ca8b173e3c593f0ceaa93"
+    },
+    {
+      "path": "docs/sphinx/source/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20e776bf2f7ee7a8580a8987ae73a219141f1874",
+      "size": 5504,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/20e776bf2f7ee7a8580a8987ae73a219141f1874"
+    },
+    {
+      "path": "docs/sphinx/source/reference",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0462e19b452f794ad3459aee99630f2e033e15a1",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/0462e19b452f794ad3459aee99630f2e033e15a1"
+    },
+    {
+      "path": "docs/sphinx/source/reference/airmass_atmospheric.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be3f47b65d39b8864f16a740bd1d525dc541ba09",
+      "size": 524,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/be3f47b65d39b8864f16a740bd1d525dc541ba09"
+    },
+    {
+      "path": "docs/sphinx/source/reference/bifacial.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f6366a1af743a876d0459a539f39e1f1be7d3a3",
+      "size": 751,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2f6366a1af743a876d0459a539f39e1f1be7d3a3"
+    },
+    {
+      "path": "docs/sphinx/source/reference/classes.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "213b0c6870e36e7fdbb90046596004c5342979ac",
+      "size": 731,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/213b0c6870e36e7fdbb90046596004c5342979ac"
+    },
+    {
+      "path": "docs/sphinx/source/reference/clearsky.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e81372cc2d5e85fb3d8bc78199c523eb6c30064e",
+      "size": 274,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e81372cc2d5e85fb3d8bc78199c523eb6c30064e"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "68a92c574917e173659d6c6eb03ddded30bacaa3",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/68a92c574917e173659d6c6eb03ddded30bacaa3"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb046de7db1342bdc208e9f810b28d7f1133bef2",
+      "size": 170,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cb046de7db1342bdc208e9f810b28d7f1133bef2"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output/loss-models.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6897f12283f7da69ebcabec72fc85fc931214003",
+      "size": 162,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6897f12283f7da69ebcabec72fc85fc931214003"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output/shading.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d0b94547f454d6fd5fb59c2654c62335f0c5b38",
+      "size": 297,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2d0b94547f454d6fd5fb59c2654c62335f0c5b38"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output/snow.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "006cb284b20637b96e162d91fbed0570364455c7",
+      "size": 174,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/006cb284b20637b96e162d91fbed0570364455c7"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output/soiling.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5afedeafee02f50b858917c6882fa095db0867e",
+      "size": 121,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e5afedeafee02f50b858917c6882fa095db0867e"
+    },
+    {
+      "path": "docs/sphinx/source/reference/effects_on_pv_system_output/spectrum.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b453a300ee2b67af79e4e88e4d79fc0890f3e212",
+      "size": 514,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b453a300ee2b67af79e4e88e4d79fc0890f3e212"
+    },
+    {
+      "path": "docs/sphinx/source/reference/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a990ac9238afe7eb01d9ad58156e8cb1a1e6183",
+      "size": 327,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8a990ac9238afe7eb01d9ad58156e8cb1a1e6183"
+    },
+    {
+      "path": "docs/sphinx/source/reference/iotools.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd0661e76223902821f4d017afe1671fc19a5c0a",
+      "size": 4711,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/bd0661e76223902821f4d017afe1671fc19a5c0a"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3809a72f11b4a4c73bea0f8796ae3e59e05d2700",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/3809a72f11b4a4c73bea0f8796ae3e59e05d2700"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/angle-of-incidence.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66456484370f09516232022c484335a960b931d2",
+      "size": 157,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/66456484370f09516232022c484335a960b931d2"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/clearness-index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76825eaf5e256f82b29d73fb27b9749ea3487026",
+      "size": 238,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/76825eaf5e256f82b29d73fb27b9749ea3487026"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/decomposition.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf0d355ab4eaf266e38b6e4e5e984de6fd7f6004",
+      "size": 344,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cf0d355ab4eaf266e38b6e4e5e984de6fd7f6004"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/extraterrestrial-radiation.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b08b6334e28259db3b64c998cf1f61e468392054",
+      "size": 160,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b08b6334e28259db3b64c998cf1f61e468392054"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2d5917a0e4c0f16b47efa95a61fe8ae8cec1e85",
+      "size": 218,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b2d5917a0e4c0f16b47efa95a61fe8ae8cec1e85"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/other.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebeecbce9f6f054bc1ec4b0f421f4726f6f90aee",
+      "size": 203,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ebeecbce9f6f054bc1ec4b0f421f4726f6f90aee"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/reverse-transposition.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55e1d40e3666d34ff967c154b8c8673a0fa47eb2",
+      "size": 195,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/55e1d40e3666d34ff967c154b8c8673a0fa47eb2"
+    },
+    {
+      "path": "docs/sphinx/source/reference/irradiance/transposition.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e15b4cafb039b5e284ea9690caff828cdbebe77",
+      "size": 428,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2e15b4cafb039b5e284ea9690caff828cdbebe77"
+    },
+    {
+      "path": "docs/sphinx/source/reference/location.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5215ba81b78eb6e50cfb7fcbc711f98b6e26a0e1",
+      "size": 567,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5215ba81b78eb6e50cfb7fcbc711f98b6e26a0e1"
+    },
+    {
+      "path": "docs/sphinx/source/reference/modelchain.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56c0cfccd835e9dae925dbe6f92cd3edda73a2a3",
+      "size": 3021,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/56c0cfccd835e9dae925dbe6f92cd3edda73a2a3"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e5674425b2a331b68a23d82cf2a23a947b92a239",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/e5674425b2a331b68a23d82cf2a23a947b92a239"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/iam.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e12a0c519e4a3acf63d23d23bf4ad82bf0d23c96",
+      "size": 335,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e12a0c519e4a3acf63d23d23bf4ad82bf0d23c96"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3941672c8ffc033bb33f179b49710e891c0707a2",
+      "size": 384,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3941672c8ffc033bb33f179b49710e891c0707a2"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/inverter.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6e623f28bead9e1a7f1dc912319ca5d5b8b005f",
+      "size": 391,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e6e623f28bead9e1a7f1dc912319ca5d5b8b005f"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/other.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3eab4f17f3d34e4232d0a9adaabe8efe537cba9d",
+      "size": 150,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3eab4f17f3d34e4232d0a9adaabe8efe537cba9d"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/parameters.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ebda621b6d594d4df7434cf78ce67793dbc721d",
+      "size": 666,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5ebda621b6d594d4df7434cf78ce67793dbc721d"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/sdm.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "077cdb16ee79c6ba5221607bb28831dfc014c8e2",
+      "size": 862,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/077cdb16ee79c6ba5221607bb28831dfc014c8e2"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/system_models.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b8f29d0b2a3de8a4ca5642aa2a694a0416b7dd0",
+      "size": 1011,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3b8f29d0b2a3de8a4ca5642aa2a694a0416b7dd0"
+    },
+    {
+      "path": "docs/sphinx/source/reference/pv_modeling/temperature.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c0c7c596b3f887e3a55387db38e7fec908b5e44",
+      "size": 634,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4c0c7c596b3f887e3a55387db38e7fec908b5e44"
+    },
+    {
+      "path": "docs/sphinx/source/reference/scaling.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34f1ad3a5c53739cf45eda0c1841a6192b931557",
+      "size": 200,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/34f1ad3a5c53739cf45eda0c1841a6192b931557"
+    },
+    {
+      "path": "docs/sphinx/source/reference/solarposition.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dbe93d53928103200de3d6c36fa3ab921a7961dd",
+      "size": 1656,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/dbe93d53928103200de3d6c36fa3ab921a7961dd"
+    },
+    {
+      "path": "docs/sphinx/source/reference/tracking.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e85ffa3de02c7dfeb0a4cf13be52d646da2a2e4",
+      "size": 207,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4e85ffa3de02c7dfeb0a4cf13be52d646da2a2e4"
+    },
+    {
+      "path": "docs/sphinx/source/reference/transformer.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da2c6828acd05b8032e16f0fd27d400b7aaa5356",
+      "size": 189,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/da2c6828acd05b8032e16f0fd27d400b7aaa5356"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6f089b17b1664e8abda27537702430e77ca154dc",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/6f089b17b1664e8abda27537702430e77ca154dc"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/extras",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "66e0e453f7a040d80587e09a45c6668f7f7a2522",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/66e0e453f7a040d80587e09a45c6668f7f7a2522"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/extras/faq.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81b69731d9211a77750c043c5f05a4f6b78a1436",
+      "size": 7779,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/81b69731d9211a77750c043c5f05a4f6b78a1436"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/extras/nomenclature.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79bf66b957bd3e75210688b8b97a8978a0a4d9c9",
+      "size": 7250,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/79bf66b957bd3e75210688b8b97a8978a0a4d9c9"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/getting_started",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2bd9dc052092eb07e7de4baaf7b014861b96b722",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/2bd9dc052092eb07e7de4baaf7b014861b96b722"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/getting_started/installation.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbeb3b0d033cc61400584b3f148d46c0255a322f",
+      "size": 11133,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cbeb3b0d033cc61400584b3f148d46c0255a322f"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/getting_started/introtutorial.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b66992fae5c6b68b40a7062ce66d0d274fa1b03f",
+      "size": 7894,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b66992fae5c6b68b40a7062ce66d0d274fa1b03f"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/getting_started/package_overview.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca47d28f86fcd08de6bd3e654a17b90c2c812a4c",
+      "size": 2179,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ca47d28f86fcd08de6bd3e654a17b90c2c812a4c"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/index.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af2a4cbb92080ebce1827251d25be2fd960ac2b2",
+      "size": 731,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/af2a4cbb92080ebce1827251d25be2fd960ac2b2"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ae7a6227a466dd31421c066805f36b183d64ef3e",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/ae7a6227a466dd31421c066805f36b183d64ef3e"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/bifacial.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cdc0fd091ad9171a5c877b9c848e0411c369050c",
+      "size": 7017,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cdc0fd091ad9171a5c877b9c848e0411c369050c"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/clearsky.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7334fdb5a8c67b5b468714edd4b145b19e1d0c3f",
+      "size": 22720,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7334fdb5a8c67b5b468714edd4b145b19e1d0c3f"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/iam.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3097164604142dbbfa61a660ec3893ba819d5e0b",
+      "size": 5384,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3097164604142dbbfa61a660ec3893ba819d5e0b"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/modelchain.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da2fef22d3ae41c99799d9b255de1db132ff7509",
+      "size": 24005,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/da2fef22d3ae41c99799d9b255de1db132ff7509"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/pvsystem.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eabd64952cb4b44aab4174249e512739023484d4",
+      "size": 13691,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/eabd64952cb4b44aab4174249e512739023484d4"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/singlediode.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "987ced10a11398fe081a36b7fe5ed7611cb699b9",
+      "size": 10275,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/987ced10a11398fe081a36b7fe5ed7611cb699b9"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/spectrum.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ff5fa1df4313237ef0496ab2a8b565dd9200a9b",
+      "size": 9754,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1ff5fa1df4313237ef0496ab2a8b565dd9200a9b"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/temperature.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b292b9f2c3d7fc23a29b5468a4afda20f649d35",
+      "size": 7267,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5b292b9f2c3d7fc23a29b5468a4afda20f649d35"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/timetimezones.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ede9f15c76af48e82225d8fdf25ee3769a2b7280",
+      "size": 12342,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ede9f15c76af48e82225d8fdf25ee3769a2b7280"
+    },
+    {
+      "path": "docs/sphinx/source/user_guide/modeling_topics/weather_data.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e99895ab56fa3f2a6112895fd3c5993cd482632",
+      "size": 6960,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8e99895ab56fa3f2a6112895fd3c5993cd482632"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "106312943c38a216bfa759496bf65a4196ebfec1",
+      "size": 1749,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/106312943c38a216bfa759496bf65a4196ebfec1"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ab5e6ac2eb896bfe0cca3d986310e159bbc8e629",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/ab5e6ac2eb896bfe0cca3d986310e159bbc8e629"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.1.0.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf84ab8cc7e61aa656548ff2e1f1d8dd48b92bd3",
+      "size": 3655,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cf84ab8cc7e61aa656548ff2e1f1d8dd48b92bd3"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.10.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eaefe126728880542e7a43e675202ce8183a34f8",
+      "size": 9533,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/eaefe126728880542e7a43e675202ce8183a34f8"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.10.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42d709c8085051034e4a052462992018c930cfdd",
+      "size": 387,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/42d709c8085051034e4a052462992018c930cfdd"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.10.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0bba4c69d1d7efb5673e07e3d0c32af48d8da67c",
+      "size": 3709,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0bba4c69d1d7efb5673e07e3d0c32af48d8da67c"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.10.3.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e4ac8e0ca5271727ed1186916545982b0ab0384",
+      "size": 3006,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6e4ac8e0ca5271727ed1186916545982b0ab0384"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.10.4.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a194c5e522f6cc9b536e9e561f5a003d7a9fe01f",
+      "size": 3116,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a194c5e522f6cc9b536e9e561f5a003d7a9fe01f"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.10.5.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00daed3a0f4c5c006dd53f2ab5e683e667247495",
+      "size": 1522,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/00daed3a0f4c5c006dd53f2ab5e683e667247495"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.11.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d71fdcd9d9d20a2bf1359b2b5862bcc61fa78802",
+      "size": 4331,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d71fdcd9d9d20a2bf1359b2b5862bcc61fa78802"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.11.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1e4ef0d32f8e1bd7b280bfa3f7479f71dd1181b",
+      "size": 4976,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e1e4ef0d32f8e1bd7b280bfa3f7479f71dd1181b"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.11.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab63431e0d62bf521a8e05b9b86f04cf354dcf8b",
+      "size": 4379,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ab63431e0d62bf521a8e05b9b86f04cf354dcf8b"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.12.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34aa38ad0cc0467b22f07f4953bcda3094df674b",
+      "size": 5301,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/34aa38ad0cc0467b22f07f4953bcda3094df674b"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.13.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94b7aac35663a6ab02c525dacc80bc6a220b52ff",
+      "size": 5129,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/94b7aac35663a6ab02c525dacc80bc6a220b52ff"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.13.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00e117b86bdc23675c1e9643ac29254a5e16cef2",
+      "size": 3393,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/00e117b86bdc23675c1e9643ac29254a5e16cef2"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.14.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d7c4b1a507c0950d289edb4b4eda0ae13d8c7bb",
+      "size": 3657,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4d7c4b1a507c0950d289edb4b4eda0ae13d8c7bb"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.15.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "856aa32bf122b97f68e96c9ecafa6f5b6419b97a",
+      "size": 859,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/856aa32bf122b97f68e96c9ecafa6f5b6419b97a"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.15.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2f3a1de3c688d0627a6d86ebe8fa57e27f84189",
+      "size": 3659,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c2f3a1de3c688d0627a6d86ebe8fa57e27f84189"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.15.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97383a5723d5dc899afc05593763fabaa08e3ceb",
+      "size": 3353,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/97383a5723d5dc899afc05593763fabaa08e3ceb"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.15.3.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8cf8515577bc78550ffc1e45f3ecc0537df3a32d",
+      "size": 5196,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8cf8515577bc78550ffc1e45f3ecc0537df3a32d"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.16.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "078ea04b95d12f9949a9e3b38ded6de073f25020",
+      "size": 4749,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/078ea04b95d12f9949a9e3b38ded6de073f25020"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.2.0.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0088ade1b8f76e962d9899a33ccf8089df683cb2",
+      "size": 1657,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0088ade1b8f76e962d9899a33ccf8089df683cb2"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.2.1.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b8bd439ba563ce0b3f3f5aaba4790c266d377aa6",
+      "size": 546,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b8bd439ba563ce0b3f3f5aaba4790c266d377aa6"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.2.2.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "801e149aee9625ab32a393805ca2337f43a802da",
+      "size": 1019,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/801e149aee9625ab32a393805ca2337f43a802da"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.3.0.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36db1b3b909e83df353dbb52f7229eefaabd8570",
+      "size": 3576,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/36db1b3b909e83df353dbb52f7229eefaabd8570"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.3.1.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f50a0143fbfc83288500da22b5d90368e0bec01f",
+      "size": 1144,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f50a0143fbfc83288500da22b5d90368e0bec01f"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.3.2.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15964aa6ce9a70ec2f55156c4637ff46182e8506",
+      "size": 265,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/15964aa6ce9a70ec2f55156c4637ff46182e8506"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.3.3.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47409e9dfbb416506c4db27aa572727fae19b031",
+      "size": 2620,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/47409e9dfbb416506c4db27aa572727fae19b031"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.4.0.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "720bd18b65f74972acf3d71ebaf3afaf24744cb1",
+      "size": 4985,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/720bd18b65f74972acf3d71ebaf3afaf24744cb1"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.4.1.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7642cb5a86daaf1c6f5d299875e979b7855d3ef",
+      "size": 843,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f7642cb5a86daaf1c6f5d299875e979b7855d3ef"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.4.2.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2914f6ce0f734e025b14893282c14c5d0588a75",
+      "size": 2319,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e2914f6ce0f734e025b14893282c14c5d0588a75"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.4.3.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b31059beb540ad1f70ab98969947e8b12fa00452",
+      "size": 513,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b31059beb540ad1f70ab98969947e8b12fa00452"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.4.4.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e84e8474904044bb4a195620d9ef6579d978a5e5",
+      "size": 1454,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e84e8474904044bb4a195620d9ef6579d978a5e5"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.4.5.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ae5fe2b9a2aa0628dc55e6c06ab3141af458558",
+      "size": 1250,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0ae5fe2b9a2aa0628dc55e6c06ab3141af458558"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.5.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ade84c4d3d1d160ea70aa36aaebae5cb47ba8f6",
+      "size": 1856,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0ade84c4d3d1d160ea70aa36aaebae5cb47ba8f6"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.5.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "992a7aad3de727451be7fb64f58f3d7c62fda63a",
+      "size": 2184,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/992a7aad3de727451be7fb64f58f3d7c62fda63a"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.5.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a48e97c6915a0b1887753724773ac32b010035c6",
+      "size": 1812,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a48e97c6915a0b1887753724773ac32b010035c6"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.6.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d0197c8bd69b171eeca4d9c01c6104748d1df903",
+      "size": 12119,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d0197c8bd69b171eeca4d9c01c6104748d1df903"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.6.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d95052f9b23c3c4d8d20e174e4e7bb3377a46bb",
+      "size": 5384,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7d95052f9b23c3c4d8d20e174e4e7bb3377a46bb"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.6.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f152dbf8a13b8e03f9c2c852610a628e89571d8d",
+      "size": 3497,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f152dbf8a13b8e03f9c2c852610a628e89571d8d"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.6.3.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "004e0d6c5017b0dc473461360020aa18504dd3db",
+      "size": 562,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/004e0d6c5017b0dc473461360020aa18504dd3db"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.7.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41df67ac85f441533ffc9cea68503ceec52f8def",
+      "size": 12892,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/41df67ac85f441533ffc9cea68503ceec52f8def"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.7.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "630da2cff1515915aedca6747d6bfc7bcd9d335d",
+      "size": 1703,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/630da2cff1515915aedca6747d6bfc7bcd9d335d"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.7.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1113abb3f43d43dcf256d3059a8135dc52b25293",
+      "size": 5649,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1113abb3f43d43dcf256d3059a8135dc52b25293"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.8.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e322b9fb0cb5b41203a09d2a5419f0eadefe6055",
+      "size": 10709,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e322b9fb0cb5b41203a09d2a5419f0eadefe6055"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.8.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3ce66c5ffeb4ea0bb2bf751d369b9804c3eb7fa",
+      "size": 3394,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f3ce66c5ffeb4ea0bb2bf751d369b9804c3eb7fa"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.9.0.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f57485212623a0e71be6df6178e973233ae1567b",
+      "size": 12444,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f57485212623a0e71be6df6178e973233ae1567b"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.9.1.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1734398c47755a38f545609c0288dd9ebee965b5",
+      "size": 4082,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1734398c47755a38f545609c0288dd9ebee965b5"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.9.2.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01612b2fad5f8323f995b67ee7e9f5db21201fc8",
+      "size": 3697,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/01612b2fad5f8323f995b67ee7e9f5db21201fc8"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.9.3.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e6f0e6a94d57cb31ab53b15ad040f32081f5111",
+      "size": 1555,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8e6f0e6a94d57cb31ab53b15ad040f32081f5111"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.9.4.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7419a2deaa352ef2ec9dde3c0eb4f438e9d53cb",
+      "size": 3326,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c7419a2deaa352ef2ec9dde3c0eb4f438e9d53cb"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.9.5.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d9c1b0aecc594e89cd35f8cfdf1e2923df95c92",
+      "size": 4124,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8d9c1b0aecc594e89cd35f8cfdf1e2923df95c92"
+    },
+    {
+      "path": "docs/sphinx/source/whatsnew/v0.X.Y-example.rst",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e737b0d279fa30e009617782e6a33a200594830",
+      "size": 342,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1e737b0d279fa30e009617782e6a33a200594830"
+    },
+    {
+      "path": "docs/tutorials",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0703ad190d25d9e3fd4243ec6ef2a3639e215ef4",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/0703ad190d25d9e3fd4243ec6ef2a3639e215ef4"
+    },
+    {
+      "path": "docs/tutorials/atmosphere.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df574d747dc4abfecd92196cf894551b1102da38",
+      "size": 70542,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/df574d747dc4abfecd92196cf894551b1102da38"
+    },
+    {
+      "path": "docs/tutorials/irradiance.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "251d8b5eb8a0d0b8a6d0078eec35be7f683a544f",
+      "size": 1377079,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/251d8b5eb8a0d0b8a6d0078eec35be7f683a544f"
+    },
+    {
+      "path": "docs/tutorials/pvsystem.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89065ef2a9bc863bf150144f069264c6630845ce",
+      "size": 1501581,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/89065ef2a9bc863bf150144f069264c6630845ce"
+    },
+    {
+      "path": "docs/tutorials/solarposition.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc4d079275be30b69525a92357ccfc38b69cbe45",
+      "size": 349055,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/bc4d079275be30b69525a92357ccfc38b69cbe45"
+    },
+    {
+      "path": "docs/tutorials/tmy.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b371919c0beadc9dfc381d114b31da35371b7f2",
+      "size": 41485,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7b371919c0beadc9dfc381d114b31da35371b7f2"
+    },
+    {
+      "path": "docs/tutorials/tmy_and_diffuse_irrad_models.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28b4630b01f60441def0369dafef7b4189fe8b28",
+      "size": 259152,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/28b4630b01f60441def0369dafef7b4189fe8b28"
+    },
+    {
+      "path": "docs/tutorials/tmy_to_power.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47fa9b464847c9bcd45fa99dffc43cc8f0d03918",
+      "size": 963515,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/47fa9b464847c9bcd45fa99dffc43cc8f0d03918"
+    },
+    {
+      "path": "docs/tutorials/tracking.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05b06587a85f0c5eb9adc951b06370e3afd7c751",
+      "size": 1839571,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/05b06587a85f0c5eb9adc951b06370e3afd7c751"
+    },
+    {
+      "path": "paper",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "962479e4a86ea420e5df00ddf8cb47bcc907668f",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/962479e4a86ea420e5df00ddf8cb47bcc907668f"
+    },
+    {
+      "path": "paper/2018",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f7b14ba46adc348f4eebf89e2aea52ae4e322d7a",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/f7b14ba46adc348f4eebf89e2aea52ae4e322d7a"
+    },
+    {
+      "path": "paper/2018/codemeta.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a28b03cb6323da18d5aa295d55cdd8101fa0712",
+      "size": 1239,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4a28b03cb6323da18d5aa295d55cdd8101fa0712"
+    },
+    {
+      "path": "paper/2018/paper.bib",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b79882d00417e01b222f9af99769414dbc6a81cd",
+      "size": 4341,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b79882d00417e01b222f9af99769414dbc6a81cd"
+    },
+    {
+      "path": "paper/2018/paper.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b144818943ccddcb7123438cccbe76f10e39f92a",
+      "size": 5639,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b144818943ccddcb7123438cccbe76f10e39f92a"
+    },
+    {
+      "path": "paper/community.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e0fd0dc9d0af87ad2ee4ff0589d78778356706dc",
+      "size": 27027,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e0fd0dc9d0af87ad2ee4ff0589d78778356706dc"
+    },
+    {
+      "path": "paper/functions_06_010.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa485d7017d7147c3fe17b8ecd66d1579ff480d3",
+      "size": 16022,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/aa485d7017d7147c3fe17b8ecd66d1579ff480d3"
+    },
+    {
+      "path": "paper/paper.bib",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9389eff8c64eb92304f90ec6df419ac0fcbe1382",
+      "size": 8709,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9389eff8c64eb92304f90ec6df419ac0fcbe1382"
+    },
+    {
+      "path": "paper/paper.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3936e3c1ce7d068c6177af833472698e85e7997a",
+      "size": 11949,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3936e3c1ce7d068c6177af833472698e85e7997a"
+    },
+    {
+      "path": "paper/timeline2.pdf",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05fcbf12a3a0b8ec0e85279281d37d3f1be2a850",
+      "size": 27025,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/05fcbf12a3a0b8ec0e85279281d37d3f1be2a850"
+    },
+    {
+      "path": "pvlib",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3db49deba9c2271f491b13396313dea4c3516651",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/3db49deba9c2271f491b13396313dea4c3516651"
+    },
+    {
+      "path": "pvlib/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e6e56b817e52cc5d62e2a5ffe9af12467245c84",
+      "size": 515,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3e6e56b817e52cc5d62e2a5ffe9af12467245c84"
+    },
+    {
+      "path": "pvlib/_deprecation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aedb4d509620858caaaa1ef906ace3beee705726",
+      "size": 15794,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/aedb4d509620858caaaa1ef906ace3beee705726"
+    },
+    {
+      "path": "pvlib/albedo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2dca47ef3d5a0e477b011baedd9f72e628098a0b",
+      "size": 6205,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2dca47ef3d5a0e477b011baedd9f72e628098a0b"
+    },
+    {
+      "path": "pvlib/atmosphere.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebad023287282363247a8c8dab0ec9bb804c103b",
+      "size": 27803,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ebad023287282363247a8c8dab0ec9bb804c103b"
+    },
+    {
+      "path": "pvlib/bifacial",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "12a1a1833987b02cc982ba0f906f9297176d38d1",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/12a1a1833987b02cc982ba0f906f9297176d38d1"
+    },
+    {
+      "path": "pvlib/bifacial/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "256a93b99f015242944f92d5d7105064c81bd3f4",
+      "size": 476,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/256a93b99f015242944f92d5d7105064c81bd3f4"
+    },
+    {
+      "path": "pvlib/bifacial/ants2d.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1aac0651d335ed658eb2708eaf10351a2c8b94a8",
+      "size": 28034,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1aac0651d335ed658eb2708eaf10351a2c8b94a8"
+    },
+    {
+      "path": "pvlib/bifacial/infinite_sheds.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48f455f38da71bba0f4a5d292271b4be42783580",
+      "size": 23467,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/48f455f38da71bba0f4a5d292271b4be42783580"
+    },
+    {
+      "path": "pvlib/bifacial/loss_models.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c6f0febf3986b1c8a2ecab9611308e0b7430642",
+      "size": 5953,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4c6f0febf3986b1c8a2ecab9611308e0b7430642"
+    },
+    {
+      "path": "pvlib/bifacial/pvfactors.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ec6acfc8d3dea3375c0087e9fabe0abdfa81785e",
+      "size": 5438,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ec6acfc8d3dea3375c0087e9fabe0abdfa81785e"
+    },
+    {
+      "path": "pvlib/bifacial/utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df10a8e11396d22201b2460e1f9b046ef4e62bbe",
+      "size": 27036,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/df10a8e11396d22201b2460e1f9b046ef4e62bbe"
+    },
+    {
+      "path": "pvlib/clearsky.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87c8c78f86378ca8dea50ff936110cdb55afa09d",
+      "size": 38327,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/87c8c78f86378ca8dea50ff936110cdb55afa09d"
+    },
+    {
+      "path": "pvlib/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "38f920d7ac978317258ee6cacf7590d026c51270",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/38f920d7ac978317258ee6cacf7590d026c51270"
+    },
+    {
+      "path": "pvlib/data/12839.tm2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81fa54c61f7e2e0d0d7bd7419ddb9e1686a475c1",
+      "size": 1252740,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/81fa54c61f7e2e0d0d7bd7419ddb9e1686a475c1"
+    },
+    {
+      "path": "pvlib/data/703165TY.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b48edbd55938298eb9303e571ec5729719640490",
+      "size": 1760582,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b48edbd55938298eb9303e571ec5729719640490"
+    },
+    {
+      "path": "pvlib/data/723170TYA.CSV",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f2e03c11faadc977e16f1340ca26b64fa78750d",
+      "size": 1716576,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2f2e03c11faadc977e16f1340ca26b64fa78750d"
+    },
+    {
+      "path": "pvlib/data/ASTMG173.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ccb12c10ea3238d13ab9a02425f013fdbbb4f6e",
+      "size": 57708,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9ccb12c10ea3238d13ab9a02425f013fdbbb4f6e"
+    },
+    {
+      "path": "pvlib/data/Altitude.h5",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "292123321251d214bdc8142f0fdf4715a33f1963",
+      "size": 1366196,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/292123321251d214bdc8142f0fdf4715a33f1963"
+    },
+    {
+      "path": "pvlib/data/LinkeTurbidities.h5",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f73de334f0ed308b75305a622a6763dc5390526",
+      "size": 15637705,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6f73de334f0ed308b75305a622a6763dc5390526"
+    },
+    {
+      "path": "pvlib/data/adr-library-cec-inverters-2019-03-05.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ff27960a0621ed946a061a720f78c76e64518a7",
+      "size": 1147612,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6ff27960a0621ed946a061a720f78c76e64518a7"
+    },
+    {
+      "path": "pvlib/data/sam-library-cec-inverters-2019-03-05.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "674ddc6475983b7d6989db712639b80844d7e899",
+      "size": 568421,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/674ddc6475983b7d6989db712639b80844d7e899"
+    },
+    {
+      "path": "pvlib/data/sam-library-cec-modules-2019-03-05.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0366e9286eb9332b148d6611b8fe72bafb9795a0",
+      "size": 5446588,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0366e9286eb9332b148d6611b8fe72bafb9795a0"
+    },
+    {
+      "path": "pvlib/data/sam-library-sandia-modules-2015-6-30.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1f8fbe1345fde1a40a5a4b67fffae9b2d06b21b3",
+      "size": 194727,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1f8fbe1345fde1a40a5a4b67fffae9b2d06b21b3"
+    },
+    {
+      "path": "pvlib/data/soiling_hsu_example_inputs.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a9757ebc0d879772a3d0a8cc18939cae0c68284",
+      "size": 319716,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1a9757ebc0d879772a3d0a8cc18939cae0c68284"
+    },
+    {
+      "path": "pvlib/iam.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c7c4adc9162cfd9b419c352b8a9605ca6034b8a",
+      "size": 45613,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4c7c4adc9162cfd9b419c352b8a9605ca6034b8a"
+    },
+    {
+      "path": "pvlib/inverter.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "622fb9b9584c72e51432b1e7284bee821c8a8f66",
+      "size": 19437,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/622fb9b9584c72e51432b1e7284bee821c8a8f66"
+    },
+    {
+      "path": "pvlib/iotools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c98062e12105c330315818246de534bb8ffc00a7",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/c98062e12105c330315818246de534bb8ffc00a7"
+    },
+    {
+      "path": "pvlib/iotools/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5f9c7103b723d36c1cf0a34f7c4e58e2d05f2814",
+      "size": 3052,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5f9c7103b723d36c1cf0a34f7c4e58e2d05f2814"
+    },
+    {
+      "path": "pvlib/iotools/acis.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "634af079330a81b3bf3e1468bf28c57af670fc8f",
+      "size": 18455,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/634af079330a81b3bf3e1468bf28c57af670fc8f"
+    },
+    {
+      "path": "pvlib/iotools/bsrn.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c02866e1c800162525d8236231db53eb2ff84bd",
+      "size": 21354,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7c02866e1c800162525d8236231db53eb2ff84bd"
+    },
+    {
+      "path": "pvlib/iotools/crn.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90e1d6d6b4af1dd43e89e446692bca5494650679",
+      "size": 5336,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/90e1d6d6b4af1dd43e89e446692bca5494650679"
+    },
+    {
+      "path": "pvlib/iotools/epw.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01c87c180ab6ebcd38bf69c8ea0b70bed6af59dd",
+      "size": 17328,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/01c87c180ab6ebcd38bf69c8ea0b70bed6af59dd"
+    },
+    {
+      "path": "pvlib/iotools/era5.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5465039536e030bcaeb73daf402b03bc49ca1a24",
+      "size": 6593,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5465039536e030bcaeb73daf402b03bc49ca1a24"
+    },
+    {
+      "path": "pvlib/iotools/merra2.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "975024499ba36f3e83ce2e6133a6b081b30376d8",
+      "size": 7927,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/975024499ba36f3e83ce2e6133a6b081b30376d8"
+    },
+    {
+      "path": "pvlib/iotools/meteonorm.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "61bf72be5d95d9236f9179c89dd237d3d4e2e1c9",
+      "size": 22793,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/61bf72be5d95d9236f9179c89dd237d3d4e2e1c9"
+    },
+    {
+      "path": "pvlib/iotools/midc.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2fe4351250eac12e8eaab25a94fe5dd3c18e441",
+      "size": 9558,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e2fe4351250eac12e8eaab25a94fe5dd3c18e441"
+    },
+    {
+      "path": "pvlib/iotools/nasa_power.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ab3829495927599aa6cbecc38008c6470a03f27",
+      "size": 6038,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7ab3829495927599aa6cbecc38008c6470a03f27"
+    },
+    {
+      "path": "pvlib/iotools/panond.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bc8363674681724f2df370e6ab564be375d9a40",
+      "size": 5262,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2bc8363674681724f2df370e6ab564be375d9a40"
+    },
+    {
+      "path": "pvlib/iotools/psm4.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "808899362ccbeacb15a0e001452685f84edfaa22",
+      "size": 44110,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/808899362ccbeacb15a0e001452685f84edfaa22"
+    },
+    {
+      "path": "pvlib/iotools/pvgis.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "61f3eff6956b4fd7c206f42b00c5d3af51ff5006",
+      "size": 32305,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/61f3eff6956b4fd7c206f42b00c5d3af51ff5006"
+    },
+    {
+      "path": "pvlib/iotools/sodapro.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e88590ddd58e6f830deda109d62786e1476ccf7",
+      "size": 14926,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2e88590ddd58e6f830deda109d62786e1476ccf7"
+    },
+    {
+      "path": "pvlib/iotools/solaranywhere.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a6150559b594457412c07f68a6aa994fdaebc99",
+      "size": 12257,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2a6150559b594457412c07f68a6aa994fdaebc99"
+    },
+    {
+      "path": "pvlib/iotools/solargis.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "375c7ed3e8ead1cd1a7df891d91e8194c0e034e1",
+      "size": 8274,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/375c7ed3e8ead1cd1a7df891d91e8194c0e034e1"
+    },
+    {
+      "path": "pvlib/iotools/solcast.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "451ef585617e5a20d3200d02c1f01680a86d2894",
+      "size": 14849,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/451ef585617e5a20d3200d02c1f01680a86d2894"
+    },
+    {
+      "path": "pvlib/iotools/solrad.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4d446fc617bab858e62aa64e6693540d73551c2",
+      "size": 7177,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f4d446fc617bab858e62aa64e6693540d73551c2"
+    },
+    {
+      "path": "pvlib/iotools/srml.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9b630ec6e990f8da2a35f99f0fd7309c4f6c0e6",
+      "size": 8752,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c9b630ec6e990f8da2a35f99f0fd7309c4f6c0e6"
+    },
+    {
+      "path": "pvlib/iotools/surfrad.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "948ec5e09ed13a91a1dee8dd504327bcc701617f",
+      "size": 10471,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/948ec5e09ed13a91a1dee8dd504327bcc701617f"
+    },
+    {
+      "path": "pvlib/iotools/tmy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "28d20ffc2d556c5e7e05fde77d9c221ea1dc26af",
+      "size": 26694,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/28d20ffc2d556c5e7e05fde77d9c221ea1dc26af"
+    },
+    {
+      "path": "pvlib/irradiance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38bf122b9105a31ca63d8aa0e5cb8a5c79e27173",
+      "size": 152375,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/38bf122b9105a31ca63d8aa0e5cb8a5c79e27173"
+    },
+    {
+      "path": "pvlib/ivtools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "52198b79e68a7095edf128f1bdb59737b75337d8",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/52198b79e68a7095edf128f1bdb59737b75337d8"
+    },
+    {
+      "path": "pvlib/ivtools/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de897e2989e9ce6248b124d6392d0f674064963d",
+      "size": 159,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/de897e2989e9ce6248b124d6392d0f674064963d"
+    },
+    {
+      "path": "pvlib/ivtools/sde.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "236e91e390626a01f21730df5d892157a178b45b",
+      "size": 17008,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/236e91e390626a01f21730df5d892157a178b45b"
+    },
+    {
+      "path": "pvlib/ivtools/sdm",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e8a112b0dc6014345f834acc89be27f23d20b393",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/e8a112b0dc6014345f834acc89be27f23d20b393"
+    },
+    {
+      "path": "pvlib/ivtools/sdm/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bb8b9876bcbb4bc9cc651df9e8c4eb7a2466ea2",
+      "size": 500,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2bb8b9876bcbb4bc9cc651df9e8c4eb7a2466ea2"
+    },
+    {
+      "path": "pvlib/ivtools/sdm/_fit_desoto_pvsyst_sandia.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0b7c6fa3ec539508866f4f5a6fd9a2301a6bead",
+      "size": 22508,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b0b7c6fa3ec539508866f4f5a6fd9a2301a6bead"
+    },
+    {
+      "path": "pvlib/ivtools/sdm/cec.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "881e51ebdb64037267f733b798bea953ef0a3dca",
+      "size": 3437,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/881e51ebdb64037267f733b798bea953ef0a3dca"
+    },
+    {
+      "path": "pvlib/ivtools/sdm/desoto.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a97db7d702acdc429e9480061ea3489fdf0b3190",
+      "size": 17293,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a97db7d702acdc429e9480061ea3489fdf0b3190"
+    },
+    {
+      "path": "pvlib/ivtools/sdm/pvsyst.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "343d278fe95fda9f6e5d2e290b8670e431d6fdd8",
+      "size": 23260,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/343d278fe95fda9f6e5d2e290b8670e431d6fdd8"
+    },
+    {
+      "path": "pvlib/ivtools/utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "395678d49c25351537ee04315373d671639dfa17",
+      "size": 20995,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/395678d49c25351537ee04315373d671639dfa17"
+    },
+    {
+      "path": "pvlib/location.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e339e752f086d49817fab7490fd1f3c591fef222",
+      "size": 17833,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e339e752f086d49817fab7490fd1f3c591fef222"
+    },
+    {
+      "path": "pvlib/modelchain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32af129fd7bac065886a72d54fcf6cf353774dd6",
+      "size": 78055,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/32af129fd7bac065886a72d54fcf6cf353774dd6"
+    },
+    {
+      "path": "pvlib/pvarray.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fd5d0efd22c3c3b014ee2472380c9a6ce80ecb1",
+      "size": 19042,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9fd5d0efd22c3c3b014ee2472380c9a6ce80ecb1"
+    },
+    {
+      "path": "pvlib/pvsystem.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a04a77980b45a6885aff7e65e6bd37b8ab8ed546",
+      "size": 117665,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a04a77980b45a6885aff7e65e6bd37b8ab8ed546"
+    },
+    {
+      "path": "pvlib/scaling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "693d9f6bffd15d648c45780dbae2b04fbccc2a95",
+      "size": 10985,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/693d9f6bffd15d648c45780dbae2b04fbccc2a95"
+    },
+    {
+      "path": "pvlib/shading.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fb50e5d3d2d414bc6968744332ff1fba24ace06",
+      "size": 26102,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8fb50e5d3d2d414bc6968744332ff1fba24ace06"
+    },
+    {
+      "path": "pvlib/singlediode.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "974d59dff8ac5c39ef0fbdfade7aeaca25f2e165",
+      "size": 41997,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/974d59dff8ac5c39ef0fbdfade7aeaca25f2e165"
+    },
+    {
+      "path": "pvlib/snow.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b78a93a2ec87866cacd7a9cc19fab7007f08767f",
+      "size": 15387,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b78a93a2ec87866cacd7a9cc19fab7007f08767f"
+    },
+    {
+      "path": "pvlib/soiling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dfcd60529ef4bbe3913076e27d226baea00271cc",
+      "size": 9579,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/dfcd60529ef4bbe3913076e27d226baea00271cc"
+    },
+    {
+      "path": "pvlib/solarposition.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4441ed01f129e89e268604427408650aec031baa",
+      "size": 52356,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4441ed01f129e89e268604427408650aec031baa"
+    },
+    {
+      "path": "pvlib/spa.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe072b2cc9ef1fd54cdcd0182c9127b25abd2e87",
+      "size": 44846,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/fe072b2cc9ef1fd54cdcd0182c9127b25abd2e87"
+    },
+    {
+      "path": "pvlib/spa_c_files",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "05c5225e42fe0a456f8b4b2b8a5d378ffd66f764",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/05c5225e42fe0a456f8b4b2b8a5d378ffd66f764"
+    },
+    {
+      "path": "pvlib/spa_c_files/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69a9c28d4d8ce76b9097ac7f0dc963e6ebd36fc0",
+      "size": 3166,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/69a9c28d4d8ce76b9097ac7f0dc963e6ebd36fc0"
+    },
+    {
+      "path": "pvlib/spa_c_files/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "pvlib/spa_c_files/cspa_py.pxd",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a6c56de14f41e7982523e44dad02f55df1c55dd",
+      "size": 782,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0a6c56de14f41e7982523e44dad02f55df1c55dd"
+    },
+    {
+      "path": "pvlib/spa_c_files/setup.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65f43597ed166690fe8a4ee00812bd9870161660",
+      "size": 1102,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/65f43597ed166690fe8a4ee00812bd9870161660"
+    },
+    {
+      "path": "pvlib/spa_c_files/spa_py.pyx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10b89eaaeac20ea5f97c88e5523ab854c838cdd7",
+      "size": 809,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/10b89eaaeac20ea5f97c88e5523ab854c838cdd7"
+    },
+    {
+      "path": "pvlib/spa_c_files/spa_py_example.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b3cf3bc9d06767a181ba06d6559389ba9f84b36",
+      "size": 1179,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4b3cf3bc9d06767a181ba06d6559389ba9f84b36"
+    },
+    {
+      "path": "pvlib/spectrum",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f5faebe65d5eddb80eb2446f13961de24f4c068a",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/f5faebe65d5eddb80eb2446f13961de24f4c068a"
+    },
+    {
+      "path": "pvlib/spectrum/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e551c83fa83c3c6b2724659eab7ba21b90f1227",
+      "size": 542,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1e551c83fa83c3c6b2724659eab7ba21b90f1227"
+    },
+    {
+      "path": "pvlib/spectrum/irradiance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c68a6d55a67bd31afe3f0064749e32db33f333d8",
+      "size": 7799,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c68a6d55a67bd31afe3f0064749e32db33f333d8"
+    },
+    {
+      "path": "pvlib/spectrum/mismatch.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "830c0be1710463b8697b1fc58e126173e463eaab",
+      "size": 34270,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/830c0be1710463b8697b1fc58e126173e463eaab"
+    },
+    {
+      "path": "pvlib/spectrum/response.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "906c156ed249e228cb2220232e8236eadc1db311",
+      "size": 9304,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/906c156ed249e228cb2220232e8236eadc1db311"
+    },
+    {
+      "path": "pvlib/spectrum/spectrl2.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af531ff0a83d9a4013cf53d56c376990d3a65085",
+      "size": 19020,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/af531ff0a83d9a4013cf53d56c376990d3a65085"
+    },
+    {
+      "path": "pvlib/temperature.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55222c0fb13c0486453a51fdad34cd7b345fac30",
+      "size": 60724,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/55222c0fb13c0486453a51fdad34cd7b345fac30"
+    },
+    {
+      "path": "pvlib/tools.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d9db70369dabaeda8861bd9e905c93adf51c475",
+      "size": 14835,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1d9db70369dabaeda8861bd9e905c93adf51c475"
+    },
+    {
+      "path": "pvlib/tracking.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e234887cd00aa7ac43a9c2b3292f34e48c5f1540",
+      "size": 17543,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e234887cd00aa7ac43a9c2b3292f34e48c5f1540"
+    },
+    {
+      "path": "pvlib/transformer.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b5b6208e34072a330bedc436b98de5e7c7a7f93",
+      "size": 3539,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6b5b6208e34072a330bedc436b98de5e7c7a7f93"
+    },
+    {
+      "path": "pvlib/version.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "faab5f6f7501b8f190966cc8df7747f44500b132",
+      "size": 165,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/faab5f6f7501b8f190966cc8df7747f44500b132"
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5884b4506d764a6ef85450fb6a865d8f44cdd1f2",
+      "size": 3312,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5884b4506d764a6ef85450fb6a865d8f44cdd1f2"
+    },
+    {
+      "path": "readthedocs.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d0208c15c8d98ef5b536faf74c997c9ba224416e",
+      "size": 565,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d0208c15c8d98ef5b536faf74c997c9ba224416e"
+    },
+    {
+      "path": "setup.cfg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96cae265849c54f6fcaa4a0e523171299df956b7",
+      "size": 112,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/96cae265849c54f6fcaa4a0e523171299df956b7"
+    },
+    {
+      "path": "setup.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60d1a5e8bac1a2c2711dda69f832368f6e7fb732",
+      "size": 882,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/60d1a5e8bac1a2c2711dda69f832368f6e7fb732"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "29d4098b720889bf917e017b4d35c8508463a729",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/29d4098b720889bf917e017b4d35c8508463a729"
+    },
+    {
+      "path": "tests/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/bifacial",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1db86760574f6ec8ebe3b0fbdf4fd19227f3eb79",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/1db86760574f6ec8ebe3b0fbdf4fd19227f3eb79"
+    },
+    {
+      "path": "tests/bifacial/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/bifacial/test_ants2d.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44ae3517cde465caece9f9a7d4b19a853d85904c",
+      "size": 28500,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/44ae3517cde465caece9f9a7d4b19a853d85904c"
+    },
+    {
+      "path": "tests/bifacial/test_infinite_sheds.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9d45bcbf4ab9fe6fae517342e0d1a149ae78d58",
+      "size": 15858,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e9d45bcbf4ab9fe6fae517342e0d1a149ae78d58"
+    },
+    {
+      "path": "tests/bifacial/test_losses_models.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72dd0509280add3f29339197bb0b511514b17776",
+      "size": 1936,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/72dd0509280add3f29339197bb0b511514b17776"
+    },
+    {
+      "path": "tests/bifacial/test_pvfactors.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26edcd1bb1e661d135ff04dbe175402dec519751",
+      "size": 3148,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/26edcd1bb1e661d135ff04dbe175402dec519751"
+    },
+    {
+      "path": "tests/bifacial/test_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6f55c2a002af0cb2ec95650d538994648368618",
+      "size": 11655,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c6f55c2a002af0cb2ec95650d538994648368618"
+    },
+    {
+      "path": "tests/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a1c1180d807963a0ae68ce4fe5f1cc3d62c633f",
+      "size": 15285,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8a1c1180d807963a0ae68ce4fe5f1cc3d62c633f"
+    },
+    {
+      "path": "tests/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "63de0dfa7a7897c4f43745524d21b1546e17aae7",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/63de0dfa7a7897c4f43745524d21b1546e17aae7"
+    },
+    {
+      "path": "tests/data/BIRD_08_16_2012.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a99a3d9778406166d8b4f745da271ba7bf31685a",
+      "size": 367553,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a99a3d9778406166d8b4f745da271ba7bf31685a"
+    },
+    {
+      "path": "tests/data/BIRD_08_16_2012_patm.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90f3d1e9326fb1d2358e96f3705d8c4aac187617",
+      "size": 367556,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/90f3d1e9326fb1d2358e96f3705d8c4aac187617"
+    },
+    {
+      "path": "tests/data/Burlington, United States SolarAnywhere Time Series 2021 Lat_44_465 Lon_-73_205 TMY3 format.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c24dce3b2df4d0d6bfb29a4cabd103da3bbdd042",
+      "size": 875606,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c24dce3b2df4d0d6bfb29a4cabd103da3bbdd042"
+    },
+    {
+      "path": "tests/data/Burlington, United States SolarAnywhere Time Series 20210101 to 20210103 Lat_44_4675 Lon_-73_2075 SA format.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcf41e46fdf513986b6c3313eabcc8caa2ff39cc",
+      "size": 63510,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/bcf41e46fdf513986b6c3313eabcc8caa2ff39cc"
+    },
+    {
+      "path": "tests/data/Burlington, United States SolarAnywhere Typical GHI Year Lat_44_465 Lon_-73_205 SA format.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e4f1bed4b23c1bd957c7d2145835ef2837a0655",
+      "size": 6825,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6e4f1bed4b23c1bd957c7d2145835ef2837a0655"
+    },
+    {
+      "path": "tests/data/CPS SCH275KTL-DO-US-800-250kW_275kVA_1.OND",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c13700ce7680a9f8d42144104ca33a3b920ea028",
+      "size": 3284,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c13700ce7680a9f8d42144104ca33a3b920ea028"
+    },
+    {
+      "path": "tests/data/CRNS0101-05-2019-AZ_Tucson_11_W.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad0903b17cbbd266dfdd169c48310c130be9af92",
+      "size": 539,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ad0903b17cbbd266dfdd169c48310c130be9af92"
+    },
+    {
+      "path": "tests/data/CRN_with_problems.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25023dcaee8b1b317c41708d60a28e40788f5cba",
+      "size": 2025,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/25023dcaee8b1b317c41708d60a28e40788f5cba"
+    },
+    {
+      "path": "tests/data/ET-M772BH550GL.PAN",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b2a6a29afb7f00678d4d028b51e2e78e0592ec1",
+      "size": 1399,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9b2a6a29afb7f00678d4d028b51e2e78e0592ec1"
+    },
+    {
+      "path": "tests/data/NLD_Amsterdam062400_IWEC.epw",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c53fad47a2f11377693b2b472b5aa67e726770c9",
+      "size": 1543474,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c53fad47a2f11377693b2b472b5aa67e726770c9"
+    },
+    {
+      "path": "tests/data/PVsyst_demo.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7911d02c5ed3f4f19452177957190f934e3d773",
+      "size": 3840933,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d7911d02c5ed3f4f19452177957190f934e3d773"
+    },
+    {
+      "path": "tests/data/PVsyst_demo_model.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ec42a9c081898efc4317018159e6df261737f80",
+      "size": 165015,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0ec42a9c081898efc4317018159e6df261737f80"
+    },
+    {
+      "path": "tests/data/SRML-day-EUPO1801.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b8b8aeffd254490d6fb60949038041c310d0ed6",
+      "size": 44305,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7b8b8aeffd254490d6fb60949038041c310d0ed6"
+    },
+    {
+      "path": "tests/data/abq19056.dat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "634438018f5c7a02d39e9849af0c6e4895b8a7cf",
+      "size": 558,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/634438018f5c7a02d39e9849af0c6e4895b8a7cf"
+    },
+    {
+      "path": "tests/data/bishop88_numerical_precision.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94cf44adc94d33c833bc0aff7bd5bb99869f1ecb",
+      "size": 17587,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/94cf44adc94d33c833bc0aff7bd5bb99869f1ecb"
+    },
+    {
+      "path": "tests/data/bsrn-lr0100-pay0616.dat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1738ce09f818765b3a293706e8a23f8dd26c6761",
+      "size": 5641870,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1738ce09f818765b3a293706e8a23f8dd26c6761"
+    },
+    {
+      "path": "tests/data/bsrn-pay0616.dat.gz",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7fc46102fae1bcaf9679a25d66ffaa3ea064c966",
+      "size": 4327505,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7fc46102fae1bcaf9679a25d66ffaa3ea064c966"
+    },
+    {
+      "path": "tests/data/cams_mcclear_1min_verbose.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0bfb037b0868df90361ba44677721af9d56a7ffd",
+      "size": 4240,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0bfb037b0868df90361ba44677721af9d56a7ffd"
+    },
+    {
+      "path": "tests/data/cams_mcclear_monthly.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "70dfa99333e2c66ef3c9ecf72fb4e0cff1c42804",
+      "size": 2727,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/70dfa99333e2c66ef3c9ecf72fb4e0cff1c42804"
+    },
+    {
+      "path": "tests/data/cams_radiation_1min_verbose.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3686c86f4e5123ebbc338932e6c07807bf13f15f",
+      "size": 5865,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3686c86f4e5123ebbc338932e6c07807bf13f15f"
+    },
+    {
+      "path": "tests/data/cams_radiation_monthly.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c9b9ba0b72370e7fd4ed2da12c4fc4c94ee2d5f",
+      "size": 3334,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0c9b9ba0b72370e7fd4ed2da12c4fc4c94ee2d5f"
+    },
+    {
+      "path": "tests/data/detect_clearsky_data.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b3a3b58ad5c98003685396251e7c24087c6a80d",
+      "size": 938,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7b3a3b58ad5c98003685396251e7c24087c6a80d"
+    },
+    {
+      "path": "tests/data/detect_clearsky_threshold_data.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a36736b1a3674f3c84af75de264e46de60490eb9",
+      "size": 4276,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a36736b1a3674f3c84af75de264e46de60490eb9"
+    },
+    {
+      "path": "tests/data/greensboro_kimber_soil_manwash.dat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6577f8e0cb855c5b8a4dd038072750edfcdf27a3",
+      "size": 272982,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6577f8e0cb855c5b8a4dd038072750edfcdf27a3"
+    },
+    {
+      "path": "tests/data/greensboro_kimber_soil_nowash.dat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae170f8aa31c3f437a38ee13305c85cf6381cfb0",
+      "size": 272899,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ae170f8aa31c3f437a38ee13305c85cf6381cfb0"
+    },
+    {
+      "path": "tests/data/inverter_fit_snl_meas.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcbc71201d4314255637d8edea29356d80947854",
+      "size": 3943,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/dcbc71201d4314255637d8edea29356d80947854"
+    },
+    {
+      "path": "tests/data/inverter_fit_snl_sim.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15b1062079246e43dfc0a180eb3723eef0ac4a11",
+      "size": 1026,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/15b1062079246e43dfc0a180eb3723eef0ac4a11"
+    },
+    {
+      "path": "tests/data/ivtools_numdiff.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2eaab2f006fb8267b24a5ddacbbe06cac36de944",
+      "size": 2089,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2eaab2f006fb8267b24a5ddacbbe06cac36de944"
+    },
+    {
+      "path": "tests/data/midc_20181014.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1647fc79a79aa1a1c56ef9ec690443ef11247368",
+      "size": 75141,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1647fc79a79aa1a1c56ef9ec690443ef11247368"
+    },
+    {
+      "path": "tests/data/midc_raw_20181018.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ec1d4dfc7329868ecf6689cced14145d4485e31",
+      "size": 192828,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8ec1d4dfc7329868ecf6689cced14145d4485e31"
+    },
+    {
+      "path": "tests/data/midc_raw_short_header_20191115.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c1569c57b48d3b097e6824120b2899973b075a6",
+      "size": 204526,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2c1569c57b48d3b097e6824120b2899973b075a6"
+    },
+    {
+      "path": "tests/data/msn19056.dat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebcd7b392be4a6b9fa6f0487cac90e0254f79ad3",
+      "size": 791,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ebcd7b392be4a6b9fa6f0487cac90e0254f79ad3"
+    },
+    {
+      "path": "tests/data/precise_iv_curves1.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78abc91358f4808d2ce502919a72f194a6b74a4f",
+      "size": 337611,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/78abc91358f4808d2ce502919a72f194a6b74a4f"
+    },
+    {
+      "path": "tests/data/precise_iv_curves2.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41d515b8561ce86c5b5dfdf9be594581f5c5756b",
+      "size": 338564,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/41d515b8561ce86c5b5dfdf9be594581f5c5756b"
+    },
+    {
+      "path": "tests/data/precise_iv_curves_parameter_sets1.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d9a5357f726312b9b13f0f66418a60a99d36b34",
+      "size": 1010,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3d9a5357f726312b9b13f0f66418a60a99d36b34"
+    },
+    {
+      "path": "tests/data/precise_iv_curves_parameter_sets2.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95bd326679c91fd92b2f797ac678470024ceb21c",
+      "size": 1026,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/95bd326679c91fd92b2f797ac678470024ceb21c"
+    },
+    {
+      "path": "tests/data/pvgis_hourly_Timeseries_45.000_8.000_SA2_10kWp_CIS_5_2a_2013_2014.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6691217c12b2c17f33672769bf80ec423ee4445",
+      "size": 3466,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c6691217c12b2c17f33672769bf80ec423ee4445"
+    },
+    {
+      "path": "tests/data/pvgis_hourly_Timeseries_45.000_8.000_SA_30deg_0deg_2016_2016.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a71a213a80e2a46cee8a5396688f162f01346079",
+      "size": 1272,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a71a213a80e2a46cee8a5396688f162f01346079"
+    },
+    {
+      "path": "tests/data/pvgis_tmy_meta.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "573a68f7a24904f2a3bd2e80bb7dd819c7492455",
+      "size": 1813,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/573a68f7a24904f2a3bd2e80bb7dd819c7492455"
+    },
+    {
+      "path": "tests/data/pvgis_tmy_test.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1758604c847359d0627bd886cbd93473c5a73f62",
+      "size": 575601,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/1758604c847359d0627bd886cbd93473c5a73f62"
+    },
+    {
+      "path": "tests/data/pvwatts_8760_rackmount.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d42f2b8455ec4d034063bd8b1b907afcb3e563c",
+      "size": 329170,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0d42f2b8455ec4d034063bd8b1b907afcb3e563c"
+    },
+    {
+      "path": "tests/data/pvwatts_8760_roofmount.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "750ec321ae0e22bc63eefef22f7cc08ba577d9ba",
+      "size": 329205,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/750ec321ae0e22bc63eefef22f7cc08ba577d9ba"
+    },
+    {
+      "path": "tests/data/singleaxis_tracker_wslope.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6e47ec5025a58ad4bb81c05453907ce414868b6",
+      "size": 567295,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f6e47ec5025a58ad4bb81c05453907ce414868b6"
+    },
+    {
+      "path": "tests/data/spectrl2_example_spectra.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c1d8b19e9e856569e7977313c87a4b0f6573675",
+      "size": 11607,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7c1d8b19e9e856569e7977313c87a4b0f6573675"
+    },
+    {
+      "path": "tests/data/surfrad-slv16001.dat",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b623d2fac647e12075e99866beb6dffe217c7768",
+      "size": 339883,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b623d2fac647e12075e99866beb6dffe217c7768"
+    },
+    {
+      "path": "tests/data/test_psm3_2017.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6283f8ffdf6c757a8814778b9fa0fc686ce1e4e2",
+      "size": 1140042,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6283f8ffdf6c757a8814778b9fa0fc686ce1e4e2"
+    },
+    {
+      "path": "tests/data/test_psm3_2019_5min.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c792900fd08f0201d5be8edbe36665e9b9e81f4f",
+      "size": 21555,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c792900fd08f0201d5be8edbe36665e9b9e81f4f"
+    },
+    {
+      "path": "tests/data/test_psm3_tmy-2017.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0da48fafdec555da09c48bf64d33797d7f2b6e19",
+      "size": 470325,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0da48fafdec555da09c48bf64d33797d7f2b6e19"
+    },
+    {
+      "path": "tests/data/test_psm4_2023.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "359558b5b2a6efbc3de3e8a68fbb2f898e5d3eab",
+      "size": 1960926,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/359558b5b2a6efbc3de3e8a68fbb2f898e5d3eab"
+    },
+    {
+      "path": "tests/data/test_psm4_2023_5min.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59e54e47300d23c4c2f6043007ee0c228757cf11",
+      "size": 36974,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/59e54e47300d23c4c2f6043007ee0c228757cf11"
+    },
+    {
+      "path": "tests/data/test_psm4_full_disc_2023.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2e6393588d1d90c62c92afbdb8c69f66474f860f",
+      "size": 838263,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2e6393588d1d90c62c92afbdb8c69f66474f860f"
+    },
+    {
+      "path": "tests/data/test_psm4_polar_2023.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "112fe8029c1a884a587cfbaab6c106049086e7fa",
+      "size": 152626,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/112fe8029c1a884a587cfbaab6c106049086e7fa"
+    },
+    {
+      "path": "tests/data/test_psm4_polar_tmy_2023.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8037413ff7956e947ee2ac06d6948f541db18956",
+      "size": 161469,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8037413ff7956e947ee2ac06d6948f541db18956"
+    },
+    {
+      "path": "tests/data/test_psm4_tmy-2023.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f42ea2d67f46a4ddbb1116aaa54542b0cd8da5eb",
+      "size": 979764,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f42ea2d67f46a4ddbb1116aaa54542b0cd8da5eb"
+    },
+    {
+      "path": "tests/data/test_read_psm3.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bae93aa370a5169ef70a297a2e734fffa46a4ce",
+      "size": 1781292,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2bae93aa370a5169ef70a297a2e734fffa46a4ce"
+    },
+    {
+      "path": "tests/data/test_read_psm4.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9522a8ef292991f365f2ac33859f11736269083f",
+      "size": 2491043,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9522a8ef292991f365f2ac33859f11736269083f"
+    },
+    {
+      "path": "tests/data/test_read_pvgis_horizon.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b3ed27bbccc13c5fc6acc8acf0e75f25a68db77",
+      "size": 431,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0b3ed27bbccc13c5fc6acc8acf0e75f25a68db77"
+    },
+    {
+      "path": "tests/data/tmy_45.000_8.000_2005_2023.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a227171c636ef90edf596ec5032434e1d8c6ad71",
+      "size": 576311,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a227171c636ef90edf596ec5032434e1d8c6ad71"
+    },
+    {
+      "path": "tests/data/tmy_45.000_8.000_2005_2023.epw",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9cef8716e3aee13e6ff514c036cb8479c987451d",
+      "size": 1854219,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9cef8716e3aee13e6ff514c036cb8479c987451d"
+    },
+    {
+      "path": "tests/data/tmy_45.000_8.000_2005_2023.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "830d1f5e643c8d2e4be61b165e5dd28967260723",
+      "size": 1440801,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/830d1f5e643c8d2e4be61b165e5dd28967260723"
+    },
+    {
+      "path": "tests/data/tmy_45.000_8.000_userhorizon.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71c4f2345ebeb52fef960564eb617913ed58d8d3",
+      "size": 1430257,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/71c4f2345ebeb52fef960564eb617913ed58d8d3"
+    },
+    {
+      "path": "tests/iotools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "30b3a25def9dc70401134928cebc11b4be4f97c1",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/30b3a25def9dc70401134928cebc11b4be4f97c1"
+    },
+    {
+      "path": "tests/iotools/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/iotools/test_acis.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7db591f749b9ca0dfcc36096bec08c5729911257",
+      "size": 8444,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/7db591f749b9ca0dfcc36096bec08c5729911257"
+    },
+    {
+      "path": "tests/iotools/test_bsrn.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b5f3568362a56455bd8b8c3081c3365b9c4adac",
+      "size": 5347,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6b5f3568362a56455bd8b8c3081c3365b9c4adac"
+    },
+    {
+      "path": "tests/iotools/test_crn.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55c9d6440e7f233b62a604b12125888772e6ea25",
+      "size": 4323,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/55c9d6440e7f233b62a604b12125888772e6ea25"
+    },
+    {
+      "path": "tests/iotools/test_epw.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f1dd48ff46c68c5b963c37f74c82cb55a156465",
+      "size": 971,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9f1dd48ff46c68c5b963c37f74c82cb55a156465"
+    },
+    {
+      "path": "tests/iotools/test_era5.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8ef1602fea699e3763dcf57e1527d303de809d7a",
+      "size": 3762,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8ef1602fea699e3763dcf57e1527d303de809d7a"
+    },
+    {
+      "path": "tests/iotools/test_merra2.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a563ad05353a5f001a5cff1c78102f762d8deffd",
+      "size": 5801,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/a563ad05353a5f001a5cff1c78102f762d8deffd"
+    },
+    {
+      "path": "tests/iotools/test_meteonorm.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64866fe0c6f6e501155e599407185941f3b9c2c8",
+      "size": 10036,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/64866fe0c6f6e501155e599407185941f3b9c2c8"
+    },
+    {
+      "path": "tests/iotools/test_midc.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "78a642736eb7b98e6acf665eb34ed75b0fd7787b",
+      "size": 2883,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/78a642736eb7b98e6acf665eb34ed75b0fd7787b"
+    },
+    {
+      "path": "tests/iotools/test_nasa_power.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd09d7b1cad20b96352eb50e26eabeeecfb88f15",
+      "size": 8233,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/dd09d7b1cad20b96352eb50e26eabeeecfb88f15"
+    },
+    {
+      "path": "tests/iotools/test_panond.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b62d9463f07c1bc8c86cd8e3d1d8630a6b3f6aa",
+      "size": 1162,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/3b62d9463f07c1bc8c86cd8e3d1d8630a6b3f6aa"
+    },
+    {
+      "path": "tests/iotools/test_psm4.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51d06dbf9d31a93f07631ec36e03577f4cc62ed7",
+      "size": 13364,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/51d06dbf9d31a93f07631ec36e03577f4cc62ed7"
+    },
+    {
+      "path": "tests/iotools/test_pvgis.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32d820faaee9ddb5aae910e38c86333462b0f68a",
+      "size": 29822,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/32d820faaee9ddb5aae910e38c86333462b0f68a"
+    },
+    {
+      "path": "tests/iotools/test_sodapro.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf40c654a2342b414216c0a7342b2be756fe3c3c",
+      "size": 14809,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/cf40c654a2342b414216c0a7342b2be756fe3c3c"
+    },
+    {
+      "path": "tests/iotools/test_solaranywhere.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54216a7ab0d30d1ca076f0f3a2f8b3c1b7a018c6",
+      "size": 12453,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/54216a7ab0d30d1ca076f0f3a2f8b3c1b7a018c6"
+    },
+    {
+      "path": "tests/iotools/test_solargis.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eced2265958f54cb86612f4a9d6c33b9aa753789",
+      "size": 2634,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/eced2265958f54cb86612f4a9d6c33b9aa753789"
+    },
+    {
+      "path": "tests/iotools/test_solcast.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "23989ecb2ec038670df7a138c86e08aab60c8f58",
+      "size": 11648,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/23989ecb2ec038670df7a138c86e08aab60c8f58"
+    },
+    {
+      "path": "tests/iotools/test_solrad.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "387ef026f218fd0a2e56614d6b59b654a7aa3f17",
+      "size": 7131,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/387ef026f218fd0a2e56614d6b59b654a7aa3f17"
+    },
+    {
+      "path": "tests/iotools/test_srml.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c40ea494c192c60c3ed3093f26b620b3d38de80c",
+      "size": 4437,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c40ea494c192c60c3ed3093f26b620b3d38de80c"
+    },
+    {
+      "path": "tests/iotools/test_surfrad.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f377a292aff55e10ebf245b15f16a2bb5445f590",
+      "size": 4035,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f377a292aff55e10ebf245b15f16a2bb5445f590"
+    },
+    {
+      "path": "tests/iotools/test_tmy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02ffe7042f819c347447cb86fc3dac2b8a13fce4",
+      "size": 4684,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/02ffe7042f819c347447cb86fc3dac2b8a13fce4"
+    },
+    {
+      "path": "tests/ivtools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "aa35a050ba80cc15992087740f1f75714a9adcff",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/aa35a050ba80cc15992087740f1f75714a9adcff"
+    },
+    {
+      "path": "tests/ivtools/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/ivtools/sdm",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a24dd9a64a1ff3b5db8d2b73041e60dcbee7c27b",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/a24dd9a64a1ff3b5db8d2b73041e60dcbee7c27b"
+    },
+    {
+      "path": "tests/ivtools/sdm/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66109676b9a634e3ce0490ca38ebe8f95d080c48",
+      "size": 493,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/66109676b9a634e3ce0490ca38ebe8f95d080c48"
+    },
+    {
+      "path": "tests/ivtools/sdm/test__fit_desoto_pvsyst_sandia.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1868001494d3cd3297fee61595a5f3ce6737391",
+      "size": 4197,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d1868001494d3cd3297fee61595a5f3ce6737391"
+    },
+    {
+      "path": "tests/ivtools/sdm/test_cec.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed4cab83fd4e4e175a697915d6694f606234da42",
+      "size": 1535,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ed4cab83fd4e4e175a697915d6694f606234da42"
+    },
+    {
+      "path": "tests/ivtools/sdm/test_desoto.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "710bf15d51bbad5b3c01953ad911164caada8fc1",
+      "size": 5061,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/710bf15d51bbad5b3c01953ad911164caada8fc1"
+    },
+    {
+      "path": "tests/ivtools/sdm/test_pvsyst.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a1793633b1c4d7e765e494a793ba9e21f17c8ad",
+      "size": 13510,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2a1793633b1c4d7e765e494a793ba9e21f17c8ad"
+    },
+    {
+      "path": "tests/ivtools/test_sde.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "079dad2091d290b6ad895f1c633f37900ab5bdfe",
+      "size": 13789,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/079dad2091d290b6ad895f1c633f37900ab5bdfe"
+    },
+    {
+      "path": "tests/ivtools/test_utils.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae87d9c4968a00e8ca28ac1f2038bfa43a46e376",
+      "size": 7830,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/ae87d9c4968a00e8ca28ac1f2038bfa43a46e376"
+    },
+    {
+      "path": "tests/spectrum",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0ed6add46d9476c6a49f855f6dc3e445d8bda4f2",
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/trees/0ed6add46d9476c6a49f855f6dc3e445d8bda4f2"
+    },
+    {
+      "path": "tests/spectrum/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tests/spectrum/conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f1b4d27dfb8e620efdb637662374d03f7b38248",
+      "size": 1178,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/8f1b4d27dfb8e620efdb637662374d03f7b38248"
+    },
+    {
+      "path": "tests/spectrum/test_irradiance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59ce66b2692c2523c5f381c713163b00c3498228",
+      "size": 5675,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/59ce66b2692c2523c5f381c713163b00c3498228"
+    },
+    {
+      "path": "tests/spectrum/test_mismatch.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0443d4ce70d33569a9e43c35f2954b5757830b1",
+      "size": 15370,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f0443d4ce70d33569a9e43c35f2954b5757830b1"
+    },
+    {
+      "path": "tests/spectrum/test_response.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ffe572dcec693d236ee853dd22e52a6a34e69dc",
+      "size": 4408,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/2ffe572dcec693d236ee853dd22e52a6a34e69dc"
+    },
+    {
+      "path": "tests/spectrum/test_spectrl2.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c29429c7eaa12c01a49ba19187fa9efe015a5b14",
+      "size": 2603,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/c29429c7eaa12c01a49ba19187fa9efe015a5b14"
+    },
+    {
+      "path": "tests/test__deprecation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31263c8a25e8ee201e207fa313baea4b6bb461eb",
+      "size": 2771,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/31263c8a25e8ee201e207fa313baea4b6bb461eb"
+    },
+    {
+      "path": "tests/test_albedo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e4c35258a144b7016284eb38949006896d4f293",
+      "size": 4117,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5e4c35258a144b7016284eb38949006896d4f293"
+    },
+    {
+      "path": "tests/test_atmosphere.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6236fe5ab0767fe560f7840867c42275ecb4522e",
+      "size": 12379,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/6236fe5ab0767fe560f7840867c42275ecb4522e"
+    },
+    {
+      "path": "tests/test_clearsky.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e49b32911a17bcf2e5db0fb806f0753324b2c19",
+      "size": 34563,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0e49b32911a17bcf2e5db0fb806f0753324b2c19"
+    },
+    {
+      "path": "tests/test_conftest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc8b14c31c8a11fabe473d2d57648f3424d95bf7",
+      "size": 1622,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/fc8b14c31c8a11fabe473d2d57648f3424d95bf7"
+    },
+    {
+      "path": "tests/test_iam.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0287fd8fd2c95bd8c905ef46a12f164c5cfc57fb",
+      "size": 20617,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/0287fd8fd2c95bd8c905ef46a12f164c5cfc57fb"
+    },
+    {
+      "path": "tests/test_inverter.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5794669ec996a3aaf6ce798fccbfe8d16ee8e6eb",
+      "size": 7458,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/5794669ec996a3aaf6ce798fccbfe8d16ee8e6eb"
+    },
+    {
+      "path": "tests/test_irradiance.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0d9863ad5a9897877db1af1d01c87796b51e494",
+      "size": 66110,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/b0d9863ad5a9897877db1af1d01c87796b51e494"
+    },
+    {
+      "path": "tests/test_location.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "580a49982f65a73fe3124d2be2ad1a5aefeb5e0e",
+      "size": 15227,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/580a49982f65a73fe3124d2be2ad1a5aefeb5e0e"
+    },
+    {
+      "path": "tests/test_modelchain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e15e155dbbc7a92e89e76c9da436bddfef937866",
+      "size": 88770,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e15e155dbbc7a92e89e76c9da436bddfef937866"
+    },
+    {
+      "path": "tests/test_numerical_precision.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9cdf210ab99b8a7eeb41eeafbec0de7b03ef838b",
+      "size": 4343,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9cdf210ab99b8a7eeb41eeafbec0de7b03ef838b"
+    },
+    {
+      "path": "tests/test_pvarray.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e614f885db47f859e570b0878d61d2548e2578e5",
+      "size": 5894,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/e614f885db47f859e570b0878d61d2548e2578e5"
+    },
+    {
+      "path": "tests/test_pvsystem.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53155e705c0ba1b45319b60016236343897ec904",
+      "size": 102499,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/53155e705c0ba1b45319b60016236343897ec904"
+    },
+    {
+      "path": "tests/test_scaling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f8638f580a0d40421be763419e835e08ebc88b29",
+      "size": 6890,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f8638f580a0d40421be763419e835e08ebc88b29"
+    },
+    {
+      "path": "tests/test_shading.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f83f2db47b55ce01f3f34e9a553655323f85535d",
+      "size": 14816,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f83f2db47b55ce01f3f34e9a553655323f85535d"
+    },
+    {
+      "path": "tests/test_singlediode.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10b589b1b1fd121446c738053aa486babd4d0678",
+      "size": 27142,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/10b589b1b1fd121446c738053aa486babd4d0678"
+    },
+    {
+      "path": "tests/test_snow.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d12a92586e36443a62c7f27773a777001345779c",
+      "size": 11229,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/d12a92586e36443a62c7f27773a777001345779c"
+    },
+    {
+      "path": "tests/test_soiling.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53acc1c723396fff5beb0fd51de6628371e7e375",
+      "size": 8207,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/53acc1c723396fff5beb0fd51de6628371e7e375"
+    },
+    {
+      "path": "tests/test_solarposition.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9dc0488fe5f802576ddaece743f27a47e59a78fc",
+      "size": 47897,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/9dc0488fe5f802576ddaece743f27a47e59a78fc"
+    },
+    {
+      "path": "tests/test_spa.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81ae58a2a617f3a1b99dd1241dfd7b9dae158c46",
+      "size": 17332,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/81ae58a2a617f3a1b99dd1241dfd7b9dae158c46"
+    },
+    {
+      "path": "tests/test_temperature.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7cc242477c209313a451fa63b75b0095df873d1",
+      "size": 19872,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/f7cc242477c209313a451fa63b75b0095df873d1"
+    },
+    {
+      "path": "tests/test_tools.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b733ad711b558825e020947592c28abfa86a5a3",
+      "size": 10936,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/4b733ad711b558825e020947592c28abfa86a5a3"
+    },
+    {
+      "path": "tests/test_tracking.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "903cf11d1d0bd9d5f548079e0e7dc145d10ccf7c",
+      "size": 24902,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/903cf11d1d0bd9d5f548079e0e7dc145d10ccf7c"
+    },
+    {
+      "path": "tests/test_transformer.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32b0d53f6e90727c1892fad4b144c8ddeda44156",
+      "size": 2321,
+      "url": "https://api.github.com/repos/pvlib/pvlib-python/git/blobs/32b0d53f6e90727c1892fad4b144c8ddeda44156"
+    }
+  ],
+  "truncated": false
+}

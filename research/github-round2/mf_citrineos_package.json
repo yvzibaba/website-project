@@ -1,0 +1,82 @@
+{
+  "name": "@citrineos/workspace",
+  "version": "2.0.0-beta4",
+  "type": "module",
+  "private": false,
+  "packageManager": "pnpm@10.19.0",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "citrine": "node scripts/stack.mjs",
+    "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
+    "prettier": "prettier --write .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck:test": "tsc -p packages/base/tsconfig.json && tsc -p packages/dal/tsconfig.json && tsc -p packages/ocpp/tsconfig.json && tsc -p packages/ocpi-base/tsconfig.json && tsc -p apps/mock-msp/tsconfig.json && tsc -p apps/operator-ui/tsconfig.json",
+    "clean": "find . -not -path '*/node_modules/*' \\( -type d \\( -name dist -o -name .next \\) -o -name '*.tsbuildinfo' \\) -exec rm -rf {} + && rm -rf node_modules/.vite node_modules/.vite-temp node_modules/.cache && { find node_modules -name tsconfig.tmp.tsbuildinfo -delete 2>/dev/null || true; }",
+    "fresh": "pnpm run clean && find . -name node_modules -type d -prune -exec rm -rf {} + && rm -f pnpm-lock.yaml && pnpm store prune",
+    "fresh:install": "pnpm run fresh && pnpm install",
+    "start:everest": "cd ./apps/ocpp-server && pnpm start:everest",
+    "start:everest:16": "cd ./apps/ocpp-server && pnpm start:everest:16",
+    "stop:everest": "cd ./apps/ocpp-server/everest && docker compose down"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bufferutil",
+      "cpu-features",
+      "es5-ext",
+      "esbuild",
+      "protobufjs",
+      "sqlite3",
+      "ssh2",
+      "utf-8-validate"
+    ],
+    "overrides": {
+      "@tanstack/react-query": "5.101.4",
+      "zod": "catalog:",
+      "graphql": "15.6.1",
+      "reflect-metadata": "catalog:"
+    }
+  },
+  "engines": {
+    "node": ">=24.16.0"
+  },
+  "devDependencies": {
+    "prettier": "catalog:",
+    "eslint": "catalog:",
+    "@eslint/js": "catalog:",
+    "typescript-eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "vitest": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@types/jsrsasign": "^10.5.15",
+    "@types/node": "catalog:",
+    "madge": "^8.0.0",
+    "openapi-types": "catalog:",
+    "@types/pg": "catalog:",
+    "tsc-alias": "^1.8.16",
+    "testcontainers": "catalog:",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@fastify/swagger": "catalog:",
+    "@fastify/swagger-ui": "catalog:",
+    "@google-cloud/storage": "catalog:",
+    "@peculiar/webcrypto": "catalog:",
+    "acme-client": "catalog:",
+    "ajv": "catalog:",
+    "ajv-formats": "catalog:",
+    "asn1js": "catalog:",
+    "bufferutil": "catalog:",
+    "jsrsasign": "catalog:",
+    "jwks-rsa": "catalog:",
+    "pkijs": "catalog:",
+    "pvutils": "catalog:",
+    "redis": "catalog:",
+    "sequelize-cli": "^6.6.2",
+    "sequelize-typescript": "catalog:",
+    "tsconfig-paths": "^4.2.0",
+    "utf-8-validate": "catalog:"
+  }
+}

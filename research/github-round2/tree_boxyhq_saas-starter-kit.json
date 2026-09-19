@@ -1,0 +1,3183 @@
+{
+  "sha": "abc9b686823cbfb4973c79bc36fea37a3244be6c",
+  "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/abc9b686823cbfb4973c79bc36fea37a3244be6c",
+  "tree": [
+    {
+      "path": ".do",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3e8a38504a9762c72430eb2a8b79c324a21257c5",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/3e8a38504a9762c72430eb2a8b79c324a21257c5"
+    },
+    {
+      "path": ".do/deploy.template.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd71c04d3f294ba81fd0bd0b58fbb1add1b0c792",
+      "size": 521,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bd71c04d3f294ba81fd0bd0b58fbb1add1b0c792"
+    },
+    {
+      "path": ".env.example",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "523d0308eaaa4cfb61b9a2bed2a7851879c5cfe2",
+      "size": 2927,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/523d0308eaaa4cfb61b9a2bed2a7851879c5cfe2"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5bbf9bdda77b458564ce5e7b7932eb7d5843ecef",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/5bbf9bdda77b458564ce5e7b7932eb7d5843ecef"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7fc62b07faaba41629ac40884ed12ffe1016b54",
+      "size": 978,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a7fc62b07faaba41629ac40884ed12ffe1016b54"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "87f69be36924b7e832e888d9d80664e5575a56f8",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/87f69be36924b7e832e888d9d80664e5575a56f8"
+    },
+    {
+      "path": ".github/workflows/main.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c06d95903a7d95f6c8994a8f0c96b3e00b0ce6f0",
+      "size": 6472,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c06d95903a7d95f6c8994a8f0c96b3e00b0ce6f0"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c455b964c43624098e901742ee79d72479768d6e",
+      "size": 608,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c455b964c43624098e901742ee79d72479768d6e"
+    },
+    {
+      "path": ".prettierignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ca64c331f479a4e46293a3697218184c59fbaea",
+      "size": 76,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6ca64c331f479a4e46293a3697218184c59fbaea"
+    },
+    {
+      "path": ".prettierrc.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a911c70f16dee1d22c590de1e19f60a01dfb6c19",
+      "size": 406,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a911c70f16dee1d22c590de1e19f60a01dfb6c19"
+    },
+    {
+      "path": ".release-it.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab02f3e9c6387a1db822ee79aea30e02a5d5a1ae",
+      "size": 1330,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ab02f3e9c6387a1db822ee79aea30e02a5d5a1ae"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "343de8e90525adf9189c022f63aa90ca2efa8835",
+      "size": 5194,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/343de8e90525adf9189c022f63aa90ca2efa8835"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4948ca2bb2f615f0bf850d7c67ff3725e3573350",
+      "size": 1622,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4948ca2bb2f615f0bf850d7c67ff3725e3573350"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c61b66391a3c1545c8c274bc6d7d764bafb84993",
+      "size": 10947,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c61b66391a3c1545c8c274bc6d7d764bafb84993"
+    },
+    {
+      "path": "Procfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9cfb08d00d74919c4e6d9a81ed455cdb29e3ac58",
+      "size": 35,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9cfb08d00d74919c4e6d9a81ed455cdb29e3ac58"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f57b41297fccce2adfe99c37556970ecc89b1062",
+      "size": 12902,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f57b41297fccce2adfe99c37556970ecc89b1062"
+    },
+    {
+      "path": "__tests__",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "036fc3012f267fdacb0355c9424532f8d74d9173",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/036fc3012f267fdacb0355c9424532f8d74d9173"
+    },
+    {
+      "path": "__tests__/lib",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0444fa8123136a7c7f721e5af5cfc3c313c05085",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/0444fa8123136a7c7f721e5af5cfc3c313c05085"
+    },
+    {
+      "path": "__tests__/lib/server-common.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d37aaf80860a3cdbf4767b4b89ad1d80bc6bba9",
+      "size": 1201,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6d37aaf80860a3cdbf4767b4b89ad1d80bc6bba9"
+    },
+    {
+      "path": "app.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4264b7bc9af040bd0969c851b4a6e1f7311b42cd",
+      "size": 1511,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4264b7bc9af040bd0969c851b4a6e1f7311b42cd"
+    },
+    {
+      "path": "check-locale.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8252f6329bfe5b9ed5d64d583eca5967c7742f8d",
+      "size": 2606,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/8252f6329bfe5b9ed5d64d583eca5967c7742f8d"
+    },
+    {
+      "path": "components",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fafd3a59566027d9f0963f3a7c5fb99eaeb9808d",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/fafd3a59566027d9f0963f3a7c5fb99eaeb9808d"
+    },
+    {
+      "path": "components/account",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4739eb25486430e4ed4a131d2a9717593ca0228b",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/4739eb25486430e4ed4a131d2a9717593ca0228b"
+    },
+    {
+      "path": "components/account/ManageSessions.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e391f2866cf082cfae605eece1a095285aa42442",
+      "size": 3661,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e391f2866cf082cfae605eece1a095285aa42442"
+    },
+    {
+      "path": "components/account/UpdateAccount.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc95a6e06224f896148971e08793466a393d2065",
+      "size": 688,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/cc95a6e06224f896148971e08793466a393d2065"
+    },
+    {
+      "path": "components/account/UpdateEmail.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a83b94a85176ab1fec1cd9d80d4b94d0baa076f",
+      "size": 2305,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1a83b94a85176ab1fec1cd9d80d4b94d0baa076f"
+    },
+    {
+      "path": "components/account/UpdateName.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d21908f520174b2f886e79899c30788ea560461e",
+      "size": 2363,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d21908f520174b2f886e79899c30788ea560461e"
+    },
+    {
+      "path": "components/account/UpdatePassword.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d986d42f8d2d764533024be949b19c72835a6106",
+      "size": 3130,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d986d42f8d2d764533024be949b19c72835a6106"
+    },
+    {
+      "path": "components/account/UpdateTheme.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1048a5288d12b5bd6fd3c4f1d288ea0ad75acdf",
+      "size": 1932,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a1048a5288d12b5bd6fd3c4f1d288ea0ad75acdf"
+    },
+    {
+      "path": "components/account/UploadAvatar.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85eeb3139770c4795aefd5787c1eafefac9915cf",
+      "size": 5216,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/85eeb3139770c4795aefd5787c1eafefac9915cf"
+    },
+    {
+      "path": "components/account/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4af95a18ce7092f00fe936fb0821274db435933a",
+      "size": 122,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4af95a18ce7092f00fe936fb0821274db435933a"
+    },
+    {
+      "path": "components/apiKey",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "51c25cb74911d40465c63da5ec40c8d4714aae2e",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/51c25cb74911d40465c63da5ec40c8d4714aae2e"
+    },
+    {
+      "path": "components/apiKey/APIKeys.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b65b259a11211db9bde01710af8ecff1794b1b8",
+      "size": 4234,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0b65b259a11211db9bde01710af8ecff1794b1b8"
+    },
+    {
+      "path": "components/apiKey/APIKeysContainer.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c998ab43631262d25098c6832647d147b100d136",
+      "size": 795,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c998ab43631262d25098c6832647d147b100d136"
+    },
+    {
+      "path": "components/apiKey/NewAPIKey.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92f98ac4866f71a4d16d219cf63dafe988ff2406",
+      "size": 4164,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/92f98ac4866f71a4d16d219cf63dafe988ff2406"
+    },
+    {
+      "path": "components/auth",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b2913abab8630670987aedd06264ffbe93fc8a8c",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/b2913abab8630670987aedd06264ffbe93fc8a8c"
+    },
+    {
+      "path": "components/auth/AgreeMessage.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "914383b95354aeac149ee89bcaeb860d2fbf8632",
+      "size": 898,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/914383b95354aeac149ee89bcaeb860d2fbf8632"
+    },
+    {
+      "path": "components/auth/GithubButton.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1de776a14b7cab57f27dba57d71d706bf93adde6",
+      "size": 2357,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1de776a14b7cab57f27dba57d71d706bf93adde6"
+    },
+    {
+      "path": "components/auth/GoogleButton.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77b32ec11345d0a3cff93076e0f786dda0798441",
+      "size": 1290,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/77b32ec11345d0a3cff93076e0f786dda0798441"
+    },
+    {
+      "path": "components/auth/Join.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9307db4a64833d1f2769916a5a42b87be7d7be4f",
+      "size": 4480,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9307db4a64833d1f2769916a5a42b87be7d7be4f"
+    },
+    {
+      "path": "components/auth/JoinWithInvitation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5008710448ad3b6833019b96df0adf9291a7dbc8",
+      "size": 4910,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5008710448ad3b6833019b96df0adf9291a7dbc8"
+    },
+    {
+      "path": "components/auth/MagicLink.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a899af224d0337c6fe95af71cbfc0b82402ab63",
+      "size": 3506,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3a899af224d0337c6fe95af71cbfc0b82402ab63"
+    },
+    {
+      "path": "components/auth/ResetPassword.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7bec5c8e29fbc58e1439aa5a206ee10fefe58c8",
+      "size": 3059,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c7bec5c8e29fbc58e1439aa5a206ee10fefe58c8"
+    },
+    {
+      "path": "components/auth/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a3c4fe4d6d528f34ca702195a57a2aee4232896",
+      "size": 176,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4a3c4fe4d6d528f34ca702195a57a2aee4232896"
+    },
+    {
+      "path": "components/billing",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "06d1c632d222f04c3891b8cbce5aef1f80a6918f",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/06d1c632d222f04c3891b8cbce5aef1f80a6918f"
+    },
+    {
+      "path": "components/billing/Help.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f52f02183ce3f3078a61b32f9ec7c3d7cb1d30a2",
+      "size": 911,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f52f02183ce3f3078a61b32f9ec7c3d7cb1d30a2"
+    },
+    {
+      "path": "components/billing/LinkToPortal.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcd54653986986ba46256901620e5d7d08a3a4fc",
+      "size": 1795,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dcd54653986986ba46256901620e5d7d08a3a4fc"
+    },
+    {
+      "path": "components/billing/PaymentButton.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e899e2e8c7def480bed501ce52d9d2462928b90d",
+      "size": 1350,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e899e2e8c7def480bed501ce52d9d2462928b90d"
+    },
+    {
+      "path": "components/billing/ProductPricing.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2fcb8588d8917297d68ef5ac62bea97f51519c3",
+      "size": 3959,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f2fcb8588d8917297d68ef5ac62bea97f51519c3"
+    },
+    {
+      "path": "components/billing/Subscriptions.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd7e394cb83452639c9c361d5c4b293e1a606cca",
+      "size": 1248,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/fd7e394cb83452639c9c361d5c4b293e1a606cca"
+    },
+    {
+      "path": "components/defaultLanding",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "abaffd68696450e23d03a9c1493f22ffca0b425e",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/abaffd68696450e23d03a9c1493f22ffca0b425e"
+    },
+    {
+      "path": "components/defaultLanding/FAQSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce0fc77b9676ef3bc71331c0940b122912317660",
+      "size": 1193,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ce0fc77b9676ef3bc71331c0940b122912317660"
+    },
+    {
+      "path": "components/defaultLanding/FeatureSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "badbc92030d3e68302d305502c87a69cc4dc1fd8",
+      "size": 1257,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/badbc92030d3e68302d305502c87a69cc4dc1fd8"
+    },
+    {
+      "path": "components/defaultLanding/HeroSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d4ee66cf54aa038aa6bc030de548790e7079ea3",
+      "size": 989,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5d4ee66cf54aa038aa6bc030de548790e7079ea3"
+    },
+    {
+      "path": "components/defaultLanding/PricingSection.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6edb2ab83c28ce6ee659d951ac913a8c080656bd",
+      "size": 2512,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6edb2ab83c28ce6ee659d951ac913a8c080656bd"
+    },
+    {
+      "path": "components/defaultLanding/data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b3b206559c9f5e637d85ae6aeb0c4bdffc07a7f4",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/b3b206559c9f5e637d85ae6aeb0c4bdffc07a7f4"
+    },
+    {
+      "path": "components/defaultLanding/data/faq.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a5a1958cb9fd385c3a73ffba0ac63c968990392",
+      "size": 694,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3a5a1958cb9fd385c3a73ffba0ac63c968990392"
+    },
+    {
+      "path": "components/defaultLanding/data/features.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3fd6f827b648e1d17495912133f2d23c6fa6de6",
+      "size": 2396,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b3fd6f827b648e1d17495912133f2d23c6fa6de6"
+    },
+    {
+      "path": "components/defaultLanding/data/pricing.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b088cb70419a9e531e488916b97f9e944e234c97",
+      "size": 832,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b088cb70419a9e531e488916b97f9e944e234c97"
+    },
+    {
+      "path": "components/emailTemplates",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a8c9d2ab307b8e58d26347e548094ab1226e817b",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/a8c9d2ab307b8e58d26347e548094ab1226e817b"
+    },
+    {
+      "path": "components/emailTemplates/AccountLocked.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af8b216f35421f8a0e61e184d46d63f20d85ea48",
+      "size": 1101,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/af8b216f35421f8a0e61e184d46d63f20d85ea48"
+    },
+    {
+      "path": "components/emailTemplates/EmailLayout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "061e2efd55e35c76f12c5e51d5cfca879e8bac19",
+      "size": 1237,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/061e2efd55e35c76f12c5e51d5cfca879e8bac19"
+    },
+    {
+      "path": "components/emailTemplates/MagicLink.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a3f1d6f8e257be8d727dff3ab7934e9f27bc1ca4",
+      "size": 1019,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a3f1d6f8e257be8d727dff3ab7934e9f27bc1ca4"
+    },
+    {
+      "path": "components/emailTemplates/ResetPassword.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2478650ec179b9a550c30d7792a36783b58fe6b4",
+      "size": 1221,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2478650ec179b9a550c30d7792a36783b58fe6b4"
+    },
+    {
+      "path": "components/emailTemplates/TeamInvite.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b18441f6f8374d6d648494d0118a2f0cd233756e",
+      "size": 1132,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b18441f6f8374d6d648494d0118a2f0cd233756e"
+    },
+    {
+      "path": "components/emailTemplates/VerificationEmail.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b27849fc1bdae00e36b952dcef6e0da8668adb46",
+      "size": 1091,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b27849fc1bdae00e36b952dcef6e0da8668adb46"
+    },
+    {
+      "path": "components/emailTemplates/WelcomeEmail.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98da69fb8caeb75661eedaa194682f49059d4c49",
+      "size": 1006,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/98da69fb8caeb75661eedaa194682f49059d4c49"
+    },
+    {
+      "path": "components/emailTemplates/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43b204ed285ca3fa20d4f12b8205a0e5036d302b",
+      "size": 250,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/43b204ed285ca3fa20d4f12b8205a0e5036d302b"
+    },
+    {
+      "path": "components/invitation",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "25295522e4dd62268e0cd37a287b9a8b045cb498",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/25295522e4dd62268e0cd37a287b9a8b045cb498"
+    },
+    {
+      "path": "components/invitation/AcceptInvitation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a9cf0781baaa2862f2867731408d61ce27b6727",
+      "size": 1245,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1a9cf0781baaa2862f2867731408d61ce27b6727"
+    },
+    {
+      "path": "components/invitation/EmailDomainMismatch.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d5f2f84f5f83c5c67e8b971cda713c305fbb8e5",
+      "size": 1159,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2d5f2f84f5f83c5c67e8b971cda713c305fbb8e5"
+    },
+    {
+      "path": "components/invitation/EmailMismatch.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c12e70c5d644b25428a8f8541aa18f815a86ec6c",
+      "size": 777,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c12e70c5d644b25428a8f8541aa18f815a86ec6c"
+    },
+    {
+      "path": "components/invitation/InviteMember.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84622576e9a2ed32feaa9da6f220a485f654a53f",
+      "size": 878,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/84622576e9a2ed32feaa9da6f220a485f654a53f"
+    },
+    {
+      "path": "components/invitation/InviteViaEmail.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4fb40809812c3fa55a40de24a035d86354c46e68",
+      "size": 2804,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4fb40809812c3fa55a40de24a035d86354c46e68"
+    },
+    {
+      "path": "components/invitation/InviteViaLink.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba467db41c4c032d223d132ed8c5009a8a84a942",
+      "size": 5245,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ba467db41c4c032d223d132ed8c5009a8a84a942"
+    },
+    {
+      "path": "components/invitation/NotAuthenticated.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d02eee8ef1f57f73cd81bcee2ad6102241cb60c",
+      "size": 973,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2d02eee8ef1f57f73cd81bcee2ad6102241cb60c"
+    },
+    {
+      "path": "components/invitation/PendingInvitations.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f75fe096ed4567b526aa85b7067ff8e95929c07c",
+      "size": 3727,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f75fe096ed4567b526aa85b7067ff8e95929c07c"
+    },
+    {
+      "path": "components/invitation/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f34fa54768cb23d18d198f870158ef0acb296317",
+      "size": 128,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f34fa54768cb23d18d198f870158ef0acb296317"
+    },
+    {
+      "path": "components/layouts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "df6cbacf3f7ac0f96df9daeeab41b76f2e3615c8",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/df6cbacf3f7ac0f96df9daeeab41b76f2e3615c8"
+    },
+    {
+      "path": "components/layouts/AccountLayout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5cfeb9b20b791386ef2994017f379c50bbf4f52c",
+      "size": 399,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5cfeb9b20b791386ef2994017f379c50bbf4f52c"
+    },
+    {
+      "path": "components/layouts/AuthLayout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7bd8973e9d7fb91b7fcf5bd45886bc9e58f76da",
+      "size": 1159,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d7bd8973e9d7fb91b7fcf5bd45886bc9e58f76da"
+    },
+    {
+      "path": "components/layouts/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f74b11493a89e22686ccc51eec696a7f7cec8e2",
+      "size": 114,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3f74b11493a89e22686ccc51eec696a7f7cec8e2"
+    },
+    {
+      "path": "components/shared",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7b8a3575a9837b46a7b0e7a5ba8d1d8376475a48",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/7b8a3575a9837b46a7b0e7a5ba8d1d8376475a48"
+    },
+    {
+      "path": "components/shared/AccessControl.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d7f369ea0f9e7965b3b27eebdc67fc7fd3f47e87",
+      "size": 439,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d7f369ea0f9e7965b3b27eebdc67fc7fd3f47e87"
+    },
+    {
+      "path": "components/shared/Alert.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "430eac509f6bae07e87a824feb9a4c3c339ff8d0",
+      "size": 329,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/430eac509f6bae07e87a824feb9a4c3c339ff8d0"
+    },
+    {
+      "path": "components/shared/Badge.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "765434b738ae35eae1bf1006e9179e337ab4efcf",
+      "size": 399,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/765434b738ae35eae1bf1006e9179e337ab4efcf"
+    },
+    {
+      "path": "components/shared/Card.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb1e4a2db684495562d56238ebf80376f0b41c53",
+      "size": 1229,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bb1e4a2db684495562d56238ebf80376f0b41c53"
+    },
+    {
+      "path": "components/shared/Checkbox.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "967a0f8d7a12e65d934c06dbfa83e7b1cd552bc0",
+      "size": 838,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/967a0f8d7a12e65d934c06dbfa83e7b1cd552bc0"
+    },
+    {
+      "path": "components/shared/ConfirmationDialog.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6760c86fa420fc888b8bdee9a690afe3a16f6ffa",
+      "size": 1148,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6760c86fa420fc888b8bdee9a690afe3a16f6ffa"
+    },
+    {
+      "path": "components/shared/CopyToClipboardButton.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83234c22fdd13e318f6aaf60affc780cc755e282",
+      "size": 810,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/83234c22fdd13e318f6aaf60affc780cc755e282"
+    },
+    {
+      "path": "components/shared/EmptyState.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd5af7d0cb142170e25b1e2f2b4e301eb50caf46",
+      "size": 775,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bd5af7d0cb142170e25b1e2f2b4e301eb50caf46"
+    },
+    {
+      "path": "components/shared/Error.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf25626590cc9903620966276b90be1151c6dc1c",
+      "size": 379,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/cf25626590cc9903620966276b90be1151c6dc1c"
+    },
+    {
+      "path": "components/shared/GoogleReCAPTCHA.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7fdafa311276c8e3b249824c8c909f4c4144aeaf",
+      "size": 485,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7fdafa311276c8e3b249824c8c909f4c4144aeaf"
+    },
+    {
+      "path": "components/shared/InputWithCopyButton.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "125f64163a1d298c67c9bb43ad8bf8d4be84e0a8",
+      "size": 1028,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/125f64163a1d298c67c9bb43ad8bf8d4be84e0a8"
+    },
+    {
+      "path": "components/shared/InputWithLabel.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73f8998c798f960c14c3f16728c6aa69be86cb98",
+      "size": 960,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/73f8998c798f960c14c3f16728c6aa69be86cb98"
+    },
+    {
+      "path": "components/shared/LetterAvatar.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f81c0d142808eab2a9f8ed528c3bf8dbe3c0860c",
+      "size": 252,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f81c0d142808eab2a9f8ed528c3bf8dbe3c0860c"
+    },
+    {
+      "path": "components/shared/Loading.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75a25e7204517363919c54ea12fd52cddb5535da",
+      "size": 1571,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/75a25e7204517363919c54ea12fd52cddb5535da"
+    },
+    {
+      "path": "components/shared/Modal.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ccc93514c4d45def8433303619e16b3bf8e2224b",
+      "size": 1400,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ccc93514c4d45def8433303619e16b3bf8e2224b"
+    },
+    {
+      "path": "components/shared/TeamDropdown.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a37e02f114da380b36d75400ed9671d83d6f2931",
+      "size": 3333,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a37e02f114da380b36d75400ed9671d83d6f2931"
+    },
+    {
+      "path": "components/shared/TogglePasswordVisibility.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b64e0b09c3d9fb5c378893a0fe0b65fff070b66",
+      "size": 562,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7b64e0b09c3d9fb5c378893a0fe0b65fff070b66"
+    },
+    {
+      "path": "components/shared/WithLoadingAndError.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99b5468465c9a1a99d0f602b9cb312ee2185de49",
+      "size": 468,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/99b5468465c9a1a99d0f602b9cb312ee2185de49"
+    },
+    {
+      "path": "components/shared/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81f44da4c3740f86b590470177ef4fb0c5444da6",
+      "size": 622,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/81f44da4c3740f86b590470177ef4fb0c5444da6"
+    },
+    {
+      "path": "components/shared/shell",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "962572d975ec62ef812c12e3ff10a5db6f5844b0",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/962572d975ec62ef812c12e3ff10a5db6f5844b0"
+    },
+    {
+      "path": "components/shared/shell/AppShell.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83a69670ce4ad60413e10996602a7c59e5302126",
+      "size": 946,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/83a69670ce4ad60413e10996602a7c59e5302126"
+    },
+    {
+      "path": "components/shared/shell/Brand.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3c4b79e5186a79114922f5b6301e09b61a5294f",
+      "size": 470,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b3c4b79e5186a79114922f5b6301e09b61a5294f"
+    },
+    {
+      "path": "components/shared/shell/Drawer.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4cfe4b588bea8395995eeb92a73e50f7add54165",
+      "size": 1846,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4cfe4b588bea8395995eeb92a73e50f7add54165"
+    },
+    {
+      "path": "components/shared/shell/Header.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8aa45fb61df5fce3ddb725a22da8fa56abcb348a",
+      "size": 4004,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/8aa45fb61df5fce3ddb725a22da8fa56abcb348a"
+    },
+    {
+      "path": "components/shared/shell/Navigation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7772db07107527566ae376ea59360968693560b2",
+      "size": 909,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7772db07107527566ae376ea59360968693560b2"
+    },
+    {
+      "path": "components/shared/shell/NavigationItems.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "33c1ee765b5df899dac8aa8efecc013dfe278005",
+      "size": 1768,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/33c1ee765b5df899dac8aa8efecc013dfe278005"
+    },
+    {
+      "path": "components/shared/shell/ProductNavigation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36cd69e2dc21c29d945cf65efb61929393f88f9c",
+      "size": 344,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/36cd69e2dc21c29d945cf65efb61929393f88f9c"
+    },
+    {
+      "path": "components/shared/shell/TeamNavigation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c584eaedf985fe1926e8cf74947ccf88e3f6e0c9",
+      "size": 943,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c584eaedf985fe1926e8cf74947ccf88e3f6e0c9"
+    },
+    {
+      "path": "components/shared/shell/UserNavigation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e29a82e0eb10af7b5aff6b764b8031c5156bf596",
+      "size": 940,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e29a82e0eb10af7b5aff6b764b8031c5156bf596"
+    },
+    {
+      "path": "components/shared/table",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9b00aafd23a0d57d4b13b9dc4a628b3e7afcd975",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/9b00aafd23a0d57d4b13b9dc4a628b3e7afcd975"
+    },
+    {
+      "path": "components/shared/table/Table.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27cd9f11208f7a34b57348ef14cb9ab62f934ffd",
+      "size": 636,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/27cd9f11208f7a34b57348ef14cb9ab62f934ffd"
+    },
+    {
+      "path": "components/shared/table/TableBody.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "928892a13f4881b25a45aff11a8322a5416af0e2",
+      "size": 3880,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/928892a13f4881b25a45aff11a8322a5416af0e2"
+    },
+    {
+      "path": "components/shared/table/TableHeader.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85ac25371832b1cd1440490c77fcf4a7dac0d168",
+      "size": 491,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/85ac25371832b1cd1440490c77fcf4a7dac0d168"
+    },
+    {
+      "path": "components/styles.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6c34c8d94597574829c3264c87fe7cc4e237cfb",
+      "size": 479,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a6c34c8d94597574829c3264c87fe7cc4e237cfb"
+    },
+    {
+      "path": "components/team",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "307ebcf7c5a1da840a66b7cf4c9256939862a247",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/307ebcf7c5a1da840a66b7cf4c9256939862a247"
+    },
+    {
+      "path": "components/team/CreateTeam.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d55b57989ae8a4fed391aa552d58818acf6e199b",
+      "size": 2612,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d55b57989ae8a4fed391aa552d58818acf6e199b"
+    },
+    {
+      "path": "components/team/Members.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "115a1d71c2c6cba3a4ecd343767bed02cde50de3",
+      "size": 4809,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/115a1d71c2c6cba3a4ecd343767bed02cde50de3"
+    },
+    {
+      "path": "components/team/RemoveTeam.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89557e5dacf426dd84347e4a84a74447183bc337",
+      "size": 2260,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/89557e5dacf426dd84347e4a84a74447183bc337"
+    },
+    {
+      "path": "components/team/TeamSettings.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b006edc9784f731a7d9940211e8853ceb73037fd",
+      "size": 3404,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b006edc9784f731a7d9940211e8853ceb73037fd"
+    },
+    {
+      "path": "components/team/TeamTab.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "020a470822152217a984efece452aa38faf2a51a",
+      "size": 3660,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/020a470822152217a984efece452aa38faf2a51a"
+    },
+    {
+      "path": "components/team/Teams.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d62abdc76a9b8169664e1cec061bb6b5832b9e2",
+      "size": 4395,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0d62abdc76a9b8169664e1cec061bb6b5832b9e2"
+    },
+    {
+      "path": "components/team/UpdateMemberRole.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88d8d71a2d4dfa3da4078d63d84fb7facca98bc7",
+      "size": 1313,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/88d8d71a2d4dfa3da4078d63d84fb7facca98bc7"
+    },
+    {
+      "path": "components/team/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f15980388dd0aab12a1dd27496c0fcbaf1f5981",
+      "size": 306,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7f15980388dd0aab12a1dd27496c0fcbaf1f5981"
+    },
+    {
+      "path": "components/webhook",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dcdb636122219555eca93f6a99d58deb4df9298c",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/dcdb636122219555eca93f6a99d58deb4df9298c"
+    },
+    {
+      "path": "components/webhook/CreateWebhook.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db8f232f3fb408681bf8bbe1c1fd04b341178f18",
+      "size": 1495,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/db8f232f3fb408681bf8bbe1c1fd04b341178f18"
+    },
+    {
+      "path": "components/webhook/EditWebhook.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a9e5dc45981267ac60da3d2f9edfd97c73f65a32",
+      "size": 2002,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a9e5dc45981267ac60da3d2f9edfd97c73f65a32"
+    },
+    {
+      "path": "components/webhook/EventTypes.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8a5a180f8b44ec31e63eb308caa02989084bdeb9",
+      "size": 887,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/8a5a180f8b44ec31e63eb308caa02989084bdeb9"
+    },
+    {
+      "path": "components/webhook/Form.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92f7a0e7423d1687938878a8dfe79bbc9103cc9b",
+      "size": 3642,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/92f7a0e7423d1687938878a8dfe79bbc9103cc9b"
+    },
+    {
+      "path": "components/webhook/Webhooks.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bae27a697f8cafc997d5f8d9c31f7e1e5f439452",
+      "size": 5240,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bae27a697f8cafc997d5f8d9c31f7e1e5f439452"
+    },
+    {
+      "path": "components/webhook/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87b8c6c0472931e909c2015805f245ee053dd81f",
+      "size": 220,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/87b8c6c0472931e909c2015805f245ee053dd81f"
+    },
+    {
+      "path": "delete-team.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75dcb53c505dbcc053952309f17e0cbab950154d",
+      "size": 13456,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/75dcb53c505dbcc053952309f17e0cbab950154d"
+    },
+    {
+      "path": "docker-compose.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d5d30f7a428d6cd53b0efdd06ee21627973ca31",
+      "size": 201,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9d5d30f7a428d6cd53b0efdd06ee21627973ca31"
+    },
+    {
+      "path": "eslint.config.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad653a5989f027a17de5e4c3b463870b4b1a2481",
+      "size": 1530,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ad653a5989f027a17de5e4c3b463870b4b1a2481"
+    },
+    {
+      "path": "find-dupe-locale.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20b64d4fb8d0e0a0662c7480576f34be671ccc73",
+      "size": 588,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/20b64d4fb8d0e0a0662c7480576f34be671ccc73"
+    },
+    {
+      "path": "hooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c43e85c8776fe0e1932a58316392bcc646f6cdb3",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/c43e85c8776fe0e1932a58316392bcc646f6cdb3"
+    },
+    {
+      "path": "hooks/useAPIKeys.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "253a87ddace76f08759ff339481e2372f01a9578",
+      "size": 548,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/253a87ddace76f08759ff339481e2372f01a9578"
+    },
+    {
+      "path": "hooks/useCanAccess.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26408e322e309c6c194596ee397eed6cd2c44a3a",
+      "size": 587,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/26408e322e309c6c194596ee397eed6cd2c44a3a"
+    },
+    {
+      "path": "hooks/useCustomSignout.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbe2314c7ef35a6ed6ceeb858bd1e0d167ed02b1",
+      "size": 548,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/cbe2314c7ef35a6ed6ceeb858bd1e0d167ed02b1"
+    },
+    {
+      "path": "hooks/useInvitation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e7734baff8b76e72386a3b89f08d1fa76250dfa",
+      "size": 658,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6e7734baff8b76e72386a3b89f08d1fa76250dfa"
+    },
+    {
+      "path": "hooks/useInvitations.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66a0dddb09c157567e61e101e2e44f3553738834",
+      "size": 675,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/66a0dddb09c157567e61e101e2e44f3553738834"
+    },
+    {
+      "path": "hooks/usePermissions.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b77a6d92407786dd0cc52235a16f9ddd87d82c23",
+      "size": 787,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b77a6d92407786dd0cc52235a16f9ddd87d82c23"
+    },
+    {
+      "path": "hooks/useTeam.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c64e9daa81eb08183e11de7a8164141d377502c",
+      "size": 561,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2c64e9daa81eb08183e11de7a8164141d377502c"
+    },
+    {
+      "path": "hooks/useTeamMembers.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a668708c6b146e3216b97d6020c5b2ed8773bb9c",
+      "size": 631,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a668708c6b146e3216b97d6020c5b2ed8773bb9c"
+    },
+    {
+      "path": "hooks/useTeams.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91fbee72557a6cb04d8606d11f353b8566856dc5",
+      "size": 480,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/91fbee72557a6cb04d8606d11f353b8566856dc5"
+    },
+    {
+      "path": "hooks/useTheme.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4dd55569ae2b6c608e2d44c6fabbf9d4d6d28bb",
+      "size": 1389,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d4dd55569ae2b6c608e2d44c6fabbf9d4d6d28bb"
+    },
+    {
+      "path": "hooks/useWebhook.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b8d74fba9126c67cb8300e13e1c98452e662df85",
+      "size": 584,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b8d74fba9126c67cb8300e13e1c98452e662df85"
+    },
+    {
+      "path": "hooks/useWebhooks.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85028d49309c9452cc180d087000a5d15ecbb439",
+      "size": 550,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/85028d49309c9452cc180d087000a5d15ecbb439"
+    },
+    {
+      "path": "i18next.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44c1a62f9aa4c55e896f8203d87d775fb17fdd58",
+      "size": 107,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/44c1a62f9aa4c55e896f8203d87d775fb17fdd58"
+    },
+    {
+      "path": "instrumentation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2af0cdad6620e727e9f9b67804c2d3275859ee27",
+      "size": 403,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2af0cdad6620e727e9f9b67804c2d3275859ee27"
+    },
+    {
+      "path": "jest.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4bc0b6c1b6d53e96a65ad9da3617ffc1dbb3c772",
+      "size": 857,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4bc0b6c1b6d53e96a65ad9da3617ffc1dbb3c772"
+    },
+    {
+      "path": "jest.setup.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bad60f01a6b413f11a5f2efbcc653397d7337fca",
+      "size": 299,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bad60f01a6b413f11a5f2efbcc653397d7337fca"
+    },
+    {
+      "path": "lib",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0945e00d9878f17bf2fa9181013cb141e66c73ce",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/0945e00d9878f17bf2fa9181013cb141e66c73ce"
+    },
+    {
+      "path": "lib/accountLock.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eaf17490109692b2c11b9d18c5ab5bc7ab0ba7cc",
+      "size": 2120,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/eaf17490109692b2c11b9d18c5ab5bc7ab0ba7cc"
+    },
+    {
+      "path": "lib/app.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bad7ffb91816be8982c925210266e75c1c493558",
+      "size": 222,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bad7ffb91816be8982c925210266e75c1c493558"
+    },
+    {
+      "path": "lib/auth.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a59017fdd3bbdd9ee3c3d7d8f6aa5a4b3572b54",
+      "size": 822,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0a59017fdd3bbdd9ee3c3d7d8f6aa5a4b3572b54"
+    },
+    {
+      "path": "lib/common.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c0318f460cdf8c3310280af367772de812c960d",
+      "size": 986,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3c0318f460cdf8c3310280af367772de812c960d"
+    },
+    {
+      "path": "lib/email",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6a2c46b08f83d03cd5d1247867fbcea0a0c40e0f",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/6a2c46b08f83d03cd5d1247867fbcea0a0c40e0f"
+    },
+    {
+      "path": "lib/email/freeEmailService.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f984a966c98d678638fd76c154e2486768d261de",
+      "size": 147806,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f984a966c98d678638fd76c154e2486768d261de"
+    },
+    {
+      "path": "lib/email/sendEmail.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc88f5602bc424b2b220314a7dfc396403c46797",
+      "size": 558,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dc88f5602bc424b2b220314a7dfc396403c46797"
+    },
+    {
+      "path": "lib/email/sendMagicLink.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c036d3ba2753d1f973fe269613cae95aacf3bed4",
+      "size": 417,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c036d3ba2753d1f973fe269613cae95aacf3bed4"
+    },
+    {
+      "path": "lib/email/sendPasswordResetEmail.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66b079b0fc8189c10bd9aafdba57c26f6e0f7dd3",
+      "size": 603,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/66b079b0fc8189c10bd9aafdba57c26f6e0f7dd3"
+    },
+    {
+      "path": "lib/email/sendTeamInviteEmail.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4ac3d48a32d6d9af36426c741c8b341a6d489103",
+      "size": 703,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4ac3d48a32d6d9af36426c741c8b341a6d489103"
+    },
+    {
+      "path": "lib/email/sendVerificationEmail.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72457b4fdeff5aa40c1d3bf4edec44f92735eef6",
+      "size": 758,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/72457b4fdeff5aa40c1d3bf4edec44f92735eef6"
+    },
+    {
+      "path": "lib/email/sendWelcomeEmail.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2caaffd3f018ff69313631851652cf69e31eac15",
+      "size": 422,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2caaffd3f018ff69313631851652cf69e31eac15"
+    },
+    {
+      "path": "lib/email/utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "91c5b28ddef154544717abad01ec11a8410bd7dd",
+      "size": 532,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/91c5b28ddef154544717abad01ec11a8410bd7dd"
+    },
+    {
+      "path": "lib/env.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35bae16483e8dc4baba04a6983ec56843b6319ba",
+      "size": 3580,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/35bae16483e8dc4baba04a6983ec56843b6319ba"
+    },
+    {
+      "path": "lib/errors.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "feae922291a0431a8c9095740fd4476e13a02990",
+      "size": 158,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/feae922291a0431a8c9095740fd4476e13a02990"
+    },
+    {
+      "path": "lib/fetcher.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa74eb2710cee59579a06534ac7723580e475737",
+      "size": 287,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/fa74eb2710cee59579a06534ac7723580e475737"
+    },
+    {
+      "path": "lib/guards",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "df60d8ea0bd0cbc9d09873370e3631bc299a34f2",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/df60d8ea0bd0cbc9d09873370e3631bc299a34f2"
+    },
+    {
+      "path": "lib/guards/team-api-key.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "649ca2f1ab750b3286f4fda26b4d9d1bd4c81446",
+      "size": 439,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/649ca2f1ab750b3286f4fda26b4d9d1bd4c81446"
+    },
+    {
+      "path": "lib/guards/team-dsync.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d15b7005a46060e7d0005c735cf3ee5dd328e906",
+      "size": 647,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d15b7005a46060e7d0005c735cf3ee5dd328e906"
+    },
+    {
+      "path": "lib/guards/team-sso.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "319a1fadaecbc0872f8650bcda213213462ee359",
+      "size": 1099,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/319a1fadaecbc0872f8650bcda213213462ee359"
+    },
+    {
+      "path": "lib/inferSSRProps.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7386ab8892c152c393ce8ea219d58e423acd6927",
+      "size": 294,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7386ab8892c152c393ce8ea219d58e423acd6927"
+    },
+    {
+      "path": "lib/jackson.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83ca5bb0b20991ef791e53e1b8c673284d4962e8",
+      "size": 1505,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/83ca5bb0b20991ef791e53e1b8c673284d4962e8"
+    },
+    {
+      "path": "lib/jackson",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6025b38ddd11f6a80ed90c13705cf9e7dd7367de",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/6025b38ddd11f6a80ed90c13705cf9e7dd7367de"
+    },
+    {
+      "path": "lib/jackson/config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44a3eef4bc30cee71afeea30d7321fdce046c538",
+      "size": 164,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/44a3eef4bc30cee71afeea30d7321fdce046c538"
+    },
+    {
+      "path": "lib/jackson/dsync",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "526b04a1382ca86d1070277d3d34b4cd5d224386",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/526b04a1382ca86d1070277d3d34b4cd5d224386"
+    },
+    {
+      "path": "lib/jackson/dsync/embed.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ed4eeb3b0dedee56a5248305f1a110f09db14f9",
+      "size": 1956,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6ed4eeb3b0dedee56a5248305f1a110f09db14f9"
+    },
+    {
+      "path": "lib/jackson/dsync/hosted.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43357602f8b7eb9f11475943d79c130909405ebc",
+      "size": 2557,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/43357602f8b7eb9f11475943d79c130909405ebc"
+    },
+    {
+      "path": "lib/jackson/dsync/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1ac0c80de250e0680a08cf4d54633cdff0b46f3",
+      "size": 267,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d1ac0c80de250e0680a08cf4d54633cdff0b46f3"
+    },
+    {
+      "path": "lib/jackson/dsync/utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "811b58cf7d4559e1e8fa025e50d46bfd519a2fea",
+      "size": 501,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/811b58cf7d4559e1e8fa025e50d46bfd519a2fea"
+    },
+    {
+      "path": "lib/jackson/dsyncEvents.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32e4f98354c6dc2a8ed8b85e1d5ca071f464c3fa",
+      "size": 2106,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/32e4f98354c6dc2a8ed8b85e1d5ca071f464c3fa"
+    },
+    {
+      "path": "lib/jackson/sso",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ba6a1e260e751ea57e564f94a87f3a2017885b5f",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/ba6a1e260e751ea57e564f94a87f3a2017885b5f"
+    },
+    {
+      "path": "lib/jackson/sso/embed.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd303e403976b7d7f0f1c1a495fecfad39f2ca99",
+      "size": 1632,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dd303e403976b7d7f0f1c1a495fecfad39f2ca99"
+    },
+    {
+      "path": "lib/jackson/sso/hosted.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e7b7733125d517135537e01c33e5e2e63f58fda",
+      "size": 1976,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5e7b7733125d517135537e01c33e5e2e63f58fda"
+    },
+    {
+      "path": "lib/jackson/sso/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "74b6c7923d7f69a93236fc7bc88aead019dea726",
+      "size": 265,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/74b6c7923d7f69a93236fc7bc88aead019dea726"
+    },
+    {
+      "path": "lib/jackson/sso/utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f7dc399442152e10a0106ca69418b6f748a73cb",
+      "size": 1592,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9f7dc399442152e10a0106ca69418b6f748a73cb"
+    },
+    {
+      "path": "lib/metrics.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6706cd020e73d1443f90ce6638fcc5847f01ed8a",
+      "size": 640,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6706cd020e73d1443f90ce6638fcc5847f01ed8a"
+    },
+    {
+      "path": "lib/nextAuth.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "727c6edc0e5ecf3db204e092b1a2ecdb8de4aa88",
+      "size": 12346,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/727c6edc0e5ecf3db204e092b1a2ecdb8de4aa88"
+    },
+    {
+      "path": "lib/permissions.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ff2ed2e14f5652213628db1eb12f4c3577f02fd",
+      "size": 1931,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7ff2ed2e14f5652213628db1eb12f4c3577f02fd"
+    },
+    {
+      "path": "lib/prisma.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c8ae81d9d26a1aa2ff5f6d9a0ebd4562982b620",
+      "size": 346,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6c8ae81d9d26a1aa2ff5f6d9a0ebd4562982b620"
+    },
+    {
+      "path": "lib/rbac.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be7f911ab45c92ee44a3994714211d0a0d9380f1",
+      "size": 1473,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/be7f911ab45c92ee44a3994714211d0a0d9380f1"
+    },
+    {
+      "path": "lib/recaptcha.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27065a79bdfdf81368d74dfbb65eb57d0795d0e7",
+      "size": 668,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/27065a79bdfdf81368d74dfbb65eb57d0795d0e7"
+    },
+    {
+      "path": "lib/retraced.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34e0c277df9cfa9226cb60f04e0a98f970efab87",
+      "size": 1981,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/34e0c277df9cfa9226cb60f04e0a98f970efab87"
+    },
+    {
+      "path": "lib/server-common.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4c2662635d82d3d288ad9b12d804fefe8b7e2f4",
+      "size": 1288,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f4c2662635d82d3d288ad9b12d804fefe8b7e2f4"
+    },
+    {
+      "path": "lib/session.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6fd7c3d7163ffef0f09a6ecabdc3db4bcfcd1fe1",
+      "size": 458,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6fd7c3d7163ffef0f09a6ecabdc3db4bcfcd1fe1"
+    },
+    {
+      "path": "lib/slack.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6541f143ea7a16343fa8c691a958634d002b0f0",
+      "size": 195,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e6541f143ea7a16343fa8c691a958634d002b0f0"
+    },
+    {
+      "path": "lib/stripe.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "73ca6c47b4ffbde3ecf4dc88a6d60b64016cdef1",
+      "size": 899,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/73ca6c47b4ffbde3ecf4dc88a6d60b64016cdef1"
+    },
+    {
+      "path": "lib/svix.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae84ed8fc1e3d7d462c4ad64f5bbae7ce4528d05",
+      "size": 1592,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ae84ed8fc1e3d7d462c4ad64f5bbae7ce4528d05"
+    },
+    {
+      "path": "lib/theme.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1344f7e9df91e7f7e44131c8f8378864a957b81f",
+      "size": 1277,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1344f7e9df91e7f7e44131c8f8378864a957b81f"
+    },
+    {
+      "path": "lib/zod",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "15d5956b2ff4a8d730b0734eeade1ba76a33eeeb",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/15d5956b2ff4a8d730b0734eeade1ba76a33eeeb"
+    },
+    {
+      "path": "lib/zod/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3002f161cf8f648e0914edb35f657d5eeba6651",
+      "size": 432,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e3002f161cf8f648e0914edb35f657d5eeba6651"
+    },
+    {
+      "path": "lib/zod/primitives.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd69fbd71abacc547360945f4a6b10d5ecf42bcb",
+      "size": 6837,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bd69fbd71abacc547360945f4a6b10d5ecf42bcb"
+    },
+    {
+      "path": "lib/zod/schema.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95a9a825434123e2969a9e3525c994d2b5873094",
+      "size": 2863,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/95a9a825434123e2969a9e3525c994d2b5873094"
+    },
+    {
+      "path": "locales",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cd6a3f3b7d5f428e316760f48677fcbd0c364337",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/cd6a3f3b7d5f428e316760f48677fcbd0c364337"
+    },
+    {
+      "path": "locales/en",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "888164592549bafdd755c15bb811bebc612a5e1d",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/888164592549bafdd755c15bb811bebc612a5e1d"
+    },
+    {
+      "path": "locales/en/common.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9e37449e2aed6c41c9ed78fd21b01348dc03294",
+      "size": 14115,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b9e37449e2aed6c41c9ed78fd21b01348dc03294"
+    },
+    {
+      "path": "middleware.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9dd945d3243d4f8598bda87c90dad7c2c8268076",
+      "size": 3481,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9dd945d3243d4f8598bda87c90dad7c2c8268076"
+    },
+    {
+      "path": "models",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b9b9a727cc10db916e8613bfd936e871a8fb391a",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/b9b9a727cc10db916e8613bfd936e871a8fb391a"
+    },
+    {
+      "path": "models/account.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2de29c6b50f501238717f50de5f5e744a9b575a5",
+      "size": 170,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2de29c6b50f501238717f50de5f5e744a9b575a5"
+    },
+    {
+      "path": "models/apiKey.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a8735c26219a847a4481ed1d93691de1e3f6af5",
+      "size": 1446,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6a8735c26219a847a4481ed1d93691de1e3f6af5"
+    },
+    {
+      "path": "models/invitation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a746966fd21fe54b812e78ead3c91a1231272e53",
+      "size": 3408,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a746966fd21fe54b812e78ead3c91a1231272e53"
+    },
+    {
+      "path": "models/passwordReset.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9dc18ef867dbe8808cc682a8b5bfb684c0f4110",
+      "size": 462,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e9dc18ef867dbe8808cc682a8b5bfb684c0f4110"
+    },
+    {
+      "path": "models/price.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d92c6de4b732e0136812b26eb545e7e991e58214",
+      "size": 428,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d92c6de4b732e0136812b26eb545e7e991e58214"
+    },
+    {
+      "path": "models/service.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b42660dcffc983de6a30b36453bffd92e60f8e5a",
+      "size": 129,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b42660dcffc983de6a30b36453bffd92e60f8e5a"
+    },
+    {
+      "path": "models/session.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67d16df289a11aa38c64513e803278592799ad0a",
+      "size": 522,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/67d16df289a11aa38c64513e803278592799ad0a"
+    },
+    {
+      "path": "models/subscription.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2847e79394830d4c360159599ed0a91cc4d03af6",
+      "size": 1172,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2847e79394830d4c360159599ed0a91cc4d03af6"
+    },
+    {
+      "path": "models/team.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58f3501522a60fe520ef0deac8d3290ba3109580",
+      "size": 15031,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/58f3501522a60fe520ef0deac8d3290ba3109580"
+    },
+    {
+      "path": "models/teamMember.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b0ce52e86baf110751ef8142080e46f123edfa3",
+      "size": 290,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3b0ce52e86baf110751ef8142080e46f123edfa3"
+    },
+    {
+      "path": "models/user.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3450c7157794d68049a779e3fe8126a77677eaaf",
+      "size": 2793,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3450c7157794d68049a779e3fe8126a77677eaaf"
+    },
+    {
+      "path": "models/verificationToken.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4f44676f22ed44334b0ba23357f7eb8c8a3f469",
+      "size": 904,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d4f44676f22ed44334b0ba23357f7eb8c8a3f469"
+    },
+    {
+      "path": "next-env.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "254b73c165d9020f2076dc5a74c24bc346e26a2b",
+      "size": 264,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/254b73c165d9020f2076dc5a74c24bc346e26a2b"
+    },
+    {
+      "path": "next-i18next.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10645539d507aefacd101fda79f0a721685c5861",
+      "size": 155,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/10645539d507aefacd101fda79f0a721685c5861"
+    },
+    {
+      "path": "next.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "703127524e7765d3500cab91ac796bfe60395880",
+      "size": 1493,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/703127524e7765d3500cab91ac796bfe60395880"
+    },
+    {
+      "path": "package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60b319f219c8d0e101f5cadefd1481d7cac8d8dd",
+      "size": 985927,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/60b319f219c8d0e101f5cadefd1481d7cac8d8dd"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8148e376b02ab32d9c5018b4313d00e012bf659",
+      "size": 3455,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d8148e376b02ab32d9c5018b4313d00e012bf659"
+    },
+    {
+      "path": "pages",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b233f79ab57981f820f5186fadd37bab938f4ebf",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/b233f79ab57981f820f5186fadd37bab938f4ebf"
+    },
+    {
+      "path": "pages/404.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a26da7343f06605a41ac91f2e199ecbeae11efd",
+      "size": 1779,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1a26da7343f06605a41ac91f2e199ecbeae11efd"
+    },
+    {
+      "path": "pages/500.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22bd9471f193c84ff161d636676f1ebe4f420e26",
+      "size": 1723,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/22bd9471f193c84ff161d636676f1ebe4f420e26"
+    },
+    {
+      "path": "pages/_app.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "919d0f097e19c5bcdad21c5a76438b1f546bd5eb",
+      "size": 2264,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/919d0f097e19c5bcdad21c5a76438b1f546bd5eb"
+    },
+    {
+      "path": "pages/_document.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72fa29a270b648004b5be6b0a96ed6c86a541936",
+      "size": 291,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/72fa29a270b648004b5be6b0a96ed6c86a541936"
+    },
+    {
+      "path": "pages/api",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eb391b979dbd6146a8cf4d223c7a1b06517b1f46",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/eb391b979dbd6146a8cf4d223c7a1b06517b1f46"
+    },
+    {
+      "path": "pages/api/auth",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3508aaf8c3ab65ec1d06c1041b4f5d5ecd815efd",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/3508aaf8c3ab65ec1d06c1041b4f5d5ecd815efd"
+    },
+    {
+      "path": "pages/api/auth/[...nextauth].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "363511604e98f989abe6103843bbf8ddbe93e92c",
+      "size": 325,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/363511604e98f989abe6103843bbf8ddbe93e92c"
+    },
+    {
+      "path": "pages/api/auth/custom-signout.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "598583f90d0a0a10f05d5721242fed55ad284ca9",
+      "size": 1565,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/598583f90d0a0a10f05d5721242fed55ad284ca9"
+    },
+    {
+      "path": "pages/api/auth/forgot-password.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eeb06c31c0f3d85c565997e192f420ce0ea0b666",
+      "size": 1887,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/eeb06c31c0f3d85c565997e192f420ce0ea0b666"
+    },
+    {
+      "path": "pages/api/auth/join.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b07d3329111d13daa88dc4b637a21eb0bc8166f9",
+      "size": 4133,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b07d3329111d13daa88dc4b637a21eb0bc8166f9"
+    },
+    {
+      "path": "pages/api/auth/resend-email-token.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "79b11da8567cdf2c412c66ae7ca1915630499484",
+      "size": 1471,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/79b11da8567cdf2c412c66ae7ca1915630499484"
+    },
+    {
+      "path": "pages/api/auth/reset-password.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d8f5ac025d2528cc2a6e39b96f8a2c5143a75ad",
+      "size": 2359,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3d8f5ac025d2528cc2a6e39b96f8a2c5143a75ad"
+    },
+    {
+      "path": "pages/api/auth/sso",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "79007375e535dae8b02acc3fe92ea8882b5f37bb",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/79007375e535dae8b02acc3fe92ea8882b5f37bb"
+    },
+    {
+      "path": "pages/api/auth/sso/acs.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f904ecf321b783d39de9558aa4ad32d903bad3e7",
+      "size": 357,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f904ecf321b783d39de9558aa4ad32d903bad3e7"
+    },
+    {
+      "path": "pages/api/auth/sso/verify.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bbff9742decbd53cbdb1cfc41fe89ed7d5bb629f",
+      "size": 3991,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bbff9742decbd53cbdb1cfc41fe89ed7d5bb629f"
+    },
+    {
+      "path": "pages/api/auth/unlock-account.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94cfd07f73fd15f0ba6df7e8984647a853884a56",
+      "size": 1477,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/94cfd07f73fd15f0ba6df7e8984647a853884a56"
+    },
+    {
+      "path": "pages/api/health.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d5ab46b63412cda222c51b8a4abe557e8ab5c9a",
+      "size": 538,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7d5ab46b63412cda222c51b8a4abe557e8ab5c9a"
+    },
+    {
+      "path": "pages/api/hello.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fec2f4233f10f5d89afec740655a1948b7aa16c6",
+      "size": 206,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/fec2f4233f10f5d89afec740655a1948b7aa16c6"
+    },
+    {
+      "path": "pages/api/idp.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e58d0b34810069949c7ada256588864a452f36e2",
+      "size": 335,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e58d0b34810069949c7ada256588864a452f36e2"
+    },
+    {
+      "path": "pages/api/import-hack.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee18fd23e1cf206d8ae276b3e8a6cdaeee8c0f84",
+      "size": 510,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ee18fd23e1cf206d8ae276b3e8a6cdaeee8c0f84"
+    },
+    {
+      "path": "pages/api/invitations",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "40ed2b4aaa69a73564d8bda3d829d15431b983df",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/40ed2b4aaa69a73564d8bda3d829d15431b983df"
+    },
+    {
+      "path": "pages/api/invitations/[token].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17c649ebc78e2a09026245d56b15117882b2cd97",
+      "size": 1267,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/17c649ebc78e2a09026245d56b15117882b2cd97"
+    },
+    {
+      "path": "pages/api/oauth",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "569b7c4d3e9c8299ff1bbdec8e98515bca47edb3",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/569b7c4d3e9c8299ff1bbdec8e98515bca47edb3"
+    },
+    {
+      "path": "pages/api/oauth/authorize.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6911101bc92ab35e01df34956e19f47eaaa6eb38",
+      "size": 1275,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6911101bc92ab35e01df34956e19f47eaaa6eb38"
+    },
+    {
+      "path": "pages/api/oauth/oidc.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b6a9af92a58b91ed50406cebc3b5cadb8421649",
+      "size": 756,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7b6a9af92a58b91ed50406cebc3b5cadb8421649"
+    },
+    {
+      "path": "pages/api/oauth/saml.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99943fd4b0fdea54c8511082439022a3d7ef4612",
+      "size": 1047,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/99943fd4b0fdea54c8511082439022a3d7ef4612"
+    },
+    {
+      "path": "pages/api/oauth/token.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb4cf232cf14991b44f75f14d694ab1be4559657",
+      "size": 857,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/cb4cf232cf14991b44f75f14d694ab1be4559657"
+    },
+    {
+      "path": "pages/api/oauth/userinfo.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f95217de3e6f4005be7510c4123cdfb696b0570",
+      "size": 1186,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0f95217de3e6f4005be7510c4123cdfb696b0570"
+    },
+    {
+      "path": "pages/api/password.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22580b5aa8836fb61ae70fb3154b1fcf5d41ee36",
+      "size": 2153,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/22580b5aa8836fb61ae70fb3154b1fcf5d41ee36"
+    },
+    {
+      "path": "pages/api/scim",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9f4d7004fcde501986dcdba9a1315228269255e1",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/9f4d7004fcde501986dcdba9a1315228269255e1"
+    },
+    {
+      "path": "pages/api/scim/v2.0",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "695ccc51d1d9df259813ecb8d0503f39d6842681",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/695ccc51d1d9df259813ecb8d0503f39d6842681"
+    },
+    {
+      "path": "pages/api/scim/v2.0/[...directory].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e0f9594933bb3d20e6d8469cecb674d97c741765",
+      "size": 1363,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e0f9594933bb3d20e6d8469cecb674d97c741765"
+    },
+    {
+      "path": "pages/api/sessions",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fdffcca1dc38706e40b6f36a563e8dd659c2923a",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/fdffcca1dc38706e40b6f36a563e8dd659c2923a"
+    },
+    {
+      "path": "pages/api/sessions/[id].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b1be9d0081bd806f0de97cc7a851d5165d01392",
+      "size": 1232,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0b1be9d0081bd806f0de97cc7a851d5165d01392"
+    },
+    {
+      "path": "pages/api/sessions/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2477ae88c80929fc580fb7f72ca87d57c01a475",
+      "size": 1422,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a2477ae88c80929fc580fb7f72ca87d57c01a475"
+    },
+    {
+      "path": "pages/api/teams",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "31bc33b388e0096507478e25e45e9179403211ec",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/31bc33b388e0096507478e25e45e9179403211ec"
+    },
+    {
+      "path": "pages/api/teams/[slug]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "44255a6519f12ef3e352d947691a16ed3656137e",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/44255a6519f12ef3e352d947691a16ed3656137e"
+    },
+    {
+      "path": "pages/api/teams/[slug]/api-keys",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "17e886357547408105f1b309f94b08d0948e5a60",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/17e886357547408105f1b309f94b08d0948e5a60"
+    },
+    {
+      "path": "pages/api/teams/[slug]/api-keys/[apiKeyId].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0daa674cbf038e3dc680252574fb7f97b79774eb",
+      "size": 1606,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0daa674cbf038e3dc680252574fb7f97b79774eb"
+    },
+    {
+      "path": "pages/api/teams/[slug]/api-keys/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1fe62ba5f316a1a7e84615d469e641373a3ec9b",
+      "size": 1942,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e1fe62ba5f316a1a7e84615d469e641373a3ec9b"
+    },
+    {
+      "path": "pages/api/teams/[slug]/dsync",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1bd0022629ea4965522eb3c37f07e47d0f2110f3",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/1bd0022629ea4965522eb3c37f07e47d0f2110f3"
+    },
+    {
+      "path": "pages/api/teams/[slug]/dsync/[directoryId].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5ebb189b39cdf152f5e8e9ae5a25f2e920a6dda",
+      "size": 2711,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f5ebb189b39cdf152f5e8e9ae5a25f2e920a6dda"
+    },
+    {
+      "path": "pages/api/teams/[slug]/dsync/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e5cc7f077a635b73215de935262f8fadaa06976",
+      "size": 1920,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7e5cc7f077a635b73215de935262f8fadaa06976"
+    },
+    {
+      "path": "pages/api/teams/[slug]/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "705f893bb2359cb02f84ccb20ca746d5e5f0faf4",
+      "size": 3174,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/705f893bb2359cb02f84ccb20ca746d5e5f0faf4"
+    },
+    {
+      "path": "pages/api/teams/[slug]/invitations.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f55c633c218a88a7126ea8672859917f13e0eb7",
+      "size": 9091,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4f55c633c218a88a7126ea8672859917f13e0eb7"
+    },
+    {
+      "path": "pages/api/teams/[slug]/members.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc6e1680e903a269af52ed277a6b9f1dfc83a56f",
+      "size": 5371,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dc6e1680e903a269af52ed277a6b9f1dfc83a56f"
+    },
+    {
+      "path": "pages/api/teams/[slug]/payments",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "48219958180206361343b071d62e4ade6be535c1",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/48219958180206361343b071d62e4ade6be535c1"
+    },
+    {
+      "path": "pages/api/teams/[slug]/payments/create-checkout-session.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50ef30cca0038401f6dba4b27d71f730e1db166c",
+      "size": 1773,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/50ef30cca0038401f6dba4b27d71f730e1db166c"
+    },
+    {
+      "path": "pages/api/teams/[slug]/payments/create-portal-link.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bdcac6abf3be46673779256274818d6b99b1c0d",
+      "size": 1241,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5bdcac6abf3be46673779256274818d6b99b1c0d"
+    },
+    {
+      "path": "pages/api/teams/[slug]/payments/products.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9b17d4e259cb12bee38c372d41040e373ba82ac",
+      "size": 2168,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e9b17d4e259cb12bee38c372d41040e373ba82ac"
+    },
+    {
+      "path": "pages/api/teams/[slug]/permissions.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffc6da7b4c22447765c0397fa33d89797a4970f4",
+      "size": 943,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ffc6da7b4c22447765c0397fa33d89797a4970f4"
+    },
+    {
+      "path": "pages/api/teams/[slug]/sso.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "922134cdc12a6c2e2b33dae3f9a821846cb96e0d",
+      "size": 3748,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/922134cdc12a6c2e2b33dae3f9a821846cb96e0d"
+    },
+    {
+      "path": "pages/api/teams/[slug]/webhooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d001f98a59c6caf952d37026d58996aee0abf3d3",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/d001f98a59c6caf952d37026d58996aee0abf3d3"
+    },
+    {
+      "path": "pages/api/teams/[slug]/webhooks/[endpointId].ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e544d705632e8cd20c854991dbd6e428a170d80",
+      "size": 2944,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/6e544d705632e8cd20c854991dbd6e428a170d80"
+    },
+    {
+      "path": "pages/api/teams/[slug]/webhooks/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bd2efe0d85523964b09eeb14140b7f039d35316",
+      "size": 3734,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9bd2efe0d85523964b09eeb14140b7f039d35316"
+    },
+    {
+      "path": "pages/api/teams/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b7d5d55dd8c3a94ee9a805171beec1bac0b1bb0d",
+      "size": 1772,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b7d5d55dd8c3a94ee9a805171beec1bac0b1bb0d"
+    },
+    {
+      "path": "pages/api/users.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34e9169c57e876b6d015e5ea6c52b091313f48a6",
+      "size": 1725,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/34e9169c57e876b6d015e5ea6c52b091313f48a6"
+    },
+    {
+      "path": "pages/api/webhooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "63c474a238bbc08e02c50a8297b2a97b068e89a9",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/63c474a238bbc08e02c50a8297b2a97b068e89a9"
+    },
+    {
+      "path": "pages/api/webhooks/dsync.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24c7245a7bc5f92214b769f9c2b8a5996b4e8cb5",
+      "size": 1213,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/24c7245a7bc5f92214b769f9c2b8a5996b4e8cb5"
+    },
+    {
+      "path": "pages/api/webhooks/stripe.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99a05aaa4f01d8d50c9ca5f0833ad4536e7d7150",
+      "size": 3795,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/99a05aaa4f01d8d50c9ca5f0833ad4536e7d7150"
+    },
+    {
+      "path": "pages/api/well-known",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cf91c36c0044ccb275f4e1cdd070bf033e752458",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/cf91c36c0044ccb275f4e1cdd070bf033e752458"
+    },
+    {
+      "path": "pages/api/well-known/saml.cer.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38b084de208c5113d4efd13d86e30403f6e5e53b",
+      "size": 627,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/38b084de208c5113d4efd13d86e30403f6e5e53b"
+    },
+    {
+      "path": "pages/auth",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "856ef33f675b2e061b1f3c093dfc64682ce60100",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/856ef33f675b2e061b1f3c093dfc64682ce60100"
+    },
+    {
+      "path": "pages/auth/forgot-password.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d674cc5ee365bfb03d37c50caa7bb48a772bbefd",
+      "size": 3795,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d674cc5ee365bfb03d37c50caa7bb48a772bbefd"
+    },
+    {
+      "path": "pages/auth/idp-login.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55000ae3387fd2db1d2cb0c369e030839a23c1e5",
+      "size": 531,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/55000ae3387fd2db1d2cb0c369e030839a23c1e5"
+    },
+    {
+      "path": "pages/auth/join.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1035e244c10e71691289a2f74bcc3faf62385d8",
+      "size": 3135,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f1035e244c10e71691289a2f74bcc3faf62385d8"
+    },
+    {
+      "path": "pages/auth/login.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcbea42b9715698972787fe8ef417c007da5001e",
+      "size": 7935,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bcbea42b9715698972787fe8ef417c007da5001e"
+    },
+    {
+      "path": "pages/auth/magic-link.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14eb419df22888787cc7746c5b8f32d0a07ec312",
+      "size": 1086,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/14eb419df22888787cc7746c5b8f32d0a07ec312"
+    },
+    {
+      "path": "pages/auth/resend-email-token.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f833eebfd4d34e80d50d1c4c174196d2365c96fa",
+      "size": 3435,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f833eebfd4d34e80d50d1c4c174196d2365c96fa"
+    },
+    {
+      "path": "pages/auth/reset-password",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dcd0a31f86a9c12a20305eaa8bf853afbb3360ae",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/dcd0a31f86a9c12a20305eaa8bf853afbb3360ae"
+    },
+    {
+      "path": "pages/auth/reset-password/[token].tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a18e5a70a0c07e32a24addbf81e3bb2f67368d3",
+      "size": 907,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4a18e5a70a0c07e32a24addbf81e3bb2f67368d3"
+    },
+    {
+      "path": "pages/auth/sso",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5cf5ce4b015026e0412a43e75f3f501a114286a2",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/5cf5ce4b015026e0412a43e75f3f501a114286a2"
+    },
+    {
+      "path": "pages/auth/sso/idp-select.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3abc4ca1e5cf5a68c6659c1fd3f64a19d01a3014",
+      "size": 3332,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3abc4ca1e5cf5a68c6659c1fd3f64a19d01a3014"
+    },
+    {
+      "path": "pages/auth/sso/index.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c00c65d9e1f0ef21e2a8926ddd3f53f4f13f548a",
+      "size": 4521,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c00c65d9e1f0ef21e2a8926ddd3f53f4f13f548a"
+    },
+    {
+      "path": "pages/auth/unlock-account.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7db8519cf26f7c2ce49ca2b259607e70180fbc41",
+      "size": 3970,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7db8519cf26f7c2ce49ca2b259607e70180fbc41"
+    },
+    {
+      "path": "pages/auth/verify-email-token.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c59135444b25ee40e9352b7a43bbab39085a4603",
+      "size": 1416,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c59135444b25ee40e9352b7a43bbab39085a4603"
+    },
+    {
+      "path": "pages/auth/verify-email.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27748fbab8397e3a1ebc72a29e4fac2c09bfa408",
+      "size": 755,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/27748fbab8397e3a1ebc72a29e4fac2c09bfa408"
+    },
+    {
+      "path": "pages/dashboard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae3aaaf55fa26f337165cdafe6cdf4f7bf7217c9",
+      "size": 954,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ae3aaaf55fa26f337165cdafe6cdf4f7bf7217c9"
+    },
+    {
+      "path": "pages/index.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb87ba841b37776acd5b3dfb4c846f711ae75ef9",
+      "size": 3057,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bb87ba841b37776acd5b3dfb4c846f711ae75ef9"
+    },
+    {
+      "path": "pages/invitations",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6fa94377e0f235002a5ff4f5318fd2cfa0d18568",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/6fa94377e0f235002a5ff4f5318fd2cfa0d18568"
+    },
+    {
+      "path": "pages/invitations/[token].tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14a13a6e22bec8db1949aa1d12dad18821fc33f1",
+      "size": 3343,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/14a13a6e22bec8db1949aa1d12dad18821fc33f1"
+    },
+    {
+      "path": "pages/settings",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3ced319ba7b78574ed0769317c5bc24935a80eea",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/3ced319ba7b78574ed0769317c5bc24935a80eea"
+    },
+    {
+      "path": "pages/settings/account.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dad3178873488112571fb79b0ac128d775fda057",
+      "size": 1242,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dad3178873488112571fb79b0ac128d775fda057"
+    },
+    {
+      "path": "pages/settings/security.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bfa82a841a407fd992cc7fa8237d166d20db0922",
+      "size": 912,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bfa82a841a407fd992cc7fa8237d166d20db0922"
+    },
+    {
+      "path": "pages/teams",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "70ef0b93c8c23d4baeec3b1cf2ad27fc8cc83ebd",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/70ef0b93c8c23d4baeec3b1cf2ad27fc8cc83ebd"
+    },
+    {
+      "path": "pages/teams/[slug]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d3604c6742229b65b7a7f71dc6f56914397b6ac7",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/d3604c6742229b65b7a7f71dc6f56914397b6ac7"
+    },
+    {
+      "path": "pages/teams/[slug]/api-keys.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a568dc451e3424d48536797d667db6f8afa2097",
+      "size": 672,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4a568dc451e3424d48536797d667db6f8afa2097"
+    },
+    {
+      "path": "pages/teams/[slug]/audit-logs.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "559e665208082e69e8c8cd842064f745c409d2a8",
+      "size": 3139,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/559e665208082e69e8c8cd842064f745c409d2a8"
+    },
+    {
+      "path": "pages/teams/[slug]/billing.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6d2b0457a8cc2239de1f1f0a3cf1d0c76b44e06",
+      "size": 2185,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c6d2b0457a8cc2239de1f1f0a3cf1d0c76b44e06"
+    },
+    {
+      "path": "pages/teams/[slug]/directory-sync.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a55d7f636552603d2a976e3659867cb736eacb16",
+      "size": 2799,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/a55d7f636552603d2a976e3659867cb736eacb16"
+    },
+    {
+      "path": "pages/teams/[slug]/members.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ceda67d3e49d2fc38bb1fd7c0a0a365dc49630c3",
+      "size": 1239,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ceda67d3e49d2fc38bb1fd7c0a0a365dc49630c3"
+    },
+    {
+      "path": "pages/teams/[slug]/products.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "254e446b1ad8da313cbebde64193d90cd548fabc",
+      "size": 654,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/254e446b1ad8da313cbebde64193d90cd548fabc"
+    },
+    {
+      "path": "pages/teams/[slug]/settings.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83080ec66650c53b8bfe5a0649a32400e8c863b0",
+      "size": 1457,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/83080ec66650c53b8bfe5a0649a32400e8c863b0"
+    },
+    {
+      "path": "pages/teams/[slug]/sso.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5789896e5a5cab221968e16369364b9cb944daa0",
+      "size": 2821,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5789896e5a5cab221968e16369364b9cb944daa0"
+    },
+    {
+      "path": "pages/teams/[slug]/webhooks.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f763b2ef93531af5fc0561c8561b0293e54b8f68",
+      "size": 1209,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f763b2ef93531af5fc0561c8561b0293e54b8f68"
+    },
+    {
+      "path": "pages/teams/index.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50e16f0d77da6c8dc72460e69a31c2a094947058",
+      "size": 507,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/50e16f0d77da6c8dc72460e69a31c2a094947058"
+    },
+    {
+      "path": "pages/teams/switch.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "66b3e5f5e38560091fc319cea978ef3c095593d2",
+      "size": 1974,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/66b3e5f5e38560091fc319cea978ef3c095593d2"
+    },
+    {
+      "path": "pages/well-known",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "aa68477855a8b69846b7ddee908b28e56568b884",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/aa68477855a8b69846b7ddee908b28e56568b884"
+    },
+    {
+      "path": "pages/well-known/saml-configuration.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9a040c564e3e38d0014a9edf5eb1d9dc0d7dbb4",
+      "size": 5038,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b9a040c564e3e38d0014a9edf5eb1d9dc0d7dbb4"
+    },
+    {
+      "path": "playwright.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce2807ea5217880d14ad7520c05ab11b68fac28e",
+      "size": 967,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ce2807ea5217880d14ad7520c05ab11b68fac28e"
+    },
+    {
+      "path": "postcss.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12a703d900da8159c30e75acbd2c4d87ae177f62",
+      "size": 83,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/12a703d900da8159c30e75acbd2c4d87ae177f62"
+    },
+    {
+      "path": "prisma",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c6ba5c61a653750968a2f7f5a55966092f33bad3",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/c6ba5c61a653750968a2f7f5a55966092f33bad3"
+    },
+    {
+      "path": "prisma/migrations",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b6d741b87966580ba9e3abdc1b0e335a36b05f70",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/b6d741b87966580ba9e3abdc1b0e335a36b05f70"
+    },
+    {
+      "path": "prisma/migrations/20230625203909_init",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "88d9679c56ddfdee1788d63aaf55abc14fbc2a0c",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/88d9679c56ddfdee1788d63aaf55abc14fbc2a0c"
+    },
+    {
+      "path": "prisma/migrations/20230625203909_init/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1066211243017c0e4de056d526a23e65a5f49cc9",
+      "size": 4755,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1066211243017c0e4de056d526a23e65a5f49cc9"
+    },
+    {
+      "path": "prisma/migrations/20230703084002_add_api_keys",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f42a4b508605719779469f3e1770cde551ebaec1",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/f42a4b508605719779469f3e1770cde551ebaec1"
+    },
+    {
+      "path": "prisma/migrations/20230703084002_add_api_keys/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48aca1674cca822862db4e17df144fc1c7cb296f",
+      "size": 635,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/48aca1674cca822862db4e17df144fc1c7cb296f"
+    },
+    {
+      "path": "prisma/migrations/20230703084117_add_index_user",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "144b9586983ab11ce5b00b51e6e0091788ce5f21",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/144b9586983ab11ce5b00b51e6e0091788ce5f21"
+    },
+    {
+      "path": "prisma/migrations/20230703084117_add_index_user/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95724b3139f559463bc1b3f9b1885c2533d8f91f",
+      "size": 152,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/95724b3139f559463bc1b3f9b1885c2533d8f91f"
+    },
+    {
+      "path": "prisma/migrations/20230720113226_make_password_optional",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6733b3bf02c116a9a4b2c8e5093cfa3263c2b401",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/6733b3bf02c116a9a4b2c8e5093cfa3263c2b401"
+    },
+    {
+      "path": "prisma/migrations/20230720113226_make_password_optional/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b600a7808370f11d785a8dbbd81410a8d19d185",
+      "size": 72,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0b600a7808370f11d785a8dbbd81410a8d19d185"
+    },
+    {
+      "path": "prisma/migrations/20231109082527_add_account_lockout",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d9b5d2401a7ae41e8c95455149bdf3de204e50f0",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/d9b5d2401a7ae41e8c95455149bdf3de204e50f0"
+    },
+    {
+      "path": "prisma/migrations/20231109082527_add_account_lockout/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "80259b52dd70c6001d98ad556b868b3331562294",
+      "size": 141,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/80259b52dd70c6001d98ad556b868b3331562294"
+    },
+    {
+      "path": "prisma/migrations/20240109041326_columns_for_invitation_link",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fcc70a3352b51e7298a39014041a8fce2bfac577",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/fcc70a3352b51e7298a39014041a8fce2bfac577"
+    },
+    {
+      "path": "prisma/migrations/20240109041326_columns_for_invitation_link/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d45c7b1e4ab524e971ca4f42596bd9343e332c8",
+      "size": 200,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/0d45c7b1e4ab524e971ca4f42596bd9343e332c8"
+    },
+    {
+      "path": "prisma/migrations/20240212105842_stripe",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6023010ce0f4b001cb6d08c1095cbc008a20c42f",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/6023010ce0f4b001cb6d08c1095cbc008a20c42f"
+    },
+    {
+      "path": "prisma/migrations/20240212105842_stripe/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e662b102e7cff58b0f286c5d81c4fd5927fd15f",
+      "size": 1552,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5e662b102e7cff58b0f286c5d81c4fd5927fd15f"
+    },
+    {
+      "path": "prisma/migrations/20240213160517_indices",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0b639c63612ba314c731322bddd4d1004cc1428b",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/0b639c63612ba314c731322bddd4d1004cc1428b"
+    },
+    {
+      "path": "prisma/migrations/20240213160517_indices/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cee195e1c9baaa63ca8cec40eefdcc74ee1286bd",
+      "size": 297,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/cee195e1c9baaa63ca8cec40eefdcc74ee1286bd"
+    },
+    {
+      "path": "prisma/migrations/20240226091046_add_jackson_schema",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5a9d7df456ab2bc4147ae64460a2d645593c4abe",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/5a9d7df456ab2bc4147ae64460a2d645593c4abe"
+    },
+    {
+      "path": "prisma/migrations/20240226091046_add_jackson_schema/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "30c8e27a00b10cbee39dd77b996f59a1d3726c72",
+      "size": 1612,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/30c8e27a00b10cbee39dd77b996f59a1d3726c72"
+    },
+    {
+      "path": "prisma/migrations/20240316224800_add_index_billing_id",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e0265d68ba7c21d253065bb478edbcbd0ab4a78b",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/e0265d68ba7c21d253065bb478edbcbd0ab4a78b"
+    },
+    {
+      "path": "prisma/migrations/20240316224800_add_index_billing_id/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de1fff5228a8d2995d216bc60f0648064a82deeb",
+      "size": 73,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/de1fff5228a8d2995d216bc60f0648064a82deeb"
+    },
+    {
+      "path": "prisma/migrations/20240531124127_expand_jackson_namespace_column",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a7f7aa3e96e388472b84b046f61d2a2439011d9b",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/a7f7aa3e96e388472b84b046f61d2a2439011d9b"
+    },
+    {
+      "path": "prisma/migrations/20240531124127_expand_jackson_namespace_column/migration.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e6beae3b320a58d70aa4ca9521a2e665438c95f",
+      "size": 95,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/1e6beae3b320a58d70aa4ca9521a2e665438c95f"
+    },
+    {
+      "path": "prisma/migrations/migration_lock.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbffa92c2bb7c748d6fc78f9f9dcac604dabb87d",
+      "size": 126,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/fbffa92c2bb7c748d6fc78f9f9dcac604dabb87d"
+    },
+    {
+      "path": "prisma/schema.prisma",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95a4f7046399e313556c8f3a6f16ca2d4b6de29e",
+      "size": 5596,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/95a4f7046399e313556c8f3a6f16ca2d4b6de29e"
+    },
+    {
+      "path": "prisma/seed.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0d3559515ec9fb2bc68917de7a2a03bf04f1ad6",
+      "size": 4246,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b0d3559515ec9fb2bc68917de7a2a03bf04f1ad6"
+    },
+    {
+      "path": "public",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2575d309e51101a520b07b87b550be59db9268f9",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/2575d309e51101a520b07b87b550be59db9268f9"
+    },
+    {
+      "path": "public/home-hero.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "386c3e366fab8b5ae3ab15d03f666035a6fd8d44",
+      "size": 6977,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/386c3e366fab8b5ae3ab15d03f666035a6fd8d44"
+    },
+    {
+      "path": "public/logo.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8d092e76f129fd6770b937788b9f85b3af63746",
+      "size": 10362,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/e8d092e76f129fd6770b937788b9f85b3af63746"
+    },
+    {
+      "path": "public/logowhite.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a31599a8a0cf7bd943eb901a25ff8f6a727bded",
+      "size": 11320,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9a31599a8a0cf7bd943eb901a25ff8f6a727bded"
+    },
+    {
+      "path": "public/saas-starter-kit-poster.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca25d1826765b23293ae660febaf5674e4781c03",
+      "size": 457869,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/ca25d1826765b23293ae660febaf5674e4781c03"
+    },
+    {
+      "path": "public/user-default-profile.jpeg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18d625fc49eac1b6424f53aaebe0ab3a616ab5a8",
+      "size": 21173,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/18d625fc49eac1b6424f53aaebe0ab3a616ab5a8"
+    },
+    {
+      "path": "public/vercel.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbf0e25a651c28931b2fe8afa2947e124eebc74f",
+      "size": 1101,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/fbf0e25a651c28931b2fe8afa2947e124eebc74f"
+    },
+    {
+      "path": "sentry.client.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9067d5887b7c6de72be0bdf5154f6162f4352612",
+      "size": 219,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/9067d5887b7c6de72be0bdf5154f6162f4352612"
+    },
+    {
+      "path": "styles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5980937db82a722010d6254a7e2ab961bc6a41bd",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/5980937db82a722010d6254a7e2ab961bc6a41bd"
+    },
+    {
+      "path": "styles/globals.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37bb56fbd18b55986f2b5de71e40f6a18d4786b9",
+      "size": 1160,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/37bb56fbd18b55986f2b5de71e40f6a18d4786b9"
+    },
+    {
+      "path": "styles/sdk-override.module.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd9f3ac87b501f1e50f59ef3d6022fd735e00048",
+      "size": 211,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bd9f3ac87b501f1e50f59ef3d6022fd735e00048"
+    },
+    {
+      "path": "sync-stripe.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cee1022b416d63e60c2acb140d22f922862e5766",
+      "size": 3177,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/cee1022b416d63e60c2acb140d22f922862e5766"
+    },
+    {
+      "path": "tailwind.config.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f61cae19e9a88b71d9d0dc3c4f0223a61fab2044",
+      "size": 364,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/f61cae19e9a88b71d9d0dc3c4f0223a61fab2044"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "27f8836a362610131596e23d01d358d4924bcc01",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/27f8836a362610131596e23d01d358d4924bcc01"
+    },
+    {
+      "path": "tests/e2e",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4e7c22cc7acb07e87bbd09a360533809c2337b1d",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/4e7c22cc7acb07e87bbd09a360533809c2337b1d"
+    },
+    {
+      "path": "tests/e2e/auth",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2d10ffbedb4bffdb41c19cf800979562318e7a63",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/2d10ffbedb4bffdb41c19cf800979562318e7a63"
+    },
+    {
+      "path": "tests/e2e/auth/idp-initiated.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c92e03ce73efd131a0141b28429d388a96c5a93a",
+      "size": 1286,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c92e03ce73efd131a0141b28429d388a96c5a93a"
+    },
+    {
+      "path": "tests/e2e/auth/sso.login.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5588f171fa4670c0d915150f84ab83444c742399",
+      "size": 3587,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/5588f171fa4670c0d915150f84ab83444c742399"
+    },
+    {
+      "path": "tests/e2e/session",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6625c8307c4d6d7af6cf051114af6b013fd1887b",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/6625c8307c4d6d7af6cf051114af6b013fd1887b"
+    },
+    {
+      "path": "tests/e2e/session/session.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b944c29f0a46ae2c882a5fbcdbd625e09d06303d",
+      "size": 2904,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b944c29f0a46ae2c882a5fbcdbd625e09d06303d"
+    },
+    {
+      "path": "tests/e2e/settings",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "05f5acc5b99ddf0af59f5df87ff16101a07501db",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/05f5acc5b99ddf0af59f5df87ff16101a07501db"
+    },
+    {
+      "path": "tests/e2e/settings/api-key.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90b3de0ebf3c007fb8dbd813061f5ac621de917a",
+      "size": 1831,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/90b3de0ebf3c007fb8dbd813061f5ac621de917a"
+    },
+    {
+      "path": "tests/e2e/settings/directory-sync.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "89494e365a9a39e364189801f19330c00c836896",
+      "size": 2131,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/89494e365a9a39e364189801f19330c00c836896"
+    },
+    {
+      "path": "tests/e2e/settings/members.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7f250c02c41d16a4f34a96cebbe86c797169cc70",
+      "size": 6830,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7f250c02c41d16a4f34a96cebbe86c797169cc70"
+    },
+    {
+      "path": "tests/e2e/settings/team-settings.spec.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d75142aaee757ed6102ec69240f474901436695",
+      "size": 5131,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/3d75142aaee757ed6102ec69240f474901436695"
+    },
+    {
+      "path": "tests/e2e/support",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "aac8fdb14becac4ad46af77a23335f18a53582d9",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/aac8fdb14becac4ad46af77a23335f18a53582d9"
+    },
+    {
+      "path": "tests/e2e/support/account.setup.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2fd5a93e8ea358639a32bce86752236361d7102a",
+      "size": 806,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/2fd5a93e8ea358639a32bce86752236361d7102a"
+    },
+    {
+      "path": "tests/e2e/support/account.teardown.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4351011d63cc2f07b4b459801d761b42882061f8",
+      "size": 314,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4351011d63cc2f07b4b459801d761b42882061f8"
+    },
+    {
+      "path": "tests/e2e/support/fixtures",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "89150dd606dcb7e9f43b5d665f7c7d6610bee639",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/89150dd606dcb7e9f43b5d665f7c7d6610bee639"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/api-keys-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcb22fa0204b99150012e12db01fda8caeca83d5",
+      "size": 2985,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dcb22fa0204b99150012e12db01fda8caeca83d5"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/consts.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7326206d7593dec5302343b91db69b37c78d75c7",
+      "size": 118,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7326206d7593dec5302343b91db69b37c78d75c7"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/directory-sync-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7135b71e372a13d90a1cc78bcc36271c407bdc24",
+      "size": 6377,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/7135b71e372a13d90a1cc78bcc36271c407bdc24"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34dfa3fa6ebf38dccfbee1cfd3cfc5859346346b",
+      "size": 256,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/34dfa3fa6ebf38dccfbee1cfd3cfc5859346346b"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/join-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d730fe70098682bbaaec3a59dafb58e1092c0040",
+      "size": 1619,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/d730fe70098682bbaaec3a59dafb58e1092c0040"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/login-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97efa8ba7accedfbc2b4d824f72bffee53718446",
+      "size": 6899,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/97efa8ba7accedfbc2b4d824f72bffee53718446"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/member-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcab5bc79153a8deb29cb243eee87d281818a927",
+      "size": 4240,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/dcab5bc79153a8deb29cb243eee87d281818a927"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/security-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b30c9780df6e2f37eccbec6bb7a7f5bca1796f28",
+      "size": 1285,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b30c9780df6e2f37eccbec6bb7a7f5bca1796f28"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/settings-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "726e79b108fe1cf91ed1f913d3445e724250f559",
+      "size": 5606,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/726e79b108fe1cf91ed1f913d3445e724250f559"
+    },
+    {
+      "path": "tests/e2e/support/fixtures/sso-page.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "593c856a8b53bc2f01cdf288873fb69e97e1805e",
+      "size": 10586,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/593c856a8b53bc2f01cdf288873fb69e97e1805e"
+    },
+    {
+      "path": "tests/e2e/support/globalSetup.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1b6f2348e439c6c238a3856abcdb19f91193fe7",
+      "size": 188,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/c1b6f2348e439c6c238a3856abcdb19f91193fe7"
+    },
+    {
+      "path": "tests/e2e/support/helper.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4bc060405aab04764924a7946549fbf23af9909f",
+      "size": 511,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4bc060405aab04764924a7946549fbf23af9909f"
+    },
+    {
+      "path": "tests/e2e/support/utils",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "de3c2ac98d4288a4e6c38c716b76de4377107140",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/de3c2ac98d4288a4e6c38c716b76de4377107140"
+    },
+    {
+      "path": "tests/e2e/support/utils/throttling-network-presets.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6d9abc16b43d3746b0200a54bd633982bdd20aa",
+      "size": 1845,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/b6d9abc16b43d3746b0200a54bd633982bdd20aa"
+    },
+    {
+      "path": "tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e70345e1d70f971453a11a6cf73c3f262d789cc",
+      "size": 700,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/4e70345e1d70f971453a11a6cf73c3f262d789cc"
+    },
+    {
+      "path": "types",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9f191e71c6d357c68d2e9e87ac717a324f737f4d",
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/trees/9f191e71c6d357c68d2e9e87ac717a324f737f4d"
+    },
+    {
+      "path": "types/base.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85ffb46549dfe9daf9a74b6ebc60c7f7f9f086d7",
+      "size": 1373,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/85ffb46549dfe9daf9a74b6ebc60c7f7f9f086d7"
+    },
+    {
+      "path": "types/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "601a782f27dd5cbec8c77488bf62ad111b2aee20",
+      "size": 48,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/601a782f27dd5cbec8c77488bf62ad111b2aee20"
+    },
+    {
+      "path": "types/next-auth.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf98007ae263575323022ce508d34218b47ab848",
+      "size": 494,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/bf98007ae263575323022ce508d34218b47ab848"
+    },
+    {
+      "path": "types/next.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "53289d4bd84fd70cf79a3884f13c0ca88b8a538b",
+      "size": 413,
+      "url": "https://api.github.com/repos/boxyhq/saas-starter-kit/git/blobs/53289d4bd84fd70cf79a3884f13c0ca88b8a538b"
+    }
+  ],
+  "truncated": false
+}

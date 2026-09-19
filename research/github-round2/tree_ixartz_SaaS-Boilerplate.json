@@ -1,0 +1,1583 @@
+{
+  "sha": "e3952a7ed5b0ef172ac4363c4644b8c334d1094b",
+  "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/e3952a7ed5b0ef172ac4363c4644b8c334d1094b",
+  "tree": [
+    {
+      "path": ".env",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f85ed09b03a9e6ced06a935a7a6c27eeb8eecd0e",
+      "size": 1345,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f85ed09b03a9e6ced06a935a7a6c27eeb8eecd0e"
+    },
+    {
+      "path": ".env.production",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0aea60e5c63c17b583bc1ddf91ecdf1dc3ed1d70",
+      "size": 1647,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0aea60e5c63c17b583bc1ddf91ecdf1dc3ed1d70"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fcb55faa6496721a2c81a2ba64f03fb98651d87a",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/fcb55faa6496721a2c81a2ba64f03fb98651d87a"
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "370bad70b26aa187268fc9b00eb847bb4e440a03",
+      "size": 84,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/370bad70b26aa187268fc9b00eb847bb4e440a03"
+    },
+    {
+      "path": ".github/actions",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4fff8dc68161a88a4c532a155141c74fb5d13120",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/4fff8dc68161a88a4c532a155141c74fb5d13120"
+    },
+    {
+      "path": ".github/actions/setup-project",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c77fa4551cc3af2ed31246d076c52af9b6b6ac2a",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/c77fa4551cc3af2ed31246d076c52af9b6b6ac2a"
+    },
+    {
+      "path": ".github/actions/setup-project/action.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8d6a0d39a403052bd38317be1de1a23b9cd41b8",
+      "size": 1159,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e8d6a0d39a403052bd38317be1de1a23b9cd41b8"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10b6cd22c3529e1a08540107455b83095934d461",
+      "size": 1322,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/10b6cd22c3529e1a08540107455b83095934d461"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e05e65dac42f21186a13565fcab0e34d269ae6ce",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/e05e65dac42f21186a13565fcab0e34d269ae6ce"
+    },
+    {
+      "path": ".github/workflows/CI.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ec913e552a7c4aeb8faa283060a51f9d52115e09",
+      "size": 5935,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/ec913e552a7c4aeb8faa283060a51f9d52115e09"
+    },
+    {
+      "path": ".github/workflows/checkly.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "027d7d935f3ccecedc538b85c545689c5922202e",
+      "size": 2023,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/027d7d935f3ccecedc538b85c545689c5922202e"
+    },
+    {
+      "path": ".github/workflows/crowdin.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8607521d932f205cd2541775875acd9b4e119ab9",
+      "size": 1136,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/8607521d932f205cd2541775875acd9b4e119ab9"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "975fa172b143c9004639b2745d3903091f67bddb",
+      "size": 998,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/975fa172b143c9004639b2745d3903091f67bddb"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "604908395654712956879c392d82224a2ce0ce65",
+      "size": 745,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/604908395654712956879c392d82224a2ce0ce65"
+    },
+    {
+      "path": ".storybook",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "787cf2161f3c88784512683034e355d0757d7afc",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/787cf2161f3c88784512683034e355d0757d7afc"
+    },
+    {
+      "path": ".storybook/main.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c54eb379e7f520937afea5f435ec2a9ec9271786",
+      "size": 488,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/c54eb379e7f520937afea5f435ec2a9ec9271786"
+    },
+    {
+      "path": ".storybook/preview.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a42b8d38d945db7ddc7eb42cca9b728f980e5185",
+      "size": 509,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/a42b8d38d945db7ddc7eb42cca9b728f980e5185"
+    },
+    {
+      "path": ".storybook/vitest.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71ce9680d6d59ab9bfcb6087ed7f8fcc19beb00e",
+      "size": 805,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/71ce9680d6d59ab9bfcb6087ed7f8fcc19beb00e"
+    },
+    {
+      "path": ".storybook/vitest.setup.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e8c7ed3a5cc3db6680799450e747180e7c218184",
+      "size": 455,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e8c7ed3a5cc3db6680799450e747180e7c218184"
+    },
+    {
+      "path": ".vscode",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a83dba77f42fb25687ce3fdc09d81727b5ff2d05",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/a83dba77f42fb25687ce3fdc09d81727b5ff2d05"
+    },
+    {
+      "path": ".vscode/extensions.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b2c8a9a7a1c165484d34a197c098ffb860b9abe",
+      "size": 259,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7b2c8a9a7a1c165484d34a197c098ffb860b9abe"
+    },
+    {
+      "path": ".vscode/launch.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ae438ac6a1131e13d104b4bd3e7ade8837286f9",
+      "size": 793,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/3ae438ac6a1131e13d104b4bd3e7ade8837286f9"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57847e32a2b8ce800740e046cbbeb9eaf8d1bd36",
+      "size": 1920,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/57847e32a2b8ce800740e046cbbeb9eaf8d1bd36"
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1135197a47a3ab32bbce262efd47509b0c985952",
+      "size": 471,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1135197a47a3ab32bbce262efd47509b0c985952"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "107075589ecc6b349f48aad649fbc4552ac14b44",
+      "size": 1064,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/107075589ecc6b349f48aad649fbc4552ac14b44"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b7b0c112727996d6adda97b0ae5c7a1be9417fc4",
+      "size": 33316,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/b7b0c112727996d6adda97b0ae5c7a1be9417fc4"
+    },
+    {
+      "path": "checkly.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8b7c2fd9067e6fa303a18b7957189fed6f98c700",
+      "size": 1152,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/8b7c2fd9067e6fa303a18b7957189fed6f98c700"
+    },
+    {
+      "path": "codecov.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa348a8f24a79111171449f5621d8d7b9bd4d069",
+      "size": 35,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/fa348a8f24a79111171449f5621d8d7b9bd4d069"
+    },
+    {
+      "path": "commitlint.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02494577975e5d1207634cedd3190b8d617ab877",
+      "size": 294,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/02494577975e5d1207634cedd3190b8d617ab877"
+    },
+    {
+      "path": "components.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "315995bb208a5039a55e82b123f4f238d7b84925",
+      "size": 446,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/315995bb208a5039a55e82b123f4f238d7b84925"
+    },
+    {
+      "path": "crowdin.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7a0bf30ebf19034437c186166ef62847463f819",
+      "size": 713,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e7a0bf30ebf19034437c186166ef62847463f819"
+    },
+    {
+      "path": "drizzle.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b84114f2ca5c7d18e1ecb3766fc1ebfedbf13034",
+      "size": 261,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/b84114f2ca5c7d18e1ecb3766fc1ebfedbf13034"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b139da64ffbaf3654247eb71dcf89c415fa17973",
+      "size": 2303,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/b139da64ffbaf3654247eb71dcf89c415fa17973"
+    },
+    {
+      "path": "knip.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "959ce793122e78fc221689fe99166314cde3d423",
+      "size": 987,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/959ce793122e78fc221689fe99166314cde3d423"
+    },
+    {
+      "path": "lefthook.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b29b5229566bbbe7bedf65590c8d46cc204ce63",
+      "size": 442,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1b29b5229566bbbe7bedf65590c8d46cc204ce63"
+    },
+    {
+      "path": "migrations",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "138979de09f923a195b6003f157b57b4b3a1a844",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/138979de09f923a195b6003f157b57b4b3a1a844"
+    },
+    {
+      "path": "migrations/0000_init-db.sql",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1788a4f6ad69ca0b3ca2c4ed09deed843808a2e",
+      "size": 232,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e1788a4f6ad69ca0b3ca2c4ed09deed843808a2e"
+    },
+    {
+      "path": "migrations/meta",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9e74d8291040dd0e7305be79877701234cf83e67",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/9e74d8291040dd0e7305be79877701234cf83e67"
+    },
+    {
+      "path": "migrations/meta/0000_snapshot.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "435ab58c36061d408f3a3854ea5df8618cf81433",
+      "size": 1560,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/435ab58c36061d408f3a3854ea5df8618cf81433"
+    },
+    {
+      "path": "migrations/meta/_journal.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e40d58643f64fa55106e7fd9589a157e08cb5e6",
+      "size": 201,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/9e40d58643f64fa55106e7fd9589a157e08cb5e6"
+    },
+    {
+      "path": "next.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc403230170a7b8b34d6552b337f9dee01b9d8aa",
+      "size": 2297,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/dc403230170a7b8b34d6552b337f9dee01b9d8aa"
+    },
+    {
+      "path": "package-lock.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "544346e4a0c4f0de3e5f94b2458945abb6f5a6d5",
+      "size": 1169713,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/544346e4a0c4f0de3e5f94b2458945abb6f5a6d5"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c2171c67cfc715cc4669c2ac379b397e3951c38",
+      "size": 4161,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/5c2171c67cfc715cc4669c2ac379b397e3951c38"
+    },
+    {
+      "path": "playwright.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94fe1ac0b707ef35615c80f5b4b8245935f4059a",
+      "size": 3617,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/94fe1ac0b707ef35615c80f5b4b8245935f4059a"
+    },
+    {
+      "path": "public",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "71a84779aca567943a0f987367d366a95e155cfd",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/71a84779aca567943a0f987367d366a95e155cfd"
+    },
+    {
+      "path": "public/apple-touch-icon.png",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "679f6d3498352b84220ccafbef4e0a40afa72351",
+      "size": 8459,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/679f6d3498352b84220ccafbef4e0a40afa72351"
+    },
+    {
+      "path": "public/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cc6b11a537baab7251cf0d5ba51871109c8e02e9",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/cc6b11a537baab7251cf0d5ba51871109c8e02e9"
+    },
+    {
+      "path": "public/assets/images",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cd415b1e4089b4b7283a8d2775a145eb20878c85",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/cd415b1e4089b4b7283a8d2775a145eb20878c85"
+    },
+    {
+      "path": "public/assets/images/arcjet-dark.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0edb16309aeb98a31f4ddf74031d7c2bbfb2b89e",
+      "size": 2560,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0edb16309aeb98a31f4ddf74031d7c2bbfb2b89e"
+    },
+    {
+      "path": "public/assets/images/arcjet-light.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17803974da6cc56fe7163fa83ab4a54d86915954",
+      "size": 2573,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/17803974da6cc56fe7163fa83ab4a54d86915954"
+    },
+    {
+      "path": "public/assets/images/clerk-logo-dark.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "979c8cddcd340458474602af07da8ae53df652c2",
+      "size": 4107,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/979c8cddcd340458474602af07da8ae53df652c2"
+    },
+    {
+      "path": "public/assets/images/clerk-logo-white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1318bb91591c608d6944c124439b9a77f073035c",
+      "size": 3690,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1318bb91591c608d6944c124439b9a77f073035c"
+    },
+    {
+      "path": "public/assets/images/codecov-dark.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24f78ef8a613f60cfe820e6b58ff7c324c29a170",
+      "size": 9024,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/24f78ef8a613f60cfe820e6b58ff7c324c29a170"
+    },
+    {
+      "path": "public/assets/images/codecov-white.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00ba89e7267c06684587583c6d5b5a96afc00739",
+      "size": 9292,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/00ba89e7267c06684587583c6d5b5a96afc00739"
+    },
+    {
+      "path": "public/assets/images/coderabbit-logo-dark.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e036f4b8828a867b02c58f81b2ce479e9f0476f6",
+      "size": 9606,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e036f4b8828a867b02c58f81b2ce479e9f0476f6"
+    },
+    {
+      "path": "public/assets/images/coderabbit-logo-light.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f7be2312545785eda31a0654f9225d38e2618a90",
+      "size": 9621,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f7be2312545785eda31a0654f9225d38e2618a90"
+    },
+    {
+      "path": "public/assets/images/crowdin-dark.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "88238d4b91c98f08e1ae857924be970cc4ec423a",
+      "size": 10171,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/88238d4b91c98f08e1ae857924be970cc4ec423a"
+    },
+    {
+      "path": "public/assets/images/crowdin-white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab8484b1d83cfb8dcd004ef5883ecd04138c9d0c",
+      "size": 8201,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/ab8484b1d83cfb8dcd004ef5883ecd04138c9d0c"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-landing-page-dark-mode.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "08842b06b5089f3c9404a3b7dc36ef413c22a968",
+      "size": 383298,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/08842b06b5089f3c9404a3b7dc36ef413c22a968"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-landing-page.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1de2d3a5f622fe2f415770202a714053937eb47b",
+      "size": 379399,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1de2d3a5f622fe2f415770202a714053937eb47b"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-multi-tenancy.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "649419820756c339a3e31001c4041152806c4259",
+      "size": 121238,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/649419820756c339a3e31001c4041152806c4259"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-sign-in.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e266ce7ae0733dd9b52d25a7680078375014b3c",
+      "size": 74341,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1e266ce7ae0733dd9b52d25a7680078375014b3c"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-sign-up.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "93531d39ef1aded25a1f0fdfe28c0ba23acd5fe2",
+      "size": 76081,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/93531d39ef1aded25a1f0fdfe28c0ba23acd5fe2"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-user-dashboard-dark-mode.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90757edfc3b081b566642015cf7d45dc592fdea4",
+      "size": 102307,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/90757edfc3b081b566642015cf7d45dc592fdea4"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-user-dashboard-sidebar-dark-mode.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3aaba9e09fe052c04dd121a5254435b1140223ce",
+      "size": 85847,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/3aaba9e09fe052c04dd121a5254435b1140223ce"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-user-dashboard-sidebar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9830d1eeb66528bd0718fd210151400db639c7e8",
+      "size": 93409,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/9830d1eeb66528bd0718fd210151400db639c7e8"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-user-dashboard.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f26b6bd87c3285245e9ebb32faf74075c796995",
+      "size": 104817,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/4f26b6bd87c3285245e9ebb32faf74075c796995"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas-user-profile.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fcd276afea78b8058223d55af7b90df546589fb8",
+      "size": 108931,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/fcd276afea78b8058223d55af7b90df546589fb8"
+    },
+    {
+      "path": "public/assets/images/nextjs-boilerplate-saas.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59a25a9634d2966b0c9b3017d3c377e000e2a1d3",
+      "size": 14674,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/59a25a9634d2966b0c9b3017d3c377e000e2a1d3"
+    },
+    {
+      "path": "public/assets/images/nextjs-starter-banner.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9705e84a9c50fd2299045cd6eba8e418d81ba68",
+      "size": 269740,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f9705e84a9c50fd2299045cd6eba8e418d81ba68"
+    },
+    {
+      "path": "public/assets/images/sentry-dark.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b586a8685acc096fe52ffe5cd760a2c6ff61388",
+      "size": 11752,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/4b586a8685acc096fe52ffe5cd760a2c6ff61388"
+    },
+    {
+      "path": "public/assets/images/sentry-white.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c431ae4dd8d8d1e6a582dd05c7835541afd876e",
+      "size": 9341,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/3c431ae4dd8d8d1e6a582dd05c7835541afd876e"
+    },
+    {
+      "path": "public/assets/images/surveyjs.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d54af145a1add7e37bc350b465af0d3cbe4043ed",
+      "size": 13659,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/d54af145a1add7e37bc350b465af0d3cbe4043ed"
+    },
+    {
+      "path": "public/favicon-16x16.png",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "1dc780e9526d07f526be3d7e60ce0d65dcc5030c",
+      "size": 445,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1dc780e9526d07f526be3d7e60ce0d65dcc5030c"
+    },
+    {
+      "path": "public/favicon-32x32.png",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "e6f32886f6af212e79015d686a83c38bfb6bf725",
+      "size": 1001,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e6f32886f6af212e79015d686a83c38bfb6bf725"
+    },
+    {
+      "path": "public/favicon.ico",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "493db5697c0f0a52b9f5e0d85725a9a544e1c2e9",
+      "size": 15406,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/493db5697c0f0a52b9f5e0d85725a9a544e1c2e9"
+    },
+    {
+      "path": "skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2f969baa220c9b2f1c4eb5cd176f3cdb2014d811",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/2f969baa220c9b2f1c4eb5cd176f3cdb2014d811"
+    },
+    {
+      "path": "skills/saas-builder",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3aaf096b5c8c67a908193651ee5283b1c2e369a8",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/3aaf096b5c8c67a908193651ee5283b1c2e369a8"
+    },
+    {
+      "path": "skills/saas-builder/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7fbb88a5541b1a5c4b99cee2bbba547d4ec41752",
+      "size": 5777,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7fbb88a5541b1a5c4b99cee2bbba547d4ec41752"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b0d4f62c21eea51af617750db7290ddbba598584",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/b0d4f62c21eea51af617750db7290ddbba598584"
+    },
+    {
+      "path": "src/app",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c11c3931e4ab7f05610ace256dbc58e457d7cc99",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/c11c3931e4ab7f05610ace256dbc58e457d7cc99"
+    },
+    {
+      "path": "src/app/[locale]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "73a0b35390fe86f0f092dca51159ad9a6d3b2dce",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/73a0b35390fe86f0f092dca51159ad9a6d3b2dce"
+    },
+    {
+      "path": "src/app/[locale]/(auth)",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bb4fc330267efa9f8b6ec4e9149ea19b21af6397",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/bb4fc330267efa9f8b6ec4e9149ea19b21af6397"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8518437b1aaa571cb0a1ca3695a3eb1289e5e87f",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/8518437b1aaa571cb0a1ca3695a3eb1289e5e87f"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ba63c4041a129f3a7ca62817b8b149f5e3b7e99",
+      "size": 511,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7ba63c4041a129f3a7ca62817b8b149f5e3b7e99"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/sign-in",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c730020701c76cadb1970cbffbc339a92690e2ac",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/c730020701c76cadb1970cbffbc339a92690e2ac"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/sign-in/[[...sign-in]]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6cf70e86083838341c84bf9cebaf32fde8e4a7b4",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/6cf70e86083838341c84bf9cebaf32fde8e4a7b4"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/sign-in/[[...sign-in]]/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f0ab232066da2def137972633df15c149066adbd",
+      "size": 766,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f0ab232066da2def137972633df15c149066adbd"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/sign-up",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d258c71b8a4e71bc005abe8021518ac35c2a8567",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/d258c71b8a4e71bc005abe8021518ac35c2a8567"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/sign-up/[[...sign-up]]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "561b9e1db8636f4d200fc326e27b2ca19b506967",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/561b9e1db8636f4d200fc326e27b2ca19b506967"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/(center)/sign-up/[[...sign-up]]/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9afff0caca90b4975088199e2e7c1cbe71942e50",
+      "size": 766,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/9afff0caca90b4975088199e2e7c1cbe71942e50"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fae3ad9c7a9ae50052c47de79850eb972bade545",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/fae3ad9c7a9ae50052c47de79850eb972bade545"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6abcbb9a9a40476d1e80faccdfe1e0903e34319b",
+      "size": 1706,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/6abcbb9a9a40476d1e80faccdfe1e0903e34319b"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/organization-profile",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3dc1e79dec704dd8ac20641cf208e81d412400e8",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/3dc1e79dec704dd8ac20641cf208e81d412400e8"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/organization-profile/[[...organization-profile]]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "34238715fdf5dd161416ef6378e88a44de6576ac",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/34238715fdf5dd161416ef6378e88a44de6576ac"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/organization-profile/[[...organization-profile]]/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e254ea74f48ba1ec99121ff045b313ceb2f1a4f9",
+      "size": 1034,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e254ea74f48ba1ec99121ff045b313ceb2f1a4f9"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04ed8c5b971d771a5e86f0e6bbee6111a5536dd3",
+      "size": 2572,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/04ed8c5b971d771a5e86f0e6bbee6111a5536dd3"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/user-profile",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "db5f3bdda579fa6970aff255a02d981e44951773",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/db5f3bdda579fa6970aff255a02d981e44951773"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/user-profile/[[...user-profile]]",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "863476b0318a2511c46da041a9494a20402b4650",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/863476b0318a2511c46da041a9494a20402b4650"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/dashboard/user-profile/[[...user-profile]]/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6f0b4995695d17bbf9f27e52c69a0b7a1bda6aba",
+      "size": 861,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/6f0b4995695d17bbf9f27e52c69a0b7a1bda6aba"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04f7128e9ee51d0d4af507208bd656309410991c",
+      "size": 921,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/04f7128e9ee51d0d4af507208bd656309410991c"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/onboarding",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b6e140d08a02b67be283a8de1b53df9384ccc85b",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/b6e140d08a02b67be283a8de1b53df9384ccc85b"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/onboarding/organization-selection",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "01fc4fe2765acc634011c91ec0a3ea2282bcbf4c",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/01fc4fe2765acc634011c91ec0a3ea2282bcbf4c"
+    },
+    {
+      "path": "src/app/[locale]/(auth)/onboarding/organization-selection/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf359f0ab58334fea2196027bf989121ac25e6a2",
+      "size": 989,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/bf359f0ab58334fea2196027bf989121ac25e6a2"
+    },
+    {
+      "path": "src/app/[locale]/(marketing)",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e48f68d23bf2535d9218a85ebe8397f32fff2923",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/e48f68d23bf2535d9218a85ebe8397f32fff2923"
+    },
+    {
+      "path": "src/app/[locale]/(marketing)/page.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4677271132811340b1e11f34dac850331cc63b15",
+      "size": 1180,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/4677271132811340b1e11f34dac850331cc63b15"
+    },
+    {
+      "path": "src/app/[locale]/layout.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "98e5efee450ca37e48eef1bda5a594936560f42f",
+      "size": 1424,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/98e5efee450ca37e48eef1bda5a594936560f42f"
+    },
+    {
+      "path": "src/app/global-error.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f066b391a3deb1c628a92f17056730cef7552e00",
+      "size": 751,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f066b391a3deb1c628a92f17056730cef7552e00"
+    },
+    {
+      "path": "src/app/robots.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45bfb4ea9d35167d408bdc10ce61d7e5772b67b8",
+      "size": 299,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/45bfb4ea9d35167d408bdc10ce61d7e5772b67b8"
+    },
+    {
+      "path": "src/app/sitemap.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5f27ea27dea9dd5a5db0e62ec9feeb46f45cc7f",
+      "size": 603,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/a5f27ea27dea9dd5a5db0e62ec9feeb46f45cc7f"
+    },
+    {
+      "path": "src/components",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0d83c133ef8174a111b97119ca74107ec3024205",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/0d83c133ef8174a111b97119ca74107ec3024205"
+    },
+    {
+      "path": "src/components/ActiveLink.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "899a6be6f289b84658a70c13de33db013efca098",
+      "size": 475,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/899a6be6f289b84658a70c13de33db013efca098"
+    },
+    {
+      "path": "src/components/Background.stories.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "072954d7ec5c856476422301f1938c4c202e1b44",
+      "size": 573,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/072954d7ec5c856476422301f1938c4c202e1b44"
+    },
+    {
+      "path": "src/components/Background.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a14233b04c1507bf7ff74d894ccdfaca3698f31",
+      "size": 230,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0a14233b04c1507bf7ff74d894ccdfaca3698f31"
+    },
+    {
+      "path": "src/components/DemoBadge.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "234ff5ca80652f640e19fe35e27816d55f1b9434",
+      "size": 387,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/234ff5ca80652f640e19fe35e27816d55f1b9434"
+    },
+    {
+      "path": "src/components/LocaleSwitcher.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ada0c74cc25ce210953c38a177f6e31c43e7559",
+      "size": 1843,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7ada0c74cc25ce210953c38a177f6e31c43e7559"
+    },
+    {
+      "path": "src/components/MenuToggle.test.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4727b96c7e2bfb915ed58232c04c7b188cb64d45",
+      "size": 579,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/4727b96c7e2bfb915ed58232c04c7b188cb64d45"
+    },
+    {
+      "path": "src/components/MenuToggle.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "859c462620e3f1ba4a7db9cd747dbb702a57d0ff",
+      "size": 719,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/859c462620e3f1ba4a7db9cd747dbb702a57d0ff"
+    },
+    {
+      "path": "src/components/ui",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7ae5156c3ddff0786acd284cab1fa2db6d84daf7",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/7ae5156c3ddff0786acd284cab1fa2db6d84daf7"
+    },
+    {
+      "path": "src/components/ui/accordion.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a31996f39634c1cf07a8cfdb8c60e272da6cee19",
+      "size": 2245,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/a31996f39634c1cf07a8cfdb8c60e272da6cee19"
+    },
+    {
+      "path": "src/components/ui/badge.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bae8c473b624134d3728baba403bb12e99f68ad9",
+      "size": 560,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/bae8c473b624134d3728baba403bb12e99f68ad9"
+    },
+    {
+      "path": "src/components/ui/badgeVariants.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37c50c97260e307ac2aa234524824726d44b82af",
+      "size": 1351,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/37c50c97260e307ac2aa234524824726d44b82af"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25faa969296bf33b179280d9161159ada07167f0",
+      "size": 592,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/25faa969296bf33b179280d9161159ada07167f0"
+    },
+    {
+      "path": "src/components/ui/buttonVariants.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "02675798f3ce648abc659a54ca3ebe8b720e80eb",
+      "size": 1961,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/02675798f3ce648abc659a54ca3ebe8b720e80eb"
+    },
+    {
+      "path": "src/components/ui/dropdown-menu.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e33dca9e3fb5a92119731b005b4b81ab5996ccbb",
+      "size": 8970,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e33dca9e3fb5a92119731b005b4b81ab5996ccbb"
+    },
+    {
+      "path": "src/components/ui/separator.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef37037cb98c6f3894616ed739c397a702cffd14",
+      "size": 727,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/ef37037cb98c6f3894616ed739c397a702cffd14"
+    },
+    {
+      "path": "src/features",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "edc53b52f82e2e1f6a8f8fe151380a501e9668f1",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/edc53b52f82e2e1f6a8f8fe151380a501e9668f1"
+    },
+    {
+      "path": "src/features/billing",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ad61af48d61431d5ae99c24092a33104604a7381",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/ad61af48d61431d5ae99c24092a33104604a7381"
+    },
+    {
+      "path": "src/features/billing/PricingCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "13f2996835ae25e8c81b5626bea1f7dfe886e141",
+      "size": 1123,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/13f2996835ae25e8c81b5626bea1f7dfe886e141"
+    },
+    {
+      "path": "src/features/billing/PricingFeatureItem.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ee5b7da4bfc9fd51e96a943430251ef1f4dd8d0",
+      "size": 488,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/2ee5b7da4bfc9fd51e96a943430251ef1f4dd8d0"
+    },
+    {
+      "path": "src/features/billing/PricingFeatureList.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34c4405fb10368caf1232a8a69ec404ba8b8b11d",
+      "size": 966,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/34c4405fb10368caf1232a8a69ec404ba8b8b11d"
+    },
+    {
+      "path": "src/features/dashboard",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "61f1a6fcd6020b6041826c9624f7b8ef41fc07cf",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/61f1a6fcd6020b6041826c9624f7b8ef41fc07cf"
+    },
+    {
+      "path": "src/features/dashboard/CenteredContainer.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9c9d8ac56ef300b831677b86c61a7b3ee92e8ad",
+      "size": 218,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/d9c9d8ac56ef300b831677b86c61a7b3ee92e8ad"
+    },
+    {
+      "path": "src/features/dashboard/DashboardHeader.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1aea3440af3d31c55ed45019b043582989eb3dd",
+      "size": 2105,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e1aea3440af3d31c55ed45019b043582989eb3dd"
+    },
+    {
+      "path": "src/features/dashboard/MobileNavigation.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "272655b47edccf95327798101bbebc16461f956e",
+      "size": 1155,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/272655b47edccf95327798101bbebc16461f956e"
+    },
+    {
+      "path": "src/features/dashboard/OrganizationMenu.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c21a75d8bd042a51ae55b382b500b442bece3f8",
+      "size": 877,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0c21a75d8bd042a51ae55b382b500b442bece3f8"
+    },
+    {
+      "path": "src/features/dashboard/PageMessage.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da9027b5cf3c5f9da0ffd06c64eb84c1750a4b64",
+      "size": 738,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/da9027b5cf3c5f9da0ffd06c64eb84c1750a4b64"
+    },
+    {
+      "path": "src/features/dashboard/SlashIcon.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7e2675f80eed24cf48d1ba4b0f1fb3b03515c439",
+      "size": 340,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7e2675f80eed24cf48d1ba4b0f1fb3b03515c439"
+    },
+    {
+      "path": "src/features/dashboard/TitleBar.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "633431641c430dbd8b219dfc33d2c37ea62b6194",
+      "size": 345,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/633431641c430dbd8b219dfc33d2c37ea62b6194"
+    },
+    {
+      "path": "src/features/landing",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b6498a5e52eb081e16c1c6a9182f79223a082270",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/b6498a5e52eb081e16c1c6a9182f79223a082270"
+    },
+    {
+      "path": "src/features/landing/CTABanner.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67c462e965441b01900a8e8511f34d995ed2660c",
+      "size": 501,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/67c462e965441b01900a8e8511f34d995ed2660c"
+    },
+    {
+      "path": "src/features/landing/CenteredFooter.test.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de4707c879a5daf49d13d18ee2a3aa78bf8409fe",
+      "size": 786,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/de4707c879a5daf49d13d18ee2a3aa78bf8409fe"
+    },
+    {
+      "path": "src/features/landing/CenteredFooter.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed8aa2e7eb0061991941011f2fea33260a022c34",
+      "size": 1979,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/ed8aa2e7eb0061991941011f2fea33260a022c34"
+    },
+    {
+      "path": "src/features/landing/CenteredHero.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f952e08fd15777fa867d4b37f77b5fe9cb31ed91",
+      "size": 601,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f952e08fd15777fa867d4b37f77b5fe9cb31ed91"
+    },
+    {
+      "path": "src/features/landing/CenteredMenu.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72d9735761e8378e0fd123f544fca9988671613f",
+      "size": 1451,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/72d9735761e8378e0fd123f544fca9988671613f"
+    },
+    {
+      "path": "src/features/landing/FeatureCard.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c377ec3051a955d9f0efa3cbc8195bb01869121",
+      "size": 597,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1c377ec3051a955d9f0efa3cbc8195bb01869121"
+    },
+    {
+      "path": "src/features/landing/LogoCloud.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16b02687052aa1835e7a104f7ae606e0272d7e17",
+      "size": 426,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/16b02687052aa1835e7a104f7ae606e0272d7e17"
+    },
+    {
+      "path": "src/features/landing/Section.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56001766cf626f85b45c12f014b5fe4d91015fa0",
+      "size": 1009,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/56001766cf626f85b45c12f014b5fe4d91015fa0"
+    },
+    {
+      "path": "src/features/landing/StickyBanner.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c8929eefd4ceb83b2db6703490f40bb25b3c552",
+      "size": 290,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7c8929eefd4ceb83b2db6703490f40bb25b3c552"
+    },
+    {
+      "path": "src/features/sponsors",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "11f559537975755941d676fd5b35dac9de22a971",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/11f559537975755941d676fd5b35dac9de22a971"
+    },
+    {
+      "path": "src/features/sponsors/SponsorLogos.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f6aa9fcb9013edd122345dd85ecd78f191f4e212",
+      "size": 3968,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f6aa9fcb9013edd122345dd85ecd78f191f4e212"
+    },
+    {
+      "path": "src/hooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1f32c8205b30860be5d41b42514003ea481f97b3",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/1f32c8205b30860be5d41b42514003ea481f97b3"
+    },
+    {
+      "path": "src/hooks/UseMenu.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85fbd80bd8d4265f662ab6ae0bfc638f211e4191",
+      "size": 1461,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/85fbd80bd8d4265f662ab6ae0bfc638f211e4191"
+    },
+    {
+      "path": "src/hooks/UseMenu.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65233b7f06919201a1c00255b309151218d1b835",
+      "size": 539,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/65233b7f06919201a1c00255b309151218d1b835"
+    },
+    {
+      "path": "src/instrumentation-client.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58561e30ab650e48ce68f58ab5afaae68f2396d0",
+      "size": 1639,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/58561e30ab650e48ce68f58ab5afaae68f2396d0"
+    },
+    {
+      "path": "src/instrumentation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2961dd781ef7b96dd818fd0941b82ae4fa270472",
+      "size": 1098,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/2961dd781ef7b96dd818fd0941b82ae4fa270472"
+    },
+    {
+      "path": "src/libs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7282b713886e5d19f4809c84dc9fa4ec960c8b5a",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/7282b713886e5d19f4809c84dc9fa4ec960c8b5a"
+    },
+    {
+      "path": "src/libs/DB.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e9c01f3030f76e90060df8395dd28ff0f77884f",
+      "size": 557,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/6e9c01f3030f76e90060df8395dd28ff0f77884f"
+    },
+    {
+      "path": "src/libs/Env.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84c9b51963de659a30be1b669f3e68a5193bc831",
+      "size": 1279,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/84c9b51963de659a30be1b669f3e68a5193bc831"
+    },
+    {
+      "path": "src/libs/I18n.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "81cff46ec02ccc7a11cbcad58834eb3d675833ae",
+      "size": 1029,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/81cff46ec02ccc7a11cbcad58834eb3d675833ae"
+    },
+    {
+      "path": "src/libs/I18nNavigation.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3d172c42f9470f6c1ccb2be83e4dffcc3269058",
+      "size": 174,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/b3d172c42f9470f6c1ccb2be83e4dffcc3269058"
+    },
+    {
+      "path": "src/libs/I18nRouting.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2cf58fbf6ff307b14d376e3ae24ad35c4cb8600",
+      "size": 269,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/f2cf58fbf6ff307b14d376e3ae24ad35c4cb8600"
+    },
+    {
+      "path": "src/libs/Logger.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a80ac94191728a986ef0966dbe64b24b0c2f0a95",
+      "size": 1137,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/a80ac94191728a986ef0966dbe64b24b0c2f0a95"
+    },
+    {
+      "path": "src/locales",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "52fa2e3050802c0b745a72d1927b7d814451e00c",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/52fa2e3050802c0b745a72d1927b7d814451e00c"
+    },
+    {
+      "path": "src/locales/en.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86460b4aa2856adf8fd19a3504e8db26cf75bd56",
+      "size": 5217,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/86460b4aa2856adf8fd19a3504e8db26cf75bd56"
+    },
+    {
+      "path": "src/locales/fr.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4a267c9cdd3ac16855b39a0479f2f1e725418cd",
+      "size": 5558,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/c4a267c9cdd3ac16855b39a0479f2f1e725418cd"
+    },
+    {
+      "path": "src/models",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7431aadd14197965742927e47732134540bb1aec",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/7431aadd14197965742927e47732134540bb1aec"
+    },
+    {
+      "path": "src/models/Schema.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "372211c5acf38374d418c052389d783911e2975d",
+      "size": 1135,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/372211c5acf38374d418c052389d783911e2975d"
+    },
+    {
+      "path": "src/proxy.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8dab8cbdd5c63209e999e5c74b4fa371a6a6af4e",
+      "size": 2348,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/8dab8cbdd5c63209e999e5c74b4fa371a6a6af4e"
+    },
+    {
+      "path": "src/styles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "00d98abf9fb6debf9a343cf07255d9953ab77c92",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/00d98abf9fb6debf9a343cf07255d9953ab77c92"
+    },
+    {
+      "path": "src/styles/global.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae45aae46891e3915f624e66cc8fa2f36ca1165f",
+      "size": 3189,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/ae45aae46891e3915f624e66cc8fa2f36ca1165f"
+    },
+    {
+      "path": "src/templates",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1877419314b701d4eef4982b1b43f0ce035c6d06",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/1877419314b701d4eef4982b1b43f0ce035c6d06"
+    },
+    {
+      "path": "src/templates/CTA.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db0dccb928eb916b439aee64038860427bbc2b5b",
+      "size": 825,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/db0dccb928eb916b439aee64038860427bbc2b5b"
+    },
+    {
+      "path": "src/templates/DemoBanner.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "411914234991520a6a94f7f0735ef46a822c55bb",
+      "size": 289,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/411914234991520a6a94f7f0735ef46a822c55bb"
+    },
+    {
+      "path": "src/templates/FAQ.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0335270f45f3873be8615e5b793d2af866a623a1",
+      "size": 1518,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0335270f45f3873be8615e5b793d2af866a623a1"
+    },
+    {
+      "path": "src/templates/Features.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "842d28f3f8a50e97f3e37a6e515c435804225004",
+      "size": 4468,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/842d28f3f8a50e97f3e37a6e515c435804225004"
+    },
+    {
+      "path": "src/templates/Footer.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0312e09ba18aa2ae80aa6886c9870196af557615",
+      "size": 6185,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0312e09ba18aa2ae80aa6886c9870196af557615"
+    },
+    {
+      "path": "src/templates/Hero.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65c27af0893c6dfbe4220765c687bc2e62cbd06c",
+      "size": 1806,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/65c27af0893c6dfbe4220765c687bc2e62cbd06c"
+    },
+    {
+      "path": "src/templates/Logo.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "85b24f1aaf0bdd339371c41951c961aafb4381a6",
+      "size": 694,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/85b24f1aaf0bdd339371c41951c961aafb4381a6"
+    },
+    {
+      "path": "src/templates/Navbar.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03cc7ce62de329cc001b37b9170c02f45f695374",
+      "size": 1381,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/03cc7ce62de329cc001b37b9170c02f45f695374"
+    },
+    {
+      "path": "src/templates/Pricing.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c76c3f5b615d0f67d5e5f52c11a458784babc2d3",
+      "size": 1133,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/c76c3f5b615d0f67d5e5f52c11a458784babc2d3"
+    },
+    {
+      "path": "src/templates/Sponsors.tsx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10ceaad1ade30feed8126823feecb91957ddda22",
+      "size": 201,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/10ceaad1ade30feed8126823feecb91957ddda22"
+    },
+    {
+      "path": "src/types",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0b2d4c78b592b0dff22d9782e6f795758ff4c353",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/0b2d4c78b592b0dff22d9782e6f795758ff4c353"
+    },
+    {
+      "path": "src/types/Auth.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7636754048de8ad114585f3285202312b62b1c60",
+      "size": 327,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/7636754048de8ad114585f3285202312b62b1c60"
+    },
+    {
+      "path": "src/types/Enum.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c273087f690224dbe484c5087aba2bae43575f75",
+      "size": 49,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/c273087f690224dbe484c5087aba2bae43575f75"
+    },
+    {
+      "path": "src/types/I18n.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "127b4ac402595f97811f6a2dc3d9bbf7c8a3ca5f",
+      "size": 356,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/127b4ac402595f97811f6a2dc3d9bbf7c8a3ca5f"
+    },
+    {
+      "path": "src/types/Subscription.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9b25e481bfa94dabef424fc7413ee48b23b5385",
+      "size": 316,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/b9b25e481bfa94dabef424fc7413ee48b23b5385"
+    },
+    {
+      "path": "src/types/globals.d.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bb7b111f0753fb2b9799fe99370a97efa605568",
+      "size": 228,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/9bb7b111f0753fb2b9799fe99370a97efa605568"
+    },
+    {
+      "path": "src/utils",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8349743b17f424a9e48ac38d570a4422dac28f6c",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/8349743b17f424a9e48ac38d570a4422dac28f6c"
+    },
+    {
+      "path": "src/utils/AppConfig.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0fb59b0fc440ff59270e869ac76107d1d00451be",
+      "size": 1013,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/0fb59b0fc440ff59270e869ac76107d1d00451be"
+    },
+    {
+      "path": "src/utils/DBConnection.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "978889809cf1ea4bfa8cabe8632b526b2b6a5ccf",
+      "size": 593,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/978889809cf1ea4bfa8cabe8632b526b2b6a5ccf"
+    },
+    {
+      "path": "src/utils/Helpers.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e28ec027cc0b761cb710ed2694d98c9640d0a1ec",
+      "size": 609,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e28ec027cc0b761cb710ed2694d98c9640d0a1ec"
+    },
+    {
+      "path": "src/utils/Helpers.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fadbe1fc9b0002943e92e28ac2406f5873be403",
+      "size": 983,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/8fadbe1fc9b0002943e92e28ac2406f5873be403"
+    },
+    {
+      "path": "src/utils/PricingPlans.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a4b93cfafedf881d7ff088754066eeb4d38c15b9",
+      "size": 982,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/a4b93cfafedf881d7ff088754066eeb4d38c15b9"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "80986fcb4abfde69b83c0eb7aa9f638f068f1554",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/80986fcb4abfde69b83c0eb7aa9f638f068f1554"
+    },
+    {
+      "path": "tests/e2e",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1e701d998ddbf84437ae9cbf87e8f7510c107d98",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/1e701d998ddbf84437ae9cbf87e8f7510c107d98"
+    },
+    {
+      "path": "tests/e2e/I18n.e2e.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1107c0ae0a72af239ad49e21f65a42db89e49d69",
+      "size": 954,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/1107c0ae0a72af239ad49e21f65a42db89e49d69"
+    },
+    {
+      "path": "tests/e2e/Sanity.check.e2e.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e01a84c8b282b6f67c12f6dc2a4c31165f49cce7",
+      "size": 970,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/e01a84c8b282b6f67c12f6dc2a4c31165f49cce7"
+    },
+    {
+      "path": "tests/e2e/Visual.e2e.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "39ff2ae48ee24d09483a8768d1de6dac7f7f290f",
+      "size": 681,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/39ff2ae48ee24d09483a8768d1de6dac7f7f290f"
+    },
+    {
+      "path": "tests/integration",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3214f09e4ad5571b31aad094802d6b51d7342c5c",
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/trees/3214f09e4ad5571b31aad094802d6b51d7342c5c"
+    },
+    {
+      "path": "tests/integration/.gitkeep",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bc5fc1d3549d3e5914f760bb29c30c31da97c2c",
+      "size": 415,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/9bc5fc1d3549d3e5914f760bb29c30c31da97c2c"
+    },
+    {
+      "path": "tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0abd7d2bc0f1121185f2c437ee18df025b37fc3",
+      "size": 3309,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/c0abd7d2bc0f1121185f2c437ee18df025b37fc3"
+    },
+    {
+      "path": "vitest.config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3a52d6e7e616a2aca47bc704161a841067b3ca52",
+      "size": 1401,
+      "url": "https://api.github.com/repos/ixartz/SaaS-Boilerplate/git/blobs/3a52d6e7e616a2aca47bc704161a841067b3ca52"
+    }
+  ],
+  "truncated": false
+}

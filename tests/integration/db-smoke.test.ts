@@ -113,7 +113,7 @@ describeDb("db smoke (Neon Postgres)", () => {
     ]);
   });
 
-  it("has all 24 business tables present", async () => {
+  it("has all 25 business tables present", async () => {
     const rows = await prisma.$queryRaw<Array<{ table_name: string }>>`
       SELECT table_name
       FROM information_schema.tables
@@ -131,6 +131,8 @@ describeDb("db smoke (Neon Postgres)", () => {
       // v0.64.0 阶段4 加性迁移 20260908000000：Favorite（收藏）/ Feedback（反馈）。
       "Favorite",
       "Feedback",
+      // v0.75.x 迁移 20260915174701：Solution.creatorId（加列）+ Lead（加表，留资线索）。
+      "Lead",
       "Localization",
       "LocalizationSupplier",
       "Market",

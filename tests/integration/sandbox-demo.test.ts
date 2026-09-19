@@ -87,7 +87,7 @@ describeDb("R8.8a 示范项目模型 · 存版→重开一致（Neon Postgres）
     const sc = proj!.scenarios[0];
     expect(sc.isBaseline).toBe(true);
     expect(sc.calcStatus).toBe("ok");
-    expect(sc.calcRef).toBe("model@1.1.0");
+    expect(sc.calcRef).toBe("model@1.4.0");
 
     // (1) 重开一致：用**落库的 paramLayers** 回放喂引擎 → CalcResult 深等于客户端当初算的那份（§9 可复算）。
     const replayLayers = toEngineLayers(sc.paramLayers as StoredParamLayers);

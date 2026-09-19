@@ -65,7 +65,7 @@ describeDb("sandbox-store 项目/情景/版本持久层（Neon Postgres）", () 
     const sc = project!.scenarios[0];
     expect(sc.isBaseline).toBe(true);
     expect(sc.calcStatus).toBe("ok");
-    expect(sc.calcRef).toBe("model@1.1.0");
+    expect(sc.calcRef).toBe("model@1.4.0");
     // Decimal 汇总列（净 CAPEX / NPV / IRR% / 折现回收 / ROI）逐项对齐引擎（R9.0：含 Δ_sto=27,491）
     expect(num(sc.capexNet)).toBeCloseTo(3524500, 0);
     expect(num(sc.npv)).toBeCloseTo(4448573, 0);
@@ -298,7 +298,7 @@ describeDb("sandbox-store 内核升级冻结策略（真连 Neon）", () => {
     expect(versions).toHaveLength(0);
   });
 
-  it("模型升级后重存（calcRef model@1.0.0 → 1.1.0）→ 旧 ok 结果自动冻结，数字逐字段不变、storage=none、可恢复", async () => {
+  it("模型升级后重存（calcRef model@1.0.0 → 1.4.0）→ 旧 ok 结果自动冻结，数字逐字段不变、storage=none、可恢复", async () => {
     const created = await createProject({ name: `${runId}-up`, actor });
     expect(created.ok).toBe(true);
     if (!created.ok) return;
@@ -325,7 +325,7 @@ describeDb("sandbox-store 内核升级冻结策略（真连 Neon）", () => {
       data: { calcRef: "model@1.0.0", calcResult: legacyResult },
     });
 
-    // 新引擎（model@1.1.0）重算 → 必须先冻结旧结果再覆写。
+    // 新引擎（model@1.4.0）重算 → 必须先冻结旧结果再覆写。
     const res = await updateScenarioLayers(sc.id, {}, { actor });
     expect(res.ok).toBe(true);
     if (!res.ok) return;
@@ -350,7 +350,7 @@ describeDb("sandbox-store 内核升级冻结策略（真连 Neon）", () => {
 
     // 当前态已落新引擎结果（version++）。
     const after = await prisma.projectScenario.findUniqueOrThrow({ where: { id: sc.id } });
-    expect(after.calcRef).toBe("model@1.1.0");
+    expect(after.calcRef).toBe("model@1.4.0");
     expect(after.version).toBe(sc.version + 1);
 
     // 冻结行是独立快照，绝不因后续写入被就地改写。
@@ -374,7 +374,7 @@ describeDb("sandbox-store 内核升级冻结策略（真连 Neon）", () => {
     projectIds.push(created.projectId);
     const sc = await baselineScenarioOf(created.projectId);
 
-    // 模拟「1.1.0 首日行」：calcRef 不变，但 engineVersions 没有 storage 键（本批部署前落库）。
+    // 模拟「1.4.0 首日行」：calcRef 不变，但 engineVersions 没有 storage 键（本批部署前落库）。
     const cur = await prisma.projectScenario.findUniqueOrThrow({ where: { id: sc.id } });
     const stripped = JSON.parse(JSON.stringify(cur.calcResult ?? {})); // 深拷贝成可写 JSON（any，直喂 Prisma Json 列）
     delete (stripped.engineVersions as Record<string, unknown> | undefined)?.storage;
@@ -387,7 +387,7 @@ describeDb("sandbox-store 内核升级冻结策略（真连 Neon）", () => {
 
     const versions = await listScenarioVersions(sc.id);
     expect(versions).toHaveLength(1);
-    expect(versions[0].frozen.engineVersions.model).toBe("1.1.0");
+    expect(versions[0].frozen.engineVersions.model).toBe("1.4.0");
     expect(versions[0].frozen.engineVersions.storage).toBeNull();
   });
 });

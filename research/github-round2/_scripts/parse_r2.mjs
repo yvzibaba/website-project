@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const dir='research/github-round2';
 const rows=[];
 for(const f of fs.readdirSync(dir).filter(x=>x.startsWith('meta_'))){
-  let j; try{ j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); }catch(e){ rows.push({f,err:'parse'}); continue; }
+  let j; try{ j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); }catch{ rows.push({f,err:'parse'}); continue; }
   if(j.message&&!j.full_name){ rows.push({f,err:j.message}); continue; }
   rows.push({
     repo:j.full_name,

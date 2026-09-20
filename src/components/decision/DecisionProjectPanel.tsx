@@ -41,6 +41,7 @@ import { ScenarioAttributionPanel } from "./ScenarioAttributionPanel";
 import { ScenarioVersionsPanel } from "./ScenarioVersionsPanel";
 import { DeviationPanel } from "./DeviationPanel";
 import { CalibrationPanel } from "./CalibrationPanel";
+import { BenchmarkSourcesPanel } from "./BenchmarkSourcesPanel";
 
 /* ── 服务端返回结构（只声明本组件真正读取的字段；类型即文档） ── */
 
@@ -703,17 +704,8 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
               </div>
 
               <div>
-                <h3 className="mb-2 text-sm font-semibold">基准参数快照</h3>
-                <SimpleTable
-                  columns={["参数", "取值", "单位", "证据等级", "来源"]}
-                  rows={Object.values(calc.benchmarkSnapshot ?? {}).map((b) => [
-                    b.label,
-                    b.value == null ? "—" : fmtNum(b.value, 4),
-                    b.unit,
-                    b.evidenceKind === "FACT" ? "已核实" : b.evidenceKind === "ASSUMPTION" ? "假设" : b.evidenceKind,
-                    b.sourceUrl ?? "未附来源",
-                  ])}
-                />
+                <h3 className="mb-2 text-sm font-semibold">基准参数快照 · 来源下钻</h3>
+                <BenchmarkSourcesPanel snapshot={calc.benchmarkSnapshot} benchmarkVersion={calc.benchmarkVersion} />
               </div>
             </CardContent>
           </Card>

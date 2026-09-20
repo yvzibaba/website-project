@@ -3,6 +3,20 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.83.0] - 2026-09-20 · P2「数字点开看来源」来源下钻——决策面板里，本次计算实际用到的每一项基准参数，都能看清**取值 / 单位 / 证据等级 / 置信度 / 生效区间 / 适用地区 / 来源**，凡有合法原文链接的**可点开核对**（**纯前端只读展示；数据取自 `CalculationResult` 自带的 `benchmarkSnapshot`；未新增 API 路由 / 未碰计算真源 / 未碰引擎与黄金；未新增外部依赖**）
+
+- **原因（R4 遗留最后一项 · 用户价值）**：R4 已把基准以无损镜像投影进库、读取层 `listBenchmarkEntries` 当初就是"供 P2 溯源面板"预留。此前 V2 决策面板虽有一张「基准参数快照」表，但把 `sourceUrl` 画成**死的纯文本**（`b.sourceUrl ?? "未附来源"`），既不显示置信度/生效区间，也点不开——用户看得到"假设"，却**核不了"已核实"到底核在哪**。P2 补的就是这条"数字↔出处"的可核对性，是"决策可信"的地基，不是锦上添花。
+- **关键取舍——用自带快照、不新查库（§1 更简单、§4 无第二真源）**：面板数据直接取 `calc.benchmarkSnapshot`（引擎随结果一并送达浏览器的 `Record<key, BenchmarkRef>`），**不新开一条 `GET /benchmark` 路由**。理由有二：① **更准**——快照是"这个情景、这个地区**实际算这些数时用的那批值**"（含 `shanxi` 地区覆盖），而按 `benchmarkVersion` 重查库可能与其分叉；② **更简单 + 少依赖**——省一次网络/DB 往返与一整套鉴权面。诚实性也因此结构上不可能漂移：页面上的数与来源出自同一次计算。
+- **实现**：
+  - `src/components/decision/benchmark-source-model.ts`（**纯函数、零框架依赖**，与内核同纪律）：`toSourceRows(snapshot)` 做归一 + 确定性排序；`isUsableHttpUrl` 是**诚实闸门**——只放行 http/https、trim 后仍含内部空白或 `javascript:`/`ftp:`/`data:`/协议相对一律拒（宁可不给链接，不给可疑链接）；`formatValueText` **UNKNOWN / null → "未核实" / "—"，0 原样保留**（延续"null ≠ 0"铁律）；`formatValidWindow` 四态、`formatConfidence` 取整、`formatRegion` 通用/全国/全球归"通用"、已知地区给中文、**未知地区原样 id 不臆造地名**。排序：FACT→ASSUMPTION→INFERENCE→PREDICTION→其他，同级内置信度降序、再按参数名——**已核实置顶，但假设/未核实照样在列、不藏**。
+  - `src/components/decision/BenchmarkSourcesPanel.tsx`（展示壳，复用既有 `SimpleTable`（ReactNode 单元格）+ `EvidenceBadge`）：九列「参数 / 取值 / 单位 / 性质 / 置信度 / 生效区间 / 地区 / 来源 / 原文」，性质用徽标、有合法链接才渲染 `查看原文 ↗`（`target=_blank rel=noopener noreferrer`）否则 muted 文本「未附权威来源」；顶部一句人话交代共几项、几项已核实，并**明说"假设 / 未核实不是权威数据"**。
+  - 挂载：替换 `DecisionProjectPanel.tsx`「诊断与基准参数」卡里那张旧纯文本表——**未新增编号 Section、不动既有 1–13 节与锚点**（原表本就在无编号的卡内，就地升级，爆炸半径最小）。
+- **效果**：`test:unit` **1461 passed / 1 skipped（84 文件）**，净增 **16** 例（`tests/unit/benchmark-source-model.test.ts`：URL 闸门合法/脏/空白、0-vs-null-vs-UNKNOWN、textValue 口径、生效区间四态、置信度取整、地区映射含"未知不臆造"、空快照、FACT 置顶 + 同级置信度降序 + 未知证据级垫底、脏链接即便 FACT 也不给可点 url、确定性排序）。host `tsc --noEmit` **0**、`eslint` 新文件 **0/0**、`kernel:verify` 白名单外 **0**、`kernel:dangling` **0**、`next build` **通过**（无新增路由，路由表不变）。
+- **未动冻结件**：经济内核、黄金基线、`ENGINE_VERSION 2.0.0`/`BENCHMARK_VERSION 1.0.0`/`MODEL/TECH/PARAMS`/`REPORT_BUILDER_VERSION`、DB 结构、计算真源（`runCalculation` / benchmark 常量读取路径）一字未动；`DECISION_STORE_VERSION`/`DECISION_SERVICE_VERSION` 仍 **1.2.0**（本批纯前端展示层，未触后端）。`package.json` **0.82.1→0.83.0**（minor·新增用户可见能力）。
+- **诚实边界 & 范围**：本批只做 **V2 决策面板**的基准来源下钻。**V1 沙盘**逐参数的 `sourceUrl` 目前仍未渲染成可点链接（`ResolvedParameter.sourceUrl`/`ParameterOriginInfo.sourceUrl` 已在数据里、就差一个 `<a>`），属独立的小后续（demo/full 两档各挂一处），**刻意不并入本批**以守单任务纪律。
+- **R4 收口清点**：`db:seed:benchmark` ✅（0.82.1）、集成读测 ✅（0.82.1）、**P2 来源下钻 UI ✅（本批）**——R4 遗留三项**全部清零**。
+- **交创始人**：无新增高风险项（纯只读展示、不涉收款/定价/合同/生产部署/切换真源）。下一步按既定 STOP，R6/R4 均已出口，不擅自跨入 R7（变现层），等你定向。
+
 ## [0.82.1] - 2026-09-20 · R6/R4 网络出口环境验证批——把 [0.82.0] 出口时刻意"不虚报"的**真连 Neon** 那部分补齐：additive 迁移落库 + 基准镜像灌入 + R6/R4 集成读测（**仅跑运维验证 + 加测试；`runCalculation()`/黄金/各 VERSION 常量/经济口径/既有 DB 结构零改动；迁移纯 additive；未新增外部依赖**）
 
 - **原因（承接 [0.82.0] 的"诚实边界"挂账）**：R6 出口时写明"对真实 Neon 应用本次 additive 迁移、`CalibrationCandidate` 落库往返、R4 遗留的 `db:seed:benchmark` + 集成读测等需有网有授权时补跑，本仓离线不虚报"。本轮网络恢复、创始人提供 Neon 连接串，正是执行这批**环境验证**并把可复算/无损性钉到真库上。

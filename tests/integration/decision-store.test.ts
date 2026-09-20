@@ -6,17 +6,25 @@ import {
   createDecisionProject,
   deleteDecisionScenario,
   deleteProjectActual,
+  listCalibrationCandidates,
   listDecisionProjects,
   listDecisionScenarioVersions,
   listProjectActuals,
+  readCalibrationCandidate,
   readDecisionProject,
   readDecisionScenario,
   recalculateDecisionScenario,
+  reviewCalibrationCandidate,
   saveDecisionScenarioAsVersion,
+  upsertCalibrationCandidates,
   upsertProjectActual,
 } from "@app/kernel/server/decision-store";
 import { defaultScenarioInput } from "@app/kernel/engine/scenario";
 import { runCalculation } from "@app/kernel/engine/engine";
+import { buildForecastSnapshot } from "@app/kernel/engine/deviation";
+import type { CandidateSeed } from "@app/kernel/engine/deviation";
+import { BENCHMARK_VERSION } from "@app/kernel/engine/benchmark";
+import { allBenchmarkRowSeeds, listBenchmarkEntries } from "@app/kernel/server/benchmark-repo";
 import type { ScenarioInput } from "@app/kernel/engine/types";
 import type { SessionUser } from "@app/kernel/lib/roles";
 import { canAccessDecisionProject, precheckScenarioInput } from "@app/kernel/server/decision-service";
@@ -78,7 +86,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
   if (!HAS_DB) return;
-  // 按外键序清理：actual → scenario（随 project 级联）→ project → user
+  // 按外键序清理：candidate/actual → scenario（随 project 级联）→ project → user
+  await prisma.calibrationCandidate.deleteMany({ where: { projectId: { in: createdProjectIds } } });
   await prisma.projectActual.deleteMany({ where: { projectId: { in: createdProjectIds } } });
   await prisma.project.deleteMany({ where: { id: { in: createdProjectIds } } });
   await prisma.user.deleteMany({ where: { id: { in: createdUserIds } } });
@@ -530,6 +539,181 @@ describeDb("Actuals：null 与 0 必须分得清", () => {
     // 再删一次 → 明确 not_found，不静默成功
     const again = await deleteProjectActual(r.actualId);
     expect(again.ok).toBe(false);
+  });
+});
+
+describeDb("R6 · 冻结预测落库 + 校准候选生命周期（真连库往返）", () => {
+  it("createDecisionProject 即冻结 forecastSnapshot，且等于对存档输入直接 buildForecastSnapshot 的结果（只投影不重算）", async () => {
+    const owner = await makeUser();
+    const input = baseInput({ name: `${runId} R6冻结预测` });
+    const created = await createDecisionProject({
+      name: `${runId} R6冻结预测`,
+      ownerId: owner.id,
+      scenarioInput: input,
+    });
+    if (!created.ok) throw new Error(created.detail);
+    createdProjectIds.push(created.projectId);
+
+    const stored = await readDecisionScenario(created.scenarioId);
+    expect(stored).not.toBeNull();
+    expect(stored!.forecastSnapshot).not.toBeNull();
+
+    // 用**存档输入**独立复算一遍，再直接投影——语义上必须等于库里冻结的那份。
+    const replay = runCalculation(stored!.scenarioInput as ScenarioInput);
+    expect(replay.ok).toBe(true);
+    if (!replay.ok) return;
+    const rebuilt = buildForecastSnapshot(replay) as unknown as Record<string, unknown>;
+    const storedSnap = stored!.forecastSnapshot as unknown as Record<string, unknown>;
+
+    // ① 承重的完整性断言：库里的快照确实**属于这次计算**（同一 inputHash / schema），没被今天改写或张冠李戴。
+    const storedId = storedSnap.identity as Record<string, unknown>;
+    const rebuiltId = rebuilt.identity as Record<string, unknown>;
+    expect(storedId.inputHash).toBe(rebuiltId.inputHash);
+    expect(storedId.inputHash).toBe(replay.inputHash);
+    expect(storedId.snapshotSchema).toBe("forecast-snapshot/v1");
+
+    // ② 结构相等：JSONB 不保键序、double 走 Postgres 有 ~1e-16 噪声，故不能按 JSON 字符串逐字节比。
+    //    把所有数字四舍五入到 6 位后交给 toEqual（自动忽略键序）——既容忍序列化噪声，又钉死"只投影不重算"。
+    const norm = (v: unknown): unknown => {
+      if (typeof v === "number") return Number(v.toFixed(6));
+      if (Array.isArray(v)) return v.map(norm);
+      if (v && typeof v === "object") {
+        const out: Record<string, unknown> = {};
+        for (const [k, val] of Object.entries(v as Record<string, unknown>)) out[k] = norm(val);
+        return out;
+      }
+      return v;
+    };
+    expect(norm(storedSnap)).toEqual(norm(rebuilt));
+  });
+
+  function seedFor(projectId: string, over: Partial<CandidateSeed> = {}): CandidateSeed {
+    return {
+      dedupeKey: `${runId}|pv|aggregate`,
+      metric: "pvGenerationKwh",
+      metricLabel: "光伏发电量",
+      parameter: "pv.specificYieldKwhPerKwp",
+      parameterLabel: "光伏单位装机年发电量",
+      measurementBasis: "energy",
+      unit: "kWh",
+      periodKind: "aggregate",
+      regionId: null,
+      projectId,
+      direction: "over_forecast",
+      forecastValue: 1_000_000,
+      actualValue: 780_000,
+      biasPct: -22,
+      meanAbsPct: 22,
+      sampleCount: 3,
+      impactYuan: -120_000,
+      impactEvidenceKind: "FACT",
+      evidence: { comparableCount: 3, positiveCount: 0, negativeCount: 3, rangePct: { min: -25, max: -18 }, note: "连续三个月实测低于预测" },
+      suggestion: "调低光伏单位装机年发电量假设，或复核组件衰减/遮挡",
+      ...over,
+    };
+  }
+
+  it("候选：新 dedupeKey→CANDIDATE；重跑同 key 只更新分析字段、不新建也不抹平人工审核态", async () => {
+    const owner = await makeUser();
+    const created = await createDecisionProject({
+      name: `${runId} R6候选`,
+      ownerId: owner.id,
+      scenarioInput: baseInput({ name: `${runId} R6候选` }),
+    });
+    if (!created.ok) throw new Error(created.detail);
+    createdProjectIds.push(created.projectId);
+
+    const seed = seedFor(created.projectId);
+    const first = await upsertCalibrationCandidates([seed]);
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+    expect(first.created).toBe(1);
+
+    const listed = await listCalibrationCandidates({ projectId: created.projectId });
+    expect(listed.length).toBe(1);
+    expect(listed[0].status).toBe("CANDIDATE");
+    // Decimal→number 往返无损
+    expect(listed[0].biasPct).toBeCloseTo(-22, 4);
+    expect(listed[0].impactYuan).toBeCloseTo(-120_000, 2);
+    const candidateId = listed[0].id;
+
+    // 人工审核：CANDIDATE → UNDER_REVIEW → ACCEPTED（终态），带上人味 reviewedBy
+    const toReview = await reviewCalibrationCandidate({ id: candidateId, to: "UNDER_REVIEW", reviewedBy: `human:${owner.id}` });
+    expect(toReview.ok).toBe(true);
+    const toAccepted = await reviewCalibrationCandidate({ id: candidateId, to: "ACCEPTED", reviewedBy: `human:${owner.id}`, reviewNote: "确认按实测调参" });
+    expect(toAccepted.ok).toBe(true);
+    if (!toAccepted.ok) return;
+    expect(toAccepted.status).toBe("ACCEPTED");
+
+    // 非法回退：ACCEPTED 是终态，机器/人都不能把它降回待办
+    const illegal = await reviewCalibrationCandidate({ id: candidateId, to: "CANDIDATE" });
+    expect(illegal.ok).toBe(false);
+    if (illegal.ok) return;
+    expect(illegal.reason).toBe("invalid");
+
+    // ★再跑一次分析（同 dedupeKey 的新偏差数值）——只更新分析字段，**人工终态不得被抹平**
+    const reseed = seedFor(created.projectId, { biasPct: -30, meanAbsPct: 30, suggestion: "二次分析：偏差进一步扩大" });
+    const second = await upsertCalibrationCandidates([reseed]);
+    expect(second.ok).toBe(true);
+    if (!second.ok) return;
+    expect(second.created).toBe(0);
+    expect(second.upserted).toBe(1);
+
+    const after = await readCalibrationCandidate(candidateId);
+    expect(after).not.toBeNull();
+    expect(after!.status).toBe("ACCEPTED"); // 人工结论保住
+    expect(after!.reviewedBy).toBe(`human:${owner.id}`);
+    expect(after!.biasPct).toBeCloseTo(-30, 4); // 分析侧字段随最新一次更新
+    expect(after!.suggestion).toBe("二次分析：偏差进一步扩大");
+    // 仍是同一条，未产生重复
+    expect((await listCalibrationCandidates({ projectId: created.projectId })).length).toBe(1);
+  });
+});
+
+describeDb("R4 · 基准镜像落库无损（真连库读回与内核对齐）", () => {
+  it("库中该版本基准条数 == 内核派生条数；且每条 (regionId,key) 的值与内核逐字段一致（镜像没偷偷改数）", async () => {
+    const derived = allBenchmarkRowSeeds();
+    expect(derived.length).toBeGreaterThan(0);
+
+    const count = await prisma.benchmarkEntry.count({ where: { benchmarkVersion: BENCHMARK_VERSION } });
+    expect(count).toBe(derived.length);
+
+    // 逐条比对：以「派生自内核」的行为准，回读库里的同一 (regionId,key) 行，数值必须完全相等
+    const rows = await prisma.benchmarkEntry.findMany({
+      where: { benchmarkVersion: BENCHMARK_VERSION },
+      select: { regionId: true, key: true, value: true, textValue: true, unit: true, confidence: true },
+    });
+    const index = new Map(rows.map((r) => [`${r.regionId}::${r.key}`, r]));
+    for (const seed of derived) {
+      const db = index.get(`${seed.regionId}::${seed.key}`);
+      expect(db, `基准 ${seed.regionId}/${seed.key} 未落库`).toBeTruthy();
+      if (!db) continue;
+      // null 与 0 分得清：value 逐值相等（Decimal 走 toString 比对，避免精度漂移）
+      expect(db.value === null ? null : Number(db.value.toString())).toBe(seed.value);
+      expect(db.textValue).toBe(seed.textValue);
+      expect(db.unit).toBe(seed.unit);
+      expect(Number(db.confidence.toString())).toBeCloseTo(seed.confidence, 6);
+    }
+  });
+
+  it("读取层 listBenchmarkEntries 命中的全局项，条数与值和内核常量一致（P2 溯源面板的数据源可信）", async () => {
+    const globals = await listBenchmarkEntries({ version: BENCHMARK_VERSION });
+    // 全局项 = 内核里 regionId 为空的镜像行
+    const derivedGlobals = allBenchmarkRowSeeds().filter((s) => s.regionId === "");
+    expect(globals.length).toBe(derivedGlobals.length);
+    expect(globals.length).toBeGreaterThan(0);
+
+    const byKey = new Map(derivedGlobals.map((s) => [s.key, s]));
+    for (const g of globals) {
+      const seed = byKey.get(g.key);
+      expect(seed, `库里全局基准 ${g.key} 在内核找不到对应`).toBeTruthy();
+      if (!seed) continue;
+      // 运行时是 Prisma Decimal：走 toString 归一，避免精度/类型漂移；null 与 0 仍要分得清
+      const dbValue = g.value == null ? null : Number(String(g.value));
+      expect(dbValue).toBe(seed.value);
+      expect(g.textValue).toBe(seed.textValue);
+      expect(g.unit).toBe(seed.unit);
+    }
   });
 });
 

@@ -3,6 +3,20 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.82.1] - 2026-09-20 · R6/R4 网络出口环境验证批——把 [0.82.0] 出口时刻意"不虚报"的**真连 Neon** 那部分补齐：additive 迁移落库 + 基准镜像灌入 + R6/R4 集成读测（**仅跑运维验证 + 加测试；`runCalculation()`/黄金/各 VERSION 常量/经济口径/既有 DB 结构零改动；迁移纯 additive；未新增外部依赖**）
+
+- **原因（承接 [0.82.0] 的"诚实边界"挂账）**：R6 出口时写明"对真实 Neon 应用本次 additive 迁移、`CalibrationCandidate` 落库往返、R4 遗留的 `db:seed:benchmark` + 集成读测等需有网有授权时补跑，本仓离线不虚报"。本轮网络恢复、创始人提供 Neon 连接串，正是执行这批**环境验证**并把可复算/无损性钉到真库上。
+- **内容**：
+  - **Neon additive 迁移 apply**：`prisma migrate deploy` 将 R4（基准表）/ R5（`project_version_v2_provenance`）/ R6（`forecast_snapshot_and_calibration_candidate`）三条挂账迁移应用到目标库，`migrate status` 回 "up to date"。全程纯 `ADD COLUMN ... NULL` + `CREATE TABLE` + 索引，无 DROP/ALTER/回填。新表初始 `count=0` 确认已接好线。
+  - **R4 基准镜像灌入**：`npm run db:seed:benchmark` → "已灌入基准镜像 **41 条**（版本 `1.0.0`）"，幂等按 `(benchmarkVersion,regionId,key)` upsert。**清 R4 遗留项之一。**
+  - **新增集成读测**（`tests/integration/decision-store.test.ts`，两个 `describeDb`，共 **4 例**，真连 Neon 不 mock）：① R6 `forecastSnapshot` 落库往返——`createDecisionProject` 即从已算好的 `calc` 只读投影冻结该列，回读与对**存档输入**独立复算再投影的结果语义相等（证明"只投影不重算 + 历史没被今天改写"）；② R6 `CalibrationCandidate` 全生命周期——新 `dedupeKey`→`CANDIDATE`、重跑同 key 只刷分析字段**不新建也不把人工终态抹回待办**、`CANDIDATE→UNDER_REVIEW→ACCEPTED` 状态机、终态回退一律拒、Decimal↔number 无损；③ R4 基准库内条数 == 内核派生条数、逐 `(regionId,key)` 行 value/textValue/unit/confidence 与内核一致；④ R4 `listBenchmarkEntries` 全局项条数与值与内核常量一致（P2 溯源数据源可信）。
+  - **断言纪律修正（本批唯一的测试 bug 修复）**：`forecastSnapshot` 经 Postgres **JSONB** 往返后**不保键序、double 有 ~1e-16 噪声**，故不能用 `JSON.stringify` 逐字节比（首版我这么写→假红）。改为"**承重完整性**（库内快照的 `identity.inputHash`/`snapshotSchema` 与复算一致）**+ 数字四舍五入到 6 位的 `toEqual` 深度比对**（自动忽略键序）"。逐字节确定性由**单测**（纯 JS、序列化前）钉，序列化容差由**集成测**（真库往返）钉——两层各司其职，都收紧不放松。
+- **效果**：4 条新集成例**定向真连 Neon 全绿**（`4 passed`）；`test:unit` **1445 passed / 1 skipped 不变**；`kernel:verify` 白名单外依赖 **0**、`kernel:dangling` **0**、host `tsc --noEmit` **0**。
+- **诚实边界（不掩盖环境 flake）**：整文件跑时另有 **4 条既有事务型集成例**（重算改参 / 追加情景 / R5 覆盖前冻结 / R5 显式存版）在跨太平洋链路下被 Prisma interactive-`$transaction` 默认 **5s** 超时拖垮（报 `Transaction already closed … 5000 ms … 6008 ms passed` / `Transaction not found`）。这是**本机到高延迟远端的环境 flake、非代码回归**——本批**未碰**这 4 条测试、也**未擅自调生产事务超时**（属核心配置，跨太平洋 CI / 近 Neon runner 才是它们的真闸）。因此整文件 "5 failed" 中仅 **1** 条是我新测试的序列化断言（已修），其余 **4** 条与本批无关且已定性为网络。
+- **未动冻结件**：经济内核、黄金基线、`ENGINE_VERSION 2.0.0`/`BENCHMARK_VERSION 1.0.0`/`MODEL/TECH/PARAMS`/`REPORT_BUILDER_VERSION 1.0.0`、既有 DB 结构（迁移纯 additive）零触碰。`DECISION_STORE_VERSION`/`DECISION_SERVICE_VERSION` 仍 **1.2.0**（本批只加测试 + 跑运维验证，无生产码变更，故不再升版）。`package.json` **0.82.0→0.82.1**（patch，仅记环境验证批与测试补齐）。
+- **R4 遗留清点**：`db:seed:benchmark` ✅ 已清、集成读测 ✅ 已清；仍挂 **P2「数字点开看来源/置信度/生效区间」来源下钻 UI**（纯前端面板，非本批范围）。
+- **交创始人**：① 会话中出现过 Neon 控制台 API key（`napi_…`），建议**轮换**；② 所提供的连接串端点疑似 **default/main 分支**（非一次性 dev 库），本批严守**自清理夹具**（`afterAll` 按 candidate→actual→project→user 外键序删，且用 `runId` 唯一前缀），全程无破坏性操作；③ "计算真源是否从内核常量切到 DB"仍是财务内核口径，须你裁决——本批仅把镜像与读测钉到真库，**未切真源**。
+
 ## [0.82.0] - 2026-09-20 · R6 实测 vs 预测偏差分析闭环（M13）——录入实际数据后，系统**自动指出偏差、量化影响、识别待复核参数，并把"改模型"这一步永远放在人工审核门之后**（**新内核分析模块 + 冻结预测只读投影 + 新校准候选表 + 新 API/面板；`runCalculation()` 计算真源、黄金基线、`BENCHMARK/ENGINE` 常量零改动；未新增任何外部依赖**）
 
 - **原因（M13 · 决策闭环最后一公里）**：R1–R5 把"算一个方案 / 推荐最优 / 归因 / 免费诊断 / 版本治理"补齐了，但整套系统此前只会**预测**，不会**回看**。真实项目跑起来后会有逐月实测（发电量、购电量、电费、收入、运维支出），决策平台若不能回答"当初的预测准不准、差在哪、要不要复核某个假设参数"，就只是个更贵的 Excel，且用户会担心"模型会不会偷偷自我修改"。R6 补的正是这条 **Forecast→Actual→Deviation→Impact→CalibrationCandidate→HumanReview** 的**分析闭环**——刻意是"分析 + 建议 + 人拍板"，**不是自动改模型**。

@@ -65,7 +65,7 @@ import {
 } from "@app/kernel/server/finance";
 
 /** 编排引擎版本（改经济口径须升版并记原因，宪法第 13 条）。 */
-export const MODEL_VERSION = "1.4.0"; // 1.4.0（V1.1 批次1.4 · 2026-09-16 放行方案 Phase1）：**F-2h includeStorage 布尔真接线**——hasStorage 增门控 `&& project.includeStorage≠0`（编排层把布尔以 0/1 门控值注入经济快照消费，resolve 层 numeric 契约不变）；开关置 0 → 储能 CAPEX/OPEX/SVE 套利价值整腿归零，终结「关了储能照样算储能」假开关（审计 F-2h P1）。基线默认=开 → 既有黄金数值**逐字节不变**（仅 calcRef 版本滚动 + 无开关键的纯函数调用按目录默认=开处理，向后兼容）。1.3.0（V1.1 批次1.2）：E4 计费需量基准改用**需用系数 Kc**（project.demandKc，取代 1.2.0 用平均利用率冒充最大需量的口径错位·审计 P0-3）；主情景切到 **A 政策免征**（region.demandCharge 默认 0，2030 前集中式充换电免需量电费条款），B/C 为参数覆写对照组——零代码分支。基线黄金回摆至接入需量费前的 R9.0 口径值（demandCharge=0 数学期末端相等），B/C 场景手算焊点新增。1.2.0：E4 接入需量(基本)电费（口径 A），2026-09-14 创始人拍板。
+export const MODEL_VERSION = "1.5.0"; // 1.5.0（[0.84.0] · 2026-09-21 创始人放行「按推荐口径实现储能削峰建模」）：**E4 需量电费接储能削峰抵扣**——有储能 且 需量电价>0 时，计费需量先按 `min(计费需量, 储能功率 × φ)` 抵扣再计费（φ=tech.storagePeakShavePct%，PARAMS 1.6.0 新增，缺键保守回退 50%）。主情景 A（免征 demandCharge=0）下抵扣量 ×0=0 → 既有黄金数值**逐字节不变**（仅 calcRef 版本滚动，无 φ 键的纯函数直测按保守回退处理向后兼容）；仅 B/C 需量计费场景点亮此腿。现金流结构变化（需量费公式增项）故升 minor 版（宪法第 13 条）。诚实边界：缺 S1 分时曲线，套利腿与削峰腿共用同一块电池、未做时序互斥 → 偏乐观，notes 明示须专业复核。1.4.0（V1.1 批次1.4 · 2026-09-16 放行方案 Phase1）：**F-2h includeStorage 布尔真接线**——hasStorage 增门控 `&& project.includeStorage≠0`（编排层把布尔以 0/1 门控值注入经济快照消费，resolve 层 numeric 契约不变）；开关置 0 → 储能 CAPEX/OPEX/SVE 套利价值整腿归零，终结「关了储能照样算储能」假开关（审计 F-2h P1）。基线默认=开 → 既有黄金数值**逐字节不变**（仅 calcRef 版本滚动 + 无开关键的纯函数调用按目录默认=开处理，向后兼容）。1.3.0（V1.1 批次1.2）：E4 计费需量基准改用**需用系数 Kc**（project.demandKc，取代 1.2.0 用平均利用率冒充最大需量的口径错位·审计 P0-3）；主情景切到 **A 政策免征**（region.demandCharge 默认 0，2030 前集中式充换电免需量电费条款），B/C 为参数覆写对照组——零代码分支。基线黄金回摆至接入需量费前的 R9.0 口径值（demandCharge=0 数学期末端相等），B/C 场景手算焊点新增。1.2.0：E4 接入需量(基本)电费（口径 A），2026-09-14 创始人拍板。
 
 /** 溯源引用（组合各内核版本，供报告标注"这组数是按哪几版算的"，第 7/16 条）。 */
 export function modelCalcRef(): string {
@@ -158,9 +158,11 @@ export interface CalcResultOk {
   revenueY1: RevenueBreakdownY1;
   energyCostY1: number;
   /**
-   * E4 需量(基本)电费（元/年，MODEL_VERSION 1.3.0）= 计费需量(kW)×demandCharge(元/kW·月)×12。
-   * 计费需量 = 充电装机总功率 × 需用系数 Kc（project.demandKc%）。主情景 A（政策免征）下恒 0；
-   * B/C 对照组经参数覆写产生费用。与 `energyCostY1`（电量电费）分列，二者之和为年购电总成本。
+   * E4 需量(基本)电费（元/年）= 净计费需量(kW)×demandCharge(元/kW·月)×12。
+   * 毛计费需量 = 充电装机总功率 × 需用系数 Kc（project.demandKc%）。MODEL 1.5.0 起：有储能 且
+   * demandCharge>0 时，先按 `min(毛计费需量, 储能功率 × φ)`（φ=tech.storagePeakShavePct%）抵扣得净计费需量。
+   * 主情景 A（政策免征 demandCharge=0）下恒 0；B/C 对照组经参数覆写产生费用（并可享削峰抵扣）。
+   * 与 `energyCostY1`（电量电费）分列，二者之和为年购电总成本。
    */
   demandChargeY1: number;
   netCashFlowY1PreTax: number;
@@ -331,13 +333,26 @@ export function computeEconomics(
 
   const revenueY1 = revCharging + revExport + revSubsidy + deltaStoY1;
   const energyCostY1 = tech.firstYear.gridImportY1Kwh * g(ECON_KEYS.elecPrice);
-  // ── E4 需量(基本)电费（MODEL_VERSION 1.3.0：需用系数 Kc 口径 + A/B/C 场景参数化）──
+  // ── E4 需量(基本)电费（MODEL_VERSION 1.3.0：需用系数 Kc 口径 + A/B/C 场景参数化；1.5.0 起接储能削峰）──
   // 计费需量(kW) = 充电装机总功率 × 需用系数 Kc%；年需量费 = 计费需量 × demandCharge(元/kW·月) × 12。
   // 主情景 A：demandCharge=0（2030 前集中式充换电免需量电费条款）→ 需量费恒 0；
   // B 普通工商业（40/44 元）与 C 保守高成本（Kc=100 装机全额计）经参数覆写生效，零代码分支。
-  // V1 仍不建模储能削峰降需量（缺 S1 分时曲线）→ B/C 下保守全额计。chargerUtilization 自 1.3.0 起不再参与计费（修 P0-3 口径错位）。
-  const billedDemandKw = g(ECON_KEYS.chargerTotalPower) * (g(ECON_KEYS.demandKcPct) / 100);
-  const demandChargeY1 = billedDemandKw * g(ECON_KEYS.demandChargePerKwMonth) * 12;
+  // [0.84.0 · MODEL 1.5.0] 储能削峰降需量：有储能 且 需量电价>0 时，按 φ 从计费需量抵扣储能可削减功率
+  //   削峰量 = min(计费需量, 储能功率 × φ)（φ=tech.storagePeakShavePct%，缺键保守回退 50%）。
+  //   主情景 A demandCharge=0 → 抵扣量 ×0=0 → 既有黄金**逐字节零 churn**；仅 B/C 需量计费场景点亮。
+  //   诚实边界：缺 S1 分时曲线，套利腿与削峰腿共用同一块电池、未做时序互斥 → 本条偏乐观，notes 明示须专业复核。
+  const billedDemandKwGross = g(ECON_KEYS.chargerTotalPower) * (g(ECON_KEYS.demandKcPct) / 100);
+  const demandChargeRate = g(ECON_KEYS.demandChargePerKwMonth);
+  const peakShavePctRaw = numeric["tech.storagePeakShavePct"];
+  const peakShavePct = Number.isFinite(peakShavePctRaw)
+    ? Math.min(100, Math.max(0, peakShavePctRaw as number))
+    : 50; // 缺键（历史快照 / 直测未注入）→ 保守回退目录默认 50%
+  const shavedDemandKw =
+    hasStorage && demandChargeRate > 0
+      ? Math.min(billedDemandKwGross, storagePower * (peakShavePct / 100))
+      : 0;
+  const billedDemandKw = Math.max(0, billedDemandKwGross - shavedDemandKw);
+  const demandChargeY1 = billedDemandKw * demandChargeRate * 12;
   const netY1PreTax = revenueY1 - energyCostY1 - demandChargeY1 - opexY1;
 
   // ── E5–E7 逐年现金流 ──
@@ -391,9 +406,13 @@ export function computeEconomics(
     notes.push(
       "需量(基本)电费按 0 计：依据「2030 年前，对实行两部制电价的经营性集中式充换电设施用电免收需量(容量)电费」政策（山西原文已核实，全国同类文件来源待补归档）。若项目不属于集中式充换电设施、免征到期、或当地执行有出入，请在参数中把需量电价（元/kW·月）改为实际值（如 40–44）或把需用系数设为 100% 后重算，结果须专业复核",
     );
+  } else if (shavedDemandKw > 0) {
+    notes.push(
+      `需量(基本)电费按需用系数计入购电成本，并已扣减储能削峰：计费需量毛值 = 充电装机总功率 × 需用系数 ≈ ${round(billedDemandKwGross, 0)} kW，储能削峰 ≈ ${round(shavedDemandKw, 0)} kW（= 储能功率 × φ，φ=${round(peakShavePct, 0)}%），净计费需量 ≈ ${round(billedDemandKw, 0)} kW，年需量费 ≈ ${round(demandChargeY1, 0)} 元（需量电价 元/kW·月 × 12）。诚实边界：缺分时负荷曲线，削峰腿与峰谷套利腿共用同一块电池、未做时序互斥校验，故此口径偏乐观，须专业复核`,
+    );
   } else {
     notes.push(
-      `需量(基本)电费按需用系数计入购电成本：计费需量 = 充电装机总功率 × 需用系数 ≈ ${round(billedDemandKw, 0)} kW，年需量费 ≈ ${round(demandChargeY1, 0)} 元（需量电价 元/kW·月 × 12）；当前未建模储能削峰带来的需量下降，属保守全额计，须专业复核`,
+      `需量(基本)电费按需用系数计入购电成本：计费需量 = 充电装机总功率 × 需用系数 ≈ ${round(billedDemandKw, 0)} kW，年需量费 ≈ ${round(demandChargeY1, 0)} 元（需量电价 元/kW·月 × 12）；本方案未配储能（或储能功率不足以在峰值时段削峰），未计入任何削峰抵扣，须专业复核`,
     );
   }
   if (taxBlocked) notes.push("已按企业所得税率对正净现金流简化计税（未考虑折旧抵税效应，偏保守）");

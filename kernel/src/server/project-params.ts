@@ -30,7 +30,7 @@ import {
  */
 
 /** 参数模板版本（改结构/默认口径须升版并记录原因，宪法第 13 条）。 */
-export const PARAMS_VERSION = "1.5.0"; // 1.5.0（V1.1 批次1.4）：`project.includeStorage` 假开关转正——编排层把布尔以 0/1 门控注入经济快照，`hasStorage` 真门控储能整腿（MODEL 1.4.0·审计 F-2h）；派生 `derived.storageDuration` 名实修正为「储能满功率放电时长」。1.4.0（V1.1 批次1.3）：新增 `inactive/inactiveReason` 未启用标注（6 僵尸键收起至「未启用·即将支持」，方案 §3.1d——gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization；includeStorage 留给 1.4 真接线不标）；`region.demandCharge`/`project.demandKc` exposure pro→advanced（真参数反向错配修正，B/C 对照组在工作台可实际切换）。1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
+export const PARAMS_VERSION = "1.6.0"; // 1.6.0（[0.84.0]）：新增 `tech.storagePeakShavePct`（φ，储能削峰可靠系数，默认 50%·占位假设），供 MODEL 1.5.0 的 E4「储能削峰降需量」抵扣计费需量消费——仅在「有储能 且 需量电价>0」时生效，主情景 A（免征 demandCharge=0）下不产生任何计算后果、回归样本逐字节不变。1.5.0（V1.1 批次1.4）：`project.includeStorage` 假开关转正——编排层把布尔以 0/1 门控注入经济快照，`hasStorage` 真门控储能整腿（MODEL 1.4.0·审计 F-2h）；派生 `derived.storageDuration` 名实修正为「储能满功率放电时长」。1.4.0（V1.1 批次1.3）：新增 `inactive/inactiveReason` 未启用标注（6 僵尸键收起至「未启用·即将支持」，方案 §3.1d——gridCapacity/landRent/carbonPrice/equityRatio/loanRate/chargerUtilization；includeStorage 留给 1.4 真接线不标）；`region.demandCharge`/`project.demandKc` exposure pro→advanced（真参数反向错配修正，B/C 对照组在工作台可实际切换）。1.3.0（V1.1 批次1.2）：+project.demandKc（需用系数，计费需量=装机×Kc），region.demandCharge 主情景默认 40→0（2030 前集中式充换电免需量电费条款）；1.2.0：新增 5 个 SVE 储能价值键（R9.0 Step 2，见 tech.storage* 尾部）；1.1.0：project.chargingPrice
 
 /** 沙盘模板的稳定标识（供 R3 建项目时引用模板来源）。 */
 export const DEPOT_TEMPLATE = "new-energy-heavy-truck-pv-storage-charging" as const;
@@ -172,6 +172,14 @@ export const PARAMETER_SPECS: readonly ParameterSpec[] = [
   num("tech.storageSocMax", "储能 SOC 上限", "technology", "pro", 90, "%", { min: 10, max: 100 }),
   num("tech.storageDegradation", "储能年容量衰减", "technology", "pro", 2.5, "%/年", { min: 0, max: 10 }),
   num("tech.storageDischargeWindowHours", "日均可放电时长窗口", "technology", "pro", 2, "h/日", { min: 0.5, max: 12 }),
+  // [0.84.0] 储能削峰降需量：φ=储能可在计费需量峰值真正放电削减的额定功率比例（0–100%）。
+  // 仅在「有储能 且 需量电价>0」时参与 E4 计费需量抵扣；主情景 A（免征 demandCharge=0）下不产生任何影响。
+  num("tech.storagePeakShavePct", "储能削峰可靠系数φ(削计费需量=储能功率×φ)", "technology", "advanced", 50, "%", {
+    min: 0,
+    max: 100,
+    source:
+      "【占位假设·待核实】φ 表示储能能在月度计费需量峰值时段真正放电削减的额定功率比例——缺分时负荷曲线（S1），无法内生判定，V1 保守取 50%（等效「半数峰值时刻电池有电且在放」）。削峰量=min(计费需量, 储能功率×φ)，仅在「有储能 且 需量电价>0」时抵扣 E4 计费需量；主情景 A 免征下不生效。套利与削峰共用同一块电池、未做时序互斥，故本条偏乐观，须专业复核。",
+  }),
   num("tech.chargerEfficiency", "充电桩效率", "technology", "pro", 94, "%", { min: 85, max: 99 }),
   num("tech.chargerCapex", "充电桩单位造价", "technology", "advanced", 500, "元/kW", { min: 200, max: 1500 }),
   num("tech.chargerOm", "单桩年运维成本", "technology", "pro", 3000, "元/台·年", { min: 0, max: 10000 }),

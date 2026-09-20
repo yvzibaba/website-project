@@ -238,6 +238,8 @@ describe("V1.1 批次1.2 · 需量电价 A/B/C 三场景（计费需量=装机×
    *   A 主情景：demandCharge=0（2030 前两部制集中式充换电免需量电费·52号文条款字面直传）
    *   B 对照：40(全国名义)/44(山西名义) 元/kW·月 × Kc=70%（2016 kW）
    *   C 压力：Kc=100% 报装/装机全额（不削峰最保守）
+   * MODEL 1.5.0 起 E4 新增储能削峰抵扣（φ=tech.storagePeakShavePct%）；本组 B/C 的**绝对手算焊点刻意把 φ 钉为 0**
+   * （储能抵扣关闭），使其仍是「计费需量 = 装机×Kc」公式的独立守卫、逐字节承袭 1.3.0/1.4.0 黄金；削峰腿本身由专块覆盖。
    */
   it("A 主情景：需量费恒 0，NPV 逐字回摆 R9.0（免征=数学期末相等·政策焊点）", () => {
     const a = computeEconomics(NUMERIC);
@@ -248,7 +250,7 @@ describe("V1.1 批次1.2 · 需量电价 A/B/C 三场景（计费需量=装机×
   });
 
   it("B 对照（全国名义 40）：2880×70%×40×12 = 967,680 元/年（手算=引擎双确认）", () => {
-    const b = computeEconomics({ ...NUMERIC, "region.demandCharge": 40 });
+    const b = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 0 });
     expect(b.ok).toBe(true);
     if (!b.ok) return;
     expect(b.demandChargeY1).toBe(967680); // 2016 kW × 40 × 12
@@ -256,14 +258,14 @@ describe("V1.1 批次1.2 · 需量电价 A/B/C 三场景（计费需量=装机×
   });
 
   it("B 对照（山西名义 44）：2880×70%×44×12 = 1,064,448 元/年（引擎实测钉桩）", () => {
-    const b = computeEconomics({ ...NUMERIC, "region.demandCharge": 44 });
+    const b = computeEconomics({ ...NUMERIC, "region.demandCharge": 44, "tech.storagePeakShavePct": 0 });
     expect(b.ok).toBe(true);
     if (!b.ok) return;
     expect(b.demandChargeY1).toBe(1064448); // 2016 kW × 44 × 12（手算曾误记 1,063,411，以引擎+复算 2016×528 为准）
   });
 
   it("C 压力（Kc=100% 全额）：2880×100%×40×12 = 1,382,400 元/年；税前净转负如实反映", () => {
-    const c = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "project.demandKc": 100 });
+    const c = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "project.demandKc": 100, "tech.storagePeakShavePct": 0 });
     expect(c.ok).toBe(true);
     if (!c.ok) return;
     expect(c.demandChargeY1).toBe(1382400); // 2880 kW × 40 × 12（未削峰最保守）
@@ -272,7 +274,7 @@ describe("V1.1 批次1.2 · 需量电价 A/B/C 三场景（计费需量=装机×
 
   it("场景排序恒 A > B > C（免征最优、全额最保守）+ B 内 demandKc 单调下降", () => {
     const npvOf = (o: Record<string, number>) => {
-      const r = computeEconomics({ ...NUMERIC, ...o });
+      const r = computeEconomics({ ...NUMERIC, "tech.storagePeakShavePct": 0, ...o });
       expect(r.ok).toBe(true);
       return r.ok ? r.metrics.npv : NaN;
     };
@@ -290,13 +292,90 @@ describe("V1.1 批次1.2 · 需量电价 A/B/C 三场景（计费需量=装机×
 
   it("★chargerUtilization 已退出 E 层计费（口径修正）：B@44 下利用率 5/35/90 三档 NPV 逐字相等", () => {
     const npvAt = (u: number) => {
-      const r = computeEconomics({ ...NUMERIC, "region.demandCharge": 44, "project.chargerUtilization": u });
+      const r = computeEconomics({ ...NUMERIC, "region.demandCharge": 44, "project.chargerUtilization": u, "tech.storagePeakShavePct": 0 });
       expect(r.ok).toBe(true);
       return r.ok ? r.metrics.npv : NaN;
     };
     expect(npvAt(5)).toBe(npvAt(35));
     expect(npvAt(35)).toBe(npvAt(90));
     expect(npvAt(35)).toBe(-3211809); // = B@44 基准值：利用率绝不掺入计费需量（审计 P0-3 口径错位的反向守卫）
+  });
+});
+
+describe("[0.84.0 · MODEL 1.5.0] · E4 储能削峰降需量（φ=tech.storagePeakShavePct · min(计费需量,储能功率×φ)）", () => {
+  /**
+   * 口径：毛计费需量 = 装机 2880 × Kc 70% = 2016 kW；有储能 且 demandCharge>0 时
+   * 削峰量 = min(2016, storagePower×φ/100)，净计费需量 = 2016 − 削峰量，年需量费 = 净计费需量×价×12。
+   * NUMERIC 的 storagePower=200。成本侧常量项（收入−电量电费−OPEX=1,113,517）在仅改 φ/demandCharge 时不变，
+   * 故 demandChargeY1 与税前净均为纯算术可复核（宪法：程序算>LLM口算，此处为可手算复算的线性项）。
+   */
+  it("φ=50（缺键默认）@40：削峰 100 kW → 需量费 1916×40×12=919,680、税前净 193,837", () => {
+    const r = computeEconomics({ ...NUMERIC, "region.demandCharge": 40 }); // NUMERIC 无 storagePeakShavePct 键 → 保守回退 50%
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.demandChargeY1).toBe(919680); // (2016 − min(2016, 200×0.5)) × 40 × 12
+    expect(r.netCashFlowY1PreTax).toBe(193837); // 1,113,517 − 919,680
+  });
+
+  it("φ=50 相对 φ=0 严格降低需量费、抬高 NPV（削峰确有益，方向可判定）", () => {
+    const shaved = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 50 });
+    const anchor = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 0 });
+    expect(shaved.ok && anchor.ok).toBe(true);
+    if (!shaved.ok || !anchor.ok) return;
+    expect(shaved.demandChargeY1).toBeLessThan(anchor.demandChargeY1); // 919,680 < 967,680
+    expect(shaved.metrics.npv).toBeGreaterThan(anchor.metrics.npv); // 少交 48,000/年 → NPV 更高
+  });
+
+  it("φ=100 @40：满功率削减 200 kW → 1816×40×12=871,680", () => {
+    const r = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 100 });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.demandChargeY1).toBe(871680); // (2016 − 200) × 40 × 12
+  });
+
+  it("φ 越界钳制：φ=150 按 100 计、φ=−10 按 0 计（不产生负削减或超额削减）", () => {
+    const hi = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 150 });
+    const lo = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": -10 });
+    expect(hi.ok && lo.ok).toBe(true);
+    if (!hi.ok || !lo.ok) return;
+    expect(hi.demandChargeY1).toBe(871680); // 钳到 100% → 削 200 kW
+    expect(lo.demandChargeY1).toBe(967680); // 钳到 0% → 无削减（= φ=0 锚点）
+  });
+
+  it("min() 上限：储能远大于计费需量时，削减量不超过毛计费需量（需量费不为负）", () => {
+    const r = computeEconomics({
+      ...NUMERIC,
+      "region.demandCharge": 40,
+      "project.storagePower": 3000,
+      "project.storageEnergy": 6000,
+      "tech.storagePeakShavePct": 100,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    // min(2016, 3000) = 2016 → 净计费需量 0 → 需量费 0（不出现负值）
+    expect(r.demandChargeY1).toBe(0);
+  });
+
+  it("hasStorage 门控：includeStorage=0 时无削峰抵扣（需量费回 2016×40×12=967,680）", () => {
+    const r = computeEconomics({
+      ...NUMERIC,
+      "region.demandCharge": 40,
+      "project.includeStorage": 0,
+      "tech.storagePeakShavePct": 100,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.demandChargeY1).toBe(967680); // 关储能 → 无削峰 → 毛计费需量全额计
+  });
+
+  it("★主情景 A 零 churn 反证：免征下 φ 无论 0/50/100 需量费恒 0、NPV 逐字回摆 R9.0（政策焊点不受削峰影响）", () => {
+    for (const phi of [0, 50, 100]) {
+      const r = computeEconomics({ ...NUMERIC, "tech.storagePeakShavePct": phi }); // demandCharge=0（A）
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      expect(r.demandChargeY1).toBe(0); // 抵扣量 ×0=0
+      expect(r.metrics.npv).toBe(4448573); // 与接入需量费/削峰前逐字相等
+    }
   });
 });
 

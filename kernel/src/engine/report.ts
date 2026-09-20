@@ -69,6 +69,18 @@ export interface ReportOptions {
   generatedAtIso: string;
   /** 报告标题（默认按情景名生成）。 */
   title?: string;
+  /**
+   * 落地出口（P7）所需的联系方式与服务口径。**由调用方注入**，本模块不硬编码任何
+   * 电话/邮箱/公司名——没有传入就如实写"由运营方配置"，绝不为版面完整而编一条联系信息。
+   */
+  nextStep?: {
+    /** 主要联系渠道文案（如 "官网「联系我们」表单" / 邮箱 / 电话）。缺省则给中性指引。 */
+    contact?: string;
+    /** 可选的多渠道列表。 */
+    channels?: string[];
+    /** 服务对接说明（本平台作为决策服务方可提供什么）。 */
+    serviceNote?: string;
+  };
 }
 
 export function buildDecisionReport(calc: CalculationResult, opts: ReportOptions): DecisionReport {
@@ -350,6 +362,51 @@ export function buildDecisionReport(calc: CalculationResult, opts: ReportOptions
       { label: "报告版本", value: REPORT_VERSION },
       { label: "生成时刻", value: opts.generatedAtIso },
     ],
+  });
+
+  /* ── 14. 下一步与落地（P7：报告必须内置"下一步找谁"出口） ──
+   *
+   * 这一节的价值不在于"写了个联系方式"，而在于把决策**接回现实动作**：
+   *   ① 结论要落地，先核实的是那几条低置信度假设（不是先去谈设备价格）；
+   *   ② 明确本平台是"轻资产决策服务方"，把报告交专业机构复核、以实际合同价重算，
+   *      是投资决策前的必经一步（呼应免责声明，但不重复其义务性表述）。
+   * 联系口径**只透传调用方注入的 `opts.nextStep`**；未注入时给中性指引，绝不编造。 */
+  const ns = opts.nextStep;
+  const topAssumptions = decision.criticalAssumptions
+    .slice()
+    .sort((a, b) => a.confidence - b.confidence)
+    .slice(0, 5);
+  const nextStepBullets: string[] = [];
+  if (topAssumptions.length) {
+    nextStepBullets.push("【先核实】把下列证据强度最低的假设核实到可信区间，是投入工程款之前最优先的动作：");
+    for (const a of topAssumptions) {
+      const val = typeof a.value === "number" ? `${n(a.value, 3)}${a.unit ? ` ${a.unit}` : ""}` : String(a.value);
+      nextStepBullets.push(`　· ${a.label}（本次 ${val}，置信度 ${a.confidence}/100）：${a.impactIfWrong}`);
+    }
+  } else {
+    nextStepBullets.push("【先核实】本次输入的关键假设置信度均已达标，可将报告交专业机构按实际合同价与结算单价复核。");
+  }
+  nextStepBullets.push(
+    decision.recommendation.recommended
+      ? "【推进方向】结论为建议推进；进入实施前仍须以真实电价、设备合同价、并网批复重算，并由具备资质机构复核。"
+      : "【推进方向】结论暂不建议；若要坚持该选址，应先复核上面列出的关键假设与风险，改假设后重算对比，而非直接下工程判断。",
+  );
+  const contactText =
+    ns?.contact ??
+    (ns?.channels && ns.channels.length ? ns.channels.join(" / ") : "（联系方式由运营方在站点配置，本报告内不预设固定电话或邮箱）");
+  sections.push({
+    id: "next-steps",
+    title: "十四、下一步与落地",
+    kind: "key-values",
+    paragraphs: [
+      "本报告由决策平台按给定假设自动生成。平台的角色是**轻资产决策服务方与项目发起方**——提供可复算、可溯源的决策依据，" +
+        "不代为建设、不持有资产、不做投资决策、不做自动报价。",
+    ],
+    items: [
+      { label: "决策服务方可协助", value: ns?.serviceNote ?? "把决策结论落成可交付第三方的报告、协助梳理关键未知项与复核清单（具体范围以正式沟通为准）。" },
+      { label: "如何进入下一步", value: contactText },
+    ],
+    bullets: nextStepBullets,
   });
 
   return {

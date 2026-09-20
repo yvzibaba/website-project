@@ -23,6 +23,7 @@ import { defaultScenarioInput, SCENARIO_TEMPLATES, buildScenarioFromTemplate, ge
 import { validateScenarioInput } from "@app/kernel/engine/engine";
 import { RECOMMEND_OBJECTIVES, recommendConfiguration } from "@app/kernel/engine/recommend";
 import type { RecommendationRequest } from "@app/kernel/engine/recommend";
+import { attributeScenarioDelta } from "@app/kernel/engine/attribution";
 import {
   addDecisionScenario,
   computeDecisionSnapshot,
@@ -579,4 +580,65 @@ export function recommendPreview(input: { body: unknown }): ServiceResult {
     };
   }
   return { status: "ok", recommended: true, reason: null, detail: null, result: out };
+}
+
+/* ────────────────────────── 差异归因（M6 · 两情景"差在哪、各差多少"） ────────────────────────── */
+
+/**
+ * 两情景对比归因的请求契约。
+ *
+ * 只收两个已存档情景的 id + 目标口径，**不接受客户端传输入**——输入一律从库里已存的
+ * 快照读取，这样"归因用的数"和"当初报告里的数"必然同源同版，杜绝客户端塞一套来路不明
+ * 的输入进来算个结论。
+ */
+export const compareAttributionSchema = z.object({
+  scenarioAId: z.string().trim().min(1).max(60),
+  scenarioBId: z.string().trim().min(1).max(60),
+  objective: z.enum(["npv", "equityNpv", "payback"]).optional(),
+});
+
+/**
+ * 对同一账号可访问的两个已存档情景做**只算不存**的差异归因。
+ *
+ * 与 `recommendPreview` 同级：都是"算给用户看"，都不写库。命脉一致——本层不自己算，
+ * 交给 `attributeScenarioDelta()`，后者又只用引擎唯一入口 `runCalculation()`。
+ *
+ * 鉴权：两个情景各自的宿主项目，当前用户都必须可访问（owner 本人或 STAFF），
+ * 任一越权即在计算前 `forbidden`，绝不让用户借归因端点窥探他人数据。
+ */
+export async function compareScenarios(input: { body: unknown; user: SessionUser }): Promise<ServiceResult> {
+  const parsed = parseWith(compareAttributionSchema, input.body);
+  if (!parsed.ok) return parsed.result;
+  const { scenarioAId, scenarioBId, objective } = parsed.data;
+
+  const sa = await readDecisionScenario(scenarioAId);
+  if (!sa) return { status: "not_found" };
+  const sb = await readDecisionScenario(scenarioBId);
+  if (!sb) return { status: "not_found" };
+
+  const pa = await readDecisionProject(sa.projectId);
+  const pb = await readDecisionProject(sb.projectId);
+  if (!pa || !pb) return { status: "not_found" };
+  if (!canAccessDecisionProject(pa.ownerId, input.user) || !canAccessDecisionProject(pb.ownerId, input.user)) {
+    return { status: "forbidden" };
+  }
+
+  if (!sa.scenarioInput || !sb.scenarioInput) {
+    return { status: "invalid", fieldErrors: { scenario: ["至少一个情景没有可复算的输入快照，无法归因（请重算后再对比）。"] } };
+  }
+
+  const out = attributeScenarioDelta(sa.scenarioInput, sb.scenarioInput, objective ? { objective } : {});
+  if (!out.ok) {
+    // 归因"作不出结论"是合法结果（如同情景 / 输入算不通），如实返回，绝不返回半成品。
+    return {
+      status: "ok",
+      attributed: false,
+      reason: out.reason,
+      detail: out.detail,
+      result: null,
+      scenarioAId,
+      scenarioBId,
+    };
+  }
+  return { status: "ok", attributed: true, reason: null, detail: null, result: out };
 }

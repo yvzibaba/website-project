@@ -37,6 +37,7 @@ import {
 import { DecisionReportView, type DecisionReportData } from "./DecisionReportView";
 import { ActualsPanel } from "./ActualsPanel";
 import { RecommendPanel } from "./RecommendPanel";
+import { ScenarioAttributionPanel } from "./ScenarioAttributionPanel";
 
 /* ── 服务端返回结构（只声明本组件真正读取的字段；类型即文档） ── */
 
@@ -529,7 +530,7 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
           <Separator />
 
           {/* ── 7 场景比较 ── */}
-          <Section index={7} title="场景比较" description="同一项目下各情景的关键指标并排比较。同一台引擎、同一条路径，差别只来自输入。">
+          <Section index={7} title="场景比较" description="同一项目下各情景的关键指标并排比较；并可任选两个情景做参数级差异归因。同一台引擎、同一条路径，差别只来自输入。">
             <SimpleTable
               columns={["情景", "状态", "净投资", "NPV", "IRR", "回收期（折现）", "度电成本", "输入指纹"]}
               align={["left", "left", "right", "right", "right", "right", "right", "left"]}
@@ -559,6 +560,13 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
                 </Button>
               ))}
             </div>
+
+            {project.scenarios.length >= 2 ? (
+              <ScenarioAttributionPanel
+                scenarios={project.scenarios.map((s) => ({ id: s.id, name: s.name, isBaseline: s.isBaseline }))}
+                defaultAId={activeId}
+              />
+            ) : null}
           </Section>
 
           <Separator />

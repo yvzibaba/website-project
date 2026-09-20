@@ -412,8 +412,13 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
                 label="储能套利收益"
                 value={fmtMoney(calc.bess.arbitrageBenefitYuan)}
                 tone={calc.bess.arbitrageBenefitYuan <= 0 ? "bad" : "good"}
-                hint={calc.bess.arbitrageBenefitYuan <= 0 ? "峰谷价差不足以覆盖损耗，储能不产生价值" : "按峰谷价差与充放电损耗测算"}
+                hint={
+                  calc.bess.arbitrageBenefitYuan <= 0
+                    ? "仅按峰谷价差（充放电搬移电量）测算：本口径下价差未覆盖往返损耗。此为储能价值的一条腿，未含辅助服务/保供/现货等价差；非正≠储能一定亏，属保守口径，须专业复核"
+                    : "按峰谷价差与充放电损耗测算；此卡仅计储能「峰谷套利」一条价值流，未含辅助服务/保供/现货等价差"
+                }
               />
+
               <MetricCard label="储能 SOC 越界" value={fmtNum(calc.bess.socViolations)} tone={calc.bess.socViolations > 0 ? "bad" : "good"} hint="充放电不得越过 SOC 上下限" />
               <MetricCard label="年购电 / 上网" value={`${fmtNum(calc.grid.annualImportKwh)} / ${fmtNum(calc.grid.annualExportKwh)} kWh`} />
               <MetricCard label="并网容量" value={`${fmtNum(inputs.grid.capacityKw)} kW`} hint={calc.grid.capacityConstrained ? "容量已成为约束" : "容量未成为约束"} />

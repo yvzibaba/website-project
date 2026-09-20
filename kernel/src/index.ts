@@ -84,3 +84,28 @@ export * as scoutIngest from "./server/scout-ingest";
 export * as solutionAdmin from "./server/solution-admin";
 export * as solutionBody from "./server/solution-body";
 export * as solutionGeneration from "./server/solution-generation";
+
+/* ───────────────────────── engine（V2 生产计算引擎：纯函数、零框架依赖、确定性） ───────────────────────── */
+
+/**
+ * V2 引擎是"唯一的生产计算路径"。与上方 `server/*` 的区别：
+ *   - `server/*` 里的模型会读库、会编排、会依赖 Prisma；
+ *   - `engine/*` 只吃 `ScenarioInput`、只吐 `CalculationResult`，不碰任何 IO。
+ *
+ * 分层顺序即依赖方向：`types` → `time`/`benchmark` → 各技术域 → `economics` → `decision`，
+ * 最后由 `engine.runCalculation` 收口。UI 与 API 只允许调用 `engine.runCalculation`。
+ */
+export * as engineTypes from "./engine/types";
+export * as engineTime from "./engine/time";
+export * as engineBenchmark from "./engine/benchmark";
+export * as engineTruckDemand from "./engine/truck-demand";
+export * as engineCharging from "./engine/charging";
+export * as enginePv from "./engine/pv";
+export * as engineBess from "./engine/bess";
+export * as engineBalance from "./engine/balance";
+export * as engineGrid from "./engine/grid";
+export * as engineEconomics from "./engine/economics";
+export * as engineScenario from "./engine/scenario";
+export * as engineDecision from "./engine/decision";
+export * as engineReport from "./engine/report";
+export * as engine from "./engine/engine";

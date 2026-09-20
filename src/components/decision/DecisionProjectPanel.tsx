@@ -38,6 +38,7 @@ import { DecisionReportView, type DecisionReportData } from "./DecisionReportVie
 import { ActualsPanel } from "./ActualsPanel";
 import { RecommendPanel } from "./RecommendPanel";
 import { ScenarioAttributionPanel } from "./ScenarioAttributionPanel";
+import { ScenarioVersionsPanel } from "./ScenarioVersionsPanel";
 
 /* ── 服务端返回结构（只声明本组件真正读取的字段；类型即文档） ── */
 
@@ -720,6 +721,17 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
           {/* 实测回填 */}
           <Section index={11} title="实测回填（Actuals）" description="项目落地后的真实数据回流，用于把「预测」与「实测」放在一起看。">
             <ActualsPanel projectId={projectId} scenarioId={activeId} />
+          </Section>
+
+          <Separator />
+
+          {/* 版本历史与溯源 */}
+          <Section index={12} title="版本历史与溯源" description="这个结论属于哪个版本、按哪套引擎与基准算的、之前怎么来的——逐版回看，历史不会被今天的模型悄悄改写。">
+            {activeId ? (
+              <ScenarioVersionsPanel scenarioId={activeId} />
+            ) : (
+              <p className="text-sm text-muted-foreground">请先选择一个情景。</p>
+            )}
           </Section>
         </>
       ) : null}

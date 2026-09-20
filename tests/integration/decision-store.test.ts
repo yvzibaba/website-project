@@ -7,10 +7,12 @@ import {
   deleteDecisionScenario,
   deleteProjectActual,
   listDecisionProjects,
+  listDecisionScenarioVersions,
   listProjectActuals,
   readDecisionProject,
   readDecisionScenario,
   recalculateDecisionScenario,
+  saveDecisionScenarioAsVersion,
   upsertProjectActual,
 } from "@app/kernel/server/decision-store";
 import { defaultScenarioInput } from "@app/kernel/engine/scenario";
@@ -318,6 +320,126 @@ describeDb("V2 决策平台：持久化与可复算", () => {
     const entry = listA.find((p) => p.id === created.projectId)!;
     expect(entry.scenarioCount).toBe(1);
     expect(entry.baseline?.npvYuan).toBeGreaterThan(0);
+  });
+});
+
+describeDb("R5 · V2 版本治理：覆盖前冻结 + 时间线（真连库）", () => {
+  it("成功重算：旧结果冻结为不可变版本（其输入可复算回旧哈希），当前态写新指纹，ChangeLog 在链", async () => {
+    const owner = await makeUser();
+    const input = baseInput({ name: `${runId} R5冻结` });
+    const created = await createDecisionProject({
+      name: `${runId} R5冻结项目`,
+      ownerId: owner.id,
+      scenarioInput: input,
+    });
+    if (!created.ok) throw new Error(created.detail);
+    createdProjectIds.push(created.projectId);
+
+    const before = await prisma.projectScenario.findUnique({
+      where: { id: created.scenarioId },
+      select: { version: true, inputHash: true, engineVersion: true, npv: true },
+    });
+
+    const r = await recalculateDecisionScenario({
+      scenarioId: created.scenarioId,
+      patch: { economics: { ...input.economics, chargingServiceFeeYuanPerKwh: FEE + 0.2 } },
+      actor: `human:${owner.id}`,
+      reason: "R5 集成：服务费上调后重算",
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.frozenSeq).not.toBeNull();
+
+    // ① 冻结进 ProjectVersion 的是**旧**指纹
+    const frozen = await prisma.projectVersion.findUnique({
+      where: { scenarioId_seq: { scenarioId: created.scenarioId, seq: r.frozenSeq as number } },
+      select: { engineVersion: true, inputHash: true, scenarioInput: true, summary: true, scenarioSchemaVersion: true, calculatedAt: true },
+    });
+    expect(frozen).not.toBeNull();
+    expect(frozen!.engineVersion).toBe(before!.engineVersion);
+    expect(frozen!.inputHash).toBe(before!.inputHash);
+    expect(frozen!.scenarioSchemaVersion).toBe((input as ScenarioInput).schemaVersion);
+    expect(frozen!.calculatedAt).not.toBeNull();
+    // ★历史可复算：把冻结的输入喂回引擎，必须还原出**旧**哈希（证明历史没被今天改写）
+    const replay = runCalculation(frozen!.scenarioInput as unknown as ScenarioInput);
+    expect(replay.ok && replay.inputHash === before!.inputHash).toBe(true);
+
+    // ② 当前态写的是**新**指纹，version++
+    const after = await prisma.projectScenario.findUnique({
+      where: { id: created.scenarioId },
+      select: { version: true, inputHash: true },
+    });
+    expect(after!.inputHash).not.toBe(before!.inputHash);
+    expect(after!.version).toBe(before!.version + 1);
+
+    // ③ ChangeLog 在链（复用既有表，from/to 版本 + frozenSeq + reason）
+    const log = await prisma.changeLog.findFirst({
+      where: { entityType: "ProjectScenario", entityId: created.scenarioId, action: "UPDATE" },
+      orderBy: { createdAt: "desc" },
+    });
+    expect(log).not.toBeNull();
+    expect((log!.after as Record<string, unknown>).frozenSeq).toBe(r.frozenSeq);
+    expect(log!.reason).toContain("服务费上调");
+  });
+
+  it("重算算不通：旧成功结果照样被冻结，当前态只清数字列不冒充", async () => {
+    const owner = await makeUser();
+    const input = baseInput({ name: `${runId} R5失败留档` });
+    const created = await createDecisionProject({
+      name: `${runId} R5失败留档`,
+      ownerId: owner.id,
+      scenarioInput: input,
+    });
+    if (!created.ok) throw new Error(created.detail);
+    createdProjectIds.push(created.projectId);
+    const before = await prisma.projectScenario.findUnique({
+      where: { id: created.scenarioId },
+      select: { inputHash: true },
+    });
+
+    const r = await recalculateDecisionScenario({
+      scenarioId: created.scenarioId,
+      patch: { grid: { ...input.grid, capacityKw: 0 } },
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.frozenSeq).not.toBeNull(); // 旧成功仍被保住
+
+    const frozen = await prisma.projectVersion.findUnique({
+      where: { scenarioId_seq: { scenarioId: created.scenarioId, seq: r.frozenSeq as number } },
+      select: { inputHash: true },
+    });
+    expect(frozen!.inputHash).toBe(before!.inputHash);
+
+    const now = await prisma.projectScenario.findUnique({
+      where: { id: created.scenarioId },
+      select: { calcStatus: true, npv: true },
+    });
+    expect(now!.calcStatus).not.toBe("ok");
+    expect(now!.npv).toBeNull();
+  });
+
+  it("显式存版 + 时间线：listDecisionScenarioVersions 回读当时指纹（不重算）", async () => {
+    const owner = await makeUser();
+    const created = await createDecisionProject({
+      name: `${runId} R5存版`,
+      ownerId: owner.id,
+      scenarioInput: baseInput({ name: `${runId} R5存版` }),
+    });
+    if (!created.ok) throw new Error(created.detail);
+    createdProjectIds.push(created.projectId);
+
+    const sv = await saveDecisionScenarioAsVersion(created.scenarioId, { label: "里程碑1", savedBy: `human:${owner.id}` });
+    expect(sv.ok).toBe(true);
+    if (!sv.ok) return;
+
+    const list = await listDecisionScenarioVersions(created.scenarioId);
+    expect(list.length).toBe(1);
+    expect(list[0].label).toBe("里程碑1");
+    expect(list[0].provenance.engineVersion).toMatch(/^calc@/);
+    expect(list[0].provenance.benchmarkVersion).not.toBeNull();
+    expect(list[0].provenance.inputHash).not.toBeNull();
+    expect(list[0].summary?.calcStatus).toBe("ok");
   });
 });
 

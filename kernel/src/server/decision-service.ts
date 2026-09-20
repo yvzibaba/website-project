@@ -33,15 +33,17 @@ import {
   deleteProjectActual,
   listDecisionProjects,
   listDecisionScenarios,
+  listDecisionScenarioVersions,
   listProjectActuals,
   readDecisionProject,
   readDecisionScenario,
   recalculateDecisionScenario,
+  saveDecisionScenarioAsVersion,
   upsertProjectActual,
 } from "@app/kernel/server/decision-store";
 
 /** 编排层版本（改鉴权口径 / 输入契约须升版记原因）。 */
-export const DECISION_SERVICE_VERSION = "1.0.0";
+export const DECISION_SERVICE_VERSION = "1.1.0"; // 1.1.0（R5 · 版本治理）：recalculate 透传 actor/reason/label 并回传 version + frozenSeq（重算会先冻结上一版）；新增 saveDecisionVersion / readDecisionVersions 两个 owner-or-staff 动作。鉴权口径不变（仍 owner 本人或 STAFF）。1.0.0：V2 编排初始。
 
 /* ────────────────────────── 鉴权（纯函数优先，便于单测） ────────────────────────── */
 
@@ -120,15 +122,25 @@ export const addScenarioSchema = z.object({
   scenarioInput: decisionScenarioInputSchema,
 });
 
-/** 重算：用「模板 id」或「增量补丁」二选一，禁止同时给（避免两处真相打架）。 */
+/** 重算：用「模板 id」或「增量补丁」二选一，禁止同时给（避免两处真相打架）；可附版本说明。 */
 export const recalculateSchema = z
   .object({
     templateId: z.string().trim().min(1).max(60).optional(),
     patch: z.record(z.string(), z.unknown()).optional(),
+    // R5 版本治理：本次重算"为什么变"（写进冻结版本的 note + ChangeLog.reason），纯审计、非计算输入。
+    reason: z.string().trim().max(2000).optional(),
+    label: z.string().trim().max(100).optional(),
+    note: z.string().trim().max(2000).optional(),
   })
   .refine((v) => !(v.templateId && v.patch), {
     message: "不能同时指定模板与增量补丁（两处真相会打架）",
   });
+
+/** 显式「存为新版本」的入参（只带命名/说明，不带任何计算输入——版本冻结的是当前已存结果）。 */
+export const saveVersionSchema = z.object({
+  label: z.string().trim().max(100).optional(),
+  note: z.string().trim().max(2000).optional(),
+});
 
 export const actualSchema = z.object({
   scenarioId: z.string().trim().max(60).optional().nullable(),
@@ -373,6 +385,9 @@ export async function recalculateScenario(input: {
     scenarioId: input.scenarioId,
     patch,
     generatedAtIso: input.generatedAtIso,
+    actor: `human:${input.user.id}`, // 只从会话取，绝不信客户端传的 actor
+    reason: parsed.data.reason ?? parsed.data.note ?? null,
+    label: parsed.data.label ?? null,
   });
   if (!r.ok) {
     if (r.reason === "invalid") return { status: "invalid", fieldErrors: { patch: [r.detail] } };
@@ -383,7 +398,59 @@ export async function recalculateScenario(input: {
     status: "ok",
     calcStatus: r.snapshot ? "ok" : "engine_failed",
     calcError: r.failure,
+    version: r.version,
+    frozenSeq: r.frozenSeq,
+    // 诚实告知：重算不覆盖历史——上一版成功结果已被冻结为不可变版本，可回看、可比对。
+    warning:
+      r.frozenSeq != null
+        ? `上一版结果已冻结为不可变版本 v${r.frozenSeq}（不会被本次重算覆盖）。`
+        : undefined,
   };
+}
+
+/**
+ * 显式「把当前情景存为一个不可变新版本」（不重算、不改当前态）。
+ * 用于用户想给当下这版结论打个里程碑（如「电价上调后定稿」）。owner-or-staff，越权在动库前拒。
+ */
+export async function saveDecisionVersion(input: {
+  scenarioId: string;
+  user: SessionUser;
+  body: unknown;
+}): Promise<ServiceResult> {
+  const existing = await readDecisionScenario(input.scenarioId);
+  if (!existing) return { status: "not_found" };
+  const project = await readDecisionProject(existing.projectId);
+  if (!project) return { status: "not_found" };
+  if (!canAccessDecisionProject(project.ownerId, input.user)) return { status: "forbidden" };
+
+  const parsed = parseWith(saveVersionSchema, input.body ?? {});
+  if (!parsed.ok) return parsed.result;
+
+  const r = await saveDecisionScenarioAsVersion(input.scenarioId, {
+    label: parsed.data.label,
+    note: parsed.data.note,
+    savedBy: `human:${input.user.id}`,
+  });
+  if (!r.ok) {
+    if (r.reason === "invalid") return { status: "invalid", fieldErrors: { scenario: [r.detail] } };
+    if (r.reason === "not_found") return { status: "not_found" };
+    return { status: "error", error: r.detail };
+  }
+  return { status: "ok", versionId: r.versionId, seq: r.seq };
+}
+
+/** 读某情景的 V2 版本时间线（回看历史怎么来的）。owner-or-staff。 */
+export async function readDecisionVersions(input: {
+  scenarioId: string;
+  user: SessionUser;
+}): Promise<ServiceResult> {
+  const existing = await readDecisionScenario(input.scenarioId);
+  if (!existing) return { status: "not_found" };
+  const project = await readDecisionProject(existing.projectId);
+  if (!project) return { status: "not_found" };
+  if (!canAccessDecisionProject(project.ownerId, input.user)) return { status: "forbidden" };
+
+  return { status: "ok", versions: await listDecisionScenarioVersions(input.scenarioId) };
 }
 
 export async function deleteScenario(input: {

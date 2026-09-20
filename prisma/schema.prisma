@@ -675,6 +675,16 @@ model ProjectActual {
 
 // 规则 13 / §9：情景的**不可变历史版本切片**，支持回滚与逐版本报告。每次「存为新版本」追加一行。
 // 与 ProjectScenario（保存「当前可编辑态」）不同，ProjectVersion 冻结某时刻的输入 + 结果，绝不就地改写。
+//
+// ── R5：V1 / V2 双形并存（additive、全可空）────────────────────────────────
+// 本表最初服务 V1 沙盘（`paramLayers/paramSnapshot/calcResult` 年度简化模型）。V2 决策平台
+// 的正式情景重算同样要能「回看 V1→V2→V3、每次为什么变、且不覆盖旧结果」，故在同一张表上
+// **加性**补一组 V2 溯源列（下方 `scenarioInput … summary`，全部可空）：
+//   - V1 冻结：只填上半组（calcResult/paramLayers…），V2 列留 null；
+//   - V2 冻结：填下半组（scenarioInput/engineVersion/…），V1 的 paramLayers 填 {} 占位（列非空约束所需）。
+// 两类切片互不覆写；V1 既有行的读取/回滚/展示路径**逐字节不变**（新增列皆 nullable，不改任何旧语义）。
+// `summary` 是冻结当时从已存结果**原样提取**的可查询冗余（单一真源仍是 scenarioInput + decision），
+// 与 ProjectScenario 的派生 Decimal 列同一取舍：便于列表/时间线直读，读侧绝不据此重算。
 model ProjectVersion {
   id                      String          @id @default(cuid())
   scenarioId              String
@@ -691,6 +701,19 @@ model ProjectVersion {
   needsProfessionalReview Boolean         @default(true) // §16：沙盘结论默认须专业人工确认，快照冻结该标记
   savedBy                 String? // "human:<id>" / "ai:<model>"（对齐 ChangeLog.changedBy 口径，仅审计、非鉴权）
   createdAt               DateTime        @default(now())
+
+  // ── V2 溯源切片（R5 · 全可空；只有 V2 冻结会写这组）──
+  // 值全部来自**产出它的那次计算已留档的列**（见 decision-store.decisionSnapshotToColumns），
+  // 绝不重算、绝不再读内核常量当"当下版本"——历史版本记录的必须是"当时"的版本，
+  // 这样即使引擎升到 2.x→3.x，老切片仍诚实回答「我是按 engine@2.0.0 / benchmark@1.0.0 算的」。
+  scenarioInput         Json?     // 冻结时刻的 V2 ScenarioInput 快照（可完整复算的那份输入）
+  engineVersion         String?   // 当时的引擎计算引用（如 calc@2.0.0），与 ProjectScenario.engineVersion 同口径
+  benchmarkVersion      String?   // 当时引用的基准参数层版本（如 1.0.0）
+  scenarioSchemaVersion String?   // 当时的情景输入契约版本（取自 scenarioInput.schemaVersion）
+  inputHash             String?   // 当时输入的内容哈希（复算校验锚点）
+  decision              Json?     // 冻结时刻的 V2 决策结果快照
+  calculatedAt          DateTime? // 被冻结结果的实际计算时刻（近似取情景 updatedAt，非"本次冻结时刻"createdAt）
+  summary               Json?     // 冻结时从已存结果提取的少量可查询数字（npv/capex/irr/… + feasible/recommended）
 
   @@unique([scenarioId, seq])
   @@index([projectId, createdAt])

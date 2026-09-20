@@ -25,7 +25,7 @@ import type { CalculationResult, ScenarioInput } from "@app/kernel/engine/types"
 import type { Diagnostic } from "@app/kernel/engine/types";
 
 /** 存储层版本（改写入口径 / 派生列含义须升版并记原因）。 */
-export const DECISION_STORE_VERSION = "1.0.0";
+export const DECISION_STORE_VERSION = "1.1.0"; // 1.1.0（R5 · 版本治理）：新增 V2「正式情景重算冻结旧结果为不可变版本 / 存为新版本 / 版本时间线 / 溯源投影」——全走既有 ProjectVersion + ChangeLog，仅加性扩列（见 migration 20260920120000）；计算真源与 `runCalculation()` 入口零改动，黄金基线不变。1.0.0：V2 落库初始。
 
 /* ────────────────────────── 数值与 JSON 归一 ────────────────────────── */
 
@@ -306,20 +306,267 @@ export function applyScenarioPatch(base: ScenarioInput, patch: Partial<ScenarioI
 }
 
 /**
- * 重算一个情景。
+ * 取一份（可能来自 JSON 的）ScenarioInput 的 `schemaVersion`；非对象/缺键 → null。
+ * 单一真源是输入快照自身，绝不拿当下的 `SCENARIO_SCHEMA_VERSION` 常量回填历史版本。
+ */
+function schemaVersionOf(input: unknown): string | null {
+  if (typeof input === "object" && input !== null && !Array.isArray(input)) {
+    const sv = (input as Record<string, unknown>).schemaVersion;
+    if (typeof sv === "string") return sv;
+  }
+  return null;
+}
+
+/** Decimal | number | null → number | null（不猜、不把 null 折成 0）。 */
+function numOrNull(v: Prisma.Decimal | number | null | undefined): number | null {
+  if (v == null) return null;
+  const n = v instanceof Prisma.Decimal ? Number(v.toString()) : Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+/* ══════════════════════ R5 · V2 版本治理（冻结 / 时间线 / 溯源投影）══════════════════════
+ *
+ * 一句话：**正式情景的重算绝不允许就地覆盖旧结论**。每一次明确 Recalculate，都先把
+ * 「上一次的成功的 V2 结果」连同它**当时**的版本指纹冻结成一条不可变 ProjectVersion，
+ * 再写当前态；历史靠 ProjectVersion 回放，绝不靠"今天升级后的模型"悄悄改写。
+ * 复用既有 ProjectVersion + ChangeLog，不另建版本系统、不加新表、不改计算真源。
+ * ══════════════════════════════════════════════════════════════════════════════════ */
+
+/** 一份 V2 结果"是怎么算出来的"的最小溯源集（只读已存列 + 输入快照，绝不再读内核常量当"当下版"）。 */
+export interface ScenarioProvenance {
+  engineVersion: string | null;
+  benchmarkVersion: string | null;
+  scenarioSchemaVersion: string | null;
+  inputHash: string | null;
+  calculatedAt: string | null; // ISO
+}
+
+/** 冻结时刻从已存结果**原样提取**的少量可查询数字（读时间线用；单一真源仍是 scenarioInput + decision）。 */
+export interface VersionSummary {
+  calcStatus: string;
+  feasible: boolean | null;
+  recommended: boolean | null;
+  capexNetYuan: number | null;
+  npvYuan: number | null;
+  irrPct: number | null;
+  paybackYears: number | null;
+  lcoeYuanPerKwh: number | null;
+  npvEquityYuan: number | null;
+  irrEquityPct: number | null;
+}
+
+/** 重算前一个情景行的形状（冻结所需的的全部字段都在这里选出来）。 */
+interface V2ScenarioRow {
+  id: string;
+  projectId: string;
+  version: number;
+  scenarioInput: Prisma.JsonValue;
+  engineVersion: string | null;
+  benchmarkVersion: string | null;
+  inputHash: string | null;
+  decision: Prisma.JsonValue;
+  calcStatus: string;
+  updatedAt: Date;
+  capexNet: Prisma.Decimal | null;
+  npv: Prisma.Decimal | null;
+  irrPct: Prisma.Decimal | null;
+  paybackYears: Prisma.Decimal | null;
+  lcoeYuanPerKwh: Prisma.Decimal | null;
+  npvEquity: Prisma.Decimal | null;
+  irrEquityPct: Prisma.Decimal | null;
+}
+
+const V2_SCENARIO_SELECT = {
+  id: true,
+  projectId: true,
+  version: true,
+  scenarioInput: true,
+  engineVersion: true,
+  benchmarkVersion: true,
+  inputHash: true,
+  decision: true,
+  calcStatus: true,
+  updatedAt: true,
+  capexNet: true,
+  npv: true,
+  irrPct: true,
+  paybackYears: true,
+  lcoeYuanPerKwh: true,
+  npvEquity: true,
+  irrEquityPct: true,
+} as const;
+
+/** 组装一份溯源投影：全部来自**已存的列 + 输入快照**，不触碰内核常量、不重算。 */
+export function scenarioProvenanceOf(row: {
+  engineVersion: string | null;
+  benchmarkVersion: string | null;
+  scenarioInput: unknown;
+  inputHash: string | null;
+  updatedAt: Date | string;
+}): ScenarioProvenance {
+  const at = row.updatedAt instanceof Date ? row.updatedAt : new Date(row.updatedAt);
+  return {
+    engineVersion: row.engineVersion,
+    benchmarkVersion: row.benchmarkVersion,
+    scenarioSchemaVersion: schemaVersionOf(row.scenarioInput),
+    inputHash: row.inputHash,
+    calculatedAt: Number.isNaN(at.getTime()) ? null : at.toISOString(),
+  };
+}
+
+/**
+ * 纯函数：重算前是否需要先把**当前态**冻结为不可变版本？
+ * 仅当当前是一个**成功的 V2 结果**（有 engineVersion、算通、留了输入）才冻结——
+ * 把一份有价值的旧结论保住；未算通/非 V2/无结果 → 覆写无损失，不制造空版本。
+ */
+export function shouldFreezeV2BeforeOverwrite(existing: {
+  engineVersion: string | null;
+  calcStatus: string;
+  scenarioInput: unknown;
+}): boolean {
+  return existing.engineVersion != null && existing.calcStatus === "ok" && existing.scenarioInput != null;
+}
+
+const SCENARIO_GROUP_LABELS: Record<string, string> = {
+  definition: "情景定义",
+  site: "站址",
+  truck: "车队与需求",
+  charging: "充电",
+  pv: "光伏",
+  bess: "储能",
+  grid: "电网",
+  economics: "经济参数",
+  unknowns: "未声明项",
+  name: "展示名",
+  note: "备注",
+};
+
+/**
+ * 纯函数：对比重算前后两份输入，给出**变在哪几组**的人读摘要（供 ChangeLog.whatChanged / 时间线"为什么变"）。
+ * 按顶层分组各比一次 JSON——真实改一个参数必然让所属分组变化；这是"改了什么的提示"，
+ * 不是复算真源（真源永远是 scenarioInput + inputHash），故用朴素 JSON 比对足矣、不过度设计。
+ */
+export function summarizeScenarioPatchDiff(
+  prev: ScenarioInput | null,
+  next: ScenarioInput | null,
+): Array<{ key: string; label: string }> {
+  if (!prev || !next) return [];
+  const changed: Array<{ key: string; label: string }> = [];
+  const keys = new Set([...Object.keys(prev as object), ...Object.keys(next as object)]);
+  for (const k of keys) {
+    const a = JSON.stringify((prev as unknown as Record<string, unknown>)[k] ?? null);
+    const b = JSON.stringify((next as unknown as Record<string, unknown>)[k] ?? null);
+    if (a !== b) changed.push({ key: k, label: SCENARIO_GROUP_LABELS[k] ?? k });
+  }
+  return changed;
+}
+
+/** 从已存 Decimal 列 + decision 提取版本摘要（纯读，绝不重算）。 */
+export function extractVersionSummary(row: V2ScenarioRow): VersionSummary {
+  const d = (row.decision ?? null) as Record<string, unknown> | null;
+  const feas = d && typeof d.feasibility === "object" && d.feasibility !== null ? (d.feasibility as Record<string, unknown>) : null;
+  const rec = d && typeof d.recommendation === "object" && d.recommendation !== null ? (d.recommendation as Record<string, unknown>) : null;
+  return {
+    calcStatus: row.calcStatus,
+    feasible: typeof feas?.feasible === "boolean" ? feas.feasible : null,
+    recommended: typeof rec?.recommended === "boolean" ? rec.recommended : null,
+    capexNetYuan: numOrNull(row.capexNet),
+    npvYuan: numOrNull(row.npv),
+    irrPct: numOrNull(row.irrPct),
+    paybackYears: numOrNull(row.paybackYears),
+    lcoeYuanPerKwh: numOrNull(row.lcoeYuanPerKwh),
+    npvEquityYuan: numOrNull(row.npvEquity),
+    irrEquityPct: numOrNull(row.irrEquityPct),
+  };
+}
+
+/** V2 情景的 ChangeLog 归因（复用既有表：entityType=ProjectScenario，from/to 版本与 whatChanged 塞 before/after）。 */
+function v2ChangeLogArgs(
+  entityId: string,
+  action: "CREATE" | "UPDATE" | "DELETE" | "ROLLBACK",
+  changedBy: string | null,
+  reason: string,
+  before: unknown,
+  after: unknown,
+): Prisma.ChangeLogUncheckedCreateInput {
+  return {
+    entityType: "ProjectScenario",
+    entityId,
+    action,
+    changedBy: changedBy ?? undefined,
+    reason,
+    before: jsonOrNull(before),
+    after: jsonOrNull(after),
+  };
+}
+
+/**
+ * 把一个**当前已存的 V2 结果**冻结为一条不可变 ProjectVersion（V2 列），返回其 seq。
+ * 只读 `frozen`（重算前抓的旧快照）——绝不重算、绝不用今天的常量冒充"当时版本"。
+ * V1 列给占位（paramLayers/paramSnapshot={} ，calcResult 置空），保证同表两类切片互不串台。
+ */
+async function writeV2VersionFromFrozenState(
+  tx: Prisma.TransactionClient,
+  frozen: V2ScenarioRow,
+  seq: number,
+  opts: { label?: string; note?: string; savedBy?: string | null },
+): Promise<number> {
+  await tx.projectVersion.create({
+    data: {
+      scenarioId: frozen.id,
+      projectId: frozen.projectId,
+      seq,
+      label: opts.label?.trim() || null,
+      note: opts.note?.trim() || null,
+      paramLayers: {},
+      paramSnapshot: {},
+      calcResult: Prisma.DbNull,
+      calcRef: frozen.engineVersion,
+      needsProfessionalReview: true,
+      savedBy: opts.savedBy ?? null,
+      scenarioInput: jsonOrNull(frozen.scenarioInput),
+      engineVersion: frozen.engineVersion,
+      benchmarkVersion: frozen.benchmarkVersion,
+      scenarioSchemaVersion: schemaVersionOf(frozen.scenarioInput),
+      inputHash: frozen.inputHash,
+      decision: jsonOrNull(frozen.decision),
+      calculatedAt: frozen.updatedAt,
+      summary: jsonSafe(extractVersionSummary(frozen)) as unknown as Prisma.InputJsonValue,
+    },
+  });
+  return seq;
+}
+
+async function nextSeq(tx: Prisma.TransactionClient, scenarioId: string): Promise<number> {
+  const agg = await tx.projectVersion.aggregate({ where: { scenarioId }, _max: { seq: true } });
+  return (agg._max.seq ?? 0) + 1;
+}
+
+/**
+ * 重算一个情景（**唯一允许改写 V2 当前态的写路径**）。
  *
  * `patch` 为「在当前存档输入之上的增量修改」——取存档输入而非调用方传来的整份输入，
  * 是为了保证「改一个参数」不会因为客户端漏传字段而静默重置其他参数。
+ *
+ * R5 版本治理：**同事务内**先把上一次的**成功**结果冻结为不可变 ProjectVersion（seq=max+1），
+ * 再就地写当前态 + version++，并记一条 ChangeLog（from/to 版本 + whatChanged + reason）。
+ * 于是：历史结论绝不被新模型静默覆盖、可回看 V1→V2→V3、每次为什么变都在链上。
+ * 重算**失败**也照样冻结旧的**成功**结果（把一份好结论换成"算不通"之前，先把它留住）。
  */
 export async function recalculateDecisionScenario(input: {
   scenarioId: string;
   patch?: Partial<ScenarioInput>;
   generatedAtIso?: string;
-}): Promise<StoreResult<{ snapshot: DecisionSnapshot | null; failure: string | null }>> {
-  const existing = await prisma.projectScenario.findUnique({
+  actor?: string | null;
+  reason?: string | null;
+  label?: string | null;
+}): Promise<
+  StoreResult<{ snapshot: DecisionSnapshot | null; failure: string | null; version: number; frozenSeq: number | null }>
+> {
+  const existing = (await prisma.projectScenario.findUnique({
     where: { id: input.scenarioId },
-    select: { id: true, scenarioInput: true, engineVersion: true },
-  });
+    select: V2_SCENARIO_SELECT,
+  })) as V2ScenarioRow | null;
   if (!existing) return { ok: false, reason: "not_found", detail: "情景不存在" };
   if (existing.scenarioInput == null) {
     return { ok: false, reason: "not_found", detail: "该情景不是 V2 情景（缺少 scenarioInput），无法用 V2 引擎重算" };
@@ -329,24 +576,145 @@ export async function recalculateDecisionScenario(input: {
   const merged = input.patch ? applyScenarioPatch(base, input.patch) : base;
 
   const computed = computeDecisionSnapshot(merged, { generatedAtIso: input.generatedAtIso });
+  const freeze = shouldFreezeV2BeforeOverwrite(existing);
+  const whatChanged = summarizeScenarioPatchDiff(base, merged);
+  const reason =
+    input.reason?.trim() ||
+    (freeze ? "重算：已把上一版结果冻结为不可变版本" : "重算情景");
+
   try {
-    await prisma.projectScenario.update({
-      where: { id: input.scenarioId },
-      data: computed.ok
-        ? // 成功分支不再单独写 scenarioInput：`decisionSnapshotToColumns` 写入的就是
-          // **本次实际参与计算的那份输入**（引擎回显的 inputSnapshot），
-          // 比外面再传一份 merged 更不易出现「留档输入 ≠ 计算输入」的漂移。
-          decisionSnapshotToColumns(computed.snapshot)
-        : {
-            // 输入保留（用户改坏的输入也要留住，下次好接着改），结果列全部清空
-            ...failureColumns(computed.reason, computed.detail),
-            scenarioInput: jsonSafe(merged) as unknown as Prisma.InputJsonValue,
+    const result = await prisma.$transaction(async (tx) => {
+      let frozenSeq: number | null = null;
+      if (freeze) {
+        frozenSeq = await nextSeq(tx, existing.id);
+        await writeV2VersionFromFrozenState(tx, existing, frozenSeq, {
+          label: input.label ?? undefined,
+          note: reason,
+          savedBy: input.actor ?? null,
+        });
+      }
+      const updated = await tx.projectScenario.update({
+        where: { id: input.scenarioId },
+        data: computed.ok
+          ? // 成功分支不另写 scenarioInput：decisionSnapshotToColumns 写的就是本次实际参与计算的那份输入
+            // （引擎回显的 inputSnapshot），杜绝"留档输入 ≠ 计算输入"的漂移。
+            decisionSnapshotToColumns(computed.snapshot)
+          : {
+              // 输入保留（用户改坏的输入也要留住，下次好接着改），结果列全部清空
+              ...failureColumns(computed.reason, computed.detail),
+              scenarioInput: jsonSafe(merged) as unknown as Prisma.InputJsonValue,
+            },
+        select: { version: true },
+      });
+      await tx.changeLog.create({
+        data: v2ChangeLogArgs(
+          existing.id,
+          "UPDATE",
+          input.actor ?? null,
+          reason,
+          { scenarioVersion: existing.version, engineVersion: existing.engineVersion, inputHash: existing.inputHash },
+          {
+            scenarioVersion: updated.version,
+            frozenSeq,
+            whatChanged,
+            calcStatus: computed.ok ? "ok" : "engine_failed",
           },
+        ),
+      });
+      return { version: updated.version, frozenSeq };
     });
+    return {
+      ok: true,
+      snapshot: computed.ok ? computed.snapshot : null,
+      failure: computed.ok ? null : computed.detail,
+      version: result.version,
+      frozenSeq: result.frozenSeq,
+    };
   } catch (e) {
     return { ok: false, reason: "error", detail: errorDetail(e) };
   }
-  return { ok: true, snapshot: computed.ok ? computed.snapshot : null, failure: computed.ok ? null : computed.detail };
+}
+
+/**
+ * 显式「存为新版本」：把情景**当前已存**的 V2 结果冻结为一条不可变 ProjectVersion（不改当前态、不重算）。
+ * 与"重算自动冻结"共用同一写入器，保证两条路径产出的版本切片形状一致。
+ */
+export async function saveDecisionScenarioAsVersion(
+  scenarioId: string,
+  opts: { label?: string; note?: string; savedBy?: string | null } = {},
+): Promise<StoreResult<{ versionId: string; seq: number }>> {
+  const existing = (await prisma.projectScenario.findUnique({
+    where: { id: scenarioId },
+    select: V2_SCENARIO_SELECT,
+  })) as V2ScenarioRow | null;
+  if (!existing) return { ok: false, reason: "not_found", detail: "情景不存在" };
+  if (!shouldFreezeV2BeforeOverwrite(existing)) {
+    return { ok: false, reason: "invalid", detail: "当前情景没有可冻结的成功结果（未算通或非 V2 情景）" };
+  }
+  try {
+    const created = await prisma.$transaction(async (tx) => {
+      const seq = await nextSeq(tx, scenarioId);
+      await writeV2VersionFromFrozenState(tx, existing, seq, opts);
+      const row = await tx.projectVersion.findUnique({
+        where: { scenarioId_seq: { scenarioId, seq } },
+        select: { id: true, seq: true },
+      });
+      await tx.changeLog.create({
+        data: v2ChangeLogArgs(
+          scenarioId,
+          "UPDATE",
+          opts.savedBy ?? null,
+          `存为版本 v${seq}`,
+          { engineVersion: existing.engineVersion, inputHash: existing.inputHash },
+          { seq },
+        ),
+      });
+      return row;
+    });
+    if (!created) return { ok: false, reason: "error", detail: "版本写入失败" };
+    return { ok: true, versionId: created.id, seq: created.seq };
+  } catch (e) {
+    return { ok: false, reason: "error", detail: errorDetail(e) };
+  }
+}
+
+/** 版本时间线（某情景的 V2 不可变切片，按 seq 倒序）。只读提取，绝不重算。 */
+export async function listDecisionScenarioVersions(scenarioId: string) {
+  const rows = await prisma.projectVersion.findMany({
+    where: { scenarioId, engineVersion: { not: null } },
+    orderBy: { seq: "desc" },
+    select: {
+      id: true,
+      seq: true,
+      label: true,
+      note: true,
+      savedBy: true,
+      createdAt: true,
+      engineVersion: true,
+      benchmarkVersion: true,
+      scenarioSchemaVersion: true,
+      inputHash: true,
+      calculatedAt: true,
+      scenarioInput: true,
+      summary: true,
+    },
+  });
+  return rows.map((r) => ({
+    id: r.id,
+    seq: r.seq,
+    label: r.label,
+    note: r.note,
+    savedBy: r.savedBy,
+    frozenAt: r.createdAt.toISOString(),
+    provenance: {
+      engineVersion: r.engineVersion,
+      benchmarkVersion: r.benchmarkVersion,
+      scenarioSchemaVersion: r.scenarioSchemaVersion,
+      inputHash: r.inputHash,
+      calculatedAt: r.calculatedAt ? r.calculatedAt.toISOString() : null,
+    } satisfies ScenarioProvenance,
+    summary: (r.summary ?? null) as VersionSummary | null,
+  }));
 }
 
 /** 情景摘要（列表用，不外泄大 JSON）。 */
@@ -399,6 +767,7 @@ export async function readDecisionScenario(scenarioId: string) {
     ...row,
     updatedAt: row.updatedAt.toISOString(),
     scenarioInput: row.scenarioInput as unknown as ScenarioInput | null,
+    provenance: scenarioProvenanceOf(row),
   };
 }
 

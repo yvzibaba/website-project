@@ -3,6 +3,25 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.81.0] - 2026-09-20 · R5 版本管理 + CHANGELOG 收口——让每个决策结论都能回答"我属于哪个项目版本、哪个情景、哪个引擎版本、哪个基准版本、之前怎么来的"（**复用既有 `ProjectVersion` + `ChangeLog`，仅 additive 可空扩列；`runCalculation()` 计算真源与黄金基线零改动；未新增任何外部依赖**）
+
+- **原因（M9→M10 承接 · 版本治理）**：R4 把基准以无损镜像投影进库、报告与情景已带 `engineVersion/benchmarkVersion/inputHash` 指纹，但**缺一条"历史线"**——当一个正式情景被重算，旧结论就地被覆盖，用户无法回看"上一版是按哪套引擎/基准/输入算的、这次为什么变"。决策平台最怕的正是"今天的模型悄悄把昨天的结论改了样子，而没人知道"。R5 补这条链：一次审计 → 版本冻结 → 溯源统一 → 回放安全 → CHANGELOG 收口。
+- **审计先行（§1「不重构、无第二版本真源」）**：动手前全库核对，确认 V1 沙盘 `project-store.ts` 早已实现"内核升级即自动冻结旧结果"（`shouldAutoFreezeVersion` + 复用 `ProjectVersion`/`ChangeLog`）——R5 **照此既有模式**为 V2 决策路径补齐，不另起第二套版本系统、不新建表、不给 `ChangeLog` 加列（from/to 版本与 `whatChanged` 全塞进既有 `before/after` JSON）。
+- **关键设计——覆盖前冻结（这条决定"历史可信"）**：`recalculateDecisionScenario()` 改写为**同事务内**先判断当前是否为**成功的 V2 结果**（`engineVersion!=null && calcStatus==="ok" && scenarioInput!=null`），是则先把它连同**当时**的指纹冻结成一条不可变 `ProjectVersion`（`seq=max+1`），再写当前态、`version++`，并记一条 `ChangeLog`（`before={scenarioVersion,engineVersion,inputHash}`、`after={scenarioVersion,frozenSeq,whatChanged,calcStatus}`）。**重算失败也照样冻结旧的"成功"结果**——把一份好结论换成"算不通"之前，先把它留住。读取路径（`readDecisionScenario`/面板载入）**绝不重算**，因此"打开老项目"不会触发任何对历史数字的改写。
+- **溯源统一（§4，一个常量一处真源）**：新增只读投影 `scenarioProvenanceOf()` 与版本内嵌 `provenance{engineVersion,benchmarkVersion,scenarioSchemaVersion,inputHash,calculatedAt}`。其中 `scenarioSchemaVersion` **取自存档输入自身的 `schemaVersion`**，绝不拿当下的 `SCENARIO_SCHEMA_VERSION` 常量回填历史（否则历史版本的 schema 会被"今天的版本"冒充）。未升级 `ENGINE_VERSION/BENCHMARK_VERSION/MODEL/REPORT/TECH/PARAMS` 任何冻结常量——版本治理是**持久化 + 服务层**的事，不该惊动计算口径（无业务需要，遵 §4）。
+- **Benchmark 计算真源不变（§7 · STOP-5 刻意不越线）**：R5 全程只在"存与读"层动，`runCalculation()` 仍从内核常量取基准；`ProjectVersion` 里冻结的是**当时算好的 decision 切片**，不是让引擎改从库里读。误改版本表不会漂移任何财务结论——反证是黄金测试未改一字仍全绿。
+- **新增**：
+  - `prisma/schema.prisma` 对 `ProjectVersion` **additive 可空扩列**（`scenarioInput/engineVersion/benchmarkVersion/scenarioSchemaVersion/inputHash/decision/calculatedAt/summary` 全 `?`）——V1 既有行与行为逐字节不变；离线 `prisma migrate diff`（prev-schema vs new-schema）生成迁移 `20260920120000_add_project_version_v2_provenance/migration.sql`，仅 8 条 `ADD COLUMN ... NULL`，无 DROP/ALTER/回填/默认值。`prisma generate` 已过。
+  - `decision-store.ts`（`DECISION_STORE_VERSION 1.0.0→1.1.0`）：`shouldFreezeV2BeforeOverwrite` / `summarizeScenarioPatchDiff` / `extractVersionSummary`（未评估项如实 null，绝不折 0）/ `writeV2VersionFromFrozenState`（V1 列给占位、V2 列写冻结指纹）/ `saveDecisionScenarioAsVersion` / `listDecisionScenarioVersions`；`recalculateDecisionScenario` 重写为"冻结旧成功→写当前→记 ChangeLog"并回传 `{version,frozenSeq}`。计算真源 `computeDecisionSnapshot/runCalculation` **一字未动**。
+  - `decision-service.ts`（`DECISION_SERVICE_VERSION 1.0.0→1.1.0`）：`recalculateScenario` 透传 `actor/reason/label` 并回传 `version/frozenSeq/warning`；新增 `saveDecisionVersion` / `readDecisionVersions` 两个 owner-or-staff 动作（越权在动库前拒）。鉴权口径不变。
+  - 新增路由 `/api/workbench/decision/scenarios/[id]/versions`（GET 列时间线 / POST 存为不可变版本；同源 + 登录 + owner-or-staff；`force-dynamic`）。与 V1 的 `/workbench/scenarios/[id]/versions` 分属两套语义，各走各自 service，同表不同列切片互不串台。
+  - 新增 UI `ScenarioVersionsPanel.tsx` 挂进决策面板**第 12 节「版本历史与溯源」**（低改造挂载，不动既有 1–11 节）：两表并呈——版本时间线（状态/净投资/NPV/IRR/回收期/度电成本/可行性/推荐）+ 各版溯源（engine/benchmark/schema/inputHash/计算时刻/存版时刻/存版人/变更说明）；唯一写动作「存为不可变新版本」明确标注**不重算、不改当前态**。所有空值显示「—」，布尔三态"是/否/—"不混淆"没算"与"否"。
+- **效果**：`test:unit`（新增 `decision-versioning.test.ts`：shouldFreeze 三条件边界、diff 分组命中、provenance 全字段且 schema 取存档非当下常量、extractVersionSummary null 诚实、输入哈希稳定、重算冻结流程以 mock prisma 验证"旧 engineVersion/inputHash 落到 version 行、新值写当前态、version++、ChangeLog 生成、旧结果未被覆盖"、失败重算仍冻结旧成功版）；`kernel:verify` 违规数不升、`kernel:dangling` 0、`kernel:typecheck` 0、host `tsc --noEmit` 0、`lint` 0/0、`build` 通过且新路由进表。**引擎与黄金测试未改一字仍全绿**，即"计算真源与黄金基线零改动"的反证。
+- **CHANGELOG 收口（§6）**：只记本轮**实际发生**的事，无虚构功能、无整体重排；核对 `0.79.0→0.80.0→0.81.0` 连续无缺口。
+- **未动冻结件**：经济内核、黄金基线、MODEL/TECH/PARAMS/ENGINE/BENCHMARK/REPORT 版本常量、历史输入快照、历史迁移、P1 内核、DB 既有结构（仅对 `ProjectVersion` additive 可空扩列）零触碰；R1 交创始人的两条非工程发现原样挂账未动。
+- **诚实边界（R5 出口 vs 网络出口）**：R5 的**代码 + 离线可验证不变量**齐备；对**真实 Neon** 应用本次 additive 迁移 + 集成读测试（versions 路由打真库、冻结落库往返）需有网有授权时补跑，本仓离线不虚报。**R4 遗留四项仍未清**（Neon 迁移 apply + `db:seed:benchmark` + 集成读测 + P2 来源下钻 UI）——R5 不接管、不假装完成，一并挂给"有网络的环境验证批"。
+- **遗留（交创始人）**：① R1 两项非工程发现；② "是否把计算真源从内核常量切到 DB / 冻结版可否被反算回当前模型"等属财务内核口径，须你裁决（本批按"冻结不改算真源"落地，刻意保守）；③ 收款/定价/合同能力（R7）未做，出口先于变现的排序矛盾依旧点名，不在 R5 提前处理。
+
 ## [0.80.0] - 2026-09-20 · R4 基准参数层落库（M9）——把内核版本化基准以**无损镜像**投影进结构化表，为 P2「数字点开看来源/置信度」备好读取层（**additive 迁移 + 新读取层 + seed 脚本 + 往返无损守卫；引擎计算路径与黄金基线零改动**）
 
 - **原因（M9 / P2）**：基准参数此前只活在内核常量里，报告只能内联展示，无法作为结构化数据被查询/治理/点开溯源。P2 要"数字可点开看来源与置信度"，前提是这层数据在库里可读。

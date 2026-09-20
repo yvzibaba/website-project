@@ -24,6 +24,7 @@ import { validateScenarioInput } from "@app/kernel/engine/engine";
 import { RECOMMEND_OBJECTIVES, recommendConfiguration } from "@app/kernel/engine/recommend";
 import type { RecommendationRequest } from "@app/kernel/engine/recommend";
 import { attributeScenarioDelta } from "@app/kernel/engine/attribution";
+import { diagnoseScenario } from "@app/kernel/engine/diagnose";
 import {
   addDecisionScenario,
   computeDecisionSnapshot,
@@ -641,4 +642,63 @@ export async function compareScenarios(input: { body: unknown; user: SessionUser
     };
   }
   return { status: "ok", attributed: true, reason: null, detail: null, result: out };
+}
+
+/* ────────────────────────── 免费诊断（M4 · P5 · 免登录给结论倾向） ────────────────────────── */
+
+/**
+ * 免费诊断的请求契约：**只收"用户真正知道的那几件事"**
+ * （车队规模、日里程、运营天数、充电窗口、并网容量、打算收的服务费），
+ * 其余一律由服务端从默认基准补齐——与自动推荐同一套底座、同一个输入契约。
+ *
+ * `chargingServiceFeeYuanPerKwh` **必填、无默认**：服务费是市场调节价，
+ * 给它默认值等于把"编造的市场价"混进免费结论。让使用者填自己打算收的价，
+ * 才是诚实的免费层。
+ */
+export const diagnoseFreeSchema = z.object({
+  chargingServiceFeeYuanPerKwh: z.number().finite().positive().max(10),
+  truckCount: z.number().int().min(1).max(5000).optional(),
+  dailyMileageKm: z.number().finite().min(1).max(2000).optional(),
+  operatingDaysPerYear: z.number().int().min(1).max(365).optional(),
+  chargingWindowStartHour: z.number().int().min(0).max(23).optional(),
+  chargingWindowEndHour: z.number().int().min(1).max(48).optional(),
+  existingGridCapacityKw: z.number().finite().positive().max(2_000_000).optional(),
+  templateId: z.string().trim().min(1).max(40).optional(),
+});
+
+/**
+ * 免登录免费诊断（**只算不存、不鉴权、不碰任何项目数据**）。
+ *
+ * 命脉一致：本层不自己算，交给 `diagnoseScenario()`，后者只用引擎唯一入口
+ * `runCalculation()`。因此"免费看到的结论"与"登录后按同一输入保存后算出的结论"
+ * 出自同一台机器、同一套公式，结构上不可能分叉。
+ *
+ * 鉴权：无（这是公开漏斗）。防刷由路由层负责（同源 CSRF + 按 IP 频控）。
+ */
+export function diagnoseFree(input: { body: unknown }): ServiceResult {
+  const parsed = parseWith(diagnoseFreeSchema, input.body);
+  if (!parsed.ok) return parsed.result;
+  const b = parsed.data;
+
+  const templateId = b.templateId ?? "pv-bess-tou";
+  if (!getScenarioTemplate(templateId)) {
+    return { status: "invalid", fieldErrors: { templateId: [`未知的情景模板：${templateId}`] } };
+  }
+
+  const built = defaultScenarioInput({
+    chargingServiceFeeYuanPerKwh: b.chargingServiceFeeYuanPerKwh,
+    templateId,
+    name: "免费诊断（未落库）",
+  });
+  const si = built.input;
+  // 只覆盖用户提供的少数项，其余保持默认基准（与推荐同底座）。
+  if (b.truckCount != null) si.truck.truckCount = b.truckCount;
+  if (b.dailyMileageKm != null) si.truck.dailyMileageKm = b.dailyMileageKm;
+  if (b.operatingDaysPerYear != null) si.truck.operatingDaysPerYear = b.operatingDaysPerYear;
+  if (b.chargingWindowStartHour != null) si.truck.chargingWindowStartHour = b.chargingWindowStartHour;
+  if (b.chargingWindowEndHour != null) si.truck.chargingWindowEndHour = b.chargingWindowEndHour;
+  if (b.existingGridCapacityKw != null) si.grid.capacityKw = b.existingGridCapacityKw;
+
+  const result = diagnoseScenario(si);
+  return { status: "ok", freeTier: true, result };
 }

@@ -109,7 +109,9 @@ export default function Home() {
             {/* 主 CTA：项目决策平台（P1：以「项目」为中心）。项目是有一等身份的实体，
                 计算只是项目内的一个动作；免登录试算降为次级入口。 */}
             <Button href="/workbench/projects" variant="primary" size="lg">进入项目决策平台 →</Button>
-            <Button href="/workbench" variant="secondary" size="lg">免登录先试算</Button>
+            {/* 免费诊断（R3 · P5）：注册前就用生产引擎拿到一句结论倾向 + 明显否证，是漏斗第一屏。 */}
+            <Button href="/diagnose" variant="secondary" size="lg">免费诊断：先看结论</Button>
+            <Button href="/workbench" variant="ghost" size="lg">免登录先试算</Button>
             <Button href="/enterprise" variant="ghost" size="lg">先选我的企业类型</Button>
           </div>
         </Container>

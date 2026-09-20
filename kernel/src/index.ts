@@ -110,4 +110,5 @@ export * as engineEconomics from "./engine/economics";
 export * as engineScenario from "./engine/scenario";
 export * as engineDecision from "./engine/decision";
 export * as engineReport from "./engine/report";
+export * as engineRecommend from "./engine/recommend";
 export * as engine from "./engine/engine";

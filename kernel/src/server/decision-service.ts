@@ -21,6 +21,8 @@ import { SCENARIO_COMPONENTS } from "@app/kernel/engine/types";
 import type { ScenarioInput } from "@app/kernel/engine/types";
 import { defaultScenarioInput, SCENARIO_TEMPLATES, buildScenarioFromTemplate, getScenarioTemplate } from "@app/kernel/engine/scenario";
 import { validateScenarioInput } from "@app/kernel/engine/engine";
+import { RECOMMEND_OBJECTIVES, recommendConfiguration } from "@app/kernel/engine/recommend";
+import type { RecommendationRequest } from "@app/kernel/engine/recommend";
 import {
   addDecisionScenario,
   computeDecisionSnapshot,
@@ -506,4 +508,75 @@ export function precheckScenarioInput(input: {
     warnings: v.warnings,
     canCalculate: v.fatal.length === 0,
   };
+}
+
+/* ────────────────────────── 自动推荐（M5 · 配置寻优） ────────────────────────── */
+
+/** 档位数组：有限非负数，长度受限（防止客户端用超大档位数组把服务端算力打满）。 */
+const finiteTierArray = z.array(z.number().finite().nonnegative()).min(1).max(40);
+
+/**
+ * 自动推荐请求契约。
+ *
+ * `base` 复用 `decisionScenarioInputSchema`——推荐器与计算/落库**共用同一个输入契约**。
+ * 这不是省事，而是刻意的：如果推荐入口接受一种"简化版输入"，那么
+ * 「推荐的配置」与「按这个配置保存后算出来的结果」就会走两套校验，
+ * 迟早出现"推荐说可行、保存后不可行"的分裂。
+ *
+ * `maxEvaluations` 上限 2000：单次完整计算实测约 27 ms，2000 次约 54 秒，
+ * 已经远超一次交互式请求的合理时长。设上限是防止该端点变成"匿名算力入口"。
+ */
+export const recommendRequestSchema = z.object({
+  base: decisionScenarioInputSchema,
+  existingGridCapacityKw: z.number().finite().nonnegative().optional(),
+  space: z
+    .object({
+      chargerCounts: finiteTierArray.optional(),
+      chargerPowersKw: finiteTierArray.optional(),
+      bessEnergiesKwh: finiteTierArray.optional(),
+      pvCapacitiesKwp: finiteTierArray.optional(),
+      gridCapacitiesKw: finiteTierArray.optional(),
+      managedChargingOptions: z.array(z.boolean()).min(1).max(2).optional(),
+    })
+    .optional(),
+  objective: z.enum(RECOMMEND_OBJECTIVES).optional(),
+  constraints: z
+    .object({
+      requireFeasible: z.boolean().optional(),
+      requireNoUnserved: z.boolean().optional(),
+      minNpvYuan: z.number().finite().optional(),
+      maxPaybackYears: z.number().finite().positive().nullable().optional(),
+    })
+    .optional(),
+  maxEvaluations: z.number().int().min(1).max(2000).optional(),
+  refine: z.boolean().optional(),
+});
+
+/**
+ * 在给定情景底座上搜索最优配置（**只算不存**）。
+ *
+ * 与 `calculatePreview` 同级：都是"算给用户看"的路径，都不写库。
+ * 区别只在于前者算**一套**给定配置，后者算**很多套**并给出推荐。
+ * 两者共用同一个 `runCalculation()` 与同一个输入契约，因此
+ * 「推荐时看到的数」与「按推荐保存后算出来的数」必然一致。
+ *
+ * 本函数**不读也不写任何项目数据**（输入完全来自请求体），因此没有可越权的资源；
+ * 鉴权与限流由路由层负责。
+ */
+export function recommendPreview(input: { body: unknown }): ServiceResult {
+  const parsed = parseWith(recommendRequestSchema, input.body);
+  if (!parsed.ok) return parsed.result;
+
+  const out = recommendConfiguration(parsed.data as unknown as RecommendationRequest);
+  if (!out.ok) {
+    return {
+      status: "ok",
+      recommended: false,
+      reason: out.reason,
+      detail: out.detail,
+      diagnostics: out.diagnostics,
+      result: null,
+    };
+  }
+  return { status: "ok", recommended: true, reason: null, detail: null, result: out };
 }

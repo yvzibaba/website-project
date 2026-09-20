@@ -20,6 +20,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { CalculationResult } from "@app/kernel/engine/types";
 import { mutateJson } from "@/components/admin/mutate";
 import { Alert, Button, Card, CardContent, CardHeader, CardTitle, Separator } from "@/components/ui";
 import {
@@ -35,6 +36,7 @@ import {
 } from "./primitives";
 import { DecisionReportView, type DecisionReportData } from "./DecisionReportView";
 import { ActualsPanel } from "./ActualsPanel";
+import { RecommendPanel } from "./RecommendPanel";
 
 /* ── 服务端返回结构（只声明本组件真正读取的字段；类型即文档） ── */
 
@@ -66,140 +68,19 @@ interface ProjectDetail {
   scenarios: ScenarioSummary[];
 }
 
-interface EngineResult {
-  ok: true;
-  calcRef: string;
-  engineVersion: string;
-  modelVersion: string;
-  benchmarkVersion: string;
-  inputHash: string;
-  modelComposition: string;
-  scenarioId: string;
-  scenarioLabel: string;
-  timeStepMinutes: number;
-  stepsPerYear: number;
-  needsProfessionalReview: boolean;
-  inputSnapshot: {
-    definition: { label: string; components: string[]; managedCharging: boolean; intent: string };
-    truck: { truckCount: number; dailyMileageKm: number; energyConsumptionKwhPerKm: number; operatingDaysPerYear: number; chargingWindowStartHour: number; chargingWindowEndHour: number };
-    pv: { capacityKwp: number; specificYieldKwhPerKwp: number };
-    bess: { powerKw: number; capacityKwh: number };
-    grid: { capacityKw: number; flatPriceYuanPerKwh: number; feedInTariffYuanPerKwh: number };
-    economics: { constructionYears: number; projectLifeYears: number; discountRatePct: number; equityRatioPct: number; loanInterestPct: number; chargingServiceFeeYuanPerKwh: number; electricityResalePriceYuanPerKwh: number };
-    unknowns?: Record<string, string>;
-  };
-  truckDemand: {
-    annualEnergyDemandKwh: number;
-    annualEnergyAtBatteryKwh: number;
-    dailyEnergyDemandKwh: number;
-    monthlyEnergyDemandKwh: number[];
-    monthlyEnergyAtBatteryKwh: number[];
-    operatingDays: number;
-    chargingWindowHours: number;
-    peakChargingLoadKw: number;
-    averageChargingLoadKw: number;
-    yearBoundarySpillKwh: number;
-    yearBoundarySpillAtBatteryKwh: number;
-  };
-  charging: {
-    annualDeliveredKwh: number;
-    annualChargingDeliveredKwh: number;
-    annualSwapDeliveredKwh: number;
-    annualGridSideKwh: number;
-    installedPowerKw: number;
-    effectivePowerKw: number;
-    peakLoadKw: number;
-    utilizationPct: number;
-    unservedEnergyKwh: number;
-    annualSwapEvents: number;
-    swapGridSideKwh: number;
-    yearBoundarySpillKwh: number;
-    monthlyPeakLoadKw: number[];
-  };
-  pv: {
-    annualGenerationKwh: number;
-    monthlyGenerationKwh: number[];
-    selfConsumedKwh: number;
-    exportedKwh: number;
-    curtailedKwh: number;
-    selfConsumptionPct: number;
-    chargingCoveragePct: number;
-  };
-  bess: {
-    annualChargeKwh: number;
-    annualDischargeKwh: number;
-    equivalentCycles: number;
-    arbitrageBenefitYuan: number;
-    demandChargeSavingYuan: number;
-    finalSocPct: number;
-    socViolations: number;
-  };
-  grid: {
-    annualImportKwh: number;
-    annualExportKwh: number;
-    annualEnergyCostYuan: number;
-    annualDemandChargeYuan: number;
-    annualExportRevenueYuan: number;
-    annualGridCostYuan: number;
-    weightedAveragePriceYuanPerKwh: number | null;
-    monthlyPeakImportKw: number[];
-    capacityConstrained: boolean;
-  };
-  invariant: {
-    ok: boolean;
-    violationCount: number;
-    maxAbsDeviationKwh: number;
-    toleranceKwh: number;
-    annualDeviationKwh: number;
-  };
-  economics: {
-    capex: {
-      pvYuan: number; bessYuan: number; chargerYuan: number; swapYuan: number; gridYuan: number;
-      civilYuan: number; contingencyYuan: number; grossYuan: number; subsidyYuan: number; netYuan: number;
-    };
-    opexY1: {
-      pvYuan: number; bessYuan: number; chargerYuan: number; siteFixedYuan: number;
-      landYuan: number; insuranceYuan: number; grossYuan: number;
-    };
-    revenueY1: {
-      chargingServiceYuan: number; swapServiceYuan: number; electricityResaleYuan: number;
-      operationSubsidyYuan: number; otherYuan: number; grossYuan: number;
-    };
-    costY1Yuan: number;
-    netCashFlowY1PreTaxYuan: number;
-    annualCashFlowYuan: number[];
-    equityCashFlowYuan: number[];
-    cumulativeCashFlowYuan: number[];
-    metrics: {
-      npvYuan: number;
-      irr: { ok: boolean; valuePct?: number; reason?: string };
-      simplePaybackYears: number | null;
-      discountedPaybackYears: number | null;
-      roiRatio: { ok: boolean; value?: number; reason?: string };
-      lcoeYuanPerKwh: number | null;
-      equity: {
-        npvYuan: number;
-        irr: { ok: boolean; valuePct?: number; reason?: string };
-        simplePaybackYears: number | null;
-      };
-    };
-  };
-  decision: {
-    feasibility: {
-      feasible: boolean;
-      checks: Array<{ id: string; label: string; passed: boolean; detail: string }>;
-      blockers: string[];
-    };
-    recommendation: { recommended: boolean; headline: string; rationale: string };
-    keyDrivers: Array<{ key: string; label: string; impactYuan: number }>;
-    sensitivity: Array<{ key: string; label: string; lowNpvYuan: number; highNpvYuan: number; baseNpvYuan: number }>;
-    risks: Array<{ id: string; label: string; severity: string; basis: string; mitigation: string }>;
-    criticalAssumptions: Array<{ key: string; label: string; value: number | string; unit?: string; evidenceKind: string; impactIfWrong: string }>;
-    explanation: { summary: string; paragraphs: string[] };
-  };
-  diagnostics: Array<{ kind: string; code: string; message: string; field?: string; impact?: string; suggestion?: string; value?: number }>;
-  benchmarkSnapshot: Record<string, { key: string; label: string; value: number | null; unit: string; evidenceKind: string; sourceUrl?: string }>;
-}
+/**
+ * 引擎结果类型**直接取自内核契约**，不在这里按"我用到了哪些字段"重新手写一遍。
+ *
+ * 为什么必须这样（本文件修过的一个真实缺陷）：此前这里手写了一份 `EngineResult`。
+ * 于是当内核把 `keyDrivers[].swingYuan` 定名、把 `RiskItem.title` 定名、把敏感性字段定成
+ * `npvAtLow/npvAtHigh` 时，**TypeScript 一声不吭**——因为页面读的是自己那份类型，
+ * 两边各自自洽。真实后果是页面上「关键驱动 / 敏感性 / 风险」三张表每个单元格都渲染成
+ * `undefined`（表格组件把空值渲染成空白）:不报错、不白屏，只是决策内容静默消失。
+ *
+ * 结论：跨边界的类型只允许有一个真源。前端**只 import 类型**（编译期擦除、不进 bundle），
+ * 因此这份"跟内核对齐"是零成本的。
+ */
+type EngineResult = CalculationResult;
 
 const KIND_LABEL: Record<string, string> = {
   SCENARIO_INPUT_MISSING: "输入缺口",
@@ -520,7 +401,7 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
               <MetricCard label="光伏年发电" value={`${fmtNum(calc.pv.annualGenerationKwh)} kWh`} />
               <MetricCard label="光伏自用" value={`${fmtNum(calc.pv.selfConsumedKwh)} kWh`} hint={`自用率 ${fmtPct(calc.pv.selfConsumptionPct, 1)}`} />
               <MetricCard label="光伏上网 / 弃光" value={`${fmtNum(calc.pv.exportedKwh)} / ${fmtNum(calc.pv.curtailedKwh)} kWh`} />
-              <MetricCard label="储能功率 / 容量" value={`${fmtNum(inputs.bess.powerKw)} kW / ${fmtNum(inputs.bess.capacityKwh)} kWh`} />
+              <MetricCard label="储能功率 / 容量" value={`${fmtNum(inputs.bess.powerKw)} kW / ${fmtNum(inputs.bess.energyKwh)} kWh`} />
               <MetricCard label="储能年充 / 放" value={`${fmtNum(calc.bess.annualChargeKwh)} / ${fmtNum(calc.bess.annualDischargeKwh)} kWh`} hint={`等效循环 ${calc.bess.equivalentCycles.toFixed(1)} 次`} />
               <MetricCard
                 label="储能套利收益"
@@ -650,7 +531,7 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
           {/* ── 7 场景比较 ── */}
           <Section index={7} title="场景比较" description="同一项目下各情景的关键指标并排比较。同一台引擎、同一条路径，差别只来自输入。">
             <SimpleTable
-              columns={["情景", "状态", "净投资", "NPV", "IRR", "回收期", "度电成本", "输入指纹"]}
+              columns={["情景", "状态", "净投资", "NPV", "IRR", "回收期（折现）", "度电成本", "输入指纹"]}
               align={["left", "left", "right", "right", "right", "right", "right", "left"]}
               rows={project.scenarios.map((s) => [
                 `${s.name}${s.isBaseline ? "（基线）" : ""}`,
@@ -711,11 +592,11 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
               rows={calc.decision.feasibility.checks.map((c) => [c.label, c.passed ? "通过" : "未通过", c.detail])}
             />
 
-            <h3 className="mt-4 mb-2 text-sm font-semibold">关键驱动（对 NPV 的影响，元）</h3>
+            <h3 className="mt-4 mb-2 text-sm font-semibold">关键驱动（NPV 摆幅，元）</h3>
             <SimpleTable
-              columns={["变量", "NPV 影响"]}
+              columns={["变量", "NPV 摆幅"]}
               align={["left", "right"]}
-              rows={calc.decision.keyDrivers.map((d) => [d.label, fmtMoney(d.impactYuan)])}
+              rows={calc.decision.keyDrivers.map((d) => [d.label, fmtMoney(d.swingYuan)])}
             />
 
             <h3 className="mt-4 mb-2 text-sm font-semibold">敏感性（NPV 区间，元）</h3>
@@ -724,16 +605,16 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
               align={["left", "right", "right", "right"]}
               rows={calc.decision.sensitivity.map((s) => [
                 s.label,
-                fmtMoney(s.lowNpvYuan),
-                fmtMoney(s.baseNpvYuan),
-                fmtMoney(s.highNpvYuan),
+                fmtMoney(s.npvAtLow),
+                fmtMoney(calc.economics.metrics.npvYuan),
+                fmtMoney(s.npvAtHigh),
               ])}
             />
 
             <h3 className="mt-4 mb-2 text-sm font-semibold">风险</h3>
             <SimpleTable
               columns={["风险", "严重度", "数值依据", "应对"]}
-              rows={calc.decision.risks.map((r) => [r.label, SEVERITY_LABEL[r.severity] ?? r.severity, r.basis, r.mitigation])}
+              rows={calc.decision.risks.map((r) => [r.title, SEVERITY_LABEL[r.severity] ?? r.severity, r.basis, r.mitigation])}
             />
 
             <h3 className="mt-4 mb-2 text-sm font-semibold">关键假设（若不成立会怎样）</h3>
@@ -760,8 +641,19 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
 
           <Separator />
 
-          {/* ── 9 决策报告 ── */}
-          <Section index={9} title="决策报告" description="可留档、可复算的完整报告；报告头的溯源信息齐全，凭它就能独立重算。">
+          {/* ── 9 自动推荐 ── */}
+          <Section
+            index={9}
+            title="自动推荐（配置寻优）"
+            description="把「桩数 × 功率 × 储能 × 光伏 × 并网 × 有序充电」这上千种组合交给服务端逐套跑引擎，给出最优配置与落选原因——搜索不该由用户用脑子做。"
+          >
+            <RecommendPanel base={inputs} projectId={projectId} onSaved={() => void loadProject()} />
+          </Section>
+
+          <Separator />
+
+          {/* ── 10 决策报告 ── */}
+          <Section index={10} title="决策报告" description="可留档、可复算的完整报告；报告头的溯源信息齐全，凭它就能独立重算。">
             {report ? (
               <DecisionReportView report={report} />
             ) : (
@@ -818,7 +710,7 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
           <Separator />
 
           {/* 实测回填 */}
-          <Section index={10} title="实测回填（Actuals）" description="项目落地后的真实数据回流，用于把「预测」与「实测」放在一起看。">
+          <Section index={11} title="实测回填（Actuals）" description="项目落地后的真实数据回流，用于把「预测」与「实测」放在一起看。">
             <ActualsPanel projectId={projectId} scenarioId={activeId} />
           </Section>
         </>

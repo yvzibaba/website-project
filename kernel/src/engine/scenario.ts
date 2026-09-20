@@ -56,6 +56,18 @@ import type {
 
 export const SCENARIO_BUILDER_VERSION = "1.0.0";
 
+/**
+ * 储能调度策略随「是否配置光伏」的映射规则。
+ *
+ * 抽成函数而不是内联两句 `has("PV") ? … : …`，是为了让**自动推荐层复用同一条规则**：
+ * 推荐器在启用/停用光伏时会重建储能策略，如果两处各写一份判断，迟早出现
+ * 「构造器给 pv-shift、推荐器给 peak-shaving」的分裂——而这种分裂**不会报错**，
+ * 只表现为同一个配置算出两个不同的数。凡是"同一件事的两处判断"，都必须收成一处。
+ */
+export function bessStrategyFor(hasPv: boolean): BessStrategy {
+  return hasPv ? "pv-shift" : "peak-shaving";
+}
+
 /* ═══════════════════════════ 组件开关 ═══════════════════════════ */
 
 const COMPONENT_SET = new Set<string>(SCENARIO_COMPONENTS);
@@ -416,7 +428,7 @@ export function buildScenarioInput(seed: ScenarioSeed): {
   }
 
   /* ── 储能 ── */
-  const bessStrategy: BessStrategy = has("PV") ? "pv-shift" : "peak-shaving";
+  const bessStrategy: BessStrategy = bessStrategyFor(has("PV"));
   const bess: BessInput = {
     enabled: has("BESS"),
     powerKw: 1000,

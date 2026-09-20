@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.83.1] - 2026-09-20 · P2 来源下钻补齐 V1 沙盘两档——把「数字点开看来源」从 V2 决策面板延伸到 V1 产业沙盘（demo + full 两档 slider 行脚章各挂一处可点链接），并把 URL 诚实闸门抽到 `src/lib/url-safety.ts` 供三层共用（**纯前端只读；零新增 API 路由 / 零 schema 迁移 / 未碰计算真源 / 未碰引擎与黄金 / 未新增外部依赖**）
+
+- **原因（收尾 [0.83.0] 的诚实边界）**：0.83.0 明说"V1 沙盘逐参数 `sourceUrl` 已在数据里、就差一个 `<a>`，刻意不并入"。这条正是那处"就差一点"的补齐——用户既然在 V2 决策面板上能"点开看这数字哪来的"，V1 沙盘 sliders 显示的"已核实外部数据"徽章却点不开、只能看个 `sourceType` 文本，同一件事两档口径不齐就是自打脸。`ResolvedParameter.sourceUrl` 与 `ParameterOriginInfo.sourceUrl` 早就在数据里、且都过了引擎侧"FACT 无合法链接→自动降级 ASSUMPTION"的诚实闸门，展示层不接就是"最后一公里"没走完。
+- **抽取共享闸门（一处规则 · 三层复用）**：`isUsableHttpUrl` 从 `benchmark-source-model.ts` 迁至 `src/lib/url-safety.ts`，与 `src/lib/redirect-safety.ts`（管站内回跳白名单）**互补而非重叠**——一个"只放相对路径"、一个"只放 http(s) 外链"，两个方向合起来才是完整"URL 安全"面。新闸门顺手加了控制字符 / `data:` / `vbscript:` / `mailto:` / 协议相对 `//host` 的显式拒；新增 `externalHost()` 供 anchor 显示 host 提示。原位置 `benchmark-source-model.ts` 通过 re-export 保持 [0.83.0] 的 16 例单测与任何下游 import **零改动无感通过**（反证：本批跑单测仍全绿）。
+- **实现**：
+  - `ProjectWorkbench.tsx`（V1 full 档 · 40 参数全量）：slider 行脚章右侧原本只出一个 `clamped / 已改 / 画像 / originBadge` 四态徽标——现在把这坨徽标包进 `flex gap-2` 容器，尾部**追加**一个「查看原文 ↗」anchor，仅在 `isUsableHttpUrl(rp?.sourceUrl)` 通过时才画；否则一个字符都不多出（**没链接就不给假链接**）。
+  - `DemoProjectPanel.tsx`（V1 demo 档 · ~10 核心参数）：`OriginBadges` 加可选 `sourceUrl` prop，同样用共享闸门判定；从 `o.sourceUrl`（= `ParameterOriginInfo.sourceUrl`）透传。既有徽章（类别 / 地区·政策 / 已核实·待核实 / 数据时点 / sourceType）一律不动，只在末尾追加 anchor。
+  - `url-safety.test.ts`：新增 6 例直钉新共享模块（合法 http/https、首尾空白、脏协议、控制字符、空/null/非字符串、`externalHost` 正常/异常），补上"从 model 迁走后仍在原位以外被直接测到"的独立锚点。
+- **效果**：`test:unit` **1467 passed / 1 skipped（85 文件）**，净增 **6**（`url-safety.test.ts`），[0.83.0] 的 16 例经 re-export 全绿；host `tsc --noEmit` **0**、`eslint` 新/改文件 **0/0**、`kernel:verify` 白名单外 **0**、`kernel:dangling` **0**、`next build` **通过**（无新增路由，路由表不变）。三层（V2 决策面板 / V1 full / V1 demo）现在**共用同一个 URL 安全闸门**，规则漂移结构性不可能。
+- **未动冻结件**：经济内核、黄金基线、`ENGINE_VERSION 2.0.0`/`BENCHMARK_VERSION 1.0.0`/`MODEL/TECH/PARAMS`/`REPORT_BUILDER_VERSION`、`DECISION_STORE_VERSION`/`DECISION_SERVICE_VERSION` 1.2.0、DB 结构、计算真源（`runCalculation` / `resolveProjectParams` / benchmark 常量层）一字未动。`package.json` **0.83.0→0.83.1**（patch·同一 P2 能力的收尾扩展，无新增能力口径）。
+- **P2 全清**：V2 决策面板 ✅（0.83.0）+ V1 沙盘 demo/full 两档 ✅（本批）+ 共享 URL 闸门 ✅（本批）——「数字点开看来源」现在**在系统里每个逐值来源可核的地方都点得开**。按既定 STOP 不跨入 R7（变现层），下一步等你定向。
+
 ## [0.83.0] - 2026-09-20 · P2「数字点开看来源」来源下钻——决策面板里，本次计算实际用到的每一项基准参数，都能看清**取值 / 单位 / 证据等级 / 置信度 / 生效区间 / 适用地区 / 来源**，凡有合法原文链接的**可点开核对**（**纯前端只读展示；数据取自 `CalculationResult` 自带的 `benchmarkSnapshot`；未新增 API 路由 / 未碰计算真源 / 未碰引擎与黄金；未新增外部依赖**）
 
 - **原因（R4 遗留最后一项 · 用户价值）**：R4 已把基准以无损镜像投影进库、读取层 `listBenchmarkEntries` 当初就是"供 P2 溯源面板"预留。此前 V2 决策面板虽有一张「基准参数快照」表，但把 `sourceUrl` 画成**死的纯文本**（`b.sourceUrl ?? "未附来源"`），既不显示置信度/生效区间，也点不开——用户看得到"假设"，却**核不了"已核实"到底核在哪**。P2 补的就是这条"数字↔出处"的可核对性，是"决策可信"的地基，不是锦上添花。

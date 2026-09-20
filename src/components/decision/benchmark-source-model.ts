@@ -9,6 +9,10 @@
  */
 
 import type { BenchmarkRef } from "@app/kernel/engine/types";
+import { isUsableHttpUrl } from "@/lib/url-safety";
+
+// 从共享模块 re-export：V2 决策面板与 V1 沙盘两档都用同一个闸门，避免"这里的规则"漂移。
+export { isUsableHttpUrl } from "@/lib/url-safety";
 
 /** 一行"数据来源"下钻记录（已经翻成人话、判定好可点性，交给组件直接渲染）。 */
 export interface BenchmarkSourceRow {
@@ -31,21 +35,10 @@ export interface BenchmarkSourceRow {
   /** 口径说明（可空）。 */
   note: string | null;
   /**
-   * **可点的原文链接**：仅当 `sourceUrl` 是合法 http(s) 且不含空白时才非 null。
-   * 脏 URL（javascript:/ftp:/带空格/空串）一律置 null —— 宁可不给链接，也不给一个可疑链接。
+   * **可点的原文链接**：仅当 `sourceUrl` 通过 `@/lib/url-safety.isUsableHttpUrl` 的诚实闸门时才非 null。
+   * 脏 URL（javascript:/ftp:/data:/带空白/控制字符）一律置 null —— 宁可不给链接，也不给可疑链接。
    */
   url: string | null;
-}
-
-/**
- * 诚实闸门：只有"看起来能安全点开"的 URL 才允许成为链接。
- * 与数据层 `usableHttpUrl` 同口径：必须 http/https 协议打头、且不含空白（带空白的多半是被截断/拼接污染的串）。
- */
-export function isUsableHttpUrl(u: string | null | undefined): boolean {
-  if (typeof u !== "string") return false;
-  const t = u.trim();
-  if (/\s/.test(t)) return false; // 内部含空白 = 疑似被截断/拼接污染，不给链接
-  return /^https?:\/\//i.test(t); // 只认 http/https；javascript:/ftp:/data: 等一律拒
 }
 
 /** 数值→取值文本。UNKNOWN / null 一律 "未核实"（绝不拿 0 冒充"算出来是 0"）；有 textValue 走口径文本。 */

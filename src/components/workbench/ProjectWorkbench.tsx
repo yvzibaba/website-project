@@ -35,6 +35,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
+import { isUsableHttpUrl } from "@/lib/url-safety";
 import { PROJECT_PARAMS, resolveProjectParams } from "@app/kernel/server/project-params";
 import { runProjectModel } from "@app/kernel/server/project-model";
 import { computeTechModel } from "@app/kernel/server/tech";
@@ -449,31 +450,44 @@ export function ProjectWorkbench({
                     onChange={(e) => setVal(s.key, e.target.valueAsNumber)}
                     className="w-full accent-blue-600"
                   />
-                  <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-zinc-400">
                     <span>
                       区间 {min}–{max}
                     </span>
-                    {rp?.clamped ? (
-                      <Badge variant="neutral" className="text-[10px]">
-                        已裁剪到边界
-                      </Badge>
-                    ) : userTouched ? (
-                      <Badge variant="neutral" className="text-[10px]">
-                        已改
-                      </Badge>
-                    ) : showProfileBadge ? (
-                      <span
-                        className={`rounded border px-1.5 py-0.5 text-[10px] ${PROFILE_BADGE.cls}`}
-                      >
-                        {PROFILE_BADGE.label}
-                      </span>
-                    ) : originBadge ? (
-                      <span
-                        className={`rounded border px-1.5 py-0.5 text-[10px] ${originBadge.cls}`}
-                      >
-                        {originBadge.label}
-                      </span>
-                    ) : null}
+                    <span className="flex items-center gap-2">
+                      {rp?.clamped ? (
+                        <Badge variant="neutral" className="text-[10px]">
+                          已裁剪到边界
+                        </Badge>
+                      ) : userTouched ? (
+                        <Badge variant="neutral" className="text-[10px]">
+                          已改
+                        </Badge>
+                      ) : showProfileBadge ? (
+                        <span
+                          className={`rounded border px-1.5 py-0.5 text-[10px] ${PROFILE_BADGE.cls}`}
+                        >
+                          {PROFILE_BADGE.label}
+                        </span>
+                      ) : originBadge ? (
+                        <span
+                          className={`rounded border px-1.5 py-0.5 text-[10px] ${originBadge.cls}`}
+                        >
+                          {originBadge.label}
+                        </span>
+                      ) : null}
+                      {isUsableHttpUrl(rp?.sourceUrl) ? (
+                        <a
+                          href={(rp?.sourceUrl ?? "").trim()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-0.5 whitespace-nowrap text-[10px] text-primary underline-offset-2 hover:underline"
+                          title="查看该参数取值的外部来源原文"
+                        >
+                          查看原文 ↗
+                        </a>
+                      ) : null}
+                    </span>
                   </div>
                 </div>
               );

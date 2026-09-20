@@ -22,6 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
+import { isUsableHttpUrl } from "@/lib/url-safety";
 import {
   computeDemoScenario,
   defaultDemoState,
@@ -82,7 +83,7 @@ function MetricTile({ card }: { card: MetricCard }) {
   );
 }
 
-/** 来源徽标行：类别 + （外部数据）子类 + 更新时间/来源 + 是否已核实/已裁剪。 */
+/** 来源徽标行：类别 + （外部数据）子类 + 更新时间/来源 + 是否已核实/已裁剪 +（若 URL 合法）可点原文链接。 */
 function OriginBadges({
   category,
   categoryLabel,
@@ -92,6 +93,7 @@ function OriginBadges({
   verified,
   asOf,
   sourceType,
+  sourceUrl,
 }: {
   category: ParamSourceCategory;
   categoryLabel: string;
@@ -101,6 +103,7 @@ function OriginBadges({
   verified: boolean;
   asOf?: string;
   sourceType?: string;
+  sourceUrl?: string;
 }) {
   return (
     <div className="flex flex-wrap items-center gap-1 text-[10px]">
@@ -120,6 +123,17 @@ function OriginBadges({
       ) : null}
       {asOf ? <span className="text-zinc-400">数据时点 {asOf}</span> : null}
       {sourceType ? <span className="text-zinc-400">· {sourceType}</span> : null}
+      {isUsableHttpUrl(sourceUrl) ? (
+        <a
+          href={(sourceUrl ?? "").trim()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-0.5 whitespace-nowrap text-primary underline-offset-2 hover:underline"
+          title="查看该参数取值的外部来源原文"
+        >
+          查看原文 ↗
+        </a>
+      ) : null}
       {!userModified && category !== "EXTERNAL_DATA" && category !== "CALCULATED" ? null : null}
     </div>
   );
@@ -285,6 +299,7 @@ export function DemoProjectPanel({
                       verified={o.verified}
                       asOf={o.asOf}
                       sourceType={o.sourceType}
+                      sourceUrl={o.sourceUrl}
                     />
                     <span className="text-[10px] text-zinc-400">默认 {spec.id === "elecPrice" ? (0.7).toFixed(2) : raw === undefined ? "" : defaultHint(spec.id)}</span>
                   </div>

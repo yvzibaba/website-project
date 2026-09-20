@@ -238,7 +238,7 @@ export const SHANXI_CLAUSE_FACTS: readonly RegionClauseFact[] = [
       sourceType: "政府专题原文（S级）",
       asOf: "2026-09-08",
       confidence: 90,
-      note: "免收需量电费条款为官方原文核实；自 V1.1 批次1.2 起沙盘主情景 A 已按免收计价（本条款即逐值 demandCharge=0 FACT 的来源）。",
+      note: "免收需量电费条款为官方原文核实；自 V1.1 批次1.2 起决策主情景 A 已按免收计价（本条款即逐值 demandCharge=0 FACT 的来源）。",
     }),
   },
   {

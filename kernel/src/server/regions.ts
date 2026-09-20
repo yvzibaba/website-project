@@ -62,8 +62,8 @@ export interface RegionPack {
 const NATIONAL_PACK: RegionPack = {
   id: "national",
   name: "全国通用",
-  summary: "不预置地区差异，采用沙盘全局默认参数（示例占位）。",
-  note: "所有取值即沙盘默认占位假设，未做任何地区收窄。",
+  summary: "不预置地区差异，采用平台全局默认参数（示例占位）。",
+  note: "所有取值即平台默认占位假设，未做任何地区收窄。",
   region: { values: {} },
   policy: [],
 };

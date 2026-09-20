@@ -26,7 +26,7 @@ export const SITE_URL = (
 ).replace(/\/+$/, "");
 
 /** 站点名（OpenGraph siteName / 结构化数据 publisher 用；V1.1 批次 P3 品牌口径统一，方案 §3.2）。 */
-export const SITE_NAME = "光储充投资决策沙盘";
+export const SITE_NAME = "光储充项目投资决策平台";
 
 /** 站点默认描述（首页/OG 兜底）。 */
 export const SITE_DESCRIPTION =

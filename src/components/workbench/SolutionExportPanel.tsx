@@ -150,7 +150,7 @@ export function SolutionExportPanel({
 
   async function exportSolution() {
     if (!draftOk) {
-      setError("当前参数不足以生成方案草案，请先回到沙盘修正参数（引擎/视图未产出有效结果）。");
+      setError("当前参数不足以生成方案草案，请先回到决策平台修正参数（引擎/视图未产出有效结果）。");
       return;
     }
     if (!caseId) {
@@ -187,7 +187,7 @@ export function SolutionExportPanel({
       // V1.1 P4：403 现在有两种来源——① 来源属主核验失败（导出了别人的项目/情景）；
       // ② 导出权益开关关闭（未来接计费/订阅时用）。服务端已回传具体原因，如实透出即可。
       setNeedLogin(false);
-      setError(res.message ?? "当前账号无权导出该沙盘方案");
+      setError(res.message ?? "当前账号无权导出该决策方案");
       return;
     }
     if (!res.ok) {
@@ -220,7 +220,7 @@ export function SolutionExportPanel({
           <div className="flex flex-col gap-1">
             <CardTitle className="text-base">导出产业方案（进「案例 → 方案 → 购买」闭环）</CardTitle>
             <CardDescription>
-              把当前沙盘结果（地区 / 画像 / 参数下的确定性经济与技术结论）导出成一条
+              把当前决策平台结果（地区 / 画像 / 参数下的确定性经济与技术结论）导出成一条
               <span className="font-medium"> 草稿产业方案</span>，挂到你在下方选定的真实案例上。
               数字全部由引擎现算、逐字搬运，导出后仍需人工补真实数据、定价并经人工审核发布后方可上架售卖。
             </CardDescription>
@@ -235,7 +235,7 @@ export function SolutionExportPanel({
         {!draftOk ? (
           <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
             当前情景无法生成方案草案：{draft.ok ? "" : `${draft.error.reason} · ${draft.error.detail}`}
-            <span className="mt-1 block text-xs">请先在沙盘左侧补齐必备参数、消除非法输入后重试。</span>
+            <span className="mt-1 block text-xs">请先在平台左侧补齐必备参数、消除非法输入后重试。</span>
           </div>
         ) : (
           <>
@@ -310,7 +310,7 @@ export function SolutionExportPanel({
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-zinc-500" htmlFor="sbx-sol-name">
-                  项目名称（默认「沙盘产业项目方案」）
+                  项目名称（默认「决策产业项目方案」）
                 </label>
                 <Input
                   id="sbx-sol-name"
@@ -382,13 +382,13 @@ export function SolutionExportPanel({
             {/* R8.6 来源关联的诚实提示：仅在已「保存为项目」时才挂反查指针，否则如实说明不挂。 */}
             {savedSource ? (
               <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-[11px] leading-snug text-sky-800">
-                将同时记录<strong>来源关联</strong>：本方案会标注派生自当前已保存的沙盘情景（
+                将同时记录<strong>来源关联</strong>：本方案会标注派生自当前已保存的决策情景（
                 <code className="mx-0.5 rounded bg-sky-100 px-1">{savedSource.scenarioId.slice(0, 8)}…</code>），
                 便于日后从该情景反查此方案。服务端会二次核验情景确实存在后才落库。
               </div>
             ) : (
               <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-[11px] leading-snug text-zinc-500">
-                当前情景<strong>尚未保存为项目</strong>，导出的方案不会挂来源关联（无从反查它出自哪版沙盘参数）。
+                当前情景<strong>尚未保存为项目</strong>，导出的方案不会挂来源关联（无从反查它出自哪版决策参数）。
                 如需可追溯关联，先用「保存 / 版本」保存本情景再导出。
               </div>
             )}

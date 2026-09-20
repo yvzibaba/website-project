@@ -119,7 +119,7 @@ async function accessByProjectId(projectId: string, user: SessionUser): Promise<
   if (!project) return { ok: false, result: { status: "not_found", error: "项目不存在" } };
   if (!canAccessProject(project.ownerId, user)) {
     log.warn("workbench project access denied", { projectId, userId: user.id, role: user.role });
-    return { ok: false, result: { status: "forbidden", error: "无权访问该沙盘项目" } };
+    return { ok: false, result: { status: "forbidden", error: "无权访问该决策项目" } };
   }
   return { ok: true, projectId };
 }

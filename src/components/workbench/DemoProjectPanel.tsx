@@ -165,7 +165,7 @@ export function DemoProjectPanel({
     <div className="flex flex-col gap-6">
       <Alert variant="warning">
         <strong>示范项目参数模型（新能源重卡 + 光伏 + 储能 + 充电）。</strong>
-        这里只露出最关键的几个参数，改任一项都会调用同一套沙盘引擎<strong className="font-medium">整体联动重算</strong>——
+        这里只露出最关键的几个参数，改任一项都会调用同一套决策引擎<strong className="font-medium">整体联动重算</strong>——
         技术能耗、经济评价（NPV / IRR / 回收期 / ROI）、图表、敏感性与动态报告同步变化。
         下方默认数字均为<span className="font-medium">示例参数 · 未经逐条核实</span>，
         经济模型为透明简化的年度口径、非可研级，<span className="font-medium">需专业人工确认，不得作为投资或并网决策依据</span>。

@@ -123,7 +123,7 @@ export const PARAMETER_SPECS: readonly ParameterSpec[] = [
     min: 100,
     max: 20000,
     inactive: true,
-    inactiveReason: "未接线：并网容量尚未计入模型成本/约束（仅示范沙盘超限告警使用），接线方案设计中",
+    inactiveReason: "未接线：并网容量尚未计入模型成本/约束（仅示范决策超限告警使用），接线方案设计中",
   }),
   // 批次1.3 未启用标注：1.3.0 起计费需量改用需用系数 Kc，本滑块不再参与任何计算（回归利用率本义，仅运营参考）。
   num("project.chargerUtilization", "充电桩平均利用率", "project", "advanced", 35, "%", {

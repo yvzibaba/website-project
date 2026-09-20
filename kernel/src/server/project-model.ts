@@ -427,7 +427,7 @@ export function computeEconomics(
       storage: STORAGE_MODEL_VERSION, // 冻结策略（2026-09-08 裁决）：逐快照记录储能内核版本，仅元数据
     },
     methodology:
-      "简化年度税后现金流沙盘（透明假设，非可研/财税级），CAPEX/OPEX/NPV/IRR/回收期均程序计算，须经专业人工确认",
+      "简化年度税后现金流决策模型（透明假设，非可研/财税级），CAPEX/OPEX/NPV/IRR/回收期均程序计算，须经专业人工确认",
     needsProfessionalReview: true,
     capex: {
       pv: round(pvCapex, 0),

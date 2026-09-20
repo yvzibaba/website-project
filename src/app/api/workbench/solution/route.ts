@@ -43,7 +43,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   );
   if (!owner.owned) {
     log.warn("export denied: sandboxSource not owned by session user", { userId: guard.user.id });
-    return errorResponse("FORBIDDEN", owner.reason ?? "只能导出属于自己的沙盘项目 / 情景", 403);
+    return errorResponse("FORBIDDEN", owner.reason ?? "只能导出属于自己的决策项目 / 情景", 403);
   }
 
   const result = await persistSolutionDraft(parsed.data, guard.actor, { creatorId: guard.user.id });

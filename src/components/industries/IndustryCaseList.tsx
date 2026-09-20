@@ -95,7 +95,7 @@ export function IndustryCaseList({ slug, industryName }: { slug: string; industr
   if (phase.kind === "error") {
     return (
       <Alert variant="warning" title="案例暂不可用">
-        案例列表加载失败（数据库可能正在冷启动或不可达），请稍后重试；您仍可先体验决策沙盘。
+        案例列表加载失败（数据库可能正在冷启动或不可达），请稍后重试；您仍可先体验决策平台。
       </Alert>
     );
   }
@@ -109,7 +109,7 @@ export function IndustryCaseList({ slug, industryName }: { slug: string; industr
         />
         <div className="flex justify-center">
           <Button variant="secondary" href="/workbench">
-            先体验新能源决策沙盘 →
+            先体验新能源决策平台 →
           </Button>
         </div>
       </>

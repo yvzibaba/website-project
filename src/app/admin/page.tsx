@@ -137,7 +137,7 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/review" className="font-medium hover:underline">审核发布队列（待我处理）→</Link>
             <Link href="/admin/cases" className="hover:underline">案例管理（录入 / 浏览全量）→</Link>
             <Link href="/admin/users" className="hover:underline">用户列表（只读）→</Link>
-            <Link href="/admin/projects" className="hover:underline">沙盘项目列表（只读）→</Link>
+            <Link href="/admin/projects" className="hover:underline">决策项目列表（只读）→</Link>
             <Link href="/admin/feedback" className="hover:underline">反馈处理（用户报错 / 建议）→</Link>
             <Link href="/admin/leads" className="hover:underline">留资（RFQ）列表 →</Link>
             <Link href="/cases" className="hover:underline">公开案例列表 →</Link>

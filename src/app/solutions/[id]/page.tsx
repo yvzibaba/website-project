@@ -127,7 +127,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
           <Link href={`/industries/${s.industrySlug}`}>
             <Badge variant="outline">{s.industryName}</Badge>
           </Link>
-          {lineage ? <Badge variant="info">沙盘推演生成</Badge> : null}
+          {lineage ? <Badge variant="info">平台推演生成</Badge> : null}
           {s.isDemo ? <Badge variant="warning">DEMO 数据</Badge> : null}
           <FavoriteButton targetType="SOLUTION" targetId={s.id} initialFavorited={favorited} />
         </div>
@@ -153,8 +153,8 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
       ) : null}
 
       {lineage ? (
-        <Alert variant="info" title="本方案由产业决策沙盘推演生成">
-          下方所有关键数字（CAPEX/OPEX/NPV/IRR/回收期/ROI 等）均由确定性沙盘模型
+        <Alert variant="info" title="本方案由产业决策平台推演生成">
+          下方所有关键数字（CAPEX/OPEX/NPV/IRR/回收期/ROI 等）均由确定性决策模型
           {lineage.engineCalcRef ? <code className="mx-1 font-mono text-xs">{lineage.engineCalcRef}</code> : null}
           （方案生成口径 <code className="mx-1 font-mono text-xs">{lineage.solutionCalcRef}</code>
           {lineage.regionName ? <>，地区「{lineage.regionName}」</> : null}
@@ -176,7 +176,7 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
           ) : null}
           {sourceText ? (
             <span className="mt-2 block border-t border-border/60 pt-2 text-[11px] text-muted-foreground">
-              来源关联：本方案{sourceText}（可在沙盘侧反向追溯到它导出过的方案）。
+              来源关联：本方案{sourceText}（可在平台侧反向追溯到它导出过的方案）。
             </span>
           ) : null}
         </Alert>
@@ -222,18 +222,18 @@ export default async function SolutionDetailPage({ params, searchParams }: PageP
         </Link>
       </section>
 
-      {/* 沙盘入口（Phase 4 模块 A）：把方案数字换成访客自己的条件重算（同一确定性模型，非二次换算）。
-          诚实提示：沙盘入参当前多为占位假设，结论须以真实数据替换并经专业复核（与沙盘页同口径）。 */}
+      {/* 决策平台入口（Phase 4 模块 A）：把方案数字换成访客自己的条件重算（同一确定性模型，非二次换算）。
+          诚实提示：决策入参当前多为占位假设，结论须以真实数据替换并经专业复核（与决策页同口径）。 */}
       <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 p-4">
         <div className="flex max-w-2xl flex-col gap-1">
           <h2 className="text-sm font-semibold text-foreground">想按你自己的条件重算这类项目？</h2>
           <p className="text-xs leading-5 text-muted-foreground">
-            进入「新能源重卡 + 光伏 + 储能 + 充电」可视化决策沙盘：选地区、改参数（车队规模/电价/光照/造价等），
+            进入「新能源重卡 + 光伏 + 储能 + 充电」可视化决策平台：选地区、改参数（车队规模/电价/光照/造价等），
             即时得到 CAPEX/OPEX/NPV/IRR/回收期与敏感性扫描。与上方数字使用同一套确定性计算内核。
           </p>
         </div>
         <Button variant="secondary" href="/workbench">
-          进入决策沙盘 →
+          进入决策平台 →
         </Button>
       </section>
 

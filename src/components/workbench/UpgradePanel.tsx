@@ -19,7 +19,7 @@ import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitl
 type Level = "basic" | "full";
 
 const FREE_ITEMS = [
-  "全参数即时重算的决策沙盘（车队 / 桩 / 光储 / 电价 / 政策滑块）",
+  "全参数即时重算的决策平台（车队 / 桩 / 光储 / 电价 / 政策滑块）",
   "净现值 NPV、内部收益率 IRR、动态回收期、ROI、盈亏平衡充电单价",
   "风险敏感性最值排行（先核实哪个变量）",
   "关键假设与适用边界、风险提示与尽调复核清单",
@@ -131,7 +131,7 @@ export function UpgradePanel({
             </li>
             <li>
               <span className="font-medium text-foreground">③ 要可存档交付物 / 定价与人工尽调：</span>
-              登录后「导出为方案」可存档自己的沙盘结论；正式可研、报价与合同由{contactAnchorHint}入口转人工，
+              登录后「导出为方案」可存档自己的决策结论；正式可研、报价与合同由{contactAnchorHint}入口转人工，
               我们通常 1 个工作日内联系（流程承诺，非系统级 SLA）。
             </li>
           </ol>
@@ -146,7 +146,7 @@ export function UpgradePanel({
             选企业画像 · 看完整报告 →
           </Button>
           <Button href="/workbench" variant="secondary" size="sm">
-            回沙盘继续算
+            回平台继续算
           </Button>
         </div>
       </CardContent>

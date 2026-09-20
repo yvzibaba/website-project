@@ -25,11 +25,11 @@ import { breadcrumbJsonLd } from "@/lib/json-ld";
 export const metadata: Metadata = {
   title: "企业服务 · 基础画像",
   description:
-    "选择你的企业类型（车队 / 充电运营商 / 园区业主 / 公交市政 / 投资人），带画像进入决策沙盘，按企业视角重算 CAPEX/OPEX/NPV/IRR/回收期。完整企业 AI 诊断即将开放。",
+    "选择你的企业类型（车队 / 充电运营商 / 园区业主 / 公交市政 / 投资人），带画像进入决策平台，按企业视角重算 CAPEX/OPEX/NPV/IRR/回收期。完整企业 AI 诊断即将开放。",
   ...seoMetadata({
     title: "企业服务 · 基础画像",
     description:
-      "选择企业画像并带入决策沙盘，按企业视角重算经济性与回收期（完整企业 AI 诊断规划中，即将开放）。",
+      "选择企业画像并带入决策平台，按企业视角重算经济性与回收期（完整企业 AI 诊断规划中，即将开放）。",
     path: "/enterprise",
   }),
 };
@@ -45,7 +45,7 @@ const METRIC_LABEL: Record<string, string> = {
 
 const STEPS = [
   { step: "① 选择企业画像", desc: "六类典型企业各有一组参数预设起点与决策侧重；也可不选，用通用口径。" },
-  { step: "② 沙盘内改成你的条件", desc: "地区、车队规模、电价、光照、造价等参数全部可改，每次改动即时重算。" },
+  { step: "② 平台内改成你的条件", desc: "地区、车队规模、电价、光照、造价等参数全部可改，每次改动即时重算。" },
   { step: "③ 看个性化结果并保存", desc: "指标、敏感性、动态报告按画像侧重呈现；登录后可保存为项目、继续询价。" },
 ] as const;
 
@@ -61,7 +61,7 @@ export default function EnterprisePage() {
       />
       <PageHeader
         title="企业服务 · 基础画像"
-        description="告诉平台你是哪类企业，用企业视角重算同一套确定性模型：先选画像，再进沙盘改成你的真实条件。"
+        description="告诉平台你是哪类企业，用企业视角重算同一套确定性模型：先选画像，再进平台改成你的真实条件。"
         breadcrumb={<Breadcrumb items={[{ label: "首页", href: "/" }, { label: "企业服务" }]} />}
       >
         <Badge variant="info">基础能力 · 已开放</Badge>
@@ -69,7 +69,7 @@ export default function EnterprisePage() {
 
       <Alert variant="info" title="与「完整企业 AI 诊断」的边界">
         完整的企业画像建档、AI 诊断与方案适配<strong>尚在规划中，未开放</strong>。
-        本页当前提供的是基础能力：选择企业画像 → 带入决策沙盘按企业视角重算。
+        本页当前提供的是基础能力：选择企业画像 → 带入决策平台按企业视角重算。
         页面不收集任何企业信息，不出具诊断结论。
       </Alert>
 
@@ -88,7 +88,7 @@ export default function EnterprisePage() {
         </p>
         <div className="flex flex-wrap gap-2">
           <Button href="/workbench/projects">进入项目决策平台 →</Button>
-          <Button variant="secondary" href="/workbench">先快速试算（沙盘）→</Button>
+          <Button variant="secondary" href="/workbench">先快速试算（决策平台）→</Button>
         </div>
       </section>
 
@@ -129,11 +129,11 @@ export default function EnterprisePage() {
                 <div className="mt-auto pt-2">
                   {p.id === "generic" ? (
                     <Button variant="secondary" href="/workbench" className="w-full">
-                      直接进入沙盘 →
+                      直接进入决策平台 →
                     </Button>
                   ) : (
                     <Button variant="secondary" href={`/workbench?profile=${encodeURIComponent(p.id)}`} className="w-full">
-                      带画像进入沙盘 →
+                      带画像进入决策平台 →
                     </Button>
                   )}
                 </div>
@@ -144,8 +144,8 @@ export default function EnterprisePage() {
         <p className="text-xs leading-5 text-muted-foreground">
           诚实标注：全部画像预设均为<strong>示例参数</strong>（来源标注【示例·待核实】，未经逐项核实），
           只提供「这类企业常见量级」的起点，绝不当事实使用。
-          你可以在沙盘中逐项改写为真实条件；涉及投资决策的结论<strong>需专业人工确认</strong>。
-          画像预设的展示与选择也可在沙盘工作台内随时切换。
+          你可以在平台中逐项改写为真实条件；涉及投资决策的结论<strong>需专业人工确认</strong>。
+          画像预设的展示与选择也可在决策工作台内随时切换。
         </p>
       </section>
 
@@ -153,7 +153,7 @@ export default function EnterprisePage() {
       <section className="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-4">
         <h2 className="text-sm font-semibold text-foreground">测算完之后</h2>
         <p className="text-sm leading-6 text-muted-foreground">
-          沙盘内可把当前情景<strong>保存为项目</strong>（记录参数快照、模型版本与结果），登录后随时重开或复制重算；
+          平台内可把当前情景<strong>保存为项目</strong>（记录参数快照、模型版本与结果），登录后随时重开或复制重算；
           也可以把情景导出为产业方案草案并<strong>询价购买</strong>。
           <Link href="/register" className="ml-1 text-primary underline underline-offset-4">注册 / 登录 →</Link>
         </p>
@@ -164,7 +164,7 @@ export default function EnterprisePage() {
         <h2 className="text-xl font-semibold tracking-tight text-foreground">想直接聊？留个联系方式</h2>
         <p className="text-sm leading-6 text-muted-foreground">
           填一张询价意向表，我们会走人工流程对接（非自动报价 / 非合同承诺）。
-          如果你已经在沙盘里跑出了贴近真实条件的情景，可以在导出方案时带上项目链接一起说清楚。
+          如果你已经在平台里跑出了贴近真实条件的情景，可以在导出方案时带上项目链接一起说清楚。
         </p>
         <LeadForm
           source="enterprise"

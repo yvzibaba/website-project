@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 const SOURCE_LABEL: Record<string, string> = {
   enterprise: "企业页",
-  report: "沙盘报告尾",
+  report: "决策报告尾",
   pricing: "方案定价位",
 };
 

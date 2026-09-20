@@ -100,13 +100,13 @@ export function WorkbenchShell() {
     <div className="flex flex-col gap-5">
       {restoreError ? (
         <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
-          载入项目失败：{restoreError}。你仍可正常使用沙盘，或从「我的项目」重新打开。
+          载入项目失败：{restoreError}。你仍可正常使用决策平台，或从「我的项目」重新打开。
         </p>
       ) : null}
 
       <div
         role="tablist"
-        aria-label="沙盘模式"
+        aria-label="决策模式"
         className="inline-flex w-fit items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50 p-1"
       >
         <ModeTab

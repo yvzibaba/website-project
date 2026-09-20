@@ -267,7 +267,7 @@ export function deriveRiskFlags(res: CalcResult): {
     return { needsProfessionalReview: true, flags: [`模型未通过（${res.reason}），结论不可用，须人工核查输入`] };
   }
   const flags: string[] = [
-    "本沙盘为透明简化年度估算（非可研/逐时/财税级），投资与并网决策须经专业人工确认",
+    "本平台为透明简化年度估算（非可研/逐时/财税级），投资与并网决策须经专业人工确认",
     "全部关键输入为示例参数·未经核实，须逐项替换为可追溯来源后重算",
   ];
   if (!Number.isFinite(res.metrics.npv)) flags.push("NPV 计算失败（NaN）：折现率/现金流异常，须人工排查");

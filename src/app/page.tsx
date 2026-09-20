@@ -7,14 +7,19 @@ import { seoMetadata } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
 
 /**
- * 首页 `/`（V1.1 批次 P3 · 三屏定位首页，方案 §3.2）。
+ * 首页 `/`（V2 强制设计原则 P1 · 三屏定位首页）。
  *
- * 定位从「产业案例引擎」门户收敛为**光储充投资决策软件**的着陆页，三屏：
- *   ① 一句话价值 + 主 CTA「免费算一个项目」（直达 /workbench 一级沙盘，免登录）
- *   ② 三个真实商业问题卡（值不值得建 / 银行看什么 / 什么最怕），各配沙盘结果示例（示意数据·明确标注）
+ * **IA 原则（P1）：以「项目」为中心，不以「计算」为中心。**
+ *   主 CTA 指向 `项目决策平台`（/workbench/projects）——项目是有一等身份的实体
+ *   （有状态、有版本、有历史）；「算一次」是项目内的一个动作，不是产品的入口。
+ *   免登录的快速试算仍保留为**次级**入口（/workbench），不作为首页主路径。
+ *
+ * 三屏：
+ *   ① 一句话价值 + 主 CTA「进入项目决策平台」+ 次级「免登录先试算」
+ *   ② 三个真实商业问题卡（值不值得建 / 银行看什么 / 什么最怕），各配决策结果示例（示意数据·明确标注）
  *   ③ 真实案例验证区（诚实空态，不编造案例）+ 次级入口条（案例库 / 方案库 / 企业画像 / 行业）
  *
- * 示意数据取自沙盘当前示例参数的真实引擎输出（黄金样本口径，逐项可复算），并显式声明
+ * 示意数据取自平台当前示例参数的真实引擎输出（黄金样本口径，逐项可复算），并显式声明
  * 「示例参数 · 未经逐条核实 · 非真实项目结果」——与全库诚实纪律一致，绝不虚构项目业绩。
  *
  * 渲染方式：新版首页无任何数据库查询，纯静态预渲染（原 force-dynamic 随三屏重写移除）。
@@ -26,13 +31,13 @@ export const HOME_VALUE_LINE = "3 分钟算清：投多少、几年回本、最�
 
 export const metadata: Metadata = {
   title: {
-    default: "光储充投资决策沙盘 · 3 分钟算清投多少、几年回本、最怕什么",
-    template: "%s · 光储充投资决策沙盘",
+    default: "光储充项目投资决策平台 · 3 分钟算清投多少、几年回本、最怕什么",
+    template: "%s · 光储充项目投资决策平台",
   },
   description:
     "面向新能源重卡光储充项目的投资决策软件：拖动参数即时重算投资额、回收期、NPV/IRR 与最敏感变量，输出带口径与溯源声明的确定性报告。示例参数未经核实，结论需专业人工确认。",
   ...seoMetadata({
-    title: "光储充投资决策沙盘 · 3 分钟算清投多少、几年回本、最怕什么",
+    title: "光储充项目投资决策平台 · 3 分钟算清投多少、几年回本、最怕什么",
     description:
       "面向新能源重卡光储充项目的投资决策软件：拖动参数即时重算投资额、回收期、NPV/IRR 与最敏感变量，输出带口径与溯源声明的确定性报告。示例参数未经核实，结论需专业人工确认。",
     path: "/",
@@ -101,8 +106,11 @@ export default function Home() {
             示例值（未经逐条核实），结论需专业人工确认——它是帮你把问题问全的工具，不是替你拍板的顾问。
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button href="/workbench" variant="primary" size="lg">免费算一个项目 →</Button>
-            <Button href="/enterprise" variant="secondary" size="lg">先选我的企业类型</Button>
+            {/* 主 CTA：项目决策平台（P1：以「项目」为中心）。项目是有一等身份的实体，
+                计算只是项目内的一个动作；免登录试算降为次级入口。 */}
+            <Button href="/workbench/projects" variant="primary" size="lg">进入项目决策平台 →</Button>
+            <Button href="/workbench" variant="secondary" size="lg">免登录先试算</Button>
+            <Button href="/enterprise" variant="ghost" size="lg">先选我的企业类型</Button>
           </div>
         </Container>
       </section>
@@ -113,7 +121,7 @@ export default function Home() {
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground">投资决策要回答的三个问题</h2>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              下面每张小卡是沙盘的真实输出样式（示例参数下由计算引擎生成，非任何已建项目的业绩）。
+              下面每张小卡是平台的真实输出样式（示例参数下由计算引擎生成，非任何已建项目的业绩）。
             </p>
           </div>
           <ul className="grid gap-4 lg:grid-cols-3">
@@ -144,7 +152,7 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* ── 屏②·B 免费 vs 专业 转化带（与沙盘结果页同一组件、同一口径，杜绝文案漂移）── */}
+      {/* ── 屏②·B 免费 vs 专业 转化带（与决策结果页同一组件、同一口径，杜绝文案漂移）── */}
       <section className="border-b border-border bg-muted/20">
         <Container size="lg" className="py-14 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
@@ -154,7 +162,7 @@ export default function Home() {
               下面列出升级到企业 / 人工尽调时才多出来的东西，全部真实可用或明确标注为人工交付，没有点了没反应的假功能。
             </p>
           </div>
-          <UpgradePanel level="basic" contactAnchorHint="企业页 / 沙盘报告尾的留资表单" />
+          <UpgradePanel level="basic" contactAnchorHint="企业页 / 决策报告尾的留资表单" />
         </Container>
       </section>
 
@@ -165,7 +173,7 @@ export default function Home() {
             <Badge variant="info" className="w-fit">真实案例验证中</Badge>
             <h2 className="text-xl font-semibold tracking-tight text-foreground">用真实项目验证这套算法</h2>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              我们坚持不拿编造的项目业绩做宣传：沙盘当前的每一个输出都标明示例参数与计算口径。
+              我们坚持不拿编造的项目业绩做宣传：平台当前的每一个输出都标明示例参数与计算口径。
               真实案例的输入数据、计算结果与事后核对正在首批用户验证中产生——
               <strong className="text-foreground">首批用户将获得免费企业适配与人工复核通道</strong>。
             </p>
@@ -186,7 +194,7 @@ export default function Home() {
             </Link>
             <Link href="/enterprise" className="group rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
               <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">企业画像</h3>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">选车队 / 运营商 / 园区 / 投资人视角，沙盘预设随企业视角重排。</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">选车队 / 运营商 / 园区 / 投资人视角，平台预设随企业视角重排。</p>
             </Link>
             <Link href="/industries" className="group rounded-lg border border-border bg-background p-4 shadow-sm transition-all hover:border-ring hover:shadow-md">
               <h3 className="text-sm font-semibold text-foreground group-hover:text-primary">按行业浏览</h3>

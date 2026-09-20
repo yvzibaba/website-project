@@ -35,7 +35,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const actor = await requireSameOriginActor(request);
   if (!actor.ok) return actor.response;
   if (!actor.user) {
-    return errorResponse("UNAUTHORIZED", "请先登录后保存沙盘项目", 401);
+    return errorResponse("UNAUTHORIZED", "请先登录后保存决策项目", 401);
   }
   const parsed = await readJsonSafe(request);
   if (!parsed.ok) return parsed.response;

@@ -73,7 +73,7 @@ export default async function AdminUsersPage() {
                     <th className="py-2 pr-4 font-medium">昵称</th>
                     <th className="py-2 pr-4 font-medium">角色</th>
                     <th className="py-2 pr-4 font-medium">订单</th>
-                    <th className="py-2 pr-4 font-medium">沙盘项目</th>
+                    <th className="py-2 pr-4 font-medium">决策项目</th>
                     <th className="py-2 pr-4 font-medium">邮箱验证</th>
                     <th className="py-2 font-medium">注册时间</th>
                   </tr>

@@ -207,7 +207,7 @@ export function verifyReproducibility(financial: FinancialLike): Reproducibility
   const consider = (metric: string, storedRaw: string | number | null | undefined, expected: number | null, tol: number) => {
     const stored = num(storedRaw);
     if (stored === null || expected === null) {
-      skipped.push(metric); // 沙盘对负/算不出的指标会省略落库或源值，诚实跳过
+      skipped.push(metric); // 决策平台对负/算不出的指标会省略落库或源值，诚实跳过
       return;
     }
     const delta = Math.abs(stored - expected);

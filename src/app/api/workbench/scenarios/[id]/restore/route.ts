@@ -20,7 +20,7 @@ export async function POST(request: Request, { params }: Ctx): Promise<NextRespo
   const actor = await requireSameOriginActor(request);
   if (!actor.ok) return actor.response;
   if (!actor.user) {
-    return errorResponse("UNAUTHORIZED", "请先登录后回滚沙盘版本", 401);
+    return errorResponse("UNAUTHORIZED", "请先登录后回滚决策版本", 401);
   }
   const { id } = await params;
   const parsed = await readJsonSafe(request);

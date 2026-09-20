@@ -33,7 +33,7 @@ import {
 
 export const metadata: Metadata = {
   title: "UI 组件库",
-  description: "光储充投资决策沙盘基础 UI 组件演示（开发内部页）。",
+  description: "光储充项目投资决策平台基础 UI 组件演示（开发内部页）。",
   robots: { index: false, follow: false },
 };
 

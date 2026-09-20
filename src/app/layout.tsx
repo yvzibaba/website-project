@@ -6,8 +6,8 @@ import { SITE_DESCRIPTION, SITE_URL, isIndexable } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "光储充投资决策沙盘",
-    template: "%s · 光储充投资决策沙盘",
+    default: "光储充项目投资决策平台",
+    template: "%s · 光储充项目投资决策平台",
   },
   description: SITE_DESCRIPTION,
   robots: isIndexable()
@@ -41,20 +41,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               href="/"
               className="font-semibold tracking-tight hover:opacity-80"
             >
-              光储充投资决策沙盘
+              光储充项目投资决策平台
             </Link>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm">
-              <Link href="/industries" className="hidden hover:underline md:inline">
-                行业
+              {/* V2 主导航（强制原则 P1：以「项目」为中心）。
+                  「项目决策」指向 V2 项目列表（项目是一等实体），而不是计算页；
+                  V1 的 行业 / 案例 / 方案 已移出主流程（保留在页脚，未删除，供对照）。 */}
+              <Link href="/workbench/projects" className="hover:underline">
+                项目决策
               </Link>
-              <Link href="/cases" className="hover:underline">
-                案例
-              </Link>
-              <Link href="/solutions" className="hover:underline">
-                方案
-              </Link>
-              <Link href="/workbench" className="hover:underline">
-                沙盘
+              <Link href="/enterprise" className="hidden hover:underline md:inline">
+                企业服务
               </Link>
               <Link href="/search" className="hidden hover:underline md:inline">
                 搜索
@@ -62,10 +59,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/about" className="hidden hover:underline md:inline">
                 关于
               </Link>
-              {/* 基础运营版：主导航补「我的项目」（沙盘项目列表）；游客点击走 /account/projects
-                  → 由该页 redirect 携 callbackUrl 回跳登录，与「我的订单」同一模式。
-                  开发用 /ui 与 /api/health 链接移出主导航（health 保留在页脚小字）。 */}
-              <Link href="/account/projects" className="hover:underline">
+              {/* 「我的项目」指向 V2 项目列表（/workbench/projects）——P1 要求以「项目」为中心，
+                  而 V1 的 /account/projects 是旧口径项目清单，若两处并列会出现两个「我的项目」。
+                  故主导航只留 V2 一个，V1 清单移到页脚（未删除，供对照）。 */}
+              <Link href="/workbench/projects" className="hidden hover:underline sm:inline">
                 我的项目
               </Link>
               <Link href="/account/orders" className="hidden hover:underline sm:inline">
@@ -89,6 +86,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="border-t border-zinc-200 py-6 dark:border-zinc-800">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 text-xs text-zinc-500">
             <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+              {/* V2 路径（与主导航一致） */}
+              <Link href="/workbench/projects" className="hover:underline">
+                项目决策
+              </Link>
+              <Link href="/workbench" className="hover:underline">
+                免登录试算
+              </Link>
+              <Link href="/enterprise" className="hover:underline">
+                企业服务
+              </Link>
+              {/* V1 遗留入口：已移出主流程，保留在页脚供对照（P4 前不删除） */}
               <Link href="/industries" className="hover:underline">
                 行业
               </Link>
@@ -98,11 +106,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/solutions" className="hover:underline">
                 方案
               </Link>
-              <Link href="/workbench" className="hover:underline">
-                沙盘
-              </Link>
               <Link href="/search" className="hover:underline">
                 搜索
+              </Link>
+              <Link href="/account/projects" className="hover:underline">
+                旧版项目清单
               </Link>
               <Link href="/about" className="hover:underline">
                 关于我们
@@ -139,7 +147,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </a>
             </nav>
             <p className="text-center">
-              © 2026 光储充投资决策沙盘 · 全部示例参数未经逐条核实，计算结论需专业人工确认，不构成投资建议 ·{" "}
+              © 2026 光储充项目投资决策平台 · 全部示例参数未经逐条核实，计算结论需专业人工确认，不构成投资建议 ·{" "}
               <a href="/api/health" className="font-mono hover:underline">
                 health
               </a>

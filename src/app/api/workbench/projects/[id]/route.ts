@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: Ctx): Promise<NextRespon
   const actor = await requireSameOriginActor(request);
   if (!actor.ok) return actor.response;
   if (!actor.user) {
-    return errorResponse("UNAUTHORIZED", "请先登录后访问沙盘项目", 401);
+    return errorResponse("UNAUTHORIZED", "请先登录后访问决策项目", 401);
   }
   const { id } = await params;
   const result = await readProject(id, { user: actor.user });

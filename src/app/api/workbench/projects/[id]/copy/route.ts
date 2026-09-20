@@ -23,7 +23,7 @@ export async function POST(
   const actor = await requireSameOriginActor(request);
   if (!actor.ok) return actor.response;
   if (!actor.user) {
-    return errorResponse("UNAUTHORIZED", "请先登录后复制沙盘项目", 401);
+    return errorResponse("UNAUTHORIZED", "请先登录后复制决策项目", 401);
   }
   const { id } = await params;
   const parsed = await readJsonSafe(request);

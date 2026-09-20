@@ -21,7 +21,7 @@ async function actorOrFail(request: Request): Promise<
 > {
   const actor = await requireSameOriginActor(request);
   if (!actor.ok) return { response: actor.response };
-  if (!actor.user) return { response: errorResponse("UNAUTHORIZED", "请先登录后操作沙盘版本", 401) };
+  if (!actor.user) return { response: errorResponse("UNAUTHORIZED", "请先登录后操作决策版本", 401) };
   return { user: actor.user };
 }
 

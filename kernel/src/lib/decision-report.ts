@@ -154,7 +154,7 @@ const BASE_DISCLAIMERS = [
 ];
 
 const E2E_DISCLAIMER =
-  "本报告是沙盘主流程（选地区→改参数→计算→技术/经济/风险/敏感性→动态报告）的确定性产物，该链路仍在持续完善中，本报告不得单独作为投资或并网决策依据。";
+  "本报告是决策主流程（选地区→改参数→计算→技术/经济/风险/敏感性→动态报告）的确定性产物，该链路仍在持续完善中，本报告不得单独作为投资或并网决策依据。";
 
 /** 生成结构化报告。`vm.ok=false` 时只回诚实错误 + 免责，绝不编造结论。 */
 export function buildDecisionReport(input: ReportInput): DecisionReport {
@@ -180,7 +180,7 @@ export function buildDecisionReport(input: ReportInput): DecisionReport {
     return {
       reportVersion: REPORT_VERSION,
       ok: false,
-      title: `产业项目沙盘报告 · ${regionName}（未能生成）`,
+      title: `产业项目决策报告 · ${regionName}（未能生成）`,
       regionName,
       generatedFrom,
       error: { reason, detail },
@@ -312,7 +312,7 @@ export function buildDecisionReport(input: ReportInput): DecisionReport {
     title: "风险提示与尽调复核清单",
     kind: "list",
     paragraphs: [
-      "本沙盘结论属高风险领域，须由具备产业、财务、电力专业背景的人员复核后方可采信或对外发布。",
+      "本决策结论属高风险领域，须由具备产业、财务、电力专业背景的人员复核后方可采信或对外发布。",
       "当前经济口径未包含：融资结构的利息与税盾影响、流动资金占用、逐时负荷曲线、电池寿命状态（SOH）/温度/弃电的细化，以及充电需求增长曲线；设备残值取名义常数。",
       E2E_DISCLAIMER,
     ],
@@ -350,7 +350,7 @@ export function buildDecisionReport(input: ReportInput): DecisionReport {
   return {
     reportVersion: REPORT_VERSION,
     ok: true,
-    title: `产业项目可视化决策沙盘报告 · ${regionName}`,
+    title: `产业项目可视化决策报告 · ${regionName}`,
     regionName,
     generatedFrom,
     sections,

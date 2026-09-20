@@ -151,8 +151,8 @@ export function describeSolutionSource(ref: SolutionSourceRef | null | undefined
   if (!ref) return null;
   const scen = shortId(ref.scenarioId);
   const proj = shortId(ref.projectId);
-  if (scen && proj) return `派生自已保存的沙盘情景 ${scen}（项目 ${proj}）`;
-  if (scen) return `派生自已保存的沙盘情景 ${scen}`;
-  if (proj) return `派生自已保存的沙盘项目 ${proj}`;
+  if (scen && proj) return `派生自已保存的决策情景 ${scen}（项目 ${proj}）`;
+  if (scen) return `派生自已保存的决策情景 ${scen}`;
+  if (proj) return `派生自已保存的决策项目 ${proj}`;
   return null;
 }

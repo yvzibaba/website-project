@@ -35,7 +35,7 @@ export async function GET(request: Request): Promise<NR> {
   if (!isStaff) {
     const owner = await ownsSolutionSource({ scenarioId, projectId }, guard.user);
     if (!owner.owned) {
-      return errorResponse("FORBIDDEN", owner.reason ?? "只能反查属于自己的沙盘情景 / 项目", 403);
+      return errorResponse("FORBIDDEN", owner.reason ?? "只能反查属于自己的决策情景 / 项目", 403);
     }
   }
 

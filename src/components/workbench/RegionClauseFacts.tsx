@@ -27,7 +27,7 @@ export function RegionClauseFacts({ regionId }: { regionId: string }) {
           已核实政策条款
         </Badge>
         <span className="text-[11px] leading-snug text-zinc-600">
-          以下条款经权威原文核验、可点击溯源；沙盘中相关数值仍为示例参数（未经核实），「条款已核实」不等于「数值已核实」。
+          以下条款经权威原文核验、可点击溯源；平台中相关数值仍为示例参数（未经核实），「条款已核实」不等于「数值已核实」。
         </span>
       </div>
       <ul className="mt-2 flex flex-col gap-2">

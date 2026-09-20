@@ -89,7 +89,7 @@ function ProjectCard({ p }: { p: ProjectListItem }) {
             href={`/workbench?project=${encodeURIComponent(p.id)}`}
             className="text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
-            在沙盘打开 →
+            在决策平台打开 →
           </Link>
           <ProjectCopyButton projectId={p.id} />
         </div>
@@ -118,7 +118,7 @@ export default async function AccountProjectsPage() {
     <Container size="md" className="py-10 flex flex-col gap-6">
       <PageHeader
         title="我的项目"
-        description="你在决策沙盘中保存的项目：参数快照、模型版本与结果一并留存，可随时重开、复制或继续重算。"
+        description="你在决策平台中保存的项目：参数快照、模型版本与结果一并留存，可随时重开、复制或继续重算。"
         breadcrumb={
           <Breadcrumb
             items={[{ label: "首页", href: "/" }, { label: "我的账号", href: "/account" }, { label: "我的项目" }]}
@@ -140,15 +140,15 @@ export default async function AccountProjectsPage() {
       ) : projects.length === 0 ? (
         <>
           <EmptyState
-            title="还没有保存任何沙盘项目"
-            description="进入决策沙盘：选地区、改参数、看结果，然后把当前情景「保存为项目」——参数快照、模型版本与结果会一并留存到这里。"
+            title="还没有保存任何决策项目"
+            description="进入决策平台：选地区、改参数、看结果，然后把当前情景「保存为项目」——参数快照、模型版本与结果会一并留存到这里。"
           />
           <div className="flex justify-center">
             <a
               href="/workbench"
               className="rounded-full border border-border px-5 py-2 text-sm font-medium transition-colors hover:border-ring"
             >
-              去体验决策沙盘 →
+              去体验决策平台 →
             </a>
           </div>
         </>

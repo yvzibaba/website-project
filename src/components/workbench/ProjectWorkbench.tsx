@@ -239,7 +239,7 @@ export function ProjectWorkbench({
   return (
     <div className="flex flex-col gap-6">
       <Alert variant="warning">
-        <strong>这是决策沙盘：屏幕上每个数字都是示例条件下的推演结果。</strong>
+        <strong>这是决策平台：屏幕上每个数字都是示例条件下的推演结果。</strong>
         下方全部默认数值（含企业画像预设）均为<span className="font-medium">示例参数 · 未经逐条核实</span>
         ，经济模型为透明简化的年度口径、非可研级，结果<span className="font-medium">需专业人工确认，不得作为投资或并网决策依据</span>。
         <span className="font-medium">全部回报指标（NPV / IRR / 回收期 / ROI）为全投资（无杠杆）口径，≠ 股权融资回报。</span>
@@ -633,7 +633,7 @@ export function ProjectWorkbench({
           ) : null}
 
           {/* V1.1 P4 · 报告尾留资：看过动态报告即视为进入「考虑期」，提供人工对接入口。
-              source="report" 会写入 Lead.source，便于后台区分询价来自沙盘报告尾 vs 企业页 vs 定价位。 */}
+              source="report" 会写入 Lead.source，便于后台区分询价来自决策报告尾 vs 企业页 vs 定价位。 */}
           {showReport ? (
             <LeadForm
               source="report"

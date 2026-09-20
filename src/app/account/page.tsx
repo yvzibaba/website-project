@@ -72,7 +72,7 @@ export default async function AccountPage() {
           <div className="flex items-center justify-between gap-4">
             <span className="text-muted-foreground">我的项目</span>
             <Link href="/account/projects" className="font-medium text-primary hover:underline">
-              查看沙盘项目 →
+              查看决策项目 →
             </Link>
           </div>
           <div className="flex items-center justify-between gap-4">

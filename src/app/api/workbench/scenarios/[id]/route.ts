@@ -19,7 +19,7 @@ export async function PUT(request: Request, { params }: Ctx): Promise<NextRespon
   const actor = await requireSameOriginActor(request);
   if (!actor.ok) return actor.response;
   if (!actor.user) {
-    return errorResponse("UNAUTHORIZED", "请先登录后修改沙盘情景", 401);
+    return errorResponse("UNAUTHORIZED", "请先登录后修改决策情景", 401);
   }
   const { id } = await params;
   const parsed = await readJsonSafe(request);

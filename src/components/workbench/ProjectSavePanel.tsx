@@ -146,7 +146,7 @@ export function ProjectSavePanel({
     setBusy(true);
     setNotice(null);
     const res = await mutateJson("/api/workbench/projects", "POST", {
-      name: name.trim() || `${regionName} 沙盘方案`,
+      name: name.trim() || `${regionName} 决策方案`,
       regionId,
       layers,
     });
@@ -233,13 +233,13 @@ export function ProjectSavePanel({
         <div className="flex flex-wrap items-end gap-2">
           <div className="flex min-w-[220px] flex-1 flex-col gap-1">
             <label className="text-xs font-medium text-zinc-500" htmlFor="sbx-proj-name">
-              项目名称（默认「{regionName} 沙盘方案」）
+              项目名称（默认「{regionName} 决策方案」）
             </label>
             <Input
               id="sbx-proj-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder={`${regionName} 光储充重卡沙盘`}
+              placeholder={`${regionName} 光储充重卡决策平台`}
               maxLength={200}
               disabled={Boolean(projectId)}
             />
@@ -317,7 +317,7 @@ export function ProjectSavePanel({
 
         {needLogin ? (
           <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-800">
-            保存沙盘项目需要登录。
+            保存决策项目需要登录。
             <Link href="/login?callbackUrl=%2Fworkbench" className="ml-1 underline">
               前往登录
             </Link>

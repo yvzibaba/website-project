@@ -98,7 +98,7 @@ export type Explanation = z.infer<typeof explanationSchema>;
 
 function roleInstruction(): string {
   return [
-    "你是「产业项目可视化决策沙盘」的解释助手。下面是一份**由确定性计算引擎算好、已经生成完毕**的沙盘报告（中文、结构化）。",
+    "你是「产业项目可视化决策平台」的解释助手。下面是一份**由确定性计算引擎算好、已经生成完毕**的决策报告（中文、结构化）。",
     "你的**唯一任务**是向非专业用户**解释**这份报告：为什么得到这样的结论、哪些变量最左右结果、以及定性的 what-if 走势。",
     "铁律一（只解释不算数）：你**不得**重新计算、修改或杜撰任何数字；只能引用报告中**已经出现**的数字与原话。",
     "铁律二（what-if 只定性）：任何假设性推演只能做**定性**描述（例如「若充电单价上升，NPV 通常会随之改善」），**严禁**给出报告里没有的新具体数值。",
@@ -130,7 +130,7 @@ function flattenReportForPrompt(report: DecisionReportInput): string {
  * 纯函数：拼装发给模型的 prompt（确定性、可单测）。`question` 为用户可选追问（截断防灌入）。
  */
 export function buildExplainPrompt(report: DecisionReportInput, question?: string): string {
-  const parts = [roleInstruction(), "=== 沙盘报告（确定性引擎已算好，仅供解释、不得改动） ==="];
+  const parts = [roleInstruction(), "=== 决策报告（确定性引擎已算好，仅供解释、不得改动） ==="];
   parts.push(flattenReportForPrompt(report));
   const q = question?.trim();
   if (q) parts.push(`=== 用户追问 ===\n${q.slice(0, 2000)}`);

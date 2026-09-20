@@ -215,7 +215,7 @@ export function buildSolutionDraft(input: SolutionDraftInput): SolutionDraft {
   const factCount = factInputsSorted.length;
   const representativeFactUrl: string | undefined = factInputsSorted[0]?.sourceUrl;
 
-  const name = projectName?.trim() || "沙盘产业项目方案";
+  const name = projectName?.trim() || "决策产业项目方案";
   const scen = scenarioName?.trim() || "基准情景";
   const title = `${name}｜${scen}（${regionName}）`;
   const slug = slugify(`${name}-${scen}-${regionName}`);
@@ -374,7 +374,7 @@ export function buildSolutionDraft(input: SolutionDraftInput): SolutionDraft {
     factCount === 0
       ? "入参均为【示例·待核实】的示例参数，须以来源可追溯的真实数据替换并复核后方可对外发布/售卖"
       : `部分入参（${factCount} 项）已接可核验来源链接，但仍有其余入参为示例参数，须全部替换为可追溯真实数据并复核后方可对外发布/售卖`,
-    "沙盘方案须挂靠一个已存在的产业案例才能进入发布/购买闭环——当前草案尚未挂靠案例",
+    "决策方案须挂靠一个已存在的产业案例才能进入发布/购买闭环——当前草案尚未挂靠案例",
     "需专业人工确认：经济与技术假设属高风险领域（电力/新能源），AI 只做解读，关键决策由人做出",
   ];
   if (!price || price.trim() === "") {
@@ -387,7 +387,7 @@ export function buildSolutionDraft(input: SolutionDraftInput): SolutionDraft {
   const riskDomains = ["投资", "能源", "政策"];
 
   const summary =
-    `基于沙盘决策模型（${regionName}${profile ? `·${profile.name}` : ""}）生成的「${INDUSTRY_LABEL}」产业方案草案。` +
+    `基于项目决策模型（${regionName}${profile ? `·${profile.name}` : ""}）生成的「${INDUSTRY_LABEL}」产业方案草案。` +
     `核心结论：净 CAPEX ${vm.meta?.capexNetLabel ?? "—"}、NPV ${card(vm, "npv")}、IRR ${card(vm, "irr")}、` +
     `动态回收期 ${card(vm, "payback")}、ROI ${card(vm, "roi")}。所有数字为程序计算、入参为示例假设、需专业人工确认。`;
 

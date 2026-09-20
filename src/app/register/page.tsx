@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "注册",
-  description: "创建光储充投资决策沙盘账号：保存沙盘项目、查看已购方案、下单购买产业解决方案。",
+  description: "创建光储充项目投资决策平台账号：保存决策项目、查看已购方案、下单购买产业解决方案。",
   robots: { index: false, follow: false },
 };
 

@@ -47,8 +47,8 @@ export default async function AdminProjectsPage() {
   return (
     <Container className="py-10 flex flex-col gap-6">
       <PageHeader
-        title="沙盘项目列表"
-        description="全量用户项目总览（只读）。写操作只允许 owner 本人在沙盘内完成，后台不提供代改入口。"
+        title="决策项目列表"
+        description="全量用户项目总览（只读）。写操作只允许 owner 本人在平台内完成，后台不提供代改入口。"
       />
 
       {dbError ? (
@@ -58,7 +58,7 @@ export default async function AdminProjectsPage() {
       ) : items.length === 0 ? (
         <Card>
           <CardContent className="py-10 text-center text-sm text-muted-foreground">
-            还没有保存任何沙盘项目。
+            还没有保存任何决策项目。
           </CardContent>
         </Card>
       ) : (

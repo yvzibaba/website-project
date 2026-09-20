@@ -364,7 +364,7 @@ export async function createProject(input: CreateProjectInput): Promise<CreatePr
     });
     const scenarioId = project.scenarios[0]?.id ?? "";
     await prisma.changeLog.create({
-      data: changeLogArgs(project.id, "CREATE", input.actor ?? null, "创建沙盘项目 + 基线情景", null, {
+      data: changeLogArgs(project.id, "CREATE", input.actor ?? null, "创建决策项目 + 基线情景", null, {
         name,
         calcStatus: data.calcStatus,
       }),

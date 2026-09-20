@@ -58,7 +58,7 @@ export interface VerifiedSolutionSource {
 export async function verifySolutionSource(input: SolutionSourceInput | null | undefined): Promise<VerifiedSolutionSource> {
   const ref = normalizeSolutionSource(input);
   if (!ref) {
-    return { ok: false, ref: null, note: "未提供有效的沙盘情景 / 项目 id，本次导出不挂来源关联" };
+    return { ok: false, ref: null, note: "未提供有效的决策情景 / 项目 id，本次导出不挂来源关联" };
   }
   try {
     if (ref.scenarioId) {

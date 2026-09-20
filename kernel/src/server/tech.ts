@@ -305,7 +305,7 @@ export function computeTechModel(numeric: Record<string, number | undefined>): T
     notes.push("未检测到有效储能配置（storagePower/storageEnergy≤0），按「无储能」场景计算");
   }
 
-  if (pvCapacity === 0) notes.push("光伏装机为 0：本沙盘仅计算充电负荷与下网，无光伏出力");
+  if (pvCapacity === 0) notes.push("光伏装机为 0：本平台仅计算充电负荷与下网，无光伏出力");
   if (bal.pvExportKwh > 0)
     notes.push("存在余电上网（S1 年度平衡会高估自用，逐时模型下自用可能更低、上网更多）");
 

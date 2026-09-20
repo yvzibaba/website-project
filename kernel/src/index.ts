@@ -67,6 +67,8 @@ export * as projectModel from "./server/project-model";
 export * as projectParams from "./server/project-params";
 export * as profiles from "./server/profiles";
 export * as projectService from "./server/project-service";
+export * as decisionStore from "./server/decision-store";
+export * as decisionService from "./server/decision-service";
 export * as provenanceStore from "./server/provenance-store";
 export * as regionFacts from "./server/region-facts";
 export * as regions from "./server/regions";

@@ -140,6 +140,9 @@ describeDb("db smoke (Neon Postgres)", () => {
       "OpenSourceProject",
       "Order",
       "Project",
+      // V2 迁移 20260920012406：ProjectScenario 加 V2 结果列（scenarioInput/decision/report/…）
+      // + 新表 ProjectActual（实测回填骨架）。纯加性，不动任何既有列与既有数据。
+      "ProjectActual",
       "ProjectScenario",
       "ProjectVersion",
       "Region",

@@ -15,8 +15,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   // directUrl（R9.2）：应用运行时走 Neon 连接池（pooler / PgBouncer）端点，
   // 而 migrate / db push / studio 等**迁移期**操作走直连端点。
   // 为什么必须分开：连接池会复用后端连接、不支持「跨事务的准备语句」等迁移期语义，
@@ -380,21 +380,21 @@ model LocalizationSupplier {
 // ----------------------------- Solution (sellable) -----------------------------
 
 model Solution {
-  id       String         @id @default(cuid())
-  title    String
-  titleEn  String?
-  slug     String         @unique
-  caseId   String
-  case     Case           @relation(fields: [caseId], references: [id])
+  id        String         @id @default(cuid())
+  title     String
+  titleEn   String?
+  slug      String         @unique
+  caseId    String
+  case      Case           @relation(fields: [caseId], references: [id])
   // V1.1 P4：买家自助导出——导出者属主指针（additive、可空；用户删除保留方案 SetNull，同 Project.ownerId 模式）。
   //   仅供「登录+属主」端点语义（反查自己的导出、按属主过滤）；治理归因仍走 ChangeLog.changedBy。
-  creatorId  String?
-  creator    User?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-  status   SolutionStatus @default(DRAFT)
-  summary  String?
-  body     Json? // 结构化正文（分节，规则 12：结构化保存而非纯文章）
-  price    Decimal?       @db.Decimal(12, 2)
-  currency Currency       @default(CNY)
+  creatorId String?
+  creator   User?          @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  status    SolutionStatus @default(DRAFT)
+  summary   String?
+  body      Json? // 结构化正文（分节，规则 12：结构化保存而非纯文章）
+  price     Decimal?       @db.Decimal(12, 2)
+  currency  Currency       @default(CNY)
 
   publishedAt DateTime?
 
@@ -566,6 +566,7 @@ model Project {
   updatedAt DateTime @updatedAt
 
   scenarios ProjectScenario[]
+  actuals   ProjectActual[]
 
   @@index([ownerId, status])
   @@index([regionId])
@@ -598,14 +599,78 @@ model ProjectScenario {
   roiRatio     Decimal? @db.Decimal(12, 4) // 累计净现金流/初始投资（finance.roiPct 实为比值，诚实存比值）
   currency     Currency @default(CNY)
 
+  // ── V2（新能源重卡能源项目决策平台）──────────────────────────────────────────
+  // V2 的**唯一重放真源**是 `scenarioInput`：它是一份自包含、可哈希、可离线复算的
+  // 情景输入快照，配合 engineVersion + benchmarkVersion 即可逐位重算。
+  // 与之并列的 paramLayers/paramSnapshot/calcResult 属 V1 简化年度模型，保留只为既有
+  // 功能不破，**V2 的界面与接口一律不再读写它们**（见 docs/v2-domain-glossary.md）。
+  scenarioInput    Json? // V2 ScenarioInput 完整快照（含定义、车队、电价、光伏、储能、充电、经济参数）
+  engineVersion    String? // 产出该结果的引擎版本（如 calc@2.0.0），升版必须可解释
+  benchmarkVersion String? // 产出该结果所用的基准参数层版本（如 1.0.0）
+  inputHash        String? // scenarioInput 的内容哈希（FNV-1a），用于「输入是否被改过」的复算校验
+  decision         Json? // V2 决策结果快照（可行性判据 / 驱动 / 风险 / 假设 / 建议 / 溯源）
+  report           Json? // V2 决策报告快照（有序章节数组，只读组织，不再计算）
+  // V2 计算失败时的原因（截断存储）。失败必须留痕：只写「失败」而不写「为什么失败」，
+  // 会让排查退回「重跑一遍看看」的原始状态，也违背了诚实边界的本意。
+  calcError        String?
+
+  // ↓ V2 派生可查询汇总（Decimal 防漂移；未跑/失败为 null，绝不填假值）
+  lcoeYuanPerKwh Decimal? @db.Decimal(12, 4) // 自有成本口径度电成本（不含过手电费）
+  npvEquity      Decimal? @db.Decimal(16, 2) // 资本金口径净现值
+  irrEquityPct   Decimal? @db.Decimal(9, 4) // 资本金内部收益率（百分数）
+
   version   Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   savedVersions ProjectVersion[]
+  actuals       ProjectActual[]
 
   @@index([projectId])
   @@index([projectId, isBaseline])
+}
+
+// V2 Actuals（实测回填骨架）——「预测 → 实测」闭环的落地载体。
+//
+// 设计取舍：
+//  - 全部实测列**可空**：null = 没测，0 = 实测为零。两者含义完全不同，绝不用 0 顶替 null
+//    （否则「尚未采集」会被当成「发了一度电都没有」，把偏差分析彻底带偏）。
+//  - `periodMonth` 用 0 表示**年度汇总口径**，1..12 表示自然月。之所以不用 null 表示年度：
+//    PostgreSQL 的唯一约束视 NULL 互不相等，用 null 会让「同项目同年度」写入无限重复行。
+//  - 能量列显式区分「电网侧」与「电池侧」两种口径，与引擎结果字段一一对应，便于逐项比对偏差。
+model ProjectActual {
+  id         String           @id @default(cuid())
+  projectId  String
+  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  // 可空：实测可能先于/独立于某个预测情景存在；情景被删时实测保留（观测历史不因实体删除而丢失）
+  scenarioId String?
+  scenario   ProjectScenario? @relation(fields: [scenarioId], references: [id], onDelete: SetNull)
+
+  periodYear  Int // 自然年（如 2026）
+  periodMonth Int @default(0) // 0 = 年度汇总；1..12 = 自然月
+
+  // ↓ 实测电量与金额（全部可空，见上方设计取舍）
+  gridImportKwh    Decimal? @db.Decimal(16, 3) // 电网侧购电量
+  pvGenerationKwh  Decimal? @db.Decimal(16, 3) // 光伏发电量
+  bessDischargeKwh Decimal? @db.Decimal(16, 3) // 储能放电量
+  deliveredKwh     Decimal? @db.Decimal(16, 3) // 电池侧交付量（充入车辆的电量）
+  exportKwh        Decimal? @db.Decimal(16, 3) // 上网电量
+  gridCostYuan     Decimal? @db.Decimal(16, 2) // 电网侧购电成本
+  revenueYuan      Decimal? @db.Decimal(16, 2) // 充电/服务费收入
+  opexYuan         Decimal? @db.Decimal(16, 2) // 运维支出
+  availabilityPct  Decimal? @db.Decimal(6, 2) // 设施可用率（%）
+
+  // 数据来源：manual（人工录入）| meter（计量表）| import（系统导入）
+  // 用 String 而非枚举（ModelCall/Favorite 先例）：口径变化无需改库结构，约束在 server 层 zod 白名单。
+  source     String   @default("manual")
+  note       String?
+  recordedBy String? // "human:<id>" / "ai:<model>"（对齐 ChangeLog.changedBy 口径，仅审计、非鉴权）
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([projectId, periodYear, periodMonth])
+  @@index([projectId, periodYear])
+  @@index([scenarioId])
 }
 
 // 规则 13 / §9：情景的**不可变历史版本切片**，支持回滚与逐版本报告。每次「存为新版本」追加一行。
@@ -671,16 +736,16 @@ model Feedback {
 // 留资（RFQ）：企业版报价意向公开表单（游客亦可），后台人工跟进（1 个工作日内联系由流程承诺，非系统功能）。
 // status 存 String（NEW|CONTACTED|CLOSED，TS 层约束，同 Feedback 先例）；不接 CRM/邮件/通知（宪法：更少依赖）。
 model Lead {
-  id           String    @id @default(cuid())
-  userId       String? // 登录提交则归因（SetNull 保留行）；游客靠自填 email 认领
-  user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  company      String // 公司名（必填，≤200）
-  contactName  String // 联系人（必填，≤100）
-  role         String? // 职务/角色（≤100）
-  email        String // 联系邮箱（必填，server 层 zod 校格式，≤200）
-  phone        String? // 电话（≤50）
-  projectStage String? // 项目阶段（白名单：规划/在建/运营/其他，≤50）
-  budgetRange  String? // 预算区间（白名单档位，非自由金额，≤50）
+  id            String   @id @default(cuid())
+  userId        String? // 登录提交则归因（SetNull 保留行）；游客靠自填 email 认领
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  company       String // 公司名（必填，≤200）
+  contactName   String // 联系人（必填，≤100）
+  role          String? // 职务/角色（≤100）
+  email         String // 联系邮箱（必填，server 层 zod 校格式，≤200）
+  phone         String? // 电话（≤50）
+  projectStage  String? // 项目阶段（白名单：规划/在建/运营/其他，≤50）
+  budgetRange   String? // 预算区间（白名单档位，非自由金额，≤50）
   // V1.1 P4-brief：企业咨询资格判定三字段（additive、可空、白名单/自由文本，全部非承诺）——
   //   让后台一眼判断「值不值得跟进 / 派给谁」，均为自报意向信息，不作任何报价或合同依据。
   projectRegion String? // 项目地区（省/市自由文本，≤100；非外键，避免留资侧强绑 Region 表）
@@ -688,10 +753,10 @@ model Lead {
   needType      String? // 需求类型（白名单：投资决策/可研尽调/融资材料/方案设计/运营优化/其他，≤50）
   message       String? // 补充说明（≤2000）
   source        String // 落位来源：enterprise | report | pricing（server 层白名单，≤50）
-  page         String? // 提交时所在页面路径（便于定位，≤500）
-  status       String    @default("NEW") // NEW | CONTACTED | CLOSED
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  page          String? // 提交时所在页面路径（便于定位，≤500）
+  status        String   @default("NEW") // NEW | CONTACTED | CLOSED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([status, createdAt])
   @@index([userId])

@@ -525,10 +525,16 @@ export function buildScenarioInput(seed: ScenarioSeed): {
   return { input, diagnostics };
 }
 
-/** 便捷入口：按模板 id 建情景。 */
+/**
+ * 便捷入口：按模板 id 建情景。
+ *
+ * `name` 从 `ScenarioSeed` 中剔除后单独声明为可选——实现里本就是 `seed.name ?? tpl.label`，
+ * 若沿用 `Omit<ScenarioSeed, "definition">`，交叉类型会把可选的 `name` 与必填的 `name`
+ * 求交成**必填**，逼每个调用方多传一个它并不关心的展示名。
+ */
 export function buildScenarioFromTemplate(
   templateId: string,
-  seed: Omit<ScenarioSeed, "definition"> & { name?: string },
+  seed: Omit<ScenarioSeed, "definition" | "name"> & { name?: string },
 ): { input: ScenarioInput; diagnostics: Diagnostic[] } {
   const tpl = getScenarioTemplate(templateId);
   if (!tpl) {

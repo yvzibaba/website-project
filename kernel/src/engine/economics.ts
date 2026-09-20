@@ -183,7 +183,6 @@ export function computeEconomics(input: EconomicsComputationInput): EconomicsCom
   /* ── 1. 规模归零（组件未启用 = 不计投资，而不是"投了但不用"） ── */
   const pvCapacityKwp = input.pvEnabled ? Math.max(0, nz(input.pvCapacityKwp)) : 0;
   const bessEnergyKwh = input.bessEnabled ? Math.max(0, nz(input.bessEnergyKwh)) : 0;
-  const bessPowerKw = input.bessEnabled ? Math.max(0, nz(input.bessPowerKw)) : 0;
   const chargerInstalledKw = Math.max(0, nz(input.chargerInstalledKw));
   const swapStationCount = input.swapEnabled ? Math.max(0, nz(input.swapStationCount)) : 0;
   const gridCapacityKw = Math.max(0, nz(input.gridCapacityKw));

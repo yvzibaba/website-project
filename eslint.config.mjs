@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 与 .gitignore 对齐：本地一次性探针/补丁脚本目录，不参与版本管理也不参与 lint
+    ".scratch/**",
   ]),
 ]);
 

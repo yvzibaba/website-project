@@ -29,7 +29,6 @@ import { round } from "@app/kernel/server/finance";
 import type {
   BenchmarkRef,
   BessResult,
-  ChargerInput,
   ChargingResult,
   DecisionResult,
   Diagnostic,

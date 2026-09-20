@@ -234,7 +234,7 @@ export function computeCharging(input: ChargingComputationInput): ChargingComput
       let remainingSwap = swapAtGridDay;
       // 一轮：谷段容量
       if (primary.length > 0 && maxSwapKwhPerStep > 0) {
-        let cap = maxSwapKwhPerStep;
+        const cap = maxSwapKwhPerStep;
         // 谷段若装不下，允许按谷段容量比例分摊（保持形状均匀）
         const totalCap = cap * primary.length;
         const use = Math.min(remainingSwap, totalCap);

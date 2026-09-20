@@ -80,7 +80,19 @@ function stripComments(src) {
   return s;
 }
 
-const RE_SPEC = /(?:from|import)\s*\(?\s*["']([^"']+)["']/g;
+/**
+ * 从源码里提取模块路径。
+ *
+ * 为什么不能只写 `/(?:from|import)\s*\(?\s*["']([^"']+)["']/`：
+ * 该写法会把**字符串字面量里的裸词** `import` 当成导入语句。已实测踩中——
+ * `z.enum(["manual", "meter", "import"])` 里的 `"import"` 后面紧跟 `"`，
+ * 于是 `import` + `"` 被当作动态导入的开头，捕获串一路吃到下一个引号，
+ * 把一个普通枚举报成「白名单外的外部依赖」。
+ *
+ * 因此 `import` 必须在**语句起始位置**（行首/`;`/`}`/`{`/`(` 之后）才算数；
+ * `from` 仍按关键字匹配（`export ... from "..."` 与 `import ... from "..."` 共用）。
+ */
+const RE_SPEC = /(?:\bfrom\b|(?:^|[;{}()\n])[ \t]*import\b)\s*\(?\s*["']([^"']+)["']/g;
 const RE_RELATIVE = /^\.\.?(\/|$)/;
 
 function resolveInKernel(spec, fromFile) {

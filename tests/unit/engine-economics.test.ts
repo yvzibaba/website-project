@@ -56,6 +56,7 @@ const BASE: EconomicsComputationInput = {
   annualDemandChargeYuan: 0,
   annualExportRevenueYuan: 800_000,
   weightedAveragePriceYuanPerKwh: 0.3,
+  gridFlatPriceYuanPerKwh: 0.35,
   annualBessArbitrageBenefitYuan: 0,
   pvDegradationPctPerYear: 0.55,
   bessDegradationPctPerYear: 2.5,

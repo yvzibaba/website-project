@@ -253,7 +253,7 @@ describe("电网与电价", () => {
   });
 
   it("分时电量拆分：峰 + 平 + 谷 = 总下网电量", () => {
-    const { load, pv } = makeProfiles(1500, 0);
+    const { load } = makeProfiles(1500, 0);
     const price = buildPriceProfile(GRID);
     const kwh = load.map((v) => v * 0.25);
     const split = touEnergySplit(kwh, price.priceProfileYuanPerKwh, price.flatPrice, {

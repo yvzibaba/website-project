@@ -57,6 +57,7 @@
 | 6 个集成套件在 import 阶段就崩 | `next-auth/lib/env.js` 里 `import from 'next/server'`（无扩展名目录导入），Vitest 的 ESM runner 解析不了 | 加 `test.server.deps.inline: ['next-auth']` 或配 `resolve.alias` 指向 `next/server.js`。**这是待修的既有缺陷** |
 | `--reporter=basic` 报 `Failed to load custom Reporter` | 新版 Vitest 没有 `basic` reporter | 用默认 reporter |
 | 集成测试需要数据库 | 依赖 `DATABASE_URL` + Neon | 无 `.env` 时应优雅跳过（当前跳不过去，见上一条） |
+| `kernel:verify` 报出莫名其妙的外部依赖（捕获串横跨十几行、内容像源码片段） | 守卫的导入正则在**字符串字面量里的裸词** `import` 上误判：如 `z.enum(["manual","meter","import"])` 中 `"import"` 后面紧跟 `"`，被当成动态导入的开头 | 已修守卫（`import` 必须在语句起始位置才算数，见 `.kernel-tools/verify_kernel.mjs` 的 `RE_SPEC` 注释）。若再次出现同类假阳性，修**守卫**而不是改数据迁就工具 |
 
 ---
 

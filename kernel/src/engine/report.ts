@@ -59,10 +59,6 @@ function kw(v: number): string {
 function pct(v: number, dp = 1): string {
   return `${n(v, dp)}%`;
 }
-function yn(v: boolean): string {
-  return v ? "是" : "否";
-}
-
 /* ═══════════════════════════ 主入口 ═══════════════════════════ */
 
 export interface ReportOptions {

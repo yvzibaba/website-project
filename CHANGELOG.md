@@ -3,6 +3,20 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.80.0] - 2026-09-20 · R4 基准参数层落库（M9）——把内核版本化基准以**无损镜像**投影进结构化表，为 P2「数字点开看来源/置信度」备好读取层（**additive 迁移 + 新读取层 + seed 脚本 + 往返无损守卫；引擎计算路径与黄金基线零改动**）
+
+- **原因（M9 / P2）**：基准参数此前只活在内核常量里，报告只能内联展示，无法作为结构化数据被查询/治理/点开溯源。P2 要"数字可点开看来源与置信度"，前提是这层数据在库里可读。
+- **P9「成熟优先」判定**：🟩 借用已是成熟底座的 Prisma（不引新依赖）；🟥 基准**数值本身不外借、不编链接**（宪法 §20），故镜像唯一来源是内核常量，绝不引入第三方"行业基准数据集"顶替。
+- **关键设计——投影 ≠ 源头（这条决定风险面）**：引擎计算时**仍从内核 `BENCHMARK_ENTRIES` 取基准**（铁律①：内核不碰 DB），新表 `BenchmarkEntry` 只是这份常量按 `(benchmarkVersion, regionId, key)` 的忠实镜像。因此：① 黄金基线逐字节不变（计算路径未动）；② 误改库不会漂移财务结论（可信度路径的源头仍是版本化内核代码）；③ 改基准的唯一正道 = 先改内核常量 + 升 `BENCHMARK_VERSION` + 重跑 seed。真正"让计算改从库里读"属财务内核口径变更，须创始人裁决 + 升版 + 重录黄金，**本批刻意不做**。
+- **新增**：
+  - `prisma/schema.prisma` 追加 `BenchmarkEntry` 模型（全 additive）；离线 `prisma migrate diff`（prev-schema vs new-schema）生成迁移 `20260920090000_add_benchmark_entry_mirror/migration.sql`——仅 1 张 CREATE TABLE + 3 个索引，无任何 DROP/ALTER。`prisma generate` 已过。
+  - `kernel/src/server/benchmark-repo.ts`：`toBenchmarkRow`/`fromBenchmarkRow`（纯映射，与内核 `entry()` 的"可选键仅真值时出现"约定严格对齐）、`allBenchmarkRowSeeds`（唯一派生自 `BENCHMARK_ENTRIES`）、`seedBenchmarkRows`（幂等 upsert）、`listBenchmarkEntries`（读取层，按 key 字典序、可缓存）。
+  - `scripts/seed-benchmark.ts` + `npm run db:seed:benchmark`：把当前版本镜像灌库，条数与内核不符即报错退出。
+- **效果**：`test:unit` 1359 passed/1 skipped（新增 `benchmark-mirror.test.ts` 5 例：entry→row→entry 逐字段语义相等、`value=0` 不塌成 null、UNKNOWN 恒 null、复合唯一键无碰撞防 upsert 静默丢行、镜像统一打当前版本；**不碰库**）；`kernel:verify` 0 违规、`kernel:dangling` 0；lint 0/0；`kernel:typecheck` 0、host tsc 0；`build` 通过。引擎与黄金测试**未改一字仍全绿**，即"计算路径零改动"的反证。
+- **未动冻结件**：经济内核、黄金基线、MODEL/TECH/PARAMS/ENGINE/BENCHMARK/REPORT/DECISION_STORE 版本常量、既有 DB 结构（仅 additive 新表）零触碰。
+- **诚实边界（R4 出口尚未自封达成）**：本批仅完成"代码 + 离线可验证不变量"。**尚缺**：① 对真实 Neon 应用迁移 + 跑 `db:seed:benchmark`（本仓无 `.env`、且此刻 GitHub/Neon 网络不可达）；② 集成读测试（`listBenchmarkEntries` 打真库）；③ P2 前端下钻 UI（点开看来源）接线。故 **P2「完全合规」与 R4 出口条件判为未达成**，待有网有授权时补齐再升绿，不在离线状态下虚报完成（宪法第 5 条）。
+- **遗留（交创始人）**：R1 两项非工程发现仍挂账；"是否要把计算真源从内核常量切到 DB"属财务内核口径，须你裁决（本批按"投影不切换"落地，是刻意保守）。
+
 ## [0.79.0] - 2026-09-20 · R3 免登录免费诊断——注册、建项目之前，先用**同一台生产引擎**拿到"值不值得做"的结论倾向 + 明显否证（M4 · 落地 P5）（**新内核模块 + 新公开 API + 新页面；`runCalculation()` 默认行为与黄金基线零变化；未新增任何外部依赖**）
 
 - **原因（P5）**：公开漏斗若只丢一张"留资表单"，用户在被说服之前就要先付出，转化极低。P5 要求免费层先给**结论倾向**，不只给表单。

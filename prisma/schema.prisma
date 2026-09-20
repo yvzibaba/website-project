@@ -761,3 +761,45 @@ model Lead {
   @@index([status, createdAt])
   @@index([userId])
 }
+
+// ============================================================================
+// V2 基准参数层落库（R4 · M9）——「无损镜像」，不是计算真源
+// ----------------------------------------------------------------------------
+// 把引擎侧版本化的 `BENCHMARK_ENTRIES`（kernel/src/engine/benchmark.ts）以结构化表
+// 落一份**忠实镜像**，供 P2「数字点开看来源 / 置信度 / 生效区间」读取与治理、审计。
+//
+// 为什么**引擎计算路径不读这张表**（关键取舍）：
+//   - 铁律①：内核不碰框架 / DB。基准值在计算时仍由内核常量供给，黄金基线因此逐字节不变。
+//   - 若让计算改从库里读，任何一次误改库都会静默漂移财务结论——把"可信度路径"的源头交给
+//     一个没有版本、没有 review 的运行期数据面，违背宪法第 20 条（基准值不编链接、不臆造）。
+//   - 因此改基准值的**唯一正道**是：先改内核常量 + 升 `BENCHMARK_VERSION` → 重跑 seed 同步镜像。
+//     直接 UPDATE 本表不会改变任何计算结果（刻意的安全设计，库是投影不是源头）。
+//
+// 唯一键用空串 `""` 表达"无地区/全局"，不用 null——PostgreSQL 唯一约束视 NULL 互不相等
+// （同 ProjectActual.periodMonth=0 的既有取舍），用 null 会让"全局同键"重复灌入。
+// `value` 用 Float(@db.DoublePrecision) 忠实往返内核里的 JS number；UNKNOWN 时为 null。
+model BenchmarkEntry {
+  id               String   @id @default(cuid())
+  benchmarkVersion String // 内核 BENCHMARK_VERSION（如 "1.0.0"）；镜像按版本整体重灌
+  regionId         String   @default("") // "" = 全局/无地区；"shanxi"/"national"/"global" 等
+  key              String // 基准键（如 "tou.valleyFloatRatio"）
+  label            String
+  unit             String
+  value            Float?   @db.DoublePrecision // 忠实往返 JS number；UNKNOWN → null（绝不用 0 顶替）
+  textValue        String? // 非数值口径文本（与 value 互斥）
+  valueClass       String // BENCHMARK | SCENARIO | DERIVED | ACTUAL | UNKNOWN（白名单、非 enum，口径变无需改库）
+  evidenceKind     String // FACT | ASSUMPTION | INFERENCE | PREDICTION
+  confidence       Int // 0..100
+  source           String   @default("") // 人可读来源描述
+  sourceUrl        String? // 仅合法 http(s) 才支撑 FACT（镜像自内核，内核已做过降级）
+  validFrom        String? // YYYY-MM 或 YYYY-MM-DD
+  validTo          String? // 失效 / 需重取时点
+  note             String? // 口径说明（含税否、AC/DC、冲突留痕等）
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([benchmarkVersion, regionId, key])
+  @@index([benchmarkVersion])
+  @@index([regionId, key])
+}

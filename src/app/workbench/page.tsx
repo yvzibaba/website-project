@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/ui";
+import { Button, Container } from "@/components/ui";
 import { PageHeader } from "@/components/page";
 import { WorkbenchShell } from "@/components/workbench";
 import { seoMetadata } from "@/lib/site";
@@ -37,7 +37,11 @@ export default function WorkbenchPage() {
       <PageHeader
         title="产业项目可视化决策沙盘"
         description="免费试用：新能源重卡 + 光伏 + 储能 + 充电一体化场站。选参数 → 跑模型 → 看投资 / 回报 / 风险 / 敏感性联动。"
-      />
+      >
+        <Button href="/workbench/projects" variant="secondary">
+          前往项目决策平台 →
+        </Button>
+      </PageHeader>
       <WorkbenchShell />
     </Container>
   );

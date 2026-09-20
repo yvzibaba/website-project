@@ -73,6 +73,25 @@ export default function EnterprisePage() {
         页面不收集任何企业信息，不出具诊断结论。
       </Alert>
 
+      {/* V2 项目决策平台入口 —— 企业侧完整决策链路（多情景对比 / 参数快照存档 / 决策报告） */}
+      <section className="flex flex-col gap-3 rounded-lg border border-primary/40 bg-primary/5 p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            新能源重卡能源项目 · 决策平台
+          </h2>
+          <Badge variant="info">已开放</Badge>
+        </div>
+        <p className="text-sm leading-6 text-muted-foreground">
+          面向车队、园区、充电运营商与投资机构的完整决策链路：录入用能需求 → 生成充换电与光伏储能配置方案
+          → 对比多个情景的经济性 → 输出结论与决策报告；项目连同参数快照一同存档，随时可复算复核。
+          这是与下方「基础画像」不同的<b>完整项目视角</b>，基础画像只是快速试算的入口。
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button href="/workbench/projects">进入项目决策平台 →</Button>
+          <Button variant="secondary" href="/workbench">先快速试算（沙盘）→</Button>
+        </div>
+      </section>
+
       {/* 三步用法 */}
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold tracking-tight text-foreground">怎么用</h2>

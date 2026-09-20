@@ -175,11 +175,22 @@ interface MutationLike {
 }
 
 /**
+ * 携带任意透出字段的判别联合（V2 决策平台的编排层用它）。
+ *
+ * 为什么不把 V2 的每个字段都追加到上面的 `MutationLike`：
+ * 那个接口是**显式清单**（原因见其注释），每加一个业务字段都要改公共守卫，
+ * 久了会变成一个谁都看不懂的大杂烩。这里改用「状态 + 任意可序列化字段」，
+ * 与 `MutationLike` 组成联合——V1 的窄类型与 V2 的宽载荷各自都能传进来，
+ * 且状态分支的穷尽检查仍然生效（两边的 `status` 取值域相同）。
+ */
+export type LooseMutationLike = { status: MutationLike["status"] } & Record<string, unknown>;
+
+/**
  * 把数据层写入结果翻译成 HTTP 响应。唯一口径：
  *   ok→200 · invalid→400 VALIDATION_ERROR（details=fieldErrors）· not_found→404
  *   blocked→409 CONFLICT · error→500（生产屏蔽原始 message）。
  */
-export function mutationResponse(result: MutationLike): NextResponse {
+export function mutationResponse(result: MutationLike | LooseMutationLike): NextResponse {
   switch (result.status) {
     case "ok": {
       const rest: Record<string, unknown> = { ...result };
@@ -188,7 +199,7 @@ export function mutationResponse(result: MutationLike): NextResponse {
     }
     case "invalid":
       return errorResponse("VALIDATION_ERROR", "入参校验未通过", 400, {
-        fields: result.fieldErrors ?? {},
+        fields: (result as MutationLike).fieldErrors ?? {},
       });
     case "not_found":
       return errorResponse("NOT_FOUND", "目标记录不存在", 404);
@@ -196,11 +207,12 @@ export function mutationResponse(result: MutationLike): NextResponse {
       return errorResponse("FORBIDDEN", "无权访问该资源", 403);
     case "blocked":
       return errorResponse("CONFLICT", "操作被守卫拒绝", 409, {
-        fields: result.fieldErrors ?? {},
+        fields: (result as MutationLike).fieldErrors ?? {},
       });
     case "error": {
       const isProd = process.env.NODE_ENV === "production";
-      return errorResponse("INTERNAL_ERROR", isProd ? "服务器内部错误" : result.error ?? "写入失败", 500);
+      const msg = (result as MutationLike).error;
+      return errorResponse("INTERNAL_ERROR", isProd ? "服务器内部错误" : msg ?? "写入失败", 500);
     }
     default:
       return errorResponse("INTERNAL_ERROR", "未知结果状态", 500);

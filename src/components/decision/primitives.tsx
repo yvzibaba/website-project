@@ -102,7 +102,7 @@ export function SimpleTable({
   align = [],
 }: {
   columns: string[];
-  rows: Array<Array<string | number | null>>;
+  rows: Array<Array<ReactNode>>;
   align?: Array<"left" | "right">;
 }) {
   return (
@@ -127,7 +127,7 @@ export function SimpleTable({
                     (align[j] ?? "left") === "right" ? "text-right tabular-nums" : "text-left"
                   }`}
                 >
-                  {cell == null || cell === "" ? "—" : String(cell)}
+                  {cell == null || cell === "" ? "—" : cell}
                 </td>
               ))}
             </tr>

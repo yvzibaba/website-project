@@ -21,11 +21,13 @@ import { Prisma } from "@prisma/client";
 import { ENGINE_VERSION, MODEL_VERSION, runCalculation } from "@app/kernel/engine/engine";
 import { buildDecisionReport, REPORT_BUILDER_VERSION } from "@app/kernel/engine/report";
 import { BENCHMARK_VERSION } from "@app/kernel/engine/benchmark";
+import { buildForecastSnapshot, CALIBRATION_STATUSES } from "@app/kernel/engine/deviation";
+import type { CandidateSeed, CalibrationStatus, ForecastSnapshot } from "@app/kernel/engine/deviation";
 import type { CalculationResult, ScenarioInput } from "@app/kernel/engine/types";
 import type { Diagnostic } from "@app/kernel/engine/types";
 
 /** 存储层版本（改写入口径 / 派生列含义须升版并记原因）。 */
-export const DECISION_STORE_VERSION = "1.1.0"; // 1.1.0（R5 · 版本治理）：新增 V2「正式情景重算冻结旧结果为不可变版本 / 存为新版本 / 版本时间线 / 溯源投影」——全走既有 ProjectVersion + ChangeLog，仅加性扩列（见 migration 20260920120000）；计算真源与 `runCalculation()` 入口零改动，黄金基线不变。1.0.0：V2 落库初始。
+export const DECISION_STORE_VERSION = "1.2.0"; // 1.2.0（R6 · M13）：写库时从已算好的 calc 加性投影 `forecastSnapshot`（冻结预测，供偏差分析对照，非第二计算路径）；新增 CalibrationCandidate 落库层（upsertSeeds/list/review，纯建议+人工审核态，无任何路径改 BENCHMARK/ENGINE）。计算真源、黄金基线、版本常量零改动。1.1.0（R5 · 版本治理）：V2「正式情景重算冻结旧结果为不可变版本 / 存为新版本 / 版本时间线 / 溯源投影」——全走既有 ProjectVersion + ChangeLog，仅加性扩列；计算真源零改动。1.0.0：V2 落库初始。
 
 /* ────────────────────────── 数值与 JSON 归一 ────────────────────────── */
 
@@ -91,6 +93,9 @@ export function decisionSnapshotToColumns(snapshot: DecisionSnapshot) {
     inputHash: calc.inputHash,
     decision: jsonSafe(calc.decision) as unknown as Prisma.InputJsonValue,
     report: jsonSafe(report) as unknown as Prisma.InputJsonValue,
+    // R6：把「与实测可比的预测量」也冻一份机器可读快照。来源就是上面这份 calc，不重新计算，
+    // 且黄金测钉的是 runCalculation 的输出而非本列——加这一列对基线逐字节无影响。
+    forecastSnapshot: jsonSafe(buildForecastSnapshot(calc)) as unknown as Prisma.InputJsonValue,
     // 派生可查询汇总（Decimal 防浮点漂移）。未跑/失败一律 null，绝不填假值。
     capexNet: decimalStr(calc.economics.capex.netYuan, 2),
     npv: decimalStr(m.npvYuan, 2),
@@ -119,6 +124,7 @@ function failureColumns(reason: string, detail: string) {
     // JSON 列的「置空」必须用 Prisma.DbNull，写 JS 的 null 会被 Prisma 当作"不修改"
     decision: jsonOrNull(null),
     report: jsonOrNull(null),
+    forecastSnapshot: jsonOrNull(null),
     capexNet: null,
     npv: null,
     irrPct: null,
@@ -759,6 +765,7 @@ export async function readDecisionScenario(scenarioId: string) {
       scenarioInput: true,
       decision: true,
       report: true,
+      forecastSnapshot: true,
       updatedAt: true,
     },
   });
@@ -767,6 +774,7 @@ export async function readDecisionScenario(scenarioId: string) {
     ...row,
     updatedAt: row.updatedAt.toISOString(),
     scenarioInput: row.scenarioInput as unknown as ScenarioInput | null,
+    forecastSnapshot: (row.forecastSnapshot ?? null) as ForecastSnapshot | null,
     provenance: scenarioProvenanceOf(row),
   };
 }
@@ -1022,6 +1030,229 @@ export async function deleteProjectActual(actualId: string): Promise<StoreResult
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025") {
       return { ok: false, reason: "not_found", detail: "实测记录不存在" };
     }
+    return { ok: false, reason: "error", detail: errorDetail(e) };
+  }
+}
+
+/* ────────────────────────── 校准候选（R6 · M13：建议 + 人工审核态持久化） ────────────────────────── */
+
+/**
+ * 把一批候选种子 upsert 成持久记录（按 `dedupeKey` 幂等）。
+ *
+ * 关键的「人工审核门」纪律（§18）：
+ *   - 仅当**首次出现**（create）才置 `CANDIDATE`；
+ *   - 若该 key 已有记录，**只刷新证据/偏差/建议**，绝不把已被人推到 UNDER_REVIEW/ACCEPTED/REJECTED
+ *     的状态自动改回 CANDIDATE——否则每次重跑分析都会把人工结论冲没，审核形同虚设。
+ *   - 本函数**只写 CalibrationCandidate 一张表**，不 touch BENCHMARK / ENGINE / 情景 / 报告（§1/§34）。
+ */
+export async function upsertCalibrationCandidates(
+  seeds: readonly CandidateSeed[],
+): Promise<StoreResult<{ upserted: number; created: number }>> {
+  let upserted = 0;
+  let created = 0;
+  try {
+    await prisma.$transaction(async (tx) => {
+      for (const s of seeds) {
+        const payload = {
+          metric: s.metric,
+          metricLabel: s.metricLabel,
+          parameter: s.parameter ?? null,
+          parameterLabel: s.parameterLabel ?? null,
+          measurementBasis: s.measurementBasis,
+          unit: s.unit,
+          periodKind: s.periodKind,
+          projectId: s.projectId ?? null,
+          regionId: s.regionId ?? null,
+          direction: s.direction,
+          forecastValue: decimalStr(s.forecastValue, 4),
+          actualValue: decimalStr(s.actualValue, 4),
+          biasPct: decimalStr(s.biasPct, 4),
+          meanAbsPct: decimalStr(s.meanAbsPct, 4),
+          sampleCount: s.sampleCount,
+          impactYuan: decimalStr(s.impactYuan, 2),
+          impactEvidenceKind: s.impactEvidenceKind,
+          evidence: jsonSafe(s.evidence) as unknown as Prisma.InputJsonValue,
+          suggestion: s.suggestion,
+        };
+        const existing = await tx.calibrationCandidate.findUnique({
+          where: { dedupeKey: s.dedupeKey },
+          select: { id: true, status: true },
+        });
+        if (existing) {
+          // 保留人工状态：只更新分析侧字段（status/reviewedBy/... 一律不写回）。
+          await tx.calibrationCandidate.update({ where: { id: existing.id }, data: payload });
+          upserted++;
+        } else {
+          await tx.calibrationCandidate.create({ data: { dedupeKey: s.dedupeKey, status: "CANDIDATE", ...payload } });
+          upserted++;
+          created++;
+        }
+      }
+    });
+    return { ok: true, upserted, created };
+  } catch (e) {
+    return { ok: false, reason: "error", detail: errorDetail(e) };
+  }
+}
+
+/** 校准候选读视图（Decimal → number；供 UI 与报告引用；不含任何生产模型引用）。 */
+export interface CalibrationCandidateView {
+  id: string;
+  dedupeKey: string;
+  metric: string;
+  metricLabel: string;
+  parameter: string | null;
+  parameterLabel: string | null;
+  measurementBasis: string;
+  unit: string;
+  periodKind: string;
+  projectId: string | null;
+  regionId: string | null;
+  direction: string;
+  forecastValue: number | null;
+  actualValue: number | null;
+  biasPct: number | null;
+  meanAbsPct: number | null;
+  sampleCount: number;
+  impactYuan: number | null;
+  impactEvidenceKind: string;
+  evidence: unknown;
+  suggestion: string;
+  status: string;
+  reviewedBy: string | null;
+  reviewNote: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function candidateToView(r: {
+  id: string;
+  dedupeKey: string;
+  metric: string;
+  metricLabel: string;
+  parameter: string | null;
+  parameterLabel: string | null;
+  measurementBasis: string;
+  unit: string;
+  periodKind: string;
+  projectId: string | null;
+  regionId: string | null;
+  direction: string;
+  forecastValue: Prisma.Decimal | null;
+  actualValue: Prisma.Decimal | null;
+  biasPct: Prisma.Decimal | null;
+  meanAbsPct: Prisma.Decimal | null;
+  sampleCount: number;
+  impactYuan: Prisma.Decimal | null;
+  impactEvidenceKind: string;
+  evidence: unknown;
+  suggestion: string;
+  status: string;
+  reviewedBy: string | null;
+  reviewNote: string | null;
+  reviewedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}): CalibrationCandidateView {
+  return {
+    id: r.id,
+    dedupeKey: r.dedupeKey,
+    metric: r.metric,
+    metricLabel: r.metricLabel,
+    parameter: r.parameter,
+    parameterLabel: r.parameterLabel,
+    measurementBasis: r.measurementBasis,
+    unit: r.unit,
+    periodKind: r.periodKind,
+    projectId: r.projectId,
+    regionId: r.regionId,
+    direction: r.direction,
+    forecastValue: dec(r.forecastValue),
+    actualValue: dec(r.actualValue),
+    biasPct: dec(r.biasPct),
+    meanAbsPct: dec(r.meanAbsPct),
+    sampleCount: r.sampleCount,
+    impactYuan: dec(r.impactYuan),
+    impactEvidenceKind: r.impactEvidenceKind,
+    evidence: r.evidence,
+    suggestion: r.suggestion,
+    status: r.status,
+    reviewedBy: r.reviewedBy,
+    reviewNote: r.reviewNote,
+    reviewedAt: r.reviewedAt ? r.reviewedAt.toISOString() : null,
+    createdAt: r.createdAt.toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
+  };
+}
+
+/** 列校准候选（可按项目 / 状态过滤；两者都空 = 全量，服务层负责按可访问项目裁剪）。 */
+export async function listCalibrationCandidates(filter: {
+  projectId?: string;
+  status?: CalibrationStatus;
+  limit?: number;
+}): Promise<CalibrationCandidateView[]> {
+  const where: Prisma.CalibrationCandidateWhereInput = {};
+  if (filter.projectId) where.projectId = filter.projectId;
+  if (filter.status) where.status = filter.status;
+  const rows = await prisma.calibrationCandidate.findMany({
+    where,
+    orderBy: [{ createdAt: "desc" }],
+    take: Math.max(1, Math.min(200, filter.limit ?? 100)),
+  });
+  return rows.map(candidateToView);
+}
+
+/** 读单条候选（服务层据其 projectId 做归属校验后才允许审核）。 */
+export async function readCalibrationCandidate(id: string): Promise<CalibrationCandidateView | null> {
+  const row = await prisma.calibrationCandidate.findUnique({ where: { id } });
+  return row ? candidateToView(row) : null;
+}
+
+/**
+ * 人工审核状态迁移（§16/§18）。允许的迁移（其余一律拒，防止把已定论的记录悄悄改回待办）：
+ *   CANDIDATE    → UNDER_REVIEW | ACCEPTED | REJECTED
+ *   UNDER_REVIEW → ACCEPTED | REJECTED
+ *   ACCEPTED     → （终态；如确需重开，须人工显式——本版不开此口，保持结论稳定）
+ *   REJECTED     → （终态）
+ * 无论迁到哪一态，本函数**只写 CalibrationCandidate 的状态/审核字段**，绝不联动改任何基准或引擎。
+ */
+const ALLOWED_TRANSITIONS: Record<CalibrationStatus, readonly CalibrationStatus[]> = {
+  CANDIDATE: ["UNDER_REVIEW", "ACCEPTED", "REJECTED"],
+  UNDER_REVIEW: ["ACCEPTED", "REJECTED"],
+  ACCEPTED: [],
+  REJECTED: [],
+};
+
+export async function reviewCalibrationCandidate(input: {
+  id: string;
+  to: CalibrationStatus;
+  reviewedBy?: string | null;
+  reviewNote?: string | null;
+  reviewedAtIso?: string;
+}): Promise<StoreResult<{ id: string; status: CalibrationStatus }>> {
+  if (!(CALIBRATION_STATUSES as readonly string[]).includes(input.to)) {
+    return { ok: false, reason: "invalid", detail: "非法的审核状态" };
+  }
+  const row = await prisma.calibrationCandidate.findUnique({ where: { id: input.id }, select: { id: true, status: true } });
+  if (!row) return { ok: false, reason: "not_found", detail: "校准候选不存在" };
+  const from = row.status as CalibrationStatus;
+  if (!(ALLOWED_TRANSITIONS[from] ?? []).includes(input.to)) {
+    return { ok: false, reason: "invalid", detail: `不允许的状态迁移：${from} → ${input.to}（已定论记录不回退为待办）` };
+  }
+  try {
+    const updated = await prisma.calibrationCandidate.update({
+      where: { id: input.id },
+      data: {
+        status: input.to,
+        reviewedBy: input.reviewedBy ?? null,
+        reviewNote: input.reviewNote ?? null,
+        reviewedAt: new Date(input.reviewedAtIso ?? Date.now()),
+      },
+      select: { id: true, status: true },
+    });
+    return { ok: true, id: updated.id, status: updated.status as CalibrationStatus };
+  } catch (e) {
     return { ok: false, reason: "error", detail: errorDetail(e) };
   }
 }

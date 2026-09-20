@@ -369,8 +369,12 @@ describe("R5 · 反证：计算真源未动 + 存储层版本语义化", () => {
     expect(a.snapshot.calc.inputHash).toBe(b.snapshot.calc.inputHash);
   });
 
-  it("DECISION_STORE_VERSION 升到语义化的 1.1.0", () => {
+  it("DECISION_STORE_VERSION 为语义化版本，且不低于 R5 的 1.1.0（R6 因冻结预测列 + 校准候选表再升版）", () => {
     expect(DECISION_STORE_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
-    expect(DECISION_STORE_VERSION).toBe("1.1.0");
+    const [maj, min, pat] = DECISION_STORE_VERSION.split(".").map(Number);
+    expect(maj).toBe(1);
+    // 单调不回退：R5 引入 1.1.0；任何后续存储层演进只允许升不允许降。
+    const tuple = maj * 1_000_000 + min * 1_000 + pat;
+    expect(tuple).toBeGreaterThanOrEqual(1 * 1_000_000 + 1 * 1_000 + 0);
   });
 });

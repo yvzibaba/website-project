@@ -39,6 +39,8 @@ import { ActualsPanel } from "./ActualsPanel";
 import { RecommendPanel } from "./RecommendPanel";
 import { ScenarioAttributionPanel } from "./ScenarioAttributionPanel";
 import { ScenarioVersionsPanel } from "./ScenarioVersionsPanel";
+import { DeviationPanel } from "./DeviationPanel";
+import { CalibrationPanel } from "./CalibrationPanel";
 
 /* ── 服务端返回结构（只声明本组件真正读取的字段；类型即文档） ── */
 
@@ -732,6 +734,21 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
             ) : (
               <p className="text-sm text-muted-foreground">请先选择一个情景。</p>
             )}
+          </Section>
+
+          <Separator />
+
+          {/* ── 13 预测 vs 实测与校准（R6 · M13） ── */}
+          <Section
+            index={13}
+            title="预测 vs 实测与校准"
+            description="把「当初冻结的预测」与「回填的实测」放在一起对照：指出偏差、换算影响、识别需要人工复核的校准建议。系统只提建议，改不改基准/引擎永远发生在人工审核门之后——这是一条分析链，不是自动改模链。"
+          >
+            <div className="flex flex-col gap-8">
+              <DeviationPanel projectId={projectId} scenarioId={activeId} />
+              <Separator />
+              <CalibrationPanel projectId={projectId} scenarioId={activeId} />
+            </div>
           </Section>
         </>
       ) : null}

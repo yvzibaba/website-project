@@ -26,24 +26,36 @@ import type { RecommendationRequest } from "@app/kernel/engine/recommend";
 import { attributeScenarioDelta } from "@app/kernel/engine/attribution";
 import { diagnoseScenario } from "@app/kernel/engine/diagnose";
 import {
+  analyzeForecastVsActual,
+  deriveImpacts,
+  detectCalibrationCandidates,
+  aggregateCrossProjectBias,
+  CALIBRATION_STATUSES,
+} from "@app/kernel/engine/deviation";
+import type { CalibrationStatus, DetectConfig, ProjectBiasInput } from "@app/kernel/engine/deviation";
+import {
   addDecisionScenario,
   computeDecisionSnapshot,
   createDecisionProject,
   deleteDecisionScenario,
   deleteProjectActual,
+  listCalibrationCandidates,
   listDecisionProjects,
   listDecisionScenarios,
   listDecisionScenarioVersions,
   listProjectActuals,
+  readCalibrationCandidate,
   readDecisionProject,
   readDecisionScenario,
   recalculateDecisionScenario,
+  reviewCalibrationCandidate,
   saveDecisionScenarioAsVersion,
+  upsertCalibrationCandidates,
   upsertProjectActual,
 } from "@app/kernel/server/decision-store";
 
 /** 编排层版本（改鉴权口径 / 输入契约须升版记原因）。 */
-export const DECISION_SERVICE_VERSION = "1.1.0"; // 1.1.0（R5 · 版本治理）：recalculate 透传 actor/reason/label 并回传 version + frozenSeq（重算会先冻结上一版）；新增 saveDecisionVersion / readDecisionVersions 两个 owner-or-staff 动作。鉴权口径不变（仍 owner 本人或 STAFF）。1.0.0：V2 编排初始。
+export const DECISION_SERVICE_VERSION = "1.2.0"; // 1.2.0（R6 · M13）：新增「预测 vs 实测偏差分析 / 影响 / 校准候选检测与人工审核 / 跨项目方向性」四个 owner-or-staff 动作。全部只读已存的 forecastSnapshot + ProjectActual 派生，绝不重算、绝不经此改 BENCHMARK/ENGINE；候选状态迁移受审核门约束。鉴权口径不变（仍 owner 本人或 STAFF，跨项目仅聚合调用者可访问项目）。1.1.0（R5 · 版本治理）：recalculate 透传 actor/reason/label 并回传 version + frozenSeq；新增 saveDecisionVersion / readDecisionVersions。1.0.0：V2 编排初始。
 
 /* ────────────────────────── 鉴权（纯函数优先，便于单测） ────────────────────────── */
 
@@ -768,4 +780,283 @@ export function diagnoseFree(input: { body: unknown }): ServiceResult {
 
   const result = diagnoseScenario(si);
   return { status: "ok", freeTier: true, result };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * R6 · M13：实测 vs 预测偏差分析闭环（Forecast → Actual → Deviation → Impact
+ *        → CalibrationCandidate → Human Review）
+ * ──────────────────────────────────────────────────────────────────────────
+ * 这是一条**分析链**，不是**自动改模链**。本层的全部职责是把「当初存档的预测」与
+ * 「后来回填的实测」对齐、指出偏差、量化影响、把疑似系统性偏差提炼成**待人工复核的
+ * 校准候选**——是否据此去动基准参数/引擎，永远发生在**人工审核门之后**（§16–§20/§34）。
+ *
+ * 命脉纪律（与全项目一致）：
+ *   - 预测**只读** `ProjectScenario.forecastSnapshot`（当初成功计算时冻结的留档投影），
+ *     本层**绝不为对比而重跑 `runCalculation`**（§3/§5：FORECAST 不可变，禁止用今天的模型
+ *     回头篡改昨天的预测口径）；
+ *   - 影响只做**同量纲换算**（钱=FACT，电量×预测隐含单价=ASSUMPTION），**绝不复制 NPV/折现**
+ *     （§14）；NPV 若要重估请走"新建情景重算"这条唯一引擎路径，而非本分析链；
+ *   - 越权在动库前即拒：解析 `scenarioId` 时校验其确属本项目（防注入他人情景 id 窥数，§24）；
+ *   - 跨项目方向性只聚合**当前用户可访问**的项目（listDecisionProjects 已按 ownerId 过滤）。
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * 人工审核状态迁移的入参契约。
+ * `to` 严格取白名单四态（机读域来自偏差目录的 `CALIBRATION_STATUSES`，不在此重复字面量以免漂移）；
+ * `note` 纯审计、可空。合法性（是否允许该迁移）由 store 层用状态机判定，本层只做结构与取值域校验。
+ */
+export const reviewCandidateSchema = z.object({
+  to: z.enum(CALIBRATION_STATUSES),
+  note: z.string().trim().max(2000).optional().nullable(),
+});
+
+/** 可选的检测阈值覆盖（样本数 / 偏差阈值 %），全部有限正数、区间受控，防客户端把阈值压成 0 制造噪声候选。 */
+const detectConfigSchema = z
+  .object({
+    minSamples: z.number().int().min(1).max(50).optional(),
+    biasThresholdPct: z.number().finite().min(0).max(100).optional(),
+  })
+  .optional();
+
+/** 一条实测行的最小面（store 返回对象结构上兼容此形状）。 */
+type ActualRow = Parameters<typeof analyzeForecastVsActual>[1][number] & { scenarioId: string | null };
+
+/**
+ * 为一次预测选定要对照的情景：显式给了 `scenarioId` 就用它（**并校验其确属本项目**，防越权注入），
+ * 否则按「基线且已算通 → 任一算通 → 基线 → 首个」优先级挑一个 V2 情景。无情景则如实返回 null。
+ * 情景不存在或不属本项目 → 返回 invalid（绝不静默拿别人的情景来算）。
+ */
+async function resolveForecastScenario(
+  projectId: string,
+  scenarioId: string | null,
+): Promise<
+  | { ok: true; scenario: Awaited<ReturnType<typeof readDecisionScenario>> }
+  | { ok: false; result: ServiceResult }
+> {
+  let targetId = scenarioId ?? null;
+  if (!targetId) {
+    const scenarios = await listDecisionScenarios(projectId);
+    const pick =
+      scenarios.find((s) => s.isBaseline && s.calcStatus === "ok") ??
+      scenarios.find((s) => s.calcStatus === "ok") ??
+      scenarios.find((s) => s.isBaseline) ??
+      scenarios[0];
+    targetId = pick?.id ?? null;
+  }
+  if (!targetId) return { ok: true, scenario: null };
+
+  const scenario = await readDecisionScenario(targetId);
+  if (!scenario || scenario.projectId !== projectId) {
+    return {
+      ok: false,
+      result: { status: "invalid", fieldErrors: { scenarioId: ["该情景不存在或不属于本项目"] } },
+    };
+  }
+  return { ok: true, scenario };
+}
+
+/**
+ * 按「同一情景」裁剪实测范围（§10 同 scope 才可比）：只纳入 scenarioId 为空（项目级通用实测）
+ * 或等于被对照情景的行；绝不把别的平行情景的实测混进来对照。
+ */
+function scopeActualsToScenario(rows: readonly ActualRow[], scenarioId: string | null): ActualRow[] {
+  if (!scenarioId) return [...rows];
+  return rows.filter((r) => r.scenarioId == null || r.scenarioId === scenarioId);
+}
+
+/**
+ * 只读分析：把某项目（可选具体情景）的存档预测与回填实测对齐，产出逐指标偏差 + 金额影响。
+ * **不写库、不重算、不产生候选**——纯查询，供工作台「预测 vs 实测」面板直读。
+ */
+export async function analyzeProjectForecastVsActual(input: {
+  projectId: string;
+  scenarioId?: string | null;
+  user: SessionUser;
+}): Promise<ServiceResult> {
+  const project = await readDecisionProject(input.projectId);
+  if (!project) return { status: "not_found" };
+  if (!canAccessDecisionProject(project.ownerId, input.user)) return { status: "forbidden" };
+
+  const resolved = await resolveForecastScenario(input.projectId, input.scenarioId ?? null);
+  if (!resolved.ok) return resolved.result;
+
+  const scenario = resolved.scenario;
+  const forecast = scenario?.forecastSnapshot ?? null;
+  const rows = (await listProjectActuals(input.projectId)) as unknown as ActualRow[];
+  const actuals = scopeActualsToScenario(rows, scenario?.id ?? null);
+
+  const analysis = analyzeForecastVsActual(forecast, actuals);
+  const impacts = deriveImpacts(forecast, analysis);
+
+  return {
+    status: "ok",
+    projectId: input.projectId,
+    scenarioId: scenario?.id ?? null,
+    hasForecastSnapshot: Boolean(forecast),
+    analysis,
+    impacts,
+  };
+}
+
+/**
+ * 检测系统性偏差 → 落库为校准候选（幂等，按 dedupeKey）。
+ * 关键审核门纪律：upsert 只刷新分析侧字段，**绝不把已被人推到 UNDER_REVIEW/ACCEPTED/REJECTED
+ * 的状态自动改回 CANDIDATE**（该保护在 store 的 upsertCalibrationCandidates 内实现）；
+ * 本函数**只写 CalibrationCandidate 一张表**，不 touch 基准/引擎/情景/报告（§1/§34）。
+ */
+export async function detectAndPersistCandidates(input: {
+  projectId: string;
+  scenarioId?: string | null;
+  user: SessionUser;
+  config?: unknown;
+}): Promise<ServiceResult> {
+  const project = await readDecisionProject(input.projectId);
+  if (!project) return { status: "not_found" };
+  if (!canAccessDecisionProject(project.ownerId, input.user)) return { status: "forbidden" };
+
+  const cfgParsed = parseWith(detectConfigSchema, input.config ?? undefined);
+  if (!cfgParsed.ok) return cfgParsed.result;
+  const config = cfgParsed.data as Partial<DetectConfig> | undefined;
+
+  const resolved = await resolveForecastScenario(input.projectId, input.scenarioId ?? null);
+  if (!resolved.ok) return resolved.result;
+
+  const scenario = resolved.scenario;
+  const forecast = scenario?.forecastSnapshot ?? null;
+  const rows = (await listProjectActuals(input.projectId)) as unknown as ActualRow[];
+  const actuals = scopeActualsToScenario(rows, scenario?.id ?? null);
+
+  const analysis = analyzeForecastVsActual(forecast, actuals);
+  const impacts = deriveImpacts(forecast, analysis);
+  const seeds = detectCalibrationCandidates({ projectId: input.projectId, analysis, impacts, config });
+
+  const r = await upsertCalibrationCandidates(seeds);
+  if (!r.ok) return { status: "error", error: r.detail };
+
+  const candidates = await listCalibrationCandidates({ projectId: input.projectId });
+  return {
+    status: "ok",
+    projectId: input.projectId,
+    scenarioId: scenario?.id ?? null,
+    detected: seeds.length,
+    created: r.created,
+    upserted: r.upserted,
+    candidates,
+  };
+}
+
+/** 列某项目的校准候选（可按状态过滤）。owner-or-staff。 */
+export async function listProjectCalibrationCandidates(input: {
+  projectId: string;
+  user: SessionUser;
+  status?: CalibrationStatus;
+}): Promise<ServiceResult> {
+  const project = await readDecisionProject(input.projectId);
+  if (!project) return { status: "not_found" };
+  if (!canAccessDecisionProject(project.ownerId, input.user)) return { status: "forbidden" };
+
+  const candidates = await listCalibrationCandidates({ projectId: input.projectId, status: input.status });
+  return { status: "ok", candidates };
+}
+
+/**
+ * 人工审核一条候选（§16/§18）。鉴权按**候选所属项目**归属：
+ *   - 有 projectId → 走 canAccessDecisionProject（owner 本人或 STAFF）；
+ *   - 无 projectId（纯区域聚合候选）→ 仅 STAFF 可审核（无主数据保守拒绝任意登录用户）。
+ * 合法迁移与否由 store 状态机裁定，越界（如把 ACCEPTED 拉回 CANDIDATE）在 store 内被拒。
+ * **本动作绝不联动改任何基准/引擎**——ACCEPTED 只是「人已认可该建议」，落地改参仍另需人工流程。
+ */
+export async function reviewCandidate(input: {
+  candidateId: string;
+  user: SessionUser;
+  body: unknown;
+}): Promise<ServiceResult> {
+  const parsed = parseWith(reviewCandidateSchema, input.body ?? {});
+  if (!parsed.ok) return parsed.result;
+
+  const candidate = await readCalibrationCandidate(input.candidateId);
+  if (!candidate) return { status: "not_found" };
+
+  if (candidate.projectId) {
+    const project = await readDecisionProject(candidate.projectId);
+    if (!project) return { status: "not_found" };
+    if (!canAccessDecisionProject(project.ownerId, input.user)) return { status: "forbidden" };
+  } else if (!STAFF_ROLES.includes(input.user.role)) {
+    return { status: "forbidden" };
+  }
+
+  const r = await reviewCalibrationCandidate({
+    id: candidate.id,
+    to: parsed.data.to,
+    reviewedBy: `human:${input.user.id}`, // 只从会话取，绝不信客户端传的审核人
+    reviewNote: parsed.data.note ?? null,
+  });
+  if (!r.ok) {
+    if (r.reason === "not_found") return { status: "not_found" };
+    if (r.reason === "invalid") return { status: "invalid", fieldErrors: { status: [r.detail] } };
+    return { status: "error", error: r.detail };
+  }
+  return { status: "ok", candidateId: r.id, calibrationStatus: r.status };
+}
+
+/**
+ * 跨项目方向性概览（§19/§20）：回答「这偏差是个案，还是我多个项目/同区域反复出现的方向性问题？」
+ *
+ * 只对**当前用户可访问**的项目做**只读**聚合（listDecisionProjects 按 ownerId 过滤，杜绝窥他人数据）。
+ * 逐项目读存档预测 + 实测跑同一条纯分析函数，收集方向一致指标的符号偏差均值，再按
+ * `metric + basis + region` 分桶交给 `aggregateCrossProjectBias`——加权/不加权两套均值都给，
+ * 并显式标 `systemic`，绝不把相反方向平均成 0 就当「没事」（§20）。项目数上限受控，防打满算力。
+ */
+export async function calibrationLandscape(input: {
+  user: SessionUser;
+  metric?: string;
+  regionId?: string | null;
+  maxProjects?: number;
+}): Promise<ServiceResult> {
+  const cap = Math.max(1, Math.min(50, input.maxProjects ?? 25));
+  const projects = await listDecisionProjects(input.user.id, cap);
+
+  interface Bucket {
+    metric: string;
+    basis: string;
+    regionId: string | null;
+    biases: ProjectBiasInput[];
+  }
+  const buckets = new Map<string, Bucket>();
+  let scanned = 0;
+
+  for (const p of projects) {
+    const scenarioId = p.baseline?.id ?? null;
+    if (!scenarioId) continue;
+    const scenario = await readDecisionScenario(scenarioId);
+    const forecast = scenario?.forecastSnapshot ?? null;
+    if (!forecast) continue;
+    scanned++;
+
+    const regionId = forecast.identity?.regionId ?? null;
+    if (input.regionId && regionId !== input.regionId) continue;
+
+    const rows = (await listProjectActuals(p.id)) as unknown as ActualRow[];
+    const actuals = scopeActualsToScenario(rows, scenarioId);
+    const analysis = analyzeForecastVsActual(forecast, actuals);
+
+    for (const ma of analysis.metrics) {
+      if (input.metric && ma.metricKey !== input.metric) continue;
+      if (ma.signedMeanPct == null || ma.comparableCount < 1) continue;
+      if (ma.direction !== "consistent_above" && ma.direction !== "consistent_below") continue;
+      const key = `${ma.metricKey}|${ma.basis}|${regionId ?? "na"}`;
+      const b = buckets.get(key) ?? { metric: ma.metricKey, basis: ma.basis, regionId, biases: [] };
+      b.biases.push({ projectId: p.id, regionId, signedMeanPct: ma.signedMeanPct, sampleCount: ma.comparableCount });
+      buckets.set(key, b);
+    }
+  }
+
+  const aggregates = [...buckets.values()].map((b) =>
+    aggregateCrossProjectBias({ metric: b.metric, basis: b.basis, regionId: b.regionId, biases: b.biases }),
+  );
+  aggregates.sort(
+    (x, y) => y.projectCount - x.projectCount || Math.abs(y.unweightedMeanPct) - Math.abs(x.unweightedMeanPct),
+  );
+
+  return { status: "ok", projectsScanned: scanned, aggregates };
 }

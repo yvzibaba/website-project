@@ -610,6 +610,12 @@ model ProjectScenario {
   inputHash        String? // scenarioInput 的内容哈希（FNV-1a），用于「输入是否被改过」的复算校验
   decision         Json? // V2 决策结果快照（可行性判据 / 驱动 / 风险 / 假设 / 建议 / 溯源）
   report           Json? // V2 决策报告快照（有序章节数组，只读组织，不再计算）
+  // ── R6（M13）：预测侧「机器可读冻结快照」──
+  // 偏差分析必须对照「当初存下的预测」，绝不能用今天的模型回算历史预测（§3/§5）。
+  // 本列由 `decisionSnapshotToColumns` 从**已算好的 calc** 只读投影而来（buildForecastSnapshot），
+  // 不新增计算、不改 calc → 黄金基线零影响。仅存「与实测可比的那几个量 + 身份 + 隐含单价比值」，
+  // 不塞 35040 步时间序列。additive、可空：旧行没有它则偏差分析如实判「无预测快照、不可比」，不破任何旧语义。
+  forecastSnapshot Json?
   // V2 计算失败时的原因（截断存储）。失败必须留痕：只写「失败」而不写「为什么失败」，
   // 会让排查退回「重跑一遍看看」的原始状态，也违背了诚实边界的本意。
   calcError        String?
@@ -671,6 +677,56 @@ model ProjectActual {
   @@unique([projectId, periodYear, periodMonth])
   @@index([projectId, periodYear])
   @@index([scenarioId])
+}
+
+// ============================================================================
+// R6（M13）：校准候选（CalibrationCandidate）——「分析闭环」的出口，人工审核门的入口
+// ----------------------------------------------------------------------------
+// 偏差分析（ForecastSnapshot vs ProjectActual，纯派生、不落库）识别出**方向一致、达到阈值**
+// 的系统性偏差后，在这里落一条「建议复核 X 参数」的记录。它**只是建议**：
+//   - 本表与内核的 BENCHMARK_ENTRIES / ENGINE 无任何 FK，也没有任何代码路径据它去改基准或引擎；
+//   - 状态机 CANDIDATE → UNDER_REVIEW → ACCEPTED / REJECTED 全部由**人**推动（§18 校准门）；
+//   - 即便 ACCEPTED，也只是标记「已人工采纳某结论」，改不改生产基准/情景仍另需一次受版本治理的
+//     显式操作（且属创始人裁决），绝不因这条记录被置位就自动改任何常量（§1/§34）。
+// 为什么只有它落库、而 Deviation 不落：偏差是可随时从「冻结预测 + 实测」重新派生的确定性结果
+// （§2/§25「能派生就不新增表」），而候选的**审核状态与人工批注**是不可重导出的事实，必须持久。
+// dedupeKey 唯一：同一「指标|地区|口径|周期」在未推翻前只存一条待办，重复分析走更新而非堆积。
+// 计量列一律可空：没算出的绝不填 0（延续 ProjectActual 的 null≠0 纪律）。
+model CalibrationCandidate {
+  id           String   @id @default(cuid())
+  // 稳定幂等键（`metric|region|basis|periodKind`），供 upsert 去重；非业务外键。
+  dedupeKey    String   @unique
+  metric       String // 机读指标键（如 pvGenerationKwh）
+  metricLabel  String // 人读名（如 光伏发电量）
+  parameter    String? // 建议复核的参数路径（本层绝不据它改模型）
+  parameterLabel String?
+  measurementBasis String // 量纲口径（如 pv-ac-generation）
+  unit         String
+  periodKind   String // annual | monthly | aggregate
+  // 归属：单项目候选填 projectId（无强 FK，读侧按当前用户可访问项目鉴权）；跨项目区域性信号可空。
+  projectId    String?
+  regionId     String?
+  // over_forecast=预测持续偏高（实测低于预测）；under_forecast=预测持续偏低。
+  direction    String
+  forecastValue Decimal? @db.Decimal(18, 4)
+  actualValue   Decimal? @db.Decimal(18, 4)
+  biasPct       Decimal? @db.Decimal(12, 4) // 符号偏差均值（%）
+  meanAbsPct    Decimal? @db.Decimal(12, 4) // 平均绝对百分比偏差（%）
+  sampleCount   Int      @default(0)
+  impactYuan    Decimal? @db.Decimal(18, 2) // 金额量级影响（元）；电量类为 ASSUMPTION 折算
+  impactEvidenceKind String @default("ASSUMPTION") // FACT（钱对钱）| ASSUMPTION（电量×隐含单价）
+  evidence     Json // {comparableCount,positiveCount,negativeCount,rangePct,note}
+  suggestion   String // 建议文案（面向人工，明示「未自动改模型」）
+  status       String   @default("CANDIDATE") // CANDIDATE | UNDER_REVIEW | ACCEPTED | REJECTED（TS 层约束，同 Feedback/Lead 先例）
+  reviewedBy   String? // "human:<id>"（仅审计、非鉴权；对齐 ChangeLog.changedBy 口径）
+  reviewNote   String? // 人工审核批注
+  reviewedAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([metric, regionId])
+  @@index([projectId])
 }
 
 // 规则 13 / §9：情景的**不可变历史版本切片**，支持回滚与逐版本报告。每次「存为新版本」追加一行。

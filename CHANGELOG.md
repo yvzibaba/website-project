@@ -3,6 +3,16 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.95.0] - 2026-09-21 · S1 续 · 逐时储能物理不变量契约（mandate §二十–§二十一 · 零重算 · 符号严格对齐 engine · **不碰 S1 收口**）
+
+- **原因（mandate §三十六·9 / §二十 / §二十一 / §十九）**：S1 收口（把 V1 Path A 切到 V2 Path B 的统一口径）属 §23 创始人域（须升 `MODEL_VERSION` / 重录黄金 / 改需量策略 / φ·Kc 裁决），§十九 明文**禁止本批做**。本批只交付 §二十 要求「至少建立」的物理不变量里**无争议、可代码化**的那一半：SOC/功率越界外部复核 + 守恒式**符号契约**（不重算）+ §二十一「套利 + 削峰不能双算」= One Battery → One SOC → One dispatch 的结构事实断言。
+- **内容**：
+  - **新宿主模块 `src/server/hourly-bess-invariants.ts`（`HOURLY_BESS_INVARIANTS_VERSION 1.0.0` · 纯派生 · `import type` only · 零重算）**：`checkSocBounds` 对引擎**已发布**的 `socProfilePct`(%) 逐点判生效界（套用与 `bess.ts:130–131` 同款的 `socMin=max(0,min(100,·))` / `socMax=max(socMin,min(100,·))` clamp、判界式与 `bess.ts:276` 逐字一致），并把百分比换算能量核对 `0 ≤ SOC ≤ capacity`；与引擎自身 `socViolations` 做**防御性双读**（`agreesWithEngine`）。`checkPowerBounds` 对 `chargeProfileKw / dischargeProfileKw`(kW，类型注释明确标 kW、`balance.ts` 亦按 kW 消费) 逐点对比 `BessInput.powerKw`。`assertNoArbitragePeakShavingDoubleCount` 锁"两条腿同源一份时序调度、相加=同一预算两条腿非双算"（三序列同长 + `socViolations=0` + 合计=两腿相加），**只体检不仲裁**。
+  - **守恒式符号映射（不重算）**：`MANDATE_BALANCE_SYMBOL_TO_ENGINE_FIELD` 把 §二十 八个概念符号（含 **Losses→curtailment**、**Unserved→unservedProfileKw**）钉到 `balance.ts · checkEnergyBalanceInvariant` 真实入参键；`ENGINE_ENERGY_BALANCE_EQUATION` 逐字复述引擎两侧算式；`ENGINE_BALANCE_AUTHORITATIVE_CHECKER` 指向**唯一权威**校验器（宪法 §16 单一真源）。本模块**绝不调用**任何守恒/计算函数。
+  - **聚合 `auditBessInvariants`**：SOC + 功率 + 双算 + 守恒式符号契约汇成一份 `allOk` 体检（本层不过 ≠ 引擎全对，只报这一层）。
+- **测试与验证**：新增 `tests/unit/hourly-bess-invariants.test.ts` **24 例**（6 符号对齐·读引擎 `balance.ts/types.ts/bess.ts` 源码逐字断言字段名/两侧算式/`socMin - tol`/`powerKw * DT_HOURS`/`const tol = 1e-6` 全在，改名即红 + 6 SOC 界 + 4 功率界 + 3 双算守卫 + 2 聚合 + 1 版本 + 2 反算守卫）。`SOC_TOLERANCE_PCT=1e-6` 由测钉等于引擎 tol。文档 `outputs/S1_BESS_INVARIANTS.md`。双 tsc 0、eslint 0、`kernel:verify` 0 违规、`kernel:dangling` 0。**冻结件 + 黄金零 churn、DB 结构零迁移**。
+- **遗留（不变·§十九 / §23 创始人域）**：S1 收口 = 切 Path A→B / 升 `MODEL_VERSION` / 重录黄金 / φ·Kc·需量策略裁决 / 改历史客户项目——**一律未做**，等 C1 裁决（见 `C1_PATH_A_PATH_B.md`）。真实定价与需求侧收益归 §23。
+
 ## [0.94.0] - 2026-09-21 · R9 续 · V1 退役条件持续守卫复audit（mandate §九 / §十三 · 全 RETAIN · 登记不删升级为可执行断言）
 
 - **原因（mandate §三十六·7 / §九 / §十三）**：R9 登记表首版（[0.90.0]）落地后，R7-A/B/C/D + R8 六个里程碑连续 additive 推进。§十三 白纸黑字「持续运行 `v1-retirement-registry` · 验证 `realProject=false` 则 `all legacy surfaces=RETAIN` 保持 · 不要因为 V2 已经很完整就删除 V1」。本批 = **持续守卫复audit**：逐面复核旧面未被误删、前置链仍全 false，并把"登记不删"从注释**升级成 CI 可执行断言**。

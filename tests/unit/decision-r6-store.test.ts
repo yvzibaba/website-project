@@ -274,7 +274,10 @@ describe("R6 · reviewCalibrationCandidate（状态机 + 终态不可回退）",
 /* ───────────── ④ 版本常量反证：R6 未惊动计算口径 ───────────── */
 
 describe("R6 · 反证：存储层语义化版本 + 计算真源未动", () => {
-  it("DECISION_STORE_VERSION 升到 1.2.0", () => {
-    expect(DECISION_STORE_VERSION).toBe("1.2.0");
+  it("DECISION_STORE_VERSION 为语义化版本且不低于 R6 的 1.2.0（floor 单调不回退，勿钉精确值）", () => {
+    expect(DECISION_STORE_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
+    const [maj, min, pat] = DECISION_STORE_VERSION.split(".").map(Number);
+    expect(maj).toBe(1);
+    expect(maj * 1_000_000 + min * 1_000 + pat).toBeGreaterThanOrEqual(1 * 1_000_000 + 2 * 1_000 + 0);
   });
 });

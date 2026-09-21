@@ -391,6 +391,46 @@ describeDb("R5 · V2 版本治理：覆盖前冻结 + 时间线（真连库）",
     expect(log!.reason).toContain("服务费上调");
   });
 
+  it("★真库自增链：新建 version=1 → 连续两次成功重算 → 2 → 3（单调不回退·DB 与返回值一致）", async () => {
+    const owner = await makeUser();
+    const input = baseInput({ name: `${runId} R5自增链` });
+    const created = await createDecisionProject({
+      name: `${runId} R5自增链项目`,
+      ownerId: owner.id,
+      scenarioInput: input,
+    });
+    if (!created.ok) throw new Error(created.detail);
+    createdProjectIds.push(created.projectId);
+
+    const readVersion = async () =>
+      (await prisma.projectScenario.findUnique({
+        where: { id: created.scenarioId },
+        select: { version: true },
+      }))!.version;
+
+    expect(await readVersion()).toBe(1); // 新建：@default(1)
+
+    const r1 = await recalculateDecisionScenario({
+      scenarioId: created.scenarioId,
+      patch: { economics: { ...input.economics, chargingServiceFeeYuanPerKwh: FEE + 0.1 } },
+      actor: `human:${owner.id}`,
+    });
+    expect(r1.ok).toBe(true);
+    if (!r1.ok) return;
+    expect(r1.version).toBe(2);
+    expect(await readVersion()).toBe(2); // 落库真值同步抬到 2
+
+    const r2 = await recalculateDecisionScenario({
+      scenarioId: created.scenarioId,
+      patch: { economics: { ...input.economics, chargingServiceFeeYuanPerKwh: FEE + 0.2 } },
+      actor: `human:${owner.id}`,
+    });
+    expect(r2.ok).toBe(true);
+    if (!r2.ok) return;
+    expect(r2.version).toBe(3);
+    expect(await readVersion()).toBe(3); // 1 → 2 → 3，绝不回退、绝不原地不动
+  });
+
   it("重算算不通：旧成功结果照样被冻结，当前态只清数字列不冒充", async () => {
     const owner = await makeUser();
     const input = baseInput({ name: `${runId} R5失败留档` });

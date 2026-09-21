@@ -27,7 +27,7 @@ import type { CalculationResult, ScenarioInput } from "@app/kernel/engine/types"
 import type { Diagnostic } from "@app/kernel/engine/types";
 
 /** 存储层版本（改写入口径 / 派生列含义须升版并记原因）。 */
-export const DECISION_STORE_VERSION = "1.2.0"; // 1.2.0（R6 · M13）：写库时从已算好的 calc 加性投影 `forecastSnapshot`（冻结预测，供偏差分析对照，非第二计算路径）；新增 CalibrationCandidate 落库层（upsertSeeds/list/review，纯建议+人工审核态，无任何路径改 BENCHMARK/ENGINE）。计算真源、黄金基线、版本常量零改动。1.1.0（R5 · 版本治理）：V2「正式情景重算冻结旧结果为不可变版本 / 存为新版本 / 版本时间线 / 溯源投影」——全走既有 ProjectVersion + ChangeLog，仅加性扩列；计算真源零改动。1.0.0：V2 落库初始。
+export const DECISION_STORE_VERSION = "1.2.1"; // 1.2.1（R3.5 收口 · 版本自增修复）：成功重算的当前态写入路径补上 `version:{increment:1}`——此前重算会更新指纹/冻结旧版却从不抬 ProjectScenario.version（`Int @default(1)`·库无自增触发器·旧测靠 mock 谎报 version+1 蒙混），致版本号永远停在 1。失败重算分支不置该键（version 不动·"算不通"不冒充新结果）、create 仍取 @default(1)。纯写入语义修正，计算真源/黄金/派生列含义零改动。1.2.0（R6 · M13）：写库时从已算好的 calc 加性投影 `forecastSnapshot`（冻结预测，供偏差分析对照，非第二计算路径）；新增 CalibrationCandidate 落库层（upsertSeeds/list/review，纯建议+人工审核态，无任何路径改 BENCHMARK/ENGINE）。计算真源、黄金基线、版本常量零改动。1.1.0（R5 · 版本治理）：V2「正式情景重算冻结旧结果为不可变版本 / 存为新版本 / 版本时间线 / 溯源投影」——全走既有 ProjectVersion + ChangeLog，仅加性扩列；计算真源零改动。1.0.0：V2 落库初始。
 
 /* ────────────────────────── 数值与 JSON 归一 ────────────────────────── */
 
@@ -604,9 +604,12 @@ export async function recalculateDecisionScenario(input: {
         data: computed.ok
           ? // 成功分支不另写 scenarioInput：decisionSnapshotToColumns 写的就是本次实际参与计算的那份输入
             // （引擎回显的 inputSnapshot），杜绝"留档输入 ≠ 计算输入"的漂移。
-            decisionSnapshotToColumns(computed.snapshot)
+            // version++ 仅在此成功分支原子自增（Prisma increment 算子）：只有真正改写当前态成功才抬版本号；
+            // 失败分支不置该键 → 版本保持不动（"算不通"不该伪装成"改出了一版新结果"）。
+            // 刻意不塞进 decisionSnapshotToColumns（该函数亦被 createDecisionProject 复用，建版时应取 @default(1)）。
+            { ...decisionSnapshotToColumns(computed.snapshot), version: { increment: 1 } }
           : {
-              // 输入保留（用户改坏的输入也要留住，下次好接着改），结果列全部清空
+              // 输入保留（用户改坏的输入也要留住，下次好接着改），结果列全部清空；version 不动
               ...failureColumns(computed.reason, computed.detail),
               scenarioInput: jsonSafe(merged) as unknown as Prisma.InputJsonValue,
             },

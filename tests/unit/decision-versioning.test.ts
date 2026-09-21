@@ -31,6 +31,7 @@ import {
   scenarioProvenanceOf,
   extractVersionSummary,
   computeDecisionSnapshot,
+  decisionSnapshotToColumns,
   recalculateDecisionScenario,
   saveDecisionScenarioAsVersion,
   listDecisionScenarioVersions,
@@ -51,6 +52,20 @@ const createLog = prisma.changeLog.create as unknown as ReturnType<typeof vi.fn>
 // $transaction 直接以同一个 mock 客户端回调（decision-store 用的 tx 表名与 prisma 顶层一致）。
 function passthroughTx() {
   prisma.$transaction.mockImplementation((cb: (tx: unknown) => Promise<unknown>) => cb(prisma));
+}
+
+/**
+ * **忠实版** update mock：如实模拟真库语义——返回值 = 存的当前 version + 写入 data 里携带的 increment；
+ * 若写入不带 `version:{increment}` （如失败分支），版本原样不动。
+ * 旧用例一律 `mockResolvedValue({version: row.version+1})` 直接谎报自增，正是这条谎让"重算不抬版本号"
+ * 的真实缺陷躲过了单测、却在真连库时炸红（expected 1 to be 2）。本 helper 把 mock 拉回与现实一致。
+ */
+function versionAwareUpdate(currentVersion: number) {
+  updateScenario.mockImplementation(async (args: { data?: Record<string, unknown> }) => {
+    const inc =
+      ((args?.data as { version?: { increment?: number } } | undefined)?.version?.increment) ?? 0;
+    return { version: currentVersion + inc };
+  });
 }
 
 /** 造一条"已成功冻结过"的 V2 情景行：真实跑一遍引擎，用其产物填当时指纹。 */
@@ -202,7 +217,7 @@ describe("R5 · recalculateDecisionScenario（覆盖前冻结旧成功版）", (
     findScenario.mockResolvedValue(row);
     aggVersions.mockResolvedValue({ _max: { seq: 0 } });
     createVersion.mockResolvedValue({ id: "pv-1" });
-    updateScenario.mockResolvedValue({ version: row.version + 1 });
+    versionAwareUpdate(row.version);
     createLog.mockResolvedValue({ id: "cl-1" });
 
     const res = await recalculateDecisionScenario({
@@ -214,7 +229,7 @@ describe("R5 · recalculateDecisionScenario（覆盖前冻结旧成功版）", (
 
     expect(res.ok).toBe(true);
     if (!res.ok) return;
-    expect(res.version).toBe(4);
+    expect(res.version).toBe(4); // 由忠实 mock 依 data.version.increment 真实推导，非谎报
     expect(res.frozenSeq).toBe(1);
 
     // ① 冻结进版本的是**旧**指纹
@@ -232,6 +247,7 @@ describe("R5 · recalculateDecisionScenario（覆盖前冻结旧成功版）", (
     const udata = updateScenario.mock.calls[0][0].data;
     expect(udata.inputHash).not.toBe(row.inputHash);
     expect(udata.calcStatus).toBe("ok");
+    expect(udata.version).toEqual({ increment: 1 }); // ★成功分支显式带原子自增算子（缺陷修复点）
 
     // ③ ChangeLog：entityType=ProjectScenario，from/to 版本 + frozenSeq + whatChanged + reason
     expect(createLog).toHaveBeenCalledTimes(1);
@@ -249,7 +265,7 @@ describe("R5 · recalculateDecisionScenario（覆盖前冻结旧成功版）", (
     findScenario.mockResolvedValue(row);
     aggVersions.mockResolvedValue({ _max: { seq: 4 } }); // 下一 seq=5
     createVersion.mockResolvedValue({ id: "pv-5" });
-    updateScenario.mockResolvedValue({ version: row.version + 1 });
+    versionAwareUpdate(row.version);
     createLog.mockResolvedValue({ id: "cl-2" });
 
     // grid.capacityKw=0 触发 validateScenarioInput 的 fatal → 引擎 ok:false
@@ -261,12 +277,14 @@ describe("R5 · recalculateDecisionScenario（覆盖前冻结旧成功版）", (
     expect(res.ok).toBe(true);
     if (!res.ok) return;
     expect(res.frozenSeq).toBe(5); // 旧成功仍被冻结
+    expect(res.version).toBe(row.version); // ★失败重算：version 原样不动（不冒充"改出了一版新结果"）
     expect(createVersion).toHaveBeenCalledTimes(1);
     expect(createVersion.mock.calls[0][0].data.inputHash).toBe(row.inputHash);
 
     const udata = updateScenario.mock.calls[0][0].data;
     expect(udata.calcStatus).not.toBe("ok");
     expect(udata.npv).toBeNull();
+    expect(udata.version).toBeUndefined(); // ★失败分支根本不带 version 键
     // 失败也要留住用户改坏的那份输入，下次接着改
     expect(udata.scenarioInput).toBeTruthy();
     const cdata = createLog.mock.calls[0][0].data;
@@ -299,6 +317,92 @@ describe("R5 · recalculateDecisionScenario（覆盖前冻结旧成功版）", (
 });
 
 /* ─────────────── 显式存版 / 时间线 ─────────────── */
+
+describe("R5 收口 · ProjectScenario.version 自增（修「重算不抬版本号」·真实 increment 语义）", () => {
+  it("① 初始值：create 投影不带 version 键 → 新情景取 @default(1)；自增只活在重算成功调用点", () => {
+    const { input } = defaultScenarioInput({ chargingServiceFeeYuanPerKwh: 0.45 });
+    const computed = computeDecisionSnapshot(input, { generatedAtIso: "2026-01-01T00:00:00.000Z" });
+    expect(computed.ok).toBe(true);
+    if (!computed.ok) return;
+    const cols = decisionSnapshotToColumns(computed.snapshot) as Record<string, unknown>;
+    // 建版投影绝不含 version（否则会把 @default(1) 顶掉 / 让首版凭空 +1）；自增仅在 recalc 成功处显式加
+    expect("version" in cols).toBe(false);
+  });
+
+  it("② 连续成功重算：version 单调 1→2→3", async () => {
+    // 第一次：当前 version=1 → 成功后 2
+    const { row: row1 } = existingV2Row({ version: 1 });
+    findScenario.mockResolvedValue(row1);
+    aggVersions.mockResolvedValue({ _max: { seq: 0 } });
+    createVersion.mockResolvedValue({ id: "pv-a" });
+    versionAwareUpdate(1);
+    createLog.mockResolvedValue({});
+    const r1 = await recalculateDecisionScenario({
+      scenarioId: "scn-1",
+      patch: { economics: { chargingServiceFeeYuanPerKwh: 0.6 } } as never,
+    });
+    expect(r1.ok && r1.version).toBe(2);
+
+    // 第二次：当前 version=2 → 成功后 3（模拟真库里已被第一次抬到 2 的那一行）
+    const { row: row2 } = existingV2Row({ version: 2 });
+    findScenario.mockResolvedValue(row2);
+    versionAwareUpdate(2);
+    const r2 = await recalculateDecisionScenario({
+      scenarioId: "scn-1",
+      patch: { economics: { chargingServiceFeeYuanPerKwh: 0.75 } } as never,
+    });
+    expect(r2.ok && r2.version).toBe(3);
+    if (!r1.ok || !r2.ok) return;
+    expect(r2.version).toBe(r1.version + 1); // 严格 +1 不回退
+  });
+
+  it("③ 失败重算：version 不变化、写入不带 version 键（算不通不冒充新结果）", async () => {
+    const { row } = existingV2Row({ version: 5 });
+    findScenario.mockResolvedValue(row);
+    aggVersions.mockResolvedValue({ _max: { seq: 1 } });
+    createVersion.mockResolvedValue({ id: "pv-f" });
+    versionAwareUpdate(5);
+    createLog.mockResolvedValue({});
+
+    const res = await recalculateDecisionScenario({
+      scenarioId: "scn-1",
+      patch: { grid: { capacityKw: 0 } } as never, // 触发引擎 fatal
+    });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.version).toBe(5); // 原样不动
+    expect(updateScenario.mock.calls[0][0].data.version).toBeUndefined();
+  });
+
+  it("④ 历史回放安全：成功重算后冻结的仍是旧输入，喂回引擎逐字节复现旧 inputHash（自增不动历史）", async () => {
+    const { row } = existingV2Row({ version: 3 });
+    findScenario.mockResolvedValue(row);
+    aggVersions.mockResolvedValue({ _max: { seq: 0 } });
+    createVersion.mockResolvedValue({ id: "pv-replay" });
+    versionAwareUpdate(3);
+    createLog.mockResolvedValue({});
+
+    const res = await recalculateDecisionScenario({
+      scenarioId: "scn-1",
+      patch: { economics: { chargingServiceFeeYuanPerKwh: 0.62 } } as never,
+    });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.version).toBe(4); // 当前态确实抬了一版
+
+    const frozen = createVersion.mock.calls[0][0].data;
+    // 冻进去的是旧输入 + 旧哈希，与自增修复无关、未被改写
+    expect(frozen.inputHash).toBe(row.inputHash);
+    expect(JSON.stringify(frozen.scenarioInput)).toBe(JSON.stringify(row.scenarioInput));
+    // ★历史可复算：把冻结输入喂回引擎，必须还原出旧哈希
+    const replay = computeDecisionSnapshot(frozen.scenarioInput as ScenarioInput, {
+      generatedAtIso: "2026-01-01T00:00:00.000Z",
+    });
+    expect(replay.ok).toBe(true);
+    if (!replay.ok) return;
+    expect(replay.snapshot.calc.inputHash).toBe(row.inputHash);
+  });
+});
 
 describe("R5 · saveDecisionScenarioAsVersion", () => {
   it("当前为成功结果 → 冻结一条新版本并记 ChangeLog（不改当前态）", async () => {

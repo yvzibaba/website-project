@@ -3,6 +3,19 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.84.1] - 2026-09-21 · V2 版本治理收口：修复 `ProjectScenario.version` **重算不递增**（store/service 写入口径修正·`DECISION_STORE_VERSION 1.2.0→1.2.1`·计算真源/黄金/冻结语义零改动）
+
+- **原因（承接 [0.84.0-audit] 遗留发现·创始人签字放行修复）**：审计登记的确定性红 `decision-store.test.ts › R5 成功重算…version++`（真连库 `expected 1 to be 2`）根因确认——`recalculateDecisionScenario` 成功写入路径 `tx.projectScenario.update` 的 `data` 取自 `decisionSnapshotToColumns`，二者**均未设 `version`**，而 `ProjectScenario.version` 是 `Int @default(1)` 且库中无自增触发器 → 重算会更新指纹 / 冻结旧版，却**从不抬版本号**，当前态 version 永远停在 1。此缺陷此前被跨太平洋 5s 事务超时掩盖成环境 flake；且**旧单测用 `mockResolvedValue({version: row.version+1})` 谎报自增**，令其在离线一路绿、只有真连库才炸。本批修口径 + 把谎报的 mock 拉回真实语义。
+- **内容**：
+  - `kernel/src/server/decision-store.ts`：`recalculateDecisionScenario` 的 **成功分支** `data` 改为 `{ ...decisionSnapshotToColumns(computed.snapshot), version: { increment: 1 } }`（Prisma 原子自增算子）。**失败分支不动**（不置 `version` → 版本原样不变，"算不通"不冒充改出了新结果）；**create 路径不动**（仍取 `@default(1)`，故刻意不把自增塞进被 create 复用的 `decisionSnapshotToColumns`）。`DECISION_STORE_VERSION 1.2.0→1.2.1`（记原因）。
+  - `package.json` `0.84.0→0.84.1`。
+- **测试（把「谎报」改「如实」·最小必要）**：
+  - `tests/unit/decision-versioning.test.ts`：新增 **`versionAwareUpdate` 忠实 mock**（返回值 = 存的当前 version + 写入 `data.version.increment`，不带 increment 则不动）；把既有"成功重算""重算算不通"两例的 `mockResolvedValue(version+1)` 谎报替换为该忠实 mock，并新增断言：成功分支 `data.version` 恰为 `{increment:1}`、`res.version` 真为 `current+1`；失败分支 `data.version` 为 `undefined`、`res.version` 原样不变。另立专块 `R5 收口 · ProjectScenario.version 自增` 覆盖 founders 四类：**①初始值**（`decisionSnapshotToColumns` 输出不含 version 键→新建取 @default(1)）、**②连续成功 1→2→3 单调**、**③失败 version 不变**、**④历史回放安全**（成功重算后冻结的仍是旧输入，喂回 `computeDecisionSnapshot` 逐字节复现旧 `inputHash`，自增不动历史）。
+  - `tests/integration/decision-store.test.ts`：新增真库用例 **`★真库自增链 1→2→3`**（建项目 version=1 → 两次成功重算 → DB 与返回值同步 2、3）。
+  - `tests/unit/decision-r6-store.test.ts`：`DECISION_STORE_VERSION` 精确钉值 `"1.2.0"` 改为 **floor 单调不回退**语义断言（≥1.2.0·major=1），契合"版本常量勿钉精确值"纪律，使本批 1.2.1 补丁不再假红。
+- **验证**：`test:unit` **1481 passed / 1 skipped**（较 [0.84.0] 基线 1474：审计批 +3、本批 +4）；`kernel:verify` / `kernel:dangling` 违规 **0**；host `tsc`、`kernel:typecheck`、`eslint` **0**；`next build` **通过**。真连 Neon：`decision-store.test.ts` **23/23 全绿**——含此前唯一红的 `R5 成功重算…version++` 现已转绿、新 `真库自增链 1→2→3` 通过；全量多文件 integration 因跨太平洋超时（RC=124）未跑完，但经 `grep` 确认**仅 decision-store 一个集成文件触及本次改动路径**，定向 23/23 即完整覆盖，不对共享库反复重跑制造 slug 污染。
+- **未动冻结件**：`ENGINE_VERSION 2.0.0`、`MODEL_VERSION`（A=1.5.0 / B=1.0.0）、`PARAMS_VERSION 1.6.0`、`BENCHMARK_*` 常量、黄金计算路径、冻结判据 `shouldFreezeV2BeforeOverwrite` 语义**均未动**。DB 结构零改（`version` 列早存在，本次只是应用层写对它），无新迁移。按 STOP **不进入 S1 / R7**。
+
 ## [0.84.0-audit · 未发版] - 2026-09-21 · R3.5 储能削峰降需量模型**一致性审计**（只读复审 + 纯测试守卫 + 审计文档·**不改生产代码 / 不 bump 任何版本 / 黄金零 churn**）
 
 - **原因**：创始人指令——在 `4979ef4`（[0.84.0]）之上**只复审** R3 储能削峰降需量模型及其版本/结果一致性；重点查双路径口径、储能价值重复计价、φ 经济含义与边界、版本纪律、黄金二次反证、B/C 需量测试隔离、50% 默认是否越诚实边界、R1 根因分类；明确不进入 R7/S1、不提高大站搜索上限、不改默认储能参数、不切 Benchmark 到 DB、不大改 engine、不改黄金测来"解释变化"。

@@ -140,6 +140,7 @@ export default async function AdminDashboardPage() {
             <Link href="/admin/projects" className="hover:underline">决策项目列表（只读）→</Link>
             <Link href="/admin/feedback" className="hover:underline">反馈处理（用户报错 / 建议）→</Link>
             <Link href="/admin/leads" className="hover:underline">留资（RFQ）列表 →</Link>
+            <Link href="/admin/research" className="hover:underline">研究台 · 候选项目池（R8 · 广泛发现极度聚焦）→</Link>
             <Link href="/cases" className="hover:underline">公开案例列表 →</Link>
             <Link href="/solutions" className="hover:underline">已发布方案列表 →</Link>
           </div>

@@ -882,3 +882,51 @@ model BenchmarkEntry {
   @@index([benchmarkVersion])
   @@index([regionId, key])
 }
+
+// ----------------------------- R8：上游产业项目池（CandidateProject） -----------------------------
+// 目标（mandate §八）：把系统从"项目决策工具"升级为"项目机会筛选入口"——先**广泛发现**候选产业项目，
+// 再**极度聚焦**筛出值得进项目池者。新能源重卡能源项目仍是第一深度垂直；其余行业暂只作为机会池存在。
+//
+// 刻意**只新增这一张表**（§八"不要一次设计几十张表""只新增确有必要的 CandidateProject"）：
+//   · evidence / unknowns / screeningResult 用 JSONB 内联，**不新建关联表、不改任何既有表**（additive）；
+//   · 复用既有 `Industry` 枚举；status / sourceType 走 String 列 + TS 白名单（同 Lead/CalibrationCandidate 约定）；
+//   · 与 BenchmarkEntry / 引擎无任何 FK，**没有任何代码路径据本表自动改生产模型或基准**——
+//     AI 研究工作区的产出必须先落本表为候选，经人工核验（Human Verification）后，才由人决定是否
+//     提升为 Case / Project 或另走受控流程更新基准（mandate §十 禁止 AI 直改 Benchmark / Engine）。
+model CandidateProject {
+  id       String   @id @default(cuid())
+  title    String
+  industry Industry @default(NEW_ENERGY)
+
+  // 地区：自由文本（同 Lead.projectRegion），不建 FK，避免为一张发现期草表引入区域强约束。
+  region String?
+
+  source     String // 来源描述（人可读，如官网/研报/访谈链接文字）
+  sourceType String @default("MANUAL") // 白名单：MANUAL | AI_RESEARCH | IMPORT（AI 产出恒为候选，须人工核验）
+
+  description    String?
+  technology     String? // 关键技术路线
+  estimatedScale String? // 规模档位/文本（发现期粗估，非承诺）
+
+  // 内联 JSONB（不建关联表）：
+  evidence        Json? // [{ claim, kind: FACT|ASSUMPTION|INFERENCE|PREDICTION, confidence, sourceUrl, note }]
+  unknowns        Json? // [{ name, impact, howToResolve, severity }]
+  // 派生筛查快照（由纯函数 screenCandidate 程序算，非 LLM 打分）：verdict + 逐门槛 trace + 原因。
+  screeningResult Json? // { verdict, gates:[{ key, passed, reason }], reasons:string[] }
+
+  // 状态机（String + TS 白名单，非 enum）：
+  //   NEW → SCREENING → CANDIDATE | NEED_MORE_EVIDENCE | REJECT | READY_FOR_PROJECT → PROMOTED
+  status  String @default("NEW")
+  version Int    @default(1)
+
+  // 提升为正式载体后回填指针（可空、纯文本记录，不建 FK，保持"只一张表"）：
+  promotedCaseId    String?
+  promotedProjectId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([industry, region])
+  @@index([sourceType])
+}

@@ -35,6 +35,7 @@ import {
   fmtYears,
 } from "./primitives";
 import { DecisionReportView, type DecisionReportData } from "./DecisionReportView";
+import { DecisionExportPanel } from "./DecisionExportPanel";
 import { ActualsPanel } from "./ActualsPanel";
 import { RecommendPanel } from "./RecommendPanel";
 import { ScenarioAttributionPanel } from "./ScenarioAttributionPanel";
@@ -678,6 +679,14 @@ export function DecisionProjectPanel({ projectId }: { projectId: string }) {
                 本次计算没有产出报告，可能因为计算未通过。
               </Alert>
             )}
+            {activeId ? (
+              <DecisionExportPanel
+                scenarioId={activeId}
+                scenarioName={active?.name ?? ""}
+                calcStatus={active?.calcStatus ?? "unknown"}
+                report={report}
+              />
+            ) : null}
           </Section>
 
           <Separator />

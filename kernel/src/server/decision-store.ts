@@ -769,12 +769,46 @@ export async function readDecisionScenario(scenarioId: string) {
       decision: true,
       report: true,
       forecastSnapshot: true,
+      // R7-A 加性暴露：情景版本号 + 与 report 同源一次 calc 落下的 Decimal 派生列，
+      // 供「报告→方案草案」导出桥直读、免二次计算；既有键/含义零改动，写入路径不动。
+      version: true,
+      capexNet: true,
+      npv: true,
+      irrPct: true,
+      paybackYears: true,
+      roiRatio: true,
+      lcoeYuanPerKwh: true,
+      npvEquity: true,
+      irrEquityPct: true,
       updatedAt: true,
     },
   });
   if (!row) return null;
+  const {
+    version,
+    capexNet,
+    npv,
+    irrPct,
+    paybackYears,
+    roiRatio,
+    lcoeYuanPerKwh,
+    npvEquity,
+    irrEquityPct,
+    ...rest
+  } = row;
   return {
-    ...row,
+    ...rest,
+    version,
+    econ: {
+      capexNetYuan: dec(capexNet),
+      npvYuan: dec(npv),
+      irrPct: dec(irrPct),
+      paybackYears: dec(paybackYears),
+      roiRatio: dec(roiRatio),
+      lcoeYuanPerKwh: dec(lcoeYuanPerKwh),
+      npvEquityYuan: dec(npvEquity),
+      irrEquityPct: dec(irrEquityPct),
+    },
     updatedAt: row.updatedAt.toISOString(),
     scenarioInput: row.scenarioInput as unknown as ScenarioInput | null,
     forecastSnapshot: (row.forecastSnapshot ?? null) as ForecastSnapshot | null,

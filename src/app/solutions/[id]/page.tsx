@@ -428,6 +428,22 @@ function SolutionBodySection({
           </Card>
         ))}
       </div>
+      {body.extras.some((e) => e.key === "decisionReport") ? (
+        <div className="rounded-lg border border-border bg-muted/30 p-3">
+          <div className="mb-1 text-sm font-medium text-foreground">下载决策报告（DOCX 离线交付件）</div>
+          <p className="mb-2 text-xs text-muted-foreground">
+            与上方 34 分节正文同源的 <strong>14 节决策报告全文</strong>（含 provenance 与 disclaimer），
+            字节级一致、不重算，供离线留档 / 持证复核。文件名 <code className="font-mono">项目名_DecisionReport_Vx.docx</code>。
+          </p>
+          <a
+            href={`/api/solutions/${encodeURIComponent(solutionId)}/export/docx`}
+            download
+            className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-primary/20"
+          >
+            ⬇ 下载 DOCX
+          </a>
+        </div>
+      ) : null}
       {body.extras.length > 0 ? (
         <p className="text-[11px] text-muted-foreground">
           另有 {body.extras.length} 个未归入 34 分节的字段（{body.extras.map((e) => e.key).join("、")}），

@@ -3,6 +3,34 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.86.0] - 2026-09-21 · R7-B 离线 DOCX 交付：**DecisionReport → DOCX 纯投影 + 双入口下载**（同源字节级一致·零重算·零 schema 迁移）
+
+- **原因（承接创始人 §24 高速连续自治 · R7-B）**：R7-A 已把 V2 决策报告投成 DRAFT Solution，但 mandate §R7-B 明确要一份**离线可交付工件**（客户留档 / 持证复核 / 邮件附件），且要求「Web Report = DecisionReport = DOCX 数字一致」是**机器测**而非肉眼判。审计确认：`ProjectScenario.report` 是引擎 `buildDecisionReport` 产出的**已格式化字符串对象**（每处 CAPEX/NPV/IRR/... 都是成品串），DOCX 层只需**搬运 + 排版**即可结构性保证同源——无需二次 `runCalculation`、无需读输入快照重算。
+- **内容**：
+  - **B1 · DOCX 纯投影**（`src/server/decision-report-docx.ts` 新 · `DECISION_REPORT_DOCX_VERSION 1.0.0`）：`buildDecisionReportDocx({ report, projectName?, scenarioName?, scenarioVersion?, scenarioSchemaVersion?, extraMeta?, titleOverride? })` → `{ buffer: Uint8Array, filename, exportedAtIso }`。放宿主 `src/server` 而非 kernel，因 `docx` 属**呈现层依赖**、kernel 白名单只放 `zod/@prisma/client/node:*`。类型仅 `import type` `@app/kernel/engine/types`（编译期擦除），零 engine 运行时。**14 节按 kind 分派**（paragraph / key-values / bullets / table）；`ReportForDocx` 输入子集刻意**不要求 `inputSnapshot`**，与 R7-A 存的 `body.extras.decisionReport` 形状严丝合缝；null/空串 → `—`（UNKNOWN ≠ 0），`ASSUMPTION`/`UNKNOWN`/`FACT`/`DERIVED`/`ACTUAL` 字面**逐字保留**、绝不被洗成 FACT；免责声明常驻尾节不省略。
+  - **B2 · 数字一致机器测**（`tests/unit/decision-report-docx.test.ts` 新 · 7 例）：14 节 fixture 每节都塞入 `【XX唯一串】` + 关键数字（CAPEX `¥3,875,000` / NPV `¥4,448,573` / IRR `24.35%` / Payback `4.80 年` / LCOE `0.3180 元/kWh` / 年用电 `3,285,000 kWh` / 需量 `1,200 kW` / 五态标签等）；DOCX 用 `jszip` 解 `word/document.xml` → 剥 XML tag → 逐串 `expect(text).toContain(needle)`。**反算依赖守卫**：源文件 `grep` 不得出现 `from "@app/kernel/engine/..."` 运行时常规 import（只允许 `import type`），且不得调用 `runCalculation(` / `buildDecisionReport(` / `computeDecisionSnapshot(`——「不重算」是结构事实。
+  - **B3 · DOCX 元信息 12 项**（mandate §R7-B-3 十项 + 双保险两项）：Project / Scenario / Scenario Version / Scenario ID / Engine Version / Model Version / Benchmark Version / Scenario Schema Version / Input Hash / Report Version / Time Step / Generated At（`provenance.generatedAtIso` 冻结时刻，非当下），Solution 侧下载再加 Solution ID / Version / Status 三项。**页眉「导出时间」单独记当下但**不进文件名**，防日期漂移。
+  - **B4 · 双入口下载路由 + UI**：
+    - `src/app/api/workbench/decision/scenarios/[id]/export/docx/route.ts`（GET）：`getCurrentUser` 未登录 401 → `hasEntitlement("export")` 软门 → `readOneDecisionScenario` 内部走 `canAccessDecisionProject`（越权 403 / 未存 404）→ `calcStatus !== "ok" || !report` 直译 409 → 生成 DOCX。
+    - `src/app/api/solutions/[id]/export/docx/route.ts`（GET）：登录 → `hasEntitlement("export")` → 直读 Solution + financials（不走 `getPublishedSolutionById` 因为它只透 PUBLISHED）→ 授权矩阵：**staff 任何时候可预览** / **creatorId===user.id 自助** / **PUBLISHED + (免费或 hasPaidEntitlement)** / 其他 403 → `parseSolutionBody` 找 `extras.decisionReport` → 缺失 404（V1 手工方案不带全文快照，诚实拒）→ 尽力反查 `sandboxSource.scenarioId` 取 ProjectScenario.version 定文件名 `Vx`（拿不到 → `vUnknown`，**绝不臆造版本号**）。
+    - UI：`DecisionExportPanel` 卡片标题改「决策报告交付」，头部加**⬇ 下载 DOCX** `<a href download>`（同源数字声明）；`solutions/[id]/page.tsx` `SolutionBodySection` 在 `extras` 有 `decisionReport` 时展示**⬇ 下载 DOCX** 卡（付费/免费/staff/creator 四态统一入口，路由层已鉴权）。
+  - **B5 · 文件名规则**（`buildDecisionReportFilename` 独立导出可测）：`ProjectName_DecisionReport_Vx.docx`；项目名回落链 projectName→scenarioName→scenarioLabel→fallback→`DecisionReport`；Windows/Linux 通用非法字符 `\ / : * ? " < > |` + 控制字符 → `_`；截断 80；版本号：有限非负整数 → `v<N>`（`Math.trunc` 防漂），否则 `vUnknown`；**绝不含当前日期**，同版本每次导出同文件名、异版本异文件名，历史不覆盖。
+  - **B6 · 安全**（mandate §R7-B-6）：两路由均**服务端判权**，绝不信客户端 role/isStaff/userId；workbench 侧越权走 `canAccessDecisionProject` 现有原语；solutions 侧 staff / creator / PUBLISHED 三门 AND-OR 短路，非发布态且非 staff/creator 一律 403，**不给未过审方案外发交付物**（R7-C 发布门未就位时的**读侧兜底**）；GET 安全方法**不做 CSRF**（Auth.js 会话 cookie SameSite=Lax 已挡跨站 POST，GET 无副作用）；`Content-Disposition` 双写 `filename`（ASCII 回落）+ `filename*=UTF-8''…`（RFC 5987 中文项目名跨浏览器不糊）。
+  - **依赖**：新加 `docx@9.7.1`（生产依赖 · Node 生态 OOXML 写手，替代尚未验证过的 PDF 引擎路径）与 `jszip`（**test/devDependency** · 测试里解 OOXML 包断言文本投影，也恰是 docx 的传递依赖，锁顶层防漂）。**无 Prisma 迁移**、无 DB 结构改动。
+- **测试与验证**：
+  - unit **1501 pass / 1 skip**（+7 R7-B DOCX 测试 · 零回归）；
+  - `kernel:verify` **0 违规**（docx 不进口 kernel，白名单保持纯净）；
+  - `kernel:dangling` **0 悬空**（新路由与 builder 无 `from "..."` 假红）；
+  - `kernel:typecheck` / `tsc --noEmit` **0 错误**；
+  - `eslint` 全部新/改文件 **0 错 0 警**；
+  - `next build` **通过**（`/api/workbench/decision/scenarios/[id]/export/docx` 与 `/api/solutions/[id]/export/docx` 两条动态路由已注册）；
+  - **冻结件全数不动**：`ENGINE_VERSION 2.0.0` / `MODEL_VERSION 1.5.0` / `PARAMS_VERSION 1.6.0` / `BENCHMARK_VERSION 1.0.0` / `REPORT_BUILDER_VERSION 1.0.0` / `DECISION_STORE_VERSION 1.2.1` / `DECISION_TO_SOLUTION_VERSION 1.0.0`（R7-A）；黄金基线**零 churn**（本批不动 engine 与 calc）。
+- **未完成 / 遗留**：
+  - **集成测（真连 Neon）留 R7-C 一并补**：本批两条下载路由的端到端只跑过 build；`tests/integration/decision-export-docx.test.ts`（导出真方案 → 走真 `/api/solutions/.../export/docx` → 断 HTTP 200 + MIME + Content-Disposition + DOCX 头三字节 `PK\u0003\u0004`）留待 R7-C1 逐状态审计时一并建，配合跨境链路已有的 5s 事务超时保守策略。
+  - **PDF 引擎不做**（mandate §R7-B "不要现在增加复杂 PDF 引擎"）；已按创始人意图选 DOCX 单路径。
+  - **Solution 侧 titleOverride 回落链**：Solution.title 覆盖 provenance.scenarioLabel 拼串——若客户手工改过 Solution 标题，DOCX 首页大字用**新**标题；元信息表内仍显示原始 scenarioLabel 供审计。这是**特性**（尊重人工修订），但需在 R7-C 审核门里被 staff 显式确认。
+- **交创始人（下一步）**：按 §24 长任务推进方式，随即进入 R7-C1（商业交付代码闭环逐状态审计 + `UNDER_HUMAN_REVIEW` 发布门升级为 V2 强制门，不破 V1）。
+
 ## [0.85.0] - 2026-09-21 · R7-A 交付闭环：**V2 决策报告 → DRAFT 产业方案**（商业闭环最小加性桥·纯投影**零重算**·纯加性不动 V1 漏斗/计算真源/黄金/派生列含义）
 
 - **原因（承接创始人 R7 形状裁决 · R7-A · AskUserQuestion 已批）**：V2 项目自 R1 起已跑通「逐时引擎 → 决策报告」，但**报告没有任何通往商品的出口**——只有 V1 沙盘经 `solution-draft.ts` 能落 DRAFT `Solution` 汇入既有 `publishGuard`/`Order`/`hasPaidEntitlement` 闭环。R7-A 补上 V2 侧**对称的只读投影**，让一份已算通的 V2 报告能一键导出成一条 DRAFT 商品，接进**同一批已测的** Solution/Financial/Unknown 表和 Order/Entitlement 链，**不新造任何商业系统**。审计（`outputs/R7-A_AUDIT.md` 14 章）已核实：`decisionSnapshotToColumns` 在同一次调用里既写 `report` 也写 `decision` + 8 个 Decimal 派生列（capexNet/npv/irrPct/paybackYears/roiRatio/lcoeYuanPerKwh/npvEquity/irrEquityPct），三者**同源一份 calc** → 导出为纯搬运即「报告数字 == 商品数字」的结构性保证，无需二次调用 `runCalculation`。

@@ -152,11 +152,10 @@ export function DecisionExportPanel({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>导出为商业方案草案</CardTitle>
+        <CardTitle>决策报告交付</CardTitle>
         <p className="text-sm text-muted-foreground">
-          把这份报告投成一条 <strong>DRAFT</strong> 产业方案（挂财务 + 关键未知 + 溯源），接进既有的
-          后台发布 → 定价 → 购买闭环。<strong>不重算、不自动发布、不自动定价</strong>；下面每个数字都是
-          报告里那一份，导出只是搬运。
+          离线 DOCX 与商业方案草案两条出口，<strong>共用同一份冻结 Report</strong>，同源数字、不重算：
+          DOCX 直接下载给专业复核 / 客户留档；DRAFT 方案挂进既有「后台发布 → 定价 → 购买 → 交付」闭环。
         </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -165,6 +164,26 @@ export function DecisionExportPanel({
             只有 <code>calcStatus=ok</code> 且已有决策报告的情景才能导出为商品。若本报告缺失，请先重算通过。
           </Alert>
         ) : null}
+
+        {/* ── R7-B：DOCX 离线交付（纯投影，不重算） ── */}
+        <div className="rounded-lg border border-border bg-muted/20 p-3">
+          <div className="mb-1 text-sm font-medium">下载决策报告（DOCX 离线交付件）</div>
+          <div className="mb-2 text-xs text-muted-foreground">
+            与本报告页 14 节 <strong>字节级同源</strong>：DOCX 是 Report 的离线表现，不产任何新数字、不查引擎。
+            文件命名 <code className="font-mono">项目名_DecisionReport_Vx.docx</code>（不同版本互不覆盖）。
+          </div>
+          <a
+            href={`/api/workbench/decision/scenarios/${encodeURIComponent(scenarioId)}/export/docx`}
+            download
+            aria-disabled={!exportable}
+            className={
+              "inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary transition " +
+              (exportable ? "hover:bg-primary/20" : "pointer-events-none opacity-50")
+            }
+          >
+            ⬇ 下载 DOCX
+          </a>
+        </div>
 
         {p ? (
           <div className="rounded-lg border border-border bg-muted/30 p-3">

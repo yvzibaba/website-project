@@ -3,6 +3,25 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.90.0] - 2026-09-21 · R9 V1 退役条件审计：**登记不删**·12 面全 RETAIN·11 环前置零 true（§23 STOP：真实项目链未闭合）
+
+- **原因（mandate §十二–§十三 · §24 高速连续自治 · §26 诚实）**：R7/R8 已把 V2 商业交付链（决策 → 报告 → 商品 → 复核 → 交付）与上游产业项目池**代码到位**，V1 沙盘与 V2 决策共挂多时；`§十二 旧系统退役` **不按代码时间点触发**，必须至少一个真实项目走完全链 `真实项目→输入→计算→版本冻结→报告→商品→人工审核→发布→真实交付→Actual→Deviation` 后**才**允许开始 `DEPRECATE_MARK → NAV_REMOVE → MIGRATION_NOTE → READY_TO_DELETE → DELETED` 五档渐进、**明令禁止一步删除**。审计现网：11 环**十环未发生**（含 1 环"代码到位但真实事件未发生"）+ 1 环"Actual 通道代码骨架待完善"。裁决 = **不删、不改、不动 V1 任何一条路径**，唯一交付是**"能删/不能删"从隐性判断升级为代码里显式登记的可审计事实**（宪法第 20 条诚实、第 13 条版本化、第 16 条单一真源）。
+- **内容**：
+  - **R9.1 · V1 退役登记表**（新 `src/server/v1-retirement-registry.ts` · 零依赖纯函数 · `V1_RETIREMENT_REGISTRY_VERSION 1.0.0`）：`RETIREMENT_PRECONDITION_CHAIN` 11 环逐字对齐 mandate §十二；`PRECONDITION_MET` 全键 = **false**（今天事实）；`V1_SURFACES` 手工枚举 12 面（3 PAGE / 5 API / 3 STORE+LIB / 1 JSONB_POINTER），每条 `{id, path, kind, v2Replacement, status:"RETAIN", blockingReason, conditions[]}`——`blockingReason` 每面点名拦在哪条硬约束（§十二 未闭合 / 现网历史数据回放 / R8.4 溯源跨链基础设施永久保留 / S1 未完成前不可断日粒度模型 / R7-C 门刻意只加 V2 body 形态），`conditions[]` 是可勾选的真实业务事件（"V2 稳定 ≥ 30 天"、"30 天零 V1 新写入"、"≥ 5 单不同行业跑通"、"创始人 §23 明确签字"）——**不许**"等 V2 稳一点"这类含混话。派生查询：`areAllPreconditionsMet / mayAdvanceBeyondRetain / surfacesAt(status) / anyDeletionAuthorized / allSurfacesRetain`。
+  - **R9.2 · 硬约束测（8 例全绿）**（新 `tests/unit/v1-retirement-registry.test.ts`）：① 版本常量钉死；② 11 环顺序逐字对齐 §十二 原文；③ 今天 `PRECONDITION_MET[k]===false` 逐键 + `areAllPreconditionsMet()===false` + `mayAdvanceBeyondRetain()===false`；④ V1 面清单 ≥12、id 唯一、必填字段齐、kind/status 落白名单；⑤ ★ `allSurfacesRetain()===true` + DEPRECATE_MARK/NAV_REMOVE/MIGRATION_NOTE 三档 `surfacesAt()` 全为空数组；⑥ ★★ `anyDeletionAuthorized()===false` + READY_TO_DELETE / DELETED 两档为空（mandate §十三"禁止一步删除"最直白实现）；⑦ 关键 V1 面（R7-A/B/C/D/E + R8 各里程碑涉及的 7 面）必须已登记（防漏登）；⑧ 每面 `blockingReason` 必须提到 § / 前置 / 真实 / mandate / 创始人 / backfill / 稳定 / 历史 / 只读 / 观察期 / 归档 / 永久 / 基础设施 之一（防含混话）。**改一处破三测**的刻意摩擦：未来任何人想让某面推进一档，必须先真实跑通 §十二 全链 + 附项目 ID / 合同号 / 交付凭证 + 升 registry 版本 + 改测的期望值 → 破测倒逼 code review 里公开"哪一环前置今天真发生了"。
+  - **R9.3 · 人读审计文档**（新 `outputs/R9_V1_RETIREMENT_AUDIT.md`）：把 12 面登记表 + 11 环逐环事实表 + 每面推进条件（按链上里程碑归并）+ "改一处破三测"说明 + §23 STOP 到创始人的四项事项写成一份份可交付的审计文本，registry 源码文件顶部注释与本文件互为镜像（防漂移：registry 是唯一真源，文档是它的可读形式）。
+- **测试与验证**：
+  - unit **1560 pass / 1 skip**（本批 +8：`tests/unit/v1-retirement-registry.test.ts` 8 例全绿；对既有 1552 例零回归，因本批**不改任何 V1 代码路径**）；
+  - `kernel:verify` **0 违规**（本批完全不进口 kernel，registry 在宿主 `src/server/`）、`kernel:dangling` **0 悬空**、`kernel:typecheck` + 宿主 `tsc --noEmit` **0 错误**、`eslint` **0 错 0 警**、`next build` **通过**（registry 只被 unit test 消费、无路由/UI 挂载、build 无新面）；
+  - **V1 代码路径零改动**：本批没删、没标 `deprecated`、没改导航、没加迁移说明，**只在源码里追加了一份登记表**——所有 V1 页面/API/store/lib/JSONB 指针仍一字不动照常工作；
+  - **冻结件全数不动**：`ENGINE_VERSION 2.0.0` / `MODEL_VERSION 1.5.0` / `PARAMS_VERSION 1.6.0` / `BENCHMARK_VERSION 1.0.0` / `REPORT_BUILDER_VERSION 1.0.0` / `DECISION_STORE_VERSION 1.2.1` / `DECISION_TO_SOLUTION_VERSION 1.0.0` / `DECISION_REPORT_DOCX_VERSION 1.0.0` / `LEAD_PIPELINE_VERSION 1.0.0` / `CANDIDATE_SCREENING_VERSION 1.0.0` / `CANDIDATE_STORE_VERSION 1.0.0` 与黄金基线**零 churn**（新增 `V1_RETIREMENT_REGISTRY_VERSION 1.0.0` 是**登记表自身**版本、不改任何计算真源）。
+- **未完成 / 遗留（交创始人 · §23 绝对 STOP）**：
+  - **§十二 全链闭合**：需**一个真实客户项目**跑完 11 环——真实报价 / 合同 / 收款 / 交付均属 §23 绝对 STOP，代码已备好接口（R7-A 决策导出 + R7-B DOCX 交付 + R7-C 发布门 + R7-D 工作流视图 + R8 池），不臆造。
+  - **Actual 通道**：`Actual` 与 `Deviation` 落库路径 mandate §十二 明列为**最后两环**；当前仅有 V2 决策项目侧的 `calibration-candidates` 骨架，真实回流数据须来自真实交付客户。
+  - **R8 生产迁移 apply**（属生产部署 §23 STOP）：R8 池代码 complete 但 `CandidateProject` 表未 apply，是"发现期草料 → 真实客户项目"入口的**上游可选路径**，不 apply 则该入口对 R9 全链闭合的贡献为零。apply 后即刻可用，无需改一行代码。
+  - **S1 逐时统一模型**（mandate §十四–§十五）：本表第 10 面 `kernel-project-model` **必须**在 S1 完成前保持 RETAIN，否则历史 V1 数据无引擎可复算（破规则 7）；MODEL_VERSION 升版 / 黄金基线重录 / φ 系数退役或保留属 §23 STOP，S1 批次只写代码可完成的部分。
+- **效果**：把"能不能删 V1"从**代码里的隐性判断**升级成**代码里显式登记的可审计事实**——12 面 / 11 环 / 每面 blockingReason + conditions 白纸黑字 + 8 条测把"今天一律不删"钉死；未来任何人（含 AI）想撤 V1 一面，必先让真实业务事件发生、留凭证、升 registry 版本、破测倒逼 code review 里公开"哪一环真闭合了"。这是"禁止一步删除"的**唯一可靠工程实现**。
+
 ## [0.89.0] - 2026-09-21 · R8 上游产业项目池 + Research Workspace 骨架：**一张新表·纯函数六闸裁决·AI 不越界**（CODE COMPLETE / REAL-WORLD INPUT PENDING：迁移应用属创始人域）
 
 - **原因（承接创始人 §24 高速连续自治 · mandate §八–§十一）**：V2 缺一个**比正式项目/方案轻得多**的草料池，把散落的产业线索先收进来、程序筛一遍、决定哪些值得进入正式研究。mandate 硬约束：**只新增一张 `CandidateProject`**（宪法「能派生就不新增表」）、裁决**必须是有序六闸状态机不是 AI 分数**（§九）、**AI 输出恒为候选须人工核验**（§十「AI 不得直改 Benchmark / Engine」的最严实现——本层连读都不读计算真源）、**不做六行业分叉页**（§十一 · 首垂直只锁新能源重卡但那是内容聚焦非导航分叉）、宽发现+极聚焦。同时留一条**"表未 apply 即诚实挂 RED 牌"**（§26）的路径给真实部署域，不假装能列。

@@ -3,12 +3,12 @@ import { requireStaffWrite, mutationResponse, readJsonSafe, errorResponse } from
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 import {
   createCandidate,
-  listCandidates,
+  listCandidatesPage,
   CANDIDATE_STORE_VERSION,
   type CandidateStoreResult,
   type CandidateRow,
   type CreateCandidateInput,
-  type ListCandidatesQuery,
+  type ListCandidatesPageQuery,
 } from "@app/kernel/server/candidate-store";
 
 /**
@@ -42,7 +42,11 @@ function toLoose(res: CandidateStoreResult<CandidateRow | CandidateRow[]>) {
   return { status: "error" as const, error: msg };
 }
 
-/** GET /api/admin/candidates?status=&industry=&region=&limit= —— 列表（staff 只门禁）。 */
+/**
+ * GET /api/admin/candidates?verdict=&status=&industry=&region=&page=&pageSize=&sortBy=&sortDir=
+ * —— 分页 + 过滤列表（staff 只门禁）。mandate §六：page/pageSize/total/next/previous + verdict/industry/status
+ *   过滤 + createdAt/updatedAt 排序；单一查询系统（store.listCandidatesPage）。
+ */
 export async function GET(request: Request): Promise<NextResponse> {
   const authz = await requireRole(STAFF_ROLES);
   if (!authz.ok) {
@@ -51,13 +55,23 @@ export async function GET(request: Request): Promise<NextResponse> {
     return errorResponse("FORBIDDEN", "需 REVIEWER 或 ADMIN 角色", 403);
   }
   const url = new URL(request.url);
-  const q: ListCandidatesQuery = {
+  const num = (k: string) => {
+    const v = url.searchParams.get(k);
+    if (v == null || v === "") return undefined;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : undefined;
+  };
+  const q: ListCandidatesPageQuery = {
     status: url.searchParams.get("status") ?? undefined,
+    verdict: url.searchParams.get("verdict") ?? undefined,
     industry: url.searchParams.get("industry") ?? undefined,
     region: url.searchParams.get("region") ?? undefined,
-    limit: Number(url.searchParams.get("limit") ?? 50) || undefined,
+    page: num("page"),
+    pageSize: num("pageSize"),
+    sortBy: url.searchParams.get("sortBy") ?? undefined,
+    sortDir: url.searchParams.get("sortDir") ?? undefined,
   };
-  const res = await listCandidates(q);
+  const res = await listCandidatesPage(q);
   if (!res.ok) {
     if ("tableMissing" in res && res.tableMissing) {
       return errorResponse("CONFLICT", res.error, 409, {
@@ -67,7 +81,19 @@ export async function GET(request: Request): Promise<NextResponse> {
     const msg = "error" in res ? res.error : "读取失败";
     return errorResponse("INTERNAL_ERROR", msg, 500);
   }
-  return NextResponse.json({ ok: true, candidates: res.data, storeVersion: CANDIDATE_STORE_VERSION });
+  return NextResponse.json({
+    ok: true,
+    candidates: res.data.rows,
+    page: res.data.page,
+    pageSize: res.data.pageSize,
+    total: res.data.total,
+    pageCount: res.data.pageCount,
+    hasPrev: res.data.hasPrev,
+    hasNext: res.data.hasNext,
+    sortBy: res.data.sortBy,
+    sortDir: res.data.sortDir,
+    storeVersion: CANDIDATE_STORE_VERSION,
+  });
 }
 
 /** POST /api/admin/candidates —— 新建草料 + 当场程序筛查落库（mandate §九：非 LLM 打分）。 */

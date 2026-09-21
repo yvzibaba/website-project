@@ -18,6 +18,7 @@ vi.mock("@app/kernel/lib/logger", () => ({
 import {
   createCandidate,
   listCandidates,
+  listCandidatesPage,
   screenAndSave,
   CANDIDATE_STORE_VERSION,
   type CreateCandidateInput,
@@ -171,5 +172,118 @@ describe("listCandidates / screenAndSave", () => {
     expect(res.ok).toBe(false);
     expect("notFound" in res && res.notFound).toBe(true);
     expect(findUnique).not.toHaveBeenCalled();
+  });
+});
+
+describe("listCandidatesPage · 单一查询系统的分页视图（mandate §六）", () => {
+  it("返回分页信封：page/pageSize/total/pageCount/hasPrev/hasNext 算术正确", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 45);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => [{ id: "a1" }]);
+    const res = await listCandidatesPage({ page: 2, pageSize: 10 });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.data.total).toBe(45);
+    expect(res.data.pageCount).toBe(5); // ceil(45/10)
+    expect(res.data.page).toBe(2);
+    expect(res.data.pageSize).toBe(10);
+    expect(res.data.hasPrev).toBe(true);
+    expect(res.data.hasNext).toBe(true);
+    // skip 算术：第 2 页 × 每页 10 → 跳过 10 条
+    const arg = mockPrisma.candidateProject.findMany.mock.calls[0][0];
+    expect(arg.skip).toBe(10);
+    expect(arg.take).toBe(10);
+  });
+
+  it("末页 hasNext=false、首页 hasPrev=false；total=0 → pageCount 兜底为 1", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 20);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    const last = await listCandidatesPage({ page: 2, pageSize: 10 });
+    expect(last.ok && "hasNext" in last.data && last.data.hasNext).toBe(false);
+    expect(last.ok && "hasPrev" in last.data && last.data.hasPrev).toBe(true);
+
+    mockPrisma.candidateProject.count = vi.fn(async () => 0);
+    const empty = await listCandidatesPage({ page: 1, pageSize: 10 });
+    expect(empty.ok).toBe(true);
+    if (empty.ok) {
+      expect(empty.data.pageCount).toBe(1);
+      expect(empty.data.rows).toEqual([]);
+      expect(empty.data.hasPrev).toBe(false);
+      expect(empty.data.hasNext).toBe(false);
+    }
+  });
+
+  it("verdict 是 status 的语义别名；二者同给时 status 优先（同一 where，无第二套逻辑）", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 0);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    await listCandidatesPage({ verdict: "CANDIDATE" });
+    let where = mockPrisma.candidateProject.findMany.mock.calls[0][0].where;
+    expect(where.status).toBe("CANDIDATE");
+
+    await listCandidatesPage({ verdict: "CANDIDATE", status: "REJECT" });
+    where = mockPrisma.candidateProject.findMany.mock.calls[1][0].where;
+    expect(where.status).toBe("REJECT"); // status 覆盖 verdict
+  });
+
+  it("非法 status/verdict/industry 被白名单挡在 where 外（不注入任意值）", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 0);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    await listCandidatesPage({ status: "DROP TABLE", industry: "???" });
+    const where = mockPrisma.candidateProject.findMany.mock.calls[0][0].where;
+    expect(where.status).toBeUndefined();
+    expect(where.industry).toBeUndefined();
+  });
+
+  it("region 走 insensitive contains；industry 合法值透传", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 0);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    await listCandidatesPage({ region: " 山西 ", industry: "NEW_ENERGY" });
+    const where = mockPrisma.candidateProject.findMany.mock.calls[0][0].where;
+    expect(where.region).toEqual({ contains: "山西", mode: "insensitive" });
+    expect(where.industry).toBe("NEW_ENERGY");
+  });
+
+  it("排序：createdAt/updatedAt asc|desc 透传；非法字段回落 createdAt desc", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 0);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    await listCandidatesPage({ sortBy: "updatedAt", sortDir: "asc" });
+    let orderBy = mockPrisma.candidateProject.findMany.mock.calls[0][0].orderBy;
+    expect(orderBy).toEqual({ updatedAt: "asc" });
+
+    await listCandidatesPage({ sortBy: "password", sortDir: "asc" });
+    orderBy = mockPrisma.candidateProject.findMany.mock.calls[1][0].orderBy;
+    expect(orderBy).toEqual({ createdAt: "asc" }); // 非法列回落 createdAt；方向独立白名单仍保留 asc
+  });
+
+  it("页码越界（page=999）不报错、返回空 rows + 正确元数据（诚实不 500）", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 5);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    const res = await listCandidatesPage({ page: 999, pageSize: 10 });
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(res.data.rows).toEqual([]);
+    expect(res.data.pageCount).toBe(1);
+    expect(res.data.hasNext).toBe(false);
+    // skip 仍按请求页算（大 skip 交 DB 返回空即可，store 不额外钳制 page）
+    const arg = mockPrisma.candidateProject.findMany.mock.calls[0][0];
+    expect(arg.skip).toBe((999 - 1) * 10);
+  });
+
+  it("pageSize 钳制到 [1,100]", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => 0);
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    await listCandidatesPage({ pageSize: 9999 });
+    expect(mockPrisma.candidateProject.findMany.mock.calls[0][0].take).toBe(100);
+    await listCandidatesPage({ pageSize: -5 });
+    expect(mockPrisma.candidateProject.findMany.mock.calls[1][0].take).toBe(1);
+  });
+
+  it("表未迁移（P2021）→ tableMissing，不假装空列表", async () => {
+    mockPrisma.candidateProject.count = vi.fn(async () => {
+      throw Object.assign(new Error("nope"), { code: "P2021" });
+    });
+    mockPrisma.candidateProject.findMany = vi.fn(async () => []);
+    const res = await listCandidatesPage({});
+    expect(res.ok).toBe(false);
+    expect("tableMissing" in res && res.tableMissing).toBe(true);
   });
 });

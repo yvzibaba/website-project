@@ -39,7 +39,7 @@ import {
 const log = logger.child({ module: "server/candidate-store" });
 
 /** 持久层版本（改映射 / 落库字段口径须升版并记原因，规则 13）。 */
-export const CANDIDATE_STORE_VERSION = "1.0.0"; // 1.0.0（R8）：首版，仅新增一张表 + 内联 JSONB。
+export const CANDIDATE_STORE_VERSION = "1.1.0"; // 1.0.0（R8）首版一张表+内联 JSONB；1.1.0（R8·§六）additive 只读分页视图 listCandidatesPage（无落库字段口径变更）。
 
 /* ─────────────────────────── 白名单（String 列 + TS 校验，非 Prisma enum） ─────────────────────────── */
 
@@ -325,28 +325,52 @@ export async function screenAndSave(
   }
 }
 
-/* ─────────────────────────── 读路径 ─────────────────────────── */
+/* ─────────────────────────── 读路径（单一查询系统 · list + 分页两视图共用） ─────────────────────────── */
 
+/** 允许的排序字段（时间轴两列；不给任意列名，防 order-by 注入 / 契约漂移）。 */
+export const CANDIDATE_SORT_FIELDS = ["createdAt", "updatedAt"] as const;
+export type CandidateSortField = (typeof CANDIDATE_SORT_FIELDS)[number];
+
+/** 过滤项：`verdict` 与 `status` 落到同一列（createCandidate 把 status 写成六闸 verdict）；给二者时 `status` 优先。 */
 export interface ListCandidatesQuery {
   status?: string;
+  verdict?: string;
   industry?: string;
   region?: string;
   limit?: number;
+  sortBy?: string;
+  sortDir?: string;
 }
 
-/** 列表：默认按 createdAt 倒序，可按 status/industry/region 过滤。表未迁移 → tableMissing。 */
+/** 白名单化的 where 构造（listCandidates 与 listCandidatesPage **共用**，杜绝两套过滤逻辑漂移）。 */
+function buildWhere(q: ListCandidatesQuery): Prisma.CandidateProjectWhereInput {
+  const where: Prisma.CandidateProjectWhereInput = {};
+  const statusFilter = q.status ?? q.verdict; // verdict 是 status 的语义别名
+  if (statusFilter && (CANDIDATE_STATUSES as readonly string[]).includes(statusFilter)) where.status = statusFilter;
+  if (q.industry && (CANDIDATE_INDUSTRIES as readonly string[]).includes(q.industry))
+    where.industry = q.industry as Industry;
+  if (q.region && q.region.trim()) where.region = { contains: q.region.trim(), mode: "insensitive" };
+  return where;
+}
+
+/** 白名单化的 orderBy 构造（默认 createdAt 倒序；非法字段/方向回落默认，绝不注入任意列）。 */
+function buildOrderBy(q: Pick<ListCandidatesQuery, "sortBy" | "sortDir">): Prisma.CandidateProjectOrderByWithRelationInput {
+  const field = (CANDIDATE_SORT_FIELDS as readonly string[]).includes(q.sortBy ?? "")
+    ? (q.sortBy as CandidateSortField)
+    : "createdAt";
+  const dir = q.sortDir === "asc" ? "asc" : "desc";
+  return { [field]: dir } as Prisma.CandidateProjectOrderByWithRelationInput;
+}
+
+/** 列表（不分页 · 向后兼容旧调用/旧测）：默认 createdAt 倒序，可按 status/verdict/industry/region 过滤。表未迁移 → tableMissing。 */
 export async function listCandidates(
   q: ListCandidatesQuery = {},
 ): Promise<CandidateStoreResult<CandidateRow[]>> {
   const limit = Math.max(1, Math.min(q.limit ?? 50, 200));
-  const where: Prisma.CandidateProjectWhereInput = {};
-  if (q.status && (CANDIDATE_STATUSES as readonly string[]).includes(q.status)) where.status = q.status;
-  if (q.industry && (CANDIDATE_INDUSTRIES as readonly string[]).includes(q.industry))
-    where.industry = q.industry as Industry;
-  if (q.region && q.region.trim()) where.region = { contains: q.region.trim(), mode: "insensitive" };
-
+  const where = buildWhere(q);
+  const orderBy = buildOrderBy(q);
   try {
-    const rows = await prisma.candidateProject.findMany({ where, orderBy: { createdAt: "desc" }, take: limit });
+    const rows = await prisma.candidateProject.findMany({ where, orderBy, take: limit });
     return { ok: true, data: rows as unknown as CandidateRow[] };
   } catch (e) {
     if (isTableMissing(e)) {
@@ -354,6 +378,68 @@ export async function listCandidates(
     }
     log.error("candidate list failed", { err: (e as Error)?.message });
     return { ok: false, error: (e as Error)?.message ?? "list failed" };
+  }
+}
+
+/** 一页草料 + 分页元数据（mandate §六：page/pageSize/total/next/previous；无综合分数、只有事实）。 */
+export interface CandidatePage {
+  rows: CandidateRow[];
+  page: number;
+  pageSize: number;
+  total: number;
+  pageCount: number;
+  hasPrev: boolean;
+  hasNext: boolean;
+  sortBy: CandidateSortField;
+  sortDir: "asc" | "desc";
+}
+
+export interface ListCandidatesPageQuery extends ListCandidatesQuery {
+  page?: number;
+  pageSize?: number;
+}
+
+/**
+ * 分页读：复用**同一** buildWhere / buildOrderBy（无第二套查询系统），`findMany(skip,take)` + `count`。
+ * 页码越界不报错、返回空 rows + 正确元数据（诚实，不 500）；表未迁移 → tableMissing。
+ */
+export async function listCandidatesPage(
+  q: ListCandidatesPageQuery = {},
+): Promise<CandidateStoreResult<CandidatePage>> {
+  const pageSize = Math.max(1, Math.min(q.pageSize ?? 20, 100));
+  const page = Math.max(1, Math.trunc(q.page ?? 1) || 1);
+  const where = buildWhere(q);
+  const orderBy = buildOrderBy(q);
+  const sortBy = (CANDIDATE_SORT_FIELDS as readonly string[]).includes(q.sortBy ?? "")
+    ? (q.sortBy as CandidateSortField)
+    : "createdAt";
+  const sortDir = q.sortDir === "asc" ? "asc" : "desc";
+  try {
+    const [total, rows] = await Promise.all([
+      prisma.candidateProject.count({ where }),
+      prisma.candidateProject.findMany({ where, orderBy, skip: (page - 1) * pageSize, take: pageSize }),
+    ]);
+    const pageCount = Math.max(1, Math.ceil(total / pageSize));
+    return {
+      ok: true,
+      data: {
+        rows: rows as unknown as CandidateRow[],
+        page,
+        pageSize,
+        total,
+        pageCount,
+        hasPrev: page > 1,
+        hasNext: page < pageCount,
+        sortBy,
+        sortDir,
+      },
+    };
+  } catch (e) {
+    if (isTableMissing(e)) {
+      return { ok: false, tableMissing: true, error: "CandidateProject 表尚未迁移（待生产部署域）" };
+    }
+    log.error("candidate page failed", { err: (e as Error)?.message });
+    return { ok: false, error: (e as Error)?.message ?? "page failed" };
   }
 }
 

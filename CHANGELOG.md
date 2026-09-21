@@ -3,6 +3,17 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.92.0] - 2026-09-21 · R8 续 · Research Workspace 分页 / 筛选 / 排序（mandate §六 · 单一查询系统）
+
+- **原因（mandate §三十六·3 / §六）**：R8 首版 `/admin/research` 只能整表 `listCandidates` 倒序取前 N，无分页、无按 verdict/industry/region 筛选、无按时间轴排序。§六 明确要求「在**既有** `listCandidates` 基础上增加筛选 / 分页 / 排序」，且 §七「不要把筛选结果变成虚假综合分」——故本批**不建第二套 Candidate 查询系统**，只在既有 store 上做加法。
+- **内容**：
+  - **store（`candidate-store.ts` · `CANDIDATE_STORE_VERSION 1.0.0→1.1.0` · additive 只读）**：抽出**共用**的 `buildWhere`（`verdict` 是 `status` 的语义别名，二者同给时 `status` 优先；status/industry 走白名单，region 走 `insensitive contains`）与 `buildOrderBy`（仅 `CANDIDATE_SORT_FIELDS=[createdAt,updatedAt]` 白名单，非法列回落 `createdAt`、方向独立白名单 `asc|desc`）。既有 `listCandidates` 改为复用二者**保持返回形状不变**（向后兼容旧调用与旧测）；新增 `listCandidatesPage` + `CandidatePage{rows,page,pageSize,total,pageCount,hasPrev,hasNext,sortBy,sortDir}`——`Promise.all([count, findMany(skip,take)])`，`pageCount=max(1,ceil(total/pageSize))`，页码越界返回空 rows + 诚实元数据（不 500），P2021→`tableMissing`。**无落库字段口径变更**。
+  - **API（`/api/admin/candidates` GET）**：改用 `listCandidatesPage`，解析 `verdict|status|industry|region|page|pageSize|sortBy|sortDir`，回 `{candidates,page,pageSize,total,pageCount,hasPrev,hasNext,sortBy,sortDir,storeVersion}`；`tableMissing`→HTTP 409（不假装成功）。POST 不变。
+  - **视图纯函数（新 `src/server/research-workspace-model.ts` · 零依赖）**：`buildQuery`（URLSearchParams 合并、空值删除）、`pageHref`、`sortHref`（同字段翻向 / 换字段倒序起步 / 回第 1 页）、`isSortedBy`、`paginationInfo`（页码窗口居中当前页、贴边平移）。抽成纯函数走 node 单测（Next16 无 jsdom）。
+  - **UI（`/admin/research` · 服务端组件）**：改 `searchParams: Promise<…>`；纯 GET 表单驱动筛选（verdict/industry/region/pageSize + 隐藏 sortBy/sortDir）、`Link` 驱动排序与分页；每行只显**事实**——六闸通过 `passed/gateCount`、未过闸缺口、`Unknown` 计数、创建/更新时间，**无任何综合分数**。表未 apply 仍显 `CODE COMPLETE / REAL-WORLD INPUT PENDING`。
+- **测试与验证**：新增 `tests/unit/research-workspace-model.test.ts`（15 例）；`tests/unit/candidate-store.test.ts` 增 `listCandidatesPage` 9 例。双 tsc 0、eslint 0、`kernel:verify` 0 违规、`kernel:dangling` 0、`next build` 通过、unit **1602 passed / 1 skipped**。**冻结件 + 黄金零 churn、DB 结构零迁移**（纯读侧）。
+- **遗留（不变）**：`CandidateProject` migrate apply 仍属 §23 创始人域（离线 SQL 已生成未 apply）。
+
 ## [0.91.1] - 2026-09-21 · 补丁 · 集成测漂移修正（db-smoke 表清单）· 真连 Neon 全绿
 
 - **原因（mandate §二十一「任何失败先判断：测试漂移 → 自己修」）**：本轮把全量 `tests/integration`（30 文件 / 171 例）对**真连 Neon Postgres**跑了一遍，**170 通过 / 1 失败**。唯一失败是 `db-smoke.test.ts` 的「业务表清单」硬断言：真实库有 **29 张基表**，而清单只登记 27 项，差 `BenchmarkEntry`（R4 `cbb4565` 落库）与 `CalibrationCandidate`（R6 `81e2eec` 校准候选）两张——**二者均早于本 R7/R8 基线 `6fe420b` 即已存在**（基线处 `grep` 该清单命中 0，即此测在 R7 之前就已红），属**历史测试漂移、非本六批次引入的回归**。核实 `HAS_CandidateProject=false`：R8 迁移仍**未 apply**，与本 session 审计「不越 §23 生产部署」结论一致、**无矛盾**。

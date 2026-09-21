@@ -12,10 +12,7 @@ import {
 } from "@app/kernel/lib/decision-to-solution";
 import { persistSolutionDraft } from "@app/kernel/server/solution-store";
 import { readOneDecisionScenario } from "@app/kernel/server/decision-service";
-import {
-  buildDecisionReportDocx,
-  type ReportForDocx,
-} from "@/server/decision-report-docx";
+import { type ReportForDocx } from "@/server/decision-report-docx";
 
 /**
  * R7-B-4 · 决策报告 **DOCX 离线交付**两条路由的真实 HTTP 端到端（真连 Neon，不 mock DB）。

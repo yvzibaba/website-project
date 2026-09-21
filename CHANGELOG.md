@@ -3,6 +3,15 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.95.1] - 2026-09-21 · 集成测 lint 清理 + 真连 Neon 复跑记录（mandate §三十六·10-11 · 测试漂移自修 · 零生产码变更）
+
+- **原因（§三十七「普通代码问题自修」+ §三十二「回归必做」）**：Stage 10-11 全量回归时发现 Stage 2 (`5f657e2`) 遗留的 R7-B DOCX 端到端测在 `tests/integration/decision-export-docx.test.ts:15-18` 里以 value 形式 import 了 `buildDecisionReportDocx` 却从未使用，触发 `@typescript-eslint/no-unused-vars` warn。另真连 Neon 复跑全集成套件，③ §五 历史版本安全 首跑红、单跑复绿（102s · 内含 `addSolutionUnknown` interactive `$transaction` 5s 默认超时被跨太平洋 RTT 撑破的日志），与 memory 记录的 R4/R6 环境 flake 特征完全一致 → 归为 **NETWORK PENDING 非回归**，**不改生产事务超时**（属创始人域）。
+- **内容**：
+  - `tests/integration/decision-export-docx.test.ts`：多行 import 塌成 `import { type ReportForDocx } from "@/server/decision-report-docx";`，去掉未使用的 value import。
+  - `package.json` `0.95.0 → 0.95.1`（测试补丁版本）。
+- **测试与验证**：全 unit 1637 pass / 1 skip（结构守卫本身的设计性 skip）；双 tsc 0；eslint 0 warn 0 err；`kernel:verify` 0 违规；`kernel:dangling` 0；`npm run build` 19/19 静态 + 全动态路由注册（`/admin/research` · `/api/admin/candidates` · `/api/admin/candidates/[id]/screen` · `/api/admin/leads/export` 三条 R7-D/R8 新路由均在）；`db-smoke` 真连 Neon 5/5（28 业务表齐 · 14 enum 齐 · `_prisma_migrations` 干净）；本批相关的 `lead-pipeline` 3/3 绿；`decision-export-docx` 5 例（首跑 4/5 红 ③ → 隔离重跑 ③ 绿 → 定性 flaky）。**冻结件（ENGINE 2.0.0 / MODEL 1.5.0 / PARAMS 1.6.0 / BENCHMARK 1.0.0 / BESS·BALANCE·STORAGE 1.0.0 / DECISION_STORE 1.2.1 / SCHEMA 1.0.0）零 churn、黄金 28 例零 churn、DB 结构零迁移**（补丁不动 schema）。
+- **遗留（不变）**：③ 复跑绿=网络抖动非代码问题；无 Neon 权限外可做的其它集成项（真迁移 apply / 真支付网关 / 真实客户 / V1 退役执行）一律留 §23 创始人域，本批不动。
+
 ## [0.95.0] - 2026-09-21 · S1 续 · 逐时储能物理不变量契约（mandate §二十–§二十一 · 零重算 · 符号严格对齐 engine · **不碰 S1 收口**）
 
 - **原因（mandate §三十六·9 / §二十 / §二十一 / §十九）**：S1 收口（把 V1 Path A 切到 V2 Path B 的统一口径）属 §23 创始人域（须升 `MODEL_VERSION` / 重录黄金 / 改需量策略 / φ·Kc 裁决），§十九 明文**禁止本批做**。本批只交付 §二十 要求「至少建立」的物理不变量里**无争议、可代码化**的那一半：SOC/功率越界外部复核 + 守恒式**符号契约**（不重算）+ §二十一「套利 + 削峰不能双算」= One Battery → One SOC → One dispatch 的结构事实断言。

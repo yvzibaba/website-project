@@ -113,7 +113,7 @@ describeDb("db smoke (Neon Postgres)", () => {
     ]);
   });
 
-  it("has all 25 business tables present", async () => {
+  it("has all 28 business tables present", async () => {
     const rows = await prisma.$queryRaw<Array<{ table_name: string }>>`
       SELECT table_name
       FROM information_schema.tables
@@ -122,10 +122,15 @@ describeDb("db smoke (Neon Postgres)", () => {
     `;
     const names = rows.map((r) => r.table_name);
     const EXPECTED = [
+      // v0.82.x 迁移 20260920090000（R4 · cbb4565）：BenchmarkEntry（基准层落库镜像，计算真源与黄金零改动）。
+      // 本条为测试漂移修正——该表早于 R7/R8 基线即已存在，只是此前漏登记于此清单。
+      "BenchmarkEntry",
       "BusinessModel",
       "CapabilityProject",
       "Case",
       "CaseCapability",
+      // v0.82.x 迁移 20260920150000（R6 · 81e2eec）：CalibrationCandidate（实测→校准候选·人工审核门，无任何路径自动改 Benchmark）。
+      "CalibrationCandidate",
       "ChangeLog",
       "Evidence",
       // v0.64.0 阶段4 加性迁移 20260908000000：Favorite（收藏）/ Feedback（反馈）。
@@ -153,6 +158,10 @@ describeDb("db smoke (Neon Postgres)", () => {
       "UnknownVariable",
       "User",
       "_prisma_migrations",
+      // 注意：R8 的 `CandidateProject` 表**刻意不在此清单**——其迁移
+      // `20260921160000_add_candidate_project` 仅离线生成、**尚未 apply 到本库**（§23 生产部署属创始人域）。
+      // candidate-store 运行期遇 P2021 会降级为 tableMissing→HTTP 409，UI 明示「CODE COMPLETE / REAL-WORLD INPUT PENDING」。
+      // 待创始人 apply 迁移后，再把 "CandidateProject" 加进本清单并升版。
     ].sort();
     expect(names).toEqual(EXPECTED);
   });

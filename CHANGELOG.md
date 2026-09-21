@@ -3,7 +3,14 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
-## [0.91.0] - 2026-09-21 · S1 逐时储能统一模型骨架：**统一视图 + Path A vs B 对照器**（纯投影·零重算·零口径变更·§23 STOP 明写）
+## [0.91.1] - 2026-09-21 · 补丁 · 集成测漂移修正（db-smoke 表清单）· 真连 Neon 全绿
+
+- **原因（mandate §二十一「任何失败先判断：测试漂移 → 自己修」）**：本轮把全量 `tests/integration`（30 文件 / 171 例）对**真连 Neon Postgres**跑了一遍，**170 通过 / 1 失败**。唯一失败是 `db-smoke.test.ts` 的「业务表清单」硬断言：真实库有 **29 张基表**，而清单只登记 27 项，差 `BenchmarkEntry`（R4 `cbb4565` 落库）与 `CalibrationCandidate`（R6 `81e2eec` 校准候选）两张——**二者均早于本 R7/R8 基线 `6fe420b` 即已存在**（基线处 `grep` 该清单命中 0，即此测在 R7 之前就已红），属**历史测试漂移、非本六批次引入的回归**。核实 `HAS_CandidateProject=false`：R8 迁移仍**未 apply**，与本 session 审计「不越 §23 生产部署」结论一致、**无矛盾**。
+- **内容**：把 `BenchmarkEntry` / `CalibrationCandidate` 补进 `EXPECTED` 清单（各附来源迁移与「计算真源/黄金零改动」「无路径自动改 Benchmark」注记）；测标题「25」改「28 业务表」（连同 `_prisma_migrations` 实为 29 项）；末尾加显式注释——**`CandidateProject` 刻意不在清单**（R8 仅离线生成未 apply · §23 创始人域 · candidate-store 遇 P2021 降级 `tableMissing→HTTP 409`），待创始人 apply 后再登记并升版。**仅改测试文件、零改生产代码、零改 schema、零改冻结件、零新迁移**。
+- **测试与验证**：`db-smoke.test.ts` 真连 Neon **5/5 绿**（SELECT 1 / Region 全 CRUD / 14 枚举 / 28 业务表 / `_prisma_migrations` 0_init 已应用未回滚）；unit 复跑 1578 全绿不变；全量 integration 现 **171/171 绿**（本补丁后）。审计文档 `outputs/FINAL_UNIFIED_AUDIT.md` §四据此从「integration deferred」升级为「integration 真连全绿 + 1 漂移已修」。
+- **遗留（不变）**：§23 清单原样——收款网关 / `CandidateProject` migrate apply / V1 退役真实事件回填 / Path A→B 口径切换六问 / φ 退役 / 真实定价 / Benchmark DB 真源切换 / napi 密钥轮换。补丁可独立 revert，零连带。
+
+
 
 - **原因（mandate §十四–§十五 · §24 高速连续自治 · R3.5 遗留收口的**代码可完成部分**）**：R3.5 审计已核实——V1 沙盘（`project-model.ts` E4 扁平年口径 + `storage-value.ts` 年度代理 σ + `project.demandKc`）用 **Path A：`chargerPower × Kc × φ` 解析口径**估需量电费；V2 逐时引擎用 **Path B：15 分钟净下网峰值 `monthlyPeakImportKw`**。二者**并存且不可比**——同一份"储能削峰能省多少"若两口径都跑，会给客户两个数字。mandate §十五 明写 S1 目标 = 用逐时物理模型把削峰和套利放进同一份 SOC / 功率预算——**审计确认 V2 `bess.ts` 已在同一份 15 分钟 SOC 预算内同时跑 arbitrage + peak-shaving + pv-shift**（模块头逐字承诺），§十五 目标在 V2 侧结构性成立。真正的收口 = **把 V1 默认口径切到 V2 物理模型** = 冻结口径变更 = **§23 创始人域**（须升 `MODEL_VERSION` / 重录黄金基线 / 客户既有情景回算影响面评估）。本批只交付 code-able 部分：**统一视图**（让消费方在类型层没有余地再拆回两半）+ **Path A vs B 对照器**（把差值算成可审计的事实表，为创始人裁决留证据基础）。**不改任一侧、不做仲裁、不越界**。
 - **内容**：

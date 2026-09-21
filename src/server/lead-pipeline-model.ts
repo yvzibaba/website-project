@@ -183,3 +183,84 @@ function nextActionsFor(
   // 到底：已成交交付。
   return [];
 }
+
+/* ═════════════════════════ 批量视图：漏斗 → 扁平行 + CSV 序列化（mandate §五 · 零新表 · 纯函数） ═════════════════════════ */
+
+/**
+ * 一条留资在**批量漏斗视图**里的一行（mandate §五 列定义）。刻意只放事实字段
+ *   （leadId / 身份是否确证 / 公司 / 项目 / 当前段 / 时间 / 归属邮箱 / 下一步 / 缺口），
+ *   **不合成任何"推进评分"**——评分会诱使把复杂业务压成一个失真数字（宪法 + §七 同一取向）。
+ */
+export interface LeadPipelineRow {
+  leadId: string;
+  identityResolved: boolean;
+  company: string;
+  /** 该客户最近一个关联项目名；无项目 → 空串。 */
+  project: string;
+  /** 当前推进到的最浅-最深段中文名（furthest）。 */
+  currentStage: string;
+  createdAt: Date;
+  updatedAt: Date;
+  /** 归属 / 应跟进到的登录用户邮箱（游客 → 空串）。 */
+  ownerReviewer: string;
+  /** 下一步人工动作（first nextAction）；已到底 → 空串。 */
+  nextAction: string;
+  /** 缺口：仍未到达的段中文名（以 " / " 连接）；无缺口 → 空串。 */
+  blockers: string;
+}
+
+/** 从派生漏斗抽 CSV 需要的三个文本字段（单一真源：段标签来自 `PIPELINE_STAGE_ORDER`）。 */
+export function pipelineRowFields(pipeline: LeadPipeline): {
+  currentStage: string;
+  nextAction: string;
+  blockers: string;
+} {
+  const currentStage = pipeline.stages.find((s) => s.key === pipeline.furthest)?.label ?? "";
+  const nextAction = pipeline.nextActions[0] ?? "";
+  const blockers = pipeline.stages
+    .filter((s) => !s.reached)
+    .map((s) => s.label)
+    .join(" / ");
+  return { currentStage, nextAction, blockers };
+}
+
+/** CSV 列（表头顺序 = mandate §五 指定列顺序；单一真源，导出与表共用）。 */
+export const LEAD_CSV_COLUMNS = [
+  "leadId",
+  "identityResolved",
+  "company",
+  "project",
+  "currentStage",
+  "createdAt",
+  "updatedAt",
+  "ownerReviewer",
+  "nextAction",
+  "blockers",
+] as const;
+
+/** 取某行某列的值（Date→ISO、boolean→true/false、null→""）。纯函数、可单测。 */
+function cellValue(row: LeadPipelineRow, col: (typeof LEAD_CSV_COLUMNS)[number]): string {
+  const v = row[col];
+  if (v instanceof Date) return Number.isNaN(v.getTime()) ? "" : v.toISOString();
+  if (v == null) return "";
+  return String(v);
+}
+
+/**
+ * 单元格转义：① **公式注入防护**——以 `= + - @`（及制表 / 回车，OWASP 建议）开头的文本前缀 `'`，
+ * 使 Excel/Sheets 不把它当公式执行；② RFC4180 双引号包裹 + 内部 `"` 翻倍。恒加引号最稳（免列序 / 分隔符歧义）。
+ */
+export function csvCell(raw: string): string {
+  let s = raw;
+  if (s.length > 0 && /^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+
+/** 把批量行序列化成 CSV 文本（表头 + CRLF 行分隔，符合 RFC4180；调用方再前置 UTF-8 BOM 供 Excel）。 */
+export function toCsv(rows: LeadPipelineRow[]): string {
+  const lines: string[] = [];
+  lines.push(LEAD_CSV_COLUMNS.map((c) => csvCell(c)).join(","));
+  for (const r of rows) lines.push(LEAD_CSV_COLUMNS.map((c) => csvCell(cellValue(r, c))).join(","));
+  return lines.join("\r\n");
+}
+

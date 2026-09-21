@@ -3,6 +3,18 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.93.0] - 2026-09-21 · R7-D 续 · 留资漏斗批量视图 + CSV 导出（mandate §五 · 零新表 · 只读）
+
+- **原因（mandate §三十六·4 / §五）**：R7-D 已交付单条留资的七段漏斗页（`/admin/leads/[id]`），但运营仍**无法一屏纵览整批留资各走到哪一步**、更不能带走做线下跟进。§五 要求「`/admin/leads` 批量视图 + CSV 导出（含公式注入防护、严格权限、无新表）」。
+- **内容**：
+  - **决策真源单点复用（无第二套状态机）**：批量与单条**共用同一** `deriveLeadPipeline` 纯函数——两套读法只有**取数形状**不同（批量走分组 `findMany(in)`、单条走逐条查询），**漏斗语义完全同源**，不会互相矛盾。`LEAD_PIPELINE_VERSION 1.0.0→1.1.0`（additive 只读批量）。
+  - **集合式批量读（新 `getLeadPipelineRows` · 只读 · 零新表零迁移）**：identity（userId 优先→邮箱不敏感匹配，与单条同口径）/ project（owner→数量+最近名）/ computedScenario（`calcStatus==="ok"` 且 report 非空，同口径）/ solution（creator→状态多重集）/ order（userId 命中或 `buyerEmail`(小写) 命中，同口径）各一次分组查询，内存归堆后逐条喂 `deriveLeadPipeline`；上限钳 [1,200]，DB 异常 → `{ok:false,error}`。刻意**不循环调 `getLeadPipeline`**（N× 查询跨太平洋必超时）。
+  - **CSV 序列化纯函数（`lead-pipeline-model.ts` · 零依赖）**：`LeadPipelineRow`（§五 指定 10 列：leadId/identityResolved/company/project/currentStage/createdAt/updatedAt/ownerReviewer/nextAction/blockers·**无综合分**）+ `pipelineRowFields`（currentStage=furthest 标签、blockers=未达段标签、nextAction=first）+ `csvCell`（**公式注入防护**：`= + - @ \t \r` 开头加 `'`（OWASP）+ RFC4180 双引号转义，恒加引号）+ `toCsv`（表头按 `LEAD_CSV_COLUMNS` 序、CRLF）。
+  - **导出路由（新 `GET /api/admin/leads/export`）**：`requireRole(STAFF_ROLES)` 严格门禁（401/403·隐私），只读不 CSRF；响应 `text/csv; charset=utf-8` + `Content-Disposition attachment` + Asia/Shanghai 日期戳文件名 + **前置 UTF-8 BOM**（Excel 中文不乱码）+ `x-pipeline-version`/`x-row-count`；与页面同一 `getLeadPipelineRows`，`?status=` 白名单过滤。
+  - **批量表（`/admin/leads`）**：每条留资卡加「漏斗：当前段」徽章 + 项目/归属/下一步/缺口事实行；筛选栏右加「导出 CSV ↓」（带口径版本）。批量读失败**不阻断列表**，退化为无漏斗标注（诚实降级）。
+- **测试与验证**：`tests/unit/lead-pipeline-model.test.ts` +20 例（`pipelineRowFields` 仅留资/到底、`csvCell` 公式注入 =+-@ 与制表回车开头/中间减号不误伤、引号翻倍、`toCsv` 表头序/Date→ISO/boolean/空串/含逗号引号换行的安全包裹）。双 tsc 0、eslint 0、`kernel:verify` 0 违规、dangling 0、`next build` 通过且 `/api/admin/leads/export` 已注册、unit **1612 passed / 1 skipped**。冻结件 + 黄金零 churn、DB 结构零迁移（纯读侧）。
+- **遗留（不变）**：真实收款 / 报价 / 交付仍人工（创始人域）；导出走 STAFF 门禁、无匿名下载。
+
 ## [0.92.0] - 2026-09-21 · R8 续 · Research Workspace 分页 / 筛选 / 排序（mandate §六 · 单一查询系统）
 
 - **原因（mandate §三十六·3 / §六）**：R8 首版 `/admin/research` 只能整表 `listCandidates` 倒序取前 N，无分页、无按 verdict/industry/region 筛选、无按时间轴排序。§六 明确要求「在**既有** `listCandidates` 基础上增加筛选 / 分页 / 排序」，且 §七「不要把筛选结果变成虚假综合分」——故本批**不建第二套 Candidate 查询系统**，只在既有 store 上做加法。

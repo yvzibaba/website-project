@@ -8,8 +8,13 @@
 import { describe, it, expect } from "vitest";
 import {
   deriveLeadPipeline,
+  pipelineRowFields,
+  csvCell,
+  toCsv,
+  LEAD_CSV_COLUMNS,
   PIPELINE_STAGE_ORDER,
   type PipelineEvidence,
+  type LeadPipelineRow,
 } from "@/server/lead-pipeline-model";
 
 function ev(over: Partial<PipelineEvidence> = {}): PipelineEvidence {
@@ -180,3 +185,101 @@ describe("R7-D · 多重集统计如实反映在 detail", () => {
     expect(p.furthest).toBe("DELIVERY");
   });
 });
+
+/* ═══════════════ mandate §五 · 批量漏斗行 + CSV 序列化（纯函数） ═══════════════ */
+
+describe("pipelineRowFields · 漏斗 → CSV 文本字段", () => {
+  it("仅留资：currentStage=留资、下一步=立项建议、缺口含其余六段", () => {
+    const p = deriveLeadPipeline(ev());
+    const f = pipelineRowFields(p);
+    expect(f.currentStage).toBe("留资");
+    expect(f.nextAction).toContain("项目");
+    // 缺口 = 除 LEAD 外全部 6 段（"评估 / 决策" 标签本身含分隔符，故按子串断言而非 split 计数）。
+    expect(f.blockers).toContain("立项");
+    expect(f.blockers).toContain("评估 / 决策");
+    expect(f.blockers).toContain("成交交付");
+    expect(f.blockers).not.toContain("留资"); // 已到达段不进缺口
+  });
+
+  it("到底（全到达）：缺口空、下一步空、currentStage=成交交付", () => {
+    const p = deriveLeadPipeline(
+      ev({
+        projectCount: 1,
+        computedScenarioCount: 1,
+        solutionCount: 1,
+        solutionStatuses: ["PUBLISHED"],
+        orderStatuses: ["PAID"],
+      }),
+    );
+    const f = pipelineRowFields(p);
+    expect(f.currentStage).toBe("成交交付");
+    expect(f.blockers).toBe("");
+    expect(f.nextAction).toBe("");
+  });
+});
+
+describe("csvCell · 公式注入防护 + RFC4180 转义", () => {
+  it("普通文本恒加引号包裹", () => {
+    expect(csvCell("山西大同")).toBe('"山西大同"');
+  });
+
+  it("内部双引号翻倍", () => {
+    expect(csvCell('a"b')).toBe('"a""b"');
+  });
+
+  it("以 = + - @ 开头 → 前缀单引号防公式执行", () => {
+    expect(csvCell("=HYPERLINK(...)")).toBe('"\'=HYPERLINK(...)"');
+    expect(csvCell("+1")).toBe('"\'+1"');
+    expect(csvCell("-1")).toBe('"\'-1"');
+    expect(csvCell("@id")).toBe('"\'@id"');
+  });
+
+  it("制表符 / 回车开头同样被前缀保护（OWASP）", () => {
+    expect(csvCell("\ttab")).toBe('"\'\ttab"');
+    expect(csvCell("\rcr")).toBe('"\'' + "\rcr" + '"');
+  });
+
+  it("减号在中间不误伤（仅开头才转义）", () => {
+    expect(csvCell("A-B")).toBe('"A-B"');
+  });
+});
+
+describe("toCsv · 表头 + 行序列化", () => {
+  const row = (over: Partial<LeadPipelineRow> = {}): LeadPipelineRow => ({
+    leadId: "lead000001",
+    identityResolved: true,
+    company: "某公司",
+    project: "换电网络",
+    currentStage: "方案成卡",
+    createdAt: new Date("2026-01-02T03:04:05.000Z"),
+    updatedAt: new Date("2026-02-03T00:00:00.000Z"),
+    ownerReviewer: "owner@x.com",
+    nextAction: "提交审核",
+    blockers: "人工审核 / 上架可售 / 成交交付",
+    ...over,
+  });
+
+  it("首行 = 指定列顺序表头；行数 = 1 表头 + n 数据；CRLF 分隔", () => {
+    const csv = toCsv([row(), row({ leadId: "lead000002" })]);
+    const lines = csv.split("\r\n");
+    expect(lines).toHaveLength(3);
+    const header = lines[0].split(",").map((s) => s.replace(/^"|"$/g, ""));
+    expect(header).toEqual([...LEAD_CSV_COLUMNS]);
+  });
+
+  it("Date → ISO、boolean → true/false、空字段 → 引号包裹空串", () => {
+    const csv = toCsv([row({ identityResolved: false, project: "", ownerReviewer: "" })]);
+    const lines = csv.split("\r\n");
+    expect(lines[1]).toContain('"2026-01-02T03:04:05.000Z"');
+    expect(lines[1]).toContain("false"); // identityResolved
+    expect(lines[1]).toContain('""'); // 空 project / ownerReviewer
+  });
+
+  it("含逗号 / 引号 / 换行的字段被安全包裹（不破坏列结构）", () => {
+    const csv = toCsv([row({ company: '甲,乙"丙\n丁' })]);
+    // 数据行整体因内含换行会跨物理行，但逻辑上仍是 2 个字段组（表头 + 1 数据）——
+    // 断言该危险串被引号包裹且内部引号翻倍、前缀未被误加公式保护（非 =+-@ 开头）。
+    expect(csv).toContain('"甲,乙""丙\n丁"');
+  });
+});
+

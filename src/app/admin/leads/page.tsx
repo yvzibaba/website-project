@@ -4,6 +4,8 @@ import { Container, Card, CardContent, Badge, Alert } from "@/components/ui";
 import { PageHeader } from "@/components/page";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 import { listLeads, LEAD_SOURCES, type LeadAdminItem, type LeadStatus } from "@/server/leads";
+import { getLeadPipelineRows, LEAD_PIPELINE_VERSION } from "@/server/lead-pipeline";
+import type { LeadPipelineRow } from "@/server/lead-pipeline-model";
 import { LeadStatusControl } from "@/components/admin/LeadStatusControl";
 
 /**
@@ -54,7 +56,7 @@ function fmtDateTime(d: Date): string {
   }
 }
 
-function LeadRow({ l }: { l: LeadAdminItem }) {
+function LeadRow({ l, pipe }: { l: LeadAdminItem; pipe?: LeadPipelineRow }) {
   return (
     <Card>
       <CardContent className="flex flex-col gap-2">
@@ -63,6 +65,12 @@ function LeadRow({ l }: { l: LeadAdminItem }) {
           <Badge variant={l.status === "NEW" ? "warning" : l.status === "CONTACTED" ? "outline" : "success"} compact>
             {STATUS_LABEL[l.status as LeadStatus] ?? l.status}
           </Badge>
+          {pipe ? (
+            <Badge variant="primary" compact>漏斗：{pipe.currentStage || "留资"}</Badge>
+          ) : null}
+          {pipe && !pipe.identityResolved ? (
+            <Badge variant="warning" compact>身份未确证</Badge>
+          ) : null}
           <span className="text-sm font-semibold text-foreground">{l.company}</span>
           <span className="text-xs text-muted-foreground">
             · {l.contactName}
@@ -70,6 +78,29 @@ function LeadRow({ l }: { l: LeadAdminItem }) {
           </span>
           <span className="ml-auto text-[11px] text-muted-foreground">{fmtDateTime(l.createdAt)}</span>
         </div>
+
+        {/* 批量漏斗事实（mandate §五）：当前段 / 下一步人工动作 / 缺口——只显事实，无综合分。 */}
+        {pipe ? (
+          <div className="flex flex-col gap-0.5 rounded-md border border-slate-200 bg-slate-50/60 px-2 py-1.5 text-[12px]">
+            <span className="text-muted-foreground">
+              项目：
+              <span className="text-foreground">{pipe.project || "—"}</span>
+              {pipe.ownerReviewer ? (
+                <>
+                  {" · "}归属：<span className="font-mono text-foreground">{pipe.ownerReviewer}</span>
+                </>
+              ) : (
+                " · 归属：—（游客未注册）"
+              )}
+            </span>
+            {pipe.nextAction ? (
+              <span className="text-foreground/90">下一步：{pipe.nextAction}</span>
+            ) : (
+              <span className="text-emerald-700">已到「成交交付」· 闭环完成</span>
+            )}
+            {pipe.blockers ? <span className="text-muted-foreground">缺口：{pipe.blockers}</span> : null}
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-muted-foreground">
           <span>邮箱：<span className="font-mono text-foreground">{l.email}</span></span>
@@ -127,6 +158,13 @@ export default async function AdminLeadsPage({
   const items = res.ok ? res.items : [];
   const newCount = res.ok ? items.filter((l) => l.status === "NEW").length : 0;
 
+  // 批量漏斗视图（mandate §五）：同一批留资投影成扁平行，与 CSV 导出同源（getLeadPipelineRows）。
+  // 失败不阻断列表——退化成"只有留资、无漏斗标注"，诚实降级不崩。
+  const pipeRes = await getLeadPipelineRows({ status, limit: 100 });
+  const pipeById = new Map<string, LeadPipelineRow>();
+  if (pipeRes.ok) for (const r of pipeRes.rows) pipeById.set(r.leadId, r);
+  const exportHref = `/api/admin/leads/export${status ? `?status=${status}` : ""}`;
+
   const filters: Array<{ label: string; href: string; active: boolean }> = [
     { label: `全部${res.ok ? `（${items.length}）` : ""}`, href: "/admin/leads", active: !status },
     {
@@ -160,6 +198,13 @@ export default async function AdminLeadsPage({
             {t.label}
           </Link>
         ))}
+        <Link
+          href={exportHref}
+          className="ml-auto rounded-full border border-emerald-500 bg-emerald-50 px-3 py-1 text-xs text-emerald-700 hover:bg-emerald-100"
+          title={`导出当前筛选的留资漏斗为 CSV（含公式注入防护）· 漏斗口径 pipeline@${LEAD_PIPELINE_VERSION}`}
+        >
+          导出 CSV ↓
+        </Link>
       </div>
 
       <Alert variant="info" title="落位来源">
@@ -182,7 +227,7 @@ export default async function AdminLeadsPage({
       ) : (
         <div className="flex flex-col gap-3">
           {items.map((l) => (
-            <LeadRow key={l.id} l={l} />
+            <LeadRow key={l.id} l={l} pipe={pipeById.get(l.id)} />
           ))}
         </div>
       )}

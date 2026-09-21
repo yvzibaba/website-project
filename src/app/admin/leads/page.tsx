@@ -96,7 +96,13 @@ function LeadRow({ l }: { l: LeadAdminItem }) {
           {l.page ? <span>来源页面：<span className="font-mono">{l.page}</span></span> : null}
         </div>
 
-        <div className="flex justify-end pt-1">
+        <div className="flex items-center justify-end gap-3 pt-1">
+          <Link
+            href={`/admin/leads/${l.id}`}
+            className="text-[12px] font-medium text-primary hover:underline"
+          >
+            查看工作流 →
+          </Link>
           <LeadStatusControl leadId={l.id} current={l.status} />
         </div>
       </CardContent>

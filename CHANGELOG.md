@@ -3,6 +3,23 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.88.0] - 2026-09-21 · R7-D 企业项目工作流最小实现：**按留资聚合的七段推进漏斗**（纯派生·零新表零迁移·只读不推进）
+
+- **原因（承接创始人 §24 高速连续自治 · R7-D mandate §五）**：R7-A/B/C 已把「算通 → 商品 → 复核 → 交付」的**每一环**各自建好并测绿，但**缺一处把单个企业客户从留资到成交串起来看的地方**——运营要在 `/admin/leads`、`/workbench/projects`、`/admin/solutions`、`/admin/orders` 四个后台页之间人肉对齐邮箱才能拼出"这单做到哪了"。审计确认：`Lead/Project/ProjectScenario/Solution/Order` **五表早已存在且各有归属指针**（`Project.ownerId→User`、`Solution.creatorId→User`、`Order.userId→User / buyerEmail`、`sandboxSource` JSONB 已连 Scenario↔Solution），把一条留资投影成推进视图是**读侧组合查询**，无需新表 / 新列 / 新状态机（宪法：能派生就不新增、更少依赖）。刻意**不做 CRM、不自动推进、不改状态**（真实报价 / 收款 / 交付仍人工，创始人域）。
+- **内容**：
+  - **D1 · 纯函数漏斗模型**（`src/server/lead-pipeline-model.ts` 新 · 零依赖 node 可测）：`deriveLeadPipeline(evidence)` 把「计数 + 状态多重集」折成有序 7 段 `Lead→立项→评估决策→方案成卡→人工审核→上架可售→成交交付` 的逐段 `reached` + `furthest` + `nextActions`。**每段只认确证记录**：ASSESSMENT 须 `computedScenarioCount>0`（有 `calcStatus==="ok"` 且存 `report` 的情景）、REVIEW 须方案在 `UNDER_HUMAN_REVIEW`/`PUBLISHED`、DELIVERY 须有 `PAID` 订单；`safeCount` 把负数/`NaN`/`Infinity` 一律折成 0、非数组状态折成空，脏输入绝不误判到达。`nextActionsFor` 只对**第一个未到达段**给人工建议（如待支付→"确认收款（后台标 PAID）"），已到底返回空数组。
+  - **D2 · 服务端聚合层**（`src/server/lead-pipeline.ts` 新 · `LEAD_PIPELINE_VERSION 1.0.0` · server-only **只读**）：`getLeadPipeline(leadId)` ①解析客户身份（优先 `lead.userId`→`user.findUnique`，否则按 `lead.email` 用 `mode:"insensitive"` 匹配已注册 User）；②按 `ownerId` 取项目 + `projectScenario.groupBy` 计数 + 过滤 `calcStatus==="ok" && report 非空` 得"算通出报告"数；③按 `creatorId` 取方案与状态；④按 `userId OR buyerEmail(小写)` 取订单与状态；喂 D1 派生，返回精简行（Project/Solution/Order 各带跳转链接所需字段）。身份未确证 → 项目/方案如实空、只按邮箱匹到订单，**绝不臆造关联**。鉴权不在本层（须已过 `requireRole(STAFF)` 的调用方）。id 非 `cuid` 形状 → notFound；DB 异常 → 降级 error。
+  - **D3 · 后台详情页 + 列表入口**：新 `src/app/admin/leads/[id]/page.tsx`（force-dynamic + noindex + 页内再自鉴权 `requireRole(STAFF)` 越权 `return null`，防 RSC flight 泄露隐私）——留资卡（复用 `LeadStatusControl` 回写状态）+ 身份未确证黄条如实提示 + 七段漏斗 `Stepper`（✓/序号 + 每段 detail）+「下一步（人工动作）」+ 关联项目/方案/订单三卡（`Link` 跳 `/workbench/projects/[id]`、`/admin/solutions/[id]`、`/admin/orders/[id]`）；`/admin/leads` 列表每条加「查看工作流 →」入口。判别联合用 `in` 运算符逐层收窄（避 `notFound`/`error` 跨变体误访）。
+- **测试与验证**：
+  - unit **1524 pass / 1 skip**（+13 `tests/unit/lead-pipeline-model.test.ts`：段序/标签、七段每档确证边界、脏数据兜底、多重集 detail 计数）；
+  - integration（真连 Neon）新 `tests/integration/lead-pipeline.test.ts` **3 pass**：① 已注册客户全链（留资→项目→算通出报告→已发布方案→已支付订单）派生至 `furthest==="DELIVERY"`、`nextActions===[]`；② 游客留资（邮箱未注册）`identityResolved===false`、项目/方案如实 0、订单按 `buyerEmail` 命中、漏斗诚实停在 `LEAD`；③ 垃圾/不存在 id → `{ok:false,notFound:true}` 不泄露格式差异；
+  - `kernel:verify` **0 违规**（本批不进口 kernel）、`kernel:dangling` **0 悬空**、`kernel:typecheck` + 宿主 `tsc --noEmit` **0 错误**、`eslint` **0 错 0 警**、`next build` **通过**（`/admin/leads/[id]` 动态路由已注册）；
+  - **冻结件与黄金基线零 churn**（纯读侧投影，不碰计算 / 引擎 / 参数 / 基准 / 报告构建任何版本常量）。
+- **未完成 / 遗留（交创始人 · §23 绝对 STOP）**：
+  - **写侧编排未做**（如"从留资一键建项目""自动按推进度回写 Lead 状态"）——本批刻意只读，任何推进动作仍走既有各自端点，留待真实运营反馈决定要不要建。
+  - 真实客户身份/收款/定价不变，同 R7-C 遗留。
+- **效果**：运营在一条留资上即可看清"这家企业走到七段哪一段、差什么、下一步谁做"，商业闭环从**离散四页**收成**单页可视**；零迁移、可 revert 本提交回滚、不改动任何既有流程与计算。
+
 ## [0.87.0] - 2026-09-21 · R7-C 商业交付闭环收口：**`UNDER_HUMAN_REVIEW` 升级为 V2 强制发布门**（禁 DRAFT→PUBLISHED 直跳·不破 V1·零 schema 迁移）
 
 - **原因（承接创始人 §24 高速连续自治 · R7-C mandate §四）**：R7-A/R7-B 让一份算通的 V2 决策报告能导出成 DRAFT 商品并离线下载，但 mandate §四 要求把 `UNDER_HUMAN_REVIEW` 从「可选停留态」升级成**真发布闸门**——凡正式 V2 Solution 必须 `DRAFT → UNDER_HUMAN_REVIEW → PUBLISHED`，杜绝决策报告未经持证 staff 复核即直上货架（宪法第 21 条"高风险须人工确认"的**流程化落地**）。硬约束：**不破坏既有 V1 手工沙盘流程**，优先扩展已有 `publishGuard` 而非另造一套。

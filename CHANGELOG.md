@@ -3,6 +3,16 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.94.0] - 2026-09-21 · R9 续 · V1 退役条件持续守卫复audit（mandate §九 / §十三 · 全 RETAIN · 登记不删升级为可执行断言）
+
+- **原因（mandate §三十六·7 / §九 / §十三）**：R9 登记表首版（[0.90.0]）落地后，R7-A/B/C/D + R8 六个里程碑连续 additive 推进。§十三 白纸黑字「持续运行 `v1-retirement-registry` · 验证 `realProject=false` 则 `all legacy surfaces=RETAIN` 保持 · 不要因为 V2 已经很完整就删除 V1」。本批 = **持续守卫复audit**：逐面复核旧面未被误删、前置链仍全 false，并把"登记不删"从注释**升级成 CI 可执行断言**。
+- **内容**：
+  - **逐面在盘复核**：12 个已登记 V1 面（3 页 / 5 API / 3 内核 store·lib / 1 JSONB 指针）对应文件**全部仍在盘**——R7/R8 纯 additive 未删任何旧面。
+  - **registry `1.0.0→1.1.0`（additive·未动任何 status / 未翻任何 PRECONDITION_MET）**：`V1Surface` 新增可选 `diskPath` 字段，把可能含 glob / 描述后缀的 `path` 落到**一个具体存在的文件**（11 个文件锚定面填、纯 JSONB 指针 `solution-v1-sandbox-source-pointer` 留空）。§十二 前置链 11 环仍**全 false**（无真实客户签约），12 面仍**全 RETAIN**。
+  - **无新增退役候选、无任何面退役（诚实记录）**：`lead-pipeline`（R7-D）是既有五表的纯派生投影、`research-workspace`/`candidate-store`（R8）面向尚未 apply 的新表、`decision-report-docx`（R7-B）只是既有报告的导出格式——三者**不替代任何 V1 入口**，故本轮既不推进也不新增退役登记面。
+- **测试与验证**：`tests/unit/v1-retirement-registry.test.ts` 8→**9 例**（版本钉 1.1.0 + 新增「★★★ 登记不删」测：每个声明 `diskPath` 的面 `fs.existsSync(resolve(cwd, diskPath))` 必须为真，且缺 `diskPath` 者恰为唯一 JSONB 指针面）。复跑全绿；双 tsc 0。**冻结件 + 黄金零 churn、DB 结构零迁移**（纯登记侧）。审计文档 `outputs/R9_V1_RETIREMENT_AUDIT.md` 据本批复audit 更新（新增 §六/§七）。
+- **遗留（不变·§23 创始人域）**：触发 §十二 全链闭合需真实客户项目跑通 11 环；R7-C 发布门需真实 staff 审核事件；R8 生产迁移 apply；S1 逐时统一模型（本表第 10 号 V1 日粒度模型在 S1 前绝不可推进）。真实报价 / 合同 / 收款 / 交付一律不臆造。
+
 ## [0.93.0] - 2026-09-21 · R7-D 续 · 留资漏斗批量视图 + CSV 导出（mandate §五 · 零新表 · 只读）
 
 - **原因（mandate §三十六·4 / §五）**：R7-D 已交付单条留资的七段漏斗页（`/admin/leads/[id]`），但运营仍**无法一屏纵览整批留资各走到哪一步**、更不能带走做线下跟进。§五 要求「`/admin/leads` 批量视图 + CSV 导出（含公式注入防护、严格权限、无新表）」。

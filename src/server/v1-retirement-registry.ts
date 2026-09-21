@@ -27,7 +27,7 @@
  *     本文件只回答"这一面今天到底能不能退役"。
  */
 
-export const V1_RETIREMENT_REGISTRY_VERSION = "1.0.0"; // 1.0.0（R9 首版）：登记 12 面、全 RETAIN；链上真实业务事件未发生。
+export const V1_RETIREMENT_REGISTRY_VERSION = "1.1.0"; // 1.1.0（R9 持续守卫 · mandate §十三）：additive 新增可选 `diskPath`（把"登记不删"从注释升级为可执行断言——单测 fs 校验已登记 V1 面文件仍在盘）；**未改任何 status / 未翻任何 PRECONDITION_MET / 12 面仍全 RETAIN**。1.0.0（R9 首版）：登记 12 面、全 RETAIN；链上真实业务事件未发生。
 
 /**
  * 退役进度五档（严格对齐 mandate §十三 执行方式，顺序不可跳）：
@@ -86,7 +86,13 @@ export const PRECONDITION_MET: Record<RetirementPrecondition, boolean> = {
 /** 单面登记项。 */
 export interface V1Surface {
   id: string;                   // slug
-  path: string;                 // 主文件 / 主路由（相对仓库根）
+  path: string;                 // 主文件 / 主路由（相对仓库根·可能带 glob 或描述后缀）
+  /**
+   * 可选：把可能含 glob / 描述后缀的 `path` 落到**一个具体存在的文件**上，供 R9 持续守卫
+   * （mandate §十三"登记不删"）做 fs 存在性断言——若将来有人误删已登记 V1 面，此路径消失即破测。
+   * 仅对**文件锚定**的面填；纯 JSONB 字段指针（无单一文件）留空、由测跳过。
+   */
+  diskPath?: string;
   kind: "PAGE" | "API" | "STORE" | "LIB" | "COMPONENT" | "JSONB_POINTER";
   v2Replacement: string | null; // 对应 V2 落点（若已有），null = 无对应
   status: RetirementStatus;
@@ -102,6 +108,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-root",
     path: "src/app/workbench/page.tsx",
+    diskPath: "src/app/workbench/page.tsx",
     kind: "PAGE",
     v2Replacement: "src/app/workbench/projects/page.tsx（V2 决策项目列表已并存）",
     status: "RETAIN",
@@ -116,6 +123,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-project-detail",
     path: "src/app/workbench/projects/[id]/page.tsx",
+    diskPath: "src/app/workbench/projects/[id]/page.tsx",
     kind: "PAGE",
     v2Replacement: "同路由（页面同时挂 V1 沙盘块 + V2 决策块·R4 起共存·非替代）",
     status: "RETAIN",
@@ -129,6 +137,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-api-projects",
     path: "src/app/api/workbench/projects/**",
+    diskPath: "src/app/api/workbench/projects/route.ts",
     kind: "API",
     v2Replacement: "src/app/api/workbench/decision/projects/**",
     status: "RETAIN",
@@ -142,6 +151,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-api-scenarios",
     path: "src/app/api/workbench/scenarios/**",
+    diskPath: "src/app/api/workbench/scenarios/[id]/route.ts",
     kind: "API",
     v2Replacement: "src/app/api/workbench/decision/scenarios/**",
     status: "RETAIN",
@@ -155,6 +165,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-api-solution-draft",
     path: "src/app/api/workbench/solution/route.ts",
+    diskPath: "src/app/api/workbench/solution/route.ts",
     kind: "API",
     v2Replacement: "src/app/api/workbench/decision/scenarios/[id]/export/route.ts（R7-A）",
     status: "RETAIN",
@@ -168,6 +179,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-api-solution-provenance",
     path: "src/app/api/workbench/solution/provenance/route.ts",
+    diskPath: "src/app/api/workbench/solution/provenance/route.ts",
     kind: "API",
     v2Replacement:
       "无（该路由服务的是**SolutionFinancial.assumptions.sandboxSource** 溯源升级，V1 与 V2 都会写这套 extra；不属可退役面）",
@@ -179,6 +191,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "workbench-api-source-solutions",
     path: "src/app/api/workbench/source/solutions/route.ts",
+    diskPath: "src/app/api/workbench/source/solutions/route.ts",
     kind: "API",
     v2Replacement: "无（是 V1→V2 单向的 Solution 反查，用于 R8.4 溯源体检报告）",
     status: "RETAIN",
@@ -188,6 +201,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "kernel-project-store",
     path: "kernel/src/server/project-store.ts",
+    diskPath: "kernel/src/server/project-store.ts",
     kind: "STORE",
     v2Replacement: "kernel/src/server/decision-store.ts（V2 决策快照）",
     status: "RETAIN",
@@ -202,6 +216,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "kernel-solution-draft-lib",
     path: "kernel/src/lib/solution-draft.ts",
+    diskPath: "kernel/src/lib/solution-draft.ts",
     kind: "LIB",
     v2Replacement:
       "kernel/src/lib/decision-to-solution.ts（R7-A · V2 决策报告 → DRAFT Solution 的纯投影）",
@@ -216,6 +231,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "kernel-project-model",
     path: "kernel/src/server/project-model.ts",
+    diskPath: "kernel/src/server/project-model.ts",
     kind: "STORE",
     v2Replacement:
       "kernel/src/engine/scenario.ts + kernel/src/server/decision-service.ts（V2 逐时引擎 + 决策服务）",
@@ -244,6 +260,7 @@ export const V1_SURFACES: readonly V1Surface[] = [
   {
     id: "publish-v1-direct-draft-to-published",
     path: "kernel/src/server/solution-admin.ts · `publishGuard` 允许 V1 手工方案 DRAFT→PUBLISHED 直跳",
+    diskPath: "kernel/src/server/solution-admin.ts",
     kind: "LIB",
     v2Replacement:
       "R7-C 发布门 `humanReviewGateForV2`（V2 决策导出方案禁 DRAFT→PUBLISHED 直跳）",

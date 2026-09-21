@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   V1_RETIREMENT_REGISTRY_VERSION,
   V1_SURFACES,
@@ -30,7 +32,7 @@ import {
 
 describe("R9 · V1 退役登记表（今日硬约束）", () => {
   it("版本常量钉死（改任何 blocking / status 推进须升版并记原因，规则 13）", () => {
-    expect(V1_RETIREMENT_REGISTRY_VERSION).toBe("1.0.0");
+    expect(V1_RETIREMENT_REGISTRY_VERSION).toBe("1.1.0");
   });
 
   it("mandate §十二 前置链 11 环 · 顺序逐字与总控原文对齐", () => {
@@ -94,6 +96,21 @@ describe("R9 · V1 退役登记表（今日硬约束）", () => {
     expect(anyDeletionAuthorized()).toBe(false);
     expect(surfacesAt("READY_TO_DELETE")).toHaveLength(0);
     expect(surfacesAt("DELETED")).toHaveLength(0);
+  });
+
+  it("★★★ R9 持续守卫「登记不删」（mandate §十三 · realProject=false 时已登记 V1 面文件不得消失）", () => {
+    // 只有纯 JSONB 字段指针（无单一文件锚点）允许缺 diskPath；其余文件锚定面都必须能落到一个真实存在的文件。
+    const withDisk = V1_SURFACES.filter((s) => typeof s.diskPath === "string" && s.diskPath.length > 0);
+    const withoutDisk = V1_SURFACES.filter((s) => !s.diskPath);
+    expect(withoutDisk.map((s) => s.id)).toEqual(["solution-v1-sandbox-source-pointer"]);
+    expect(withDisk.length).toBeGreaterThanOrEqual(11);
+
+    // 每一个声明了 diskPath 的面，其文件此刻**必须仍在盘**——R7/R8 全是 additive，
+    // 若将来有人提前删了某 V1 面（在未跑通真实项目前），这里立刻红，逼其回到 §23 创始人裁决。
+    for (const s of withDisk) {
+      const abs = resolve(process.cwd(), s.diskPath as string);
+      expect(existsSync(abs), `已登记 V1 面文件消失（禁止提前删除）：${s.id} → ${s.diskPath}`).toBe(true);
+    }
   });
 
   it("R7-A/B/C/D/E + R8 各里程碑的关键 V1 面都已被登记（防漏登）", () => {

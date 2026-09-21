@@ -379,6 +379,72 @@ describe("[0.84.0 · MODEL 1.5.0] · E4 储能削峰降需量（φ=tech.storageP
   });
 });
 
+describe("R3.5 一致性审计 · 套利/削峰分账 · 毛需量=0 边界 · 版本溯源（不改口径，仅钉守卫）", () => {
+  /**
+   * 本块不引入任何新计算，只把「R3 储能削峰」审计的三条结论固化成回归守卫：
+   *   ① 套利腿（SVE，记在收入侧 revenueY1.storageValue）与削峰腿（φ，记在成本侧 demandChargeY1）
+   *      分属两条不同的账 → φ 变动绝不改动收入侧，故**同一笔钱不被计两遍**（无 RMB 重复计价）。
+   *   ② 但也正因分属两账，二者**不共享同一块电池的 SOC/能量预算** → 削峰量与套利吞吐彼此独立、
+   *      互不扣减。这是沙盘口径的**已知偏乐观**（provisional），须待 S1 逐时调度（Path B）收口，
+   *      本审计如实以「storageValue 对 φ 恒定不变」这一断言把该结构性事实钉死、不粉饰。
+   *   ③ 毛计费需量=0（Kc=0 或装机=0）时，削减 min(0, ·)=0、净需量 max(0,0−0)=0 → 需量费恒 0 且**绝不为负**。
+   */
+
+  it("T1 套利腿(收入侧)与削峰腿(成本侧)分账：φ 0→100 只动 demandChargeY1，revenueY1.storageValue/gross 逐字不变", () => {
+    const base = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 0 });
+    const full = computeEconomics({ ...NUMERIC, "region.demandCharge": 40, "tech.storagePeakShavePct": 100 });
+    expect(base.ok && full.ok).toBe(true);
+    if (!base.ok || !full.ok) return;
+    // 成本侧：削峰确降需量费（967,680 → 871,680）
+    expect(full.demandChargeY1).toBeLessThan(base.demandChargeY1);
+    // 收入侧：套利腿 Δ_sto 与 φ 无关，逐字相等 → 削减的那块钱没有被重复计成收入（无 RMB 双计）
+    expect(full.revenueY1.storageValue).toBe(base.revenueY1.storageValue);
+    expect(full.revenueY1.gross).toBe(base.revenueY1.gross);
+    // 二者都不为 0（确保这是「有储能套利 + 有需量削峰」的真实并存态，而非双双归零的假绿）
+    expect(base.revenueY1.storageValue).toBeGreaterThan(0);
+    // 结构性事实固化：正因两账不共享能量预算，削峰永不侵蚀套利吞吐 → 该沙盘口径偏乐观（待 S1 收口）
+    expect(full.revenueY1.storageValue).toBe(27491); // = NUMERIC 基线 Δ_sto（SVE·与 demandCharge/φ 皆无关）
+  });
+
+  it("T2 毛计费需量=0 边界：Kc=0 或装机=0 → 需量费恒 0 且绝不为负（即便 φ=100、storagePower>demand）", () => {
+    for (const override of [
+      { "project.demandKc": 0 }, // 需用系数 0 → 毛需量 = 2880×0 = 0
+      { "derived.chargerTotalPower": 0 }, // 装机 0 → 毛需量 = 0
+    ]) {
+      const r = computeEconomics({
+        ...NUMERIC,
+        "region.demandCharge": 40,
+        "project.storagePower": 3000,
+        "project.storageEnergy": 6000,
+        "tech.storagePeakShavePct": 100,
+        ...override,
+      });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      expect(r.demandChargeY1).toBe(0); // min(0, 削减)=0、净需量≥0 → 不为负
+      expect(r.demandChargeY1).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("T3 版本溯源：calcRef 动态、engineVersions 恰 5 键、model 语义化且 ≥ 1.5.0 floor（不钉精确值）、Path-B 主干版本未被 R3 误升", () => {
+    const r = computeEconomics({ ...NUMERIC, "region.demandCharge": 40 });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    // calcRef 由 modelCalcRef() 动态派生，非硬编码字面量
+    expect(r.calcRef).toBe(modelCalcRef());
+    // engineVersions 恰为这 5 个键，不多不少（防有人偷偷塞进 ENGINE_VERSION 或漏 storage 溯源）
+    expect(Object.keys(r.engineVersions).sort()).toEqual(["finance", "model", "params", "storage", "tech"]);
+    // model 版本语义化 + floor 单调不回退（改常量升版即绿，倒退才红——遵 MEMORY「勿钉精确值」纪律）
+    expect(r.engineVersions.model).toMatch(/^\d+\.\d+\.\d+$/);
+    const [maj, min, pat] = r.engineVersions.model.split(".").map(Number);
+    expect(maj * 1_000_000 + min * 1_000 + pat).toBeGreaterThanOrEqual(1_005_000); // ≥ 1.5.0
+    // R3 只动沙盘 E4/参数，绝不触碰 Path-B 引擎主干版本：finance 原语版本仍是 1.0.0（复用而非重造财务数学）
+    expect(r.engineVersions.finance).toBe("1.0.0");
+    // storage 溯源键存在且语义化（SVE 版本，仅元数据；削峰不冒充储能内核升版）
+    expect(r.engineVersions.storage).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+});
+
 describe("V1.1 批次1.4 · includeStorage 真接线（F-2h：假开关转正·MODEL 1.4.0）", () => {
   /**
    * 编排层把布尔以 0/1 门控值注入经济快照副本（resolve 层「布尔不进 numeric」契约不变）；

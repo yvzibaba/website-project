@@ -3,6 +3,14 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.84.0-audit · 未发版] - 2026-09-21 · R3.5 储能削峰降需量模型**一致性审计**（只读复审 + 纯测试守卫 + 审计文档·**不改生产代码 / 不 bump 任何版本 / 黄金零 churn**）
+
+- **原因**：创始人指令——在 `4979ef4`（[0.84.0]）之上**只复审** R3 储能削峰降需量模型及其版本/结果一致性；重点查双路径口径、储能价值重复计价、φ 经济含义与边界、版本纪律、黄金二次反证、B/C 需量测试隔离、50% 默认是否越诚实边界、R1 根因分类；明确不进入 R7/S1、不提高大站搜索上限、不改默认储能参数、不切 Benchmark 到 DB、不大改 engine、不改黄金测来"解释变化"。
+- **审计结论（详见 `outputs/R3.5_MODEL_CONSISTENCY_AUDIT.md` 11 节）**：Path A（年度沙盘·装机×Kc 代理）与 Path B（逐时引擎·实际净下网峰值）**定义/粒度/预算耦合三者皆不同→方向一致但不可数值对齐**，不伪造等价；削峰腿（成本侧 `demandChargeY1`）与套利腿（收入侧 `revenueY1.storageValue`）**分属两账→无同一笔钱的 RMB 双计**，但两账不共享同一块电池的 SOC/能量预算→**已知偏乐观·provisional**；生产权威真源＝Path B，φ 仅活在 Path A 沙盘、不进正式决策数、不被 `criticalAssumptions` 引用；退场条件＝S1 分时曲线 + 双腿共享能量预算，届时重走版本裁决。
+- **内容（本批仅测试 + 文档）**：`tests/unit/project-model.test.ts` 新增专块 `R3.5 一致性审计`（3 例，补齐 founders 清单此前缺的三项）——**T1** φ 0→100 只动 `demandChargeY1`、`revenueY1.storageValue/gross` 逐字不变（固化"无 RMB 双计 + 两账不共享能量预算→偏乐观"）；**T2** 毛计费需量=0（Kc=0 或装机 0）→需量费恒 0 且绝不为负；**T3** 版本溯源（`calcRef` 动态派生自 `modelCalcRef()`、`engineVersions` 恰 5 键、model 语义化且 ≥1.5.0 floor 单调不回退、Path-B `finance` 仍 1.0.0 未被误升）。生成 `outputs/R3.5_MODEL_CONSISTENCY_AUDIT.md`。**未改任何 kernel 生产文件、未动冻结常量、未 bump package/MODEL/PARAMS。**
+- **效果（验证）**：`test:unit` **1477 passed / 1 skipped**（较基线 1474 +3）；`kernel:verify`/`kernel:dangling` 违规 0；host `tsc`、`kernel:typecheck`、`eslint` **0**；`next build` **通过**；`npm run regen:sml` 二次反证 A 免征下结果块逐字节零 churn（仅 meta 日期滚动→已 `git checkout` 还原不重录）。
+- **遗留发现（超范围·非本批引入·干净 `4979ef4` 复现一致）**：真连库集成例 `decision-store.test.ts › R5 › 成功重算…version++` **确定性红**（`expected 1 to be 2`）。根因＝`recalculateDecisionScenario` 成功写入路径（`decision-store.ts:602–614` 的 `update`·`data` 取自 `decisionSnapshotToColumns`）**从未设 `version:{increment:1}`**，而 `ProjectScenario.version` 为 `Int @default(1)` 且库无自增触发器→重算只更新指纹/冻结旧版不抬版本号；此前被跨太平洋 5s 事务超时掩盖为环境 flake，本次连接够快才暴露断言。属 V2 版本治理/store 主干**独立既有缺陷**、核心服务口径变更（创始人域），本批按范围纪律**只登记不擅改**。
+
 ## [0.84.0] - 2026-09-21 · #3 补建模「储能削峰降需量」价值流（**路径 A 财务内核口径变化**·additive·主情景 A 免征默认**逐字节零 churn**；`MODEL_VERSION 1.4.0→1.5.0` + `PARAMS_VERSION 1.5.0→1.6.0`·均记原因）
 
 - **原因（承接 [0.83.2] 归因·创始人放行「按你的想法继续」）**：[0.83.2] 反事实证明——储能单条腿负贡献之所以**对需量电价不敏感**，正因为路径 A 只给储能记「峰谷套利」一条腿、需量费按**全额**计（旧 `notes` 明示"当前未建模储能削峰带来的需量下降，属保守全额计"）。B/C 需量计费场景下，储能本可削减月度计费需量、省下 `削峰 kW × demandCharge × 12`，这条真实价值流长期缺位＝系统性低估储能。本批把它补进 E4。

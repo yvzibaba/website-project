@@ -3,6 +3,25 @@
 记录规则（宪法第13条）：每次修改追加**版本号 + 时间 + 原因 + 内容 + 效果**；不得直接覆盖生产版本；必要时可回滚（Git revert 对应提交）。
 时间时区：Asia/Shanghai。
 
+## [0.87.0] - 2026-09-21 · R7-C 商业交付闭环收口：**`UNDER_HUMAN_REVIEW` 升级为 V2 强制发布门**（禁 DRAFT→PUBLISHED 直跳·不破 V1·零 schema 迁移）
+
+- **原因（承接创始人 §24 高速连续自治 · R7-C mandate §四）**：R7-A/R7-B 让一份算通的 V2 决策报告能导出成 DRAFT 商品并离线下载，但 mandate §四 要求把 `UNDER_HUMAN_REVIEW` 从「可选停留态」升级成**真发布闸门**——凡正式 V2 Solution 必须 `DRAFT → UNDER_HUMAN_REVIEW → PUBLISHED`，杜绝决策报告未经持证 staff 复核即直上货架（宪法第 21 条"高风险须人工确认"的**流程化落地**）。硬约束：**不破坏既有 V1 手工沙盘流程**，优先扩展已有 `publishGuard` 而非另造一套。
+- **内容**：
+  - **C1 · V2 识别（数据自证·零新列）**（`kernel/src/server/solution-admin.ts` 加 `hasV2DecisionReportExtra(body)`）：判据 = `body.decisionReport` 存在且为非数组对象、同时具备 `provenance`（真值）与 `sections`（数组）。此 extra 由 R7-A `buildSolutionDraftFromDecision` 必然写入（`decision-to-solution.ts:301` 顶层键，`parseSolutionBody` 归一为 `extras[]`），**存在即 V2**，最省事且不可伪造——不新增列、不新增表、不加 schema 迁移。半截数据（缺 provenance 或 sections）判非 V2，避免误启用本门。
+  - **C2 · 人工审核发布门**（`humanReviewGateForV2(existing)`）：仅在 `updateSolution` 的「目标 PUBLISHED 且当前非 PUBLISHED」分支内、**先于** `publishGuard` 调用。规则：当前态非 DRAFT → 放行（已在 REVIEW/更高态）；非 V2 → 放行（V1 不受扰）；V2 + DRAFT → 返回 `{status:["V2 决策导出方案须先进入 UNDER_HUMAN_REVIEW…禁 DRAFT→PUBLISHED 直跳（R7-C 发布门）。"]}`，走与既有守卫**同一判别联合**（`status:"blocked"` + `fieldErrors`），`{status:"blocked"}` 早被 api-guard 译为 409 CONFLICT，UI 无需新增错误处理分支。
+  - **C3 · 合法通道 UI**（`src/components/admin/SubmitForReviewButton.tsx` 新）：仅对 `isV2DecisionExport && status==="DRAFT"` 渲染「提交人工审核」次级按钮，**只 PATCH `{status:"UNDER_HUMAN_REVIEW"}`** 到已测 `/api/admin/solutions/[id]`（CSRF + `requireStaffWrite` + 判别联合翻译全在 api-guard 一处·宪法第 16 条单一真源），成功 `router.refresh()`。`/admin/solutions/[id]` 页在发布按钮前挂此按钮，`isV2DecisionExport` 由服务端预渲染时 `hasV2DecisionReportExtra(s.body)` 传入（不信客户端判定）。
+  - **C4 · 逐状态闭环审计（mandate R7-C1）**：沿 `Project → Scenario → Calculation → Freeze(DecisionSnapshot) → DecisionReport → Solution(DRAFT) → UNDER_HUMAN_REVIEW → PUBLISHED → Order → Payment → Entitlement → 客户交付` 逐段核验**每态皆有真闸门**——`createOrder` 仅对 `status=PUBLISHED` 放行且金额服务端读价快照（`orders.ts:215/237`，绝不信客户端）；`hasPaidEntitlement` 以 `status=PAID` 订单按 userId/归一 email 命中、DB 异常保守返 false（宁缺毋滥·`orders.ts:514`）；交付读侧（正文解锁 + R7-B DOCX）均走 entitlement/staff/creator 三门。**结论：V2 商业交付链代码层已闭合**；唯余**真实收款网关**（V1 现为后台手工置 PAID）、**真实客户身份**、**真实定价/Benchmark** 三项属 §23 创始人绝对 STOP（见遗留）。
+- **测试与验证**：
+  - unit **1511 pass / 1 skip**（+10 R7-C 纯函数门测 `tests/unit/r7c-human-review-gate.test.ts`：`hasV2DecisionReportExtra` 形态宽容 5 例 + `humanReviewGateForV2` 五档状态门 5 例；零回归）；
+  - integration（真连 Neon）`solution-admin.test.ts` **10 pass**：新增第 10 例端到端证 V2 `DRAFT→PUBLISHED` 被 `blocked`（状态仍 DRAFT、`publishedAt` 空）→ `DRAFT→UNDER_HUMAN_REVIEW→PUBLISHED` 逐段放行并落 `publishedAt`；**前 9 例（V1 形态 body）仍可 DRAFT→PUBLISHED 直发**，反证本门不破 V1；`decision-export.test.ts` 4/4 绿；
+  - `kernel:verify` **0 违规**、`kernel:dangling` **0 悬空**、`kernel:typecheck` + 宿主 `tsc --noEmit` **0 错误**、`eslint` **0 错 0 警**、`next build` **通过**；
+  - **冻结件全数不动**：ENGINE/MODEL/PARAMS/BENCHMARK/REPORT/DECISION_STORE/DECISION_TO_SOLUTION/SCENARIO_SCHEMA 版本常量与黄金基线**零 churn**（本批纯状态门，不碰计算与投影）。
+- **未完成 / 遗留（交创始人 · §23 绝对 STOP）**：
+  - **真实支付网关**未接（V1 靠后台把 Order 手工标 PAID 驱动 `hasPaidEntitlement` 解锁；正式收款渠道 / 商户号 / 对账属高风险项，留创始人拍板，**收款页上线前须人工确认**）。
+  - **真实客户身份 / 真实定价 / Benchmark 计算真源切换**均属创始人域，代码链已备好接口，不臆造。
+  - **审核队列页增强**（把 `solutionPublishBlockers` + 本门合并成一个「待审清单」视图）可留 R7-D 企业工作流一并收敛，本批已够闭环最小可用。
+- **效果**：V2 决策导出商品在货架前**强制过一道持证人工复核**，与宪法第 21 条对齐；V1 手工流程一行不改即可照常发布；无 DB 迁移、可即时 revert 本提交回滚。
+
 ## [0.86.0] - 2026-09-21 · R7-B 离线 DOCX 交付：**DecisionReport → DOCX 纯投影 + 双入口下载**（同源字节级一致·零重算·零 schema 迁移）
 
 - **原因（承接创始人 §24 高速连续自治 · R7-B）**：R7-A 已把 V2 决策报告投成 DRAFT Solution，但 mandate §R7-B 明确要一份**离线可交付工件**（客户留档 / 持证复核 / 邮件附件），且要求「Web Report = DecisionReport = DOCX 数字一致」是**机器测**而非肉眼判。审计确认：`ProjectScenario.report` 是引擎 `buildDecisionReport` 产出的**已格式化字符串对象**（每处 CAPEX/NPV/IRR/... 都是成品串），DOCX 层只需**搬运 + 排版**即可结构性保证同源——无需二次 `runCalculation`、无需读输入快照重算。

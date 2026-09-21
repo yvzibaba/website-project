@@ -187,6 +187,47 @@ function publishGuard(s: {
 }
 
 /**
+ * R7-C · V2 决策导出方案识别（纯函数 · 与 `parseSolutionBody` 同构、只读 `extras.decisionReport`）。
+ *
+ * ## 为什么用这个信号
+ * V1 沙盘手工建方案不带 `body.extras.decisionReport`；R7-A 起，V2 决策报告导出经
+ * `buildSolutionDraftFromDecision` 必然把 `{ reportVersion, provenance, disclaimer, sections }` 塞进
+ * 该 extra（详见 `kernel/src/lib/decision-to-solution.ts`）。**这条 extra 存在 = 该方案是 V2 决策导出**，
+ * 是数据自证的最省事、最不易伪造的标记——**不必新增列、不必新表**。
+ *
+ * ## 形状宽容度
+ * 只要求 `provenance` 与 `sections` 两键在（其余 title/reportVersion/disclaimer 缺失是"降级"不是"非 V2"）；
+ * 因为一旦引擎映射规则演进，字段名可能微调而 extras.decisionReport 键名是 R7-A 契约的稳定锚。
+ */
+export function hasV2DecisionReportExtra(body: unknown): boolean {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return false;
+  const extra = (body as Record<string, unknown>).decisionReport;
+  if (!extra || typeof extra !== "object" || Array.isArray(extra)) return false;
+  const e = extra as Record<string, unknown>;
+  return Boolean(e.provenance) && Array.isArray(e.sections);
+}
+
+/**
+ * R7-C · V2 人工审核发布门（mandate §四）：V2 决策导出方案禁止 DRAFT→PUBLISHED 直跳，
+ * **必须** DRAFT → UNDER_HUMAN_REVIEW → PUBLISHED。V1 方案不受本门影响（既有 publishGuard 独力把关）。
+ *
+ * 返回 null 即通过；返回非 null 即拒（`fieldErrors.status = [原因]`，走与既有守卫同样的判别联合）。
+ * 只在「目标 PUBLISHED 且当前非 PUBLISHED」时被调用；不改变 UNDER_HUMAN_REVIEW → PUBLISHED 的合法路径。
+ */
+export function humanReviewGateForV2(existing: {
+  status: string;
+  body: unknown;
+}): Record<string, string[]> | null {
+  if (existing.status !== "DRAFT") return null; // 已在 UNDER_HUMAN_REVIEW 或更高态 → 放行
+  if (!hasV2DecisionReportExtra(existing.body)) return null; // V1 方案 → 不启用本门
+  return {
+    status: [
+      "V2 决策导出方案须先进入 UNDER_HUMAN_REVIEW（人工审核中）由持证 staff 复核，禁 DRAFT→PUBLISHED 直跳（R7-C 发布门）。",
+    ],
+  };
+}
+
+/**
  * **只读**发布就绪预览（Phase 13 M6 审核队列用）：复用上面同一个 `publishGuard`，把按字段归类的
  * 原因摊平成一句句人类可读的「还差什么才能发布」。返回空数组即就绪。刻意与真实发布走**同一函数**，
  * 杜绝"队列说能发、点了却被拦"的口径漂移（宪法第 16 条单一真源）；不写库、不改状态。
@@ -290,12 +331,19 @@ export async function updateSolution(
       needsProfessionalReview: true,
       slug: true,
       title: true,
+      body: true, // R7-C：V2 人工审核发布门要读 extras.decisionReport 判形态
     },
   });
   if (!existing) return { status: "not_found", solutionId };
 
   // 若要发布：合并 patch 与 existing 后走守卫（patch 可能同时改价格/riskDomains/review 标记）
   if (d.status === "PUBLISHED" && existing.status !== "PUBLISHED") {
+    // R7-C · V2 决策导出方案强制经 UNDER_HUMAN_REVIEW（禁 DRAFT→PUBLISHED 直跳，mandate §四）
+    const v2Gate = humanReviewGateForV2({ status: existing.status, body: existing.body });
+    if (v2Gate) {
+      log.warn("publish blocked by V2 human-review gate", { solutionId });
+      return { status: "blocked", solutionId, fieldErrors: v2Gate };
+    }
     const merged = {
       price: d.price !== undefined ? d.price : existing.price,
       riskDomains: d.riskDomains ?? existing.riskDomains,

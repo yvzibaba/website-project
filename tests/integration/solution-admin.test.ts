@@ -304,4 +304,52 @@ describeDb("solution data-layer CRUD (Neon)", () => {
     const notFound = await removeSolutionUnknown("cuid_missing_xxxxxxxxxxxxxxxxxxxxxxxxxx");
     expect(notFound.status).toBe("not_found");
   });
+
+  /* ───── 10. R7-C：V2 决策导出方案强制经 UNDER_HUMAN_REVIEW（真连库端到端） ───── */
+  it("R7-C blocks V2 DRAFT→PUBLISHED, but allows DRAFT→REVIEW→PUBLISHED", async () => {
+    const caseId = await newCase(`case-v2gate-${runId}`);
+    // body 带 decisionReport extra = V2 决策导出自证标记（R7-A buildSolutionDraftFromDecision 的落库形态）
+    const v2Body = {
+      decisionReport: {
+        reportVersion: "report@1.0.0",
+        provenance: { scenarioId: `scn-${runId}`, scenarioLabel: "基准情景" },
+        disclaimer: "本报告为占位夹具。",
+        sections: [],
+      },
+    };
+    const created = await createSolution(
+      {
+        title: `V2 决策导出 ${runId}`,
+        slug: slugFor("v2gate"),
+        caseId,
+        price: "3999.00",
+        body: v2Body,
+      },
+      `human:${runId}`,
+    );
+    expect(created.status).toBe("ok");
+    const id = created.solutionId!;
+    createdSolutionIds.push(id);
+
+    // ① 直跳被拦
+    const skip = await updateSolution(id, { status: "PUBLISHED" }, `human:${runId}`);
+    expect(skip.status).toBe("blocked");
+    expect(skip.fieldErrors?.status?.[0]).toMatch(/UNDER_HUMAN_REVIEW/);
+    const afterSkip = await prisma.solution.findUnique({ where: { id } });
+    expect(afterSkip?.status).toBe("DRAFT"); // 状态未动
+    expect(afterSkip?.publishedAt).toBeNull();
+
+    // ② 提交人工审核（DRAFT → UNDER_HUMAN_REVIEW）放行
+    const toReview = await updateSolution(id, { status: "UNDER_HUMAN_REVIEW" }, `human:${runId}`);
+    expect(toReview.status).toBe("ok");
+    const reviewing = await prisma.solution.findUnique({ where: { id } });
+    expect(reviewing?.status).toBe("UNDER_HUMAN_REVIEW");
+
+    // ③ 审核中 → 发布（已过 V2 门，由既有 publishGuard 独力把关：有价即通过）
+    const publish = await updateSolution(id, { status: "PUBLISHED" }, `human:${runId}`);
+    expect(publish.status).toBe("ok");
+    const published = await prisma.solution.findUnique({ where: { id } });
+    expect(published?.status).toBe("PUBLISHED");
+    expect(published?.publishedAt).not.toBeNull();
+  });
 });

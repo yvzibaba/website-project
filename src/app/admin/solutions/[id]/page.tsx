@@ -9,9 +9,11 @@ import { AdminSolutionFinancials } from "@/components/admin/AdminSolutionFinanci
 import { AdminSolutionUnknowns } from "@/components/admin/AdminSolutionUnknowns";
 import { DeleteSolutionButton } from "@/components/admin/DeleteSolutionButton";
 import { PublishSolutionButton } from "@/components/admin/PublishSolutionButton";
+import { SubmitForReviewButton } from "@/components/admin/SubmitForReviewButton";
 import { GenerateBodyButton } from "@/components/admin/GenerateBodyButton";
 import { getAdminSolutionDetail } from "@/server/admin-solutions";
 import { parseSolutionBody } from "@app/kernel/server/solution-body";
+import { hasV2DecisionReportExtra } from "@app/kernel/server/solution-admin";
 import { requireRole, STAFF_ROLES } from "@/server/authz";
 
 /**
@@ -99,6 +101,11 @@ export default async function AdminSolutionDetailPage({ params }: { params: Prom
           <code className="ml-2 font-mono text-xs">{s.slug}</code>
         </p>
         <div className="flex items-center gap-3">
+          <SubmitForReviewButton
+            solutionId={s.id}
+            status={s.status}
+            isV2DecisionExport={hasV2DecisionReportExtra(s.body)}
+          />
           <PublishSolutionButton solutionId={s.id} status={s.status} />
           <DeleteSolutionButton solutionId={s.id} title={s.title} orderCount={s.orderCount} />
         </div>
